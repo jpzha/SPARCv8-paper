@@ -1,0 +1,136 @@
+\section{More about High-level Instructions Execution}
+\label{appendix:more-about-high-level-insExec}
+
+We give some supplements about the execution of high-level instructions. 
+As we have explained in \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}, 
+the register windows and delayed buffer in pyhsical SPARCv8 program state 
+are omitted in high-level Pseudo-SPARCv8 program state. So, we do not define  
+state transtion rules for instructions $\csave{}$, $\crestore{}$, $\rd{}$, 
+and $\cwr{}$. The instruction transition rules for the rest of instructions, like  
+$\ld{}$ and $\cadd{}$, have no much difference with the rules in pyhical SPARCv8 program. 
+\begin{figure}[!h]
+    \centering
+    \[
+        \begin{array}{c}
+            \infer
+            {
+                \hexeci{(\ld \ \aexp \ \reg{d}, ((\hRfile, \block, \hWstk), \Mem))}
+                    {((\hRfile', \block, \hWstk), \Mem)}
+            }
+            {
+                \evalR{\aexp}{\hRfile} = \loc \quad \ \ 
+                \Mem(\loc) = \val \quad \ \ 
+                \hRfile' = \hRfile\hRegUpd{ \reg{d} \rightsquigarrow \val } 
+            } \\
+            \\[-5pt]
+            \infer
+            {
+                \hexeci{(\cadd \ \reg{s}, \oexp, \reg{d}, ((\hRfile, \block, \hWstk), \Mem))}
+                    {((\hRfile', \block, \hWstk), \Mem)}
+            }
+            {
+                \hRfile(\reg{s}) = \val_1 \quad \ \ 
+                \evalR{\oexp}{\hRfile} = \val_2 \quad \ \ 
+                \reg{d} = \dom(\hRfile) \quad \ \ 
+                \hRfile' = \hRfile\hRegUpd{ \reg{d} \rightsquigarrow \val }
+            }
+        \end{array}
+    \]
+    \caption{Transition rules for instructions \ld{} and \cadd{} in high-level}
+    \label{fig:Transition rules for instructions ld and add in high-level}
+\end{figure}
+
+We show the state transition rules for instructions \ld{} and \cadd{} 
+in high-level in \Fig{\ref{fig:Transition rules for instructions ld and add in high-level}}. 
+The register file updating operation is defined formally below : 
+\[
+    \hRfile\hRegUpd{\hrn \rightsquigarrow \val} \ \define \ 
+    \hRfile\{ \hrn \rightsquigarrow \val \} \quad \ \ 
+    \text{where } \, 
+    \hrn \notin \{ \spreg, \fpreg \}
+\] 
+According to the definition, we can find that updating the register $\spreg$ 
+(alias of $\reg{14}$), which is used to point to the top of the current 
+stack frame, and $\fpreg$ (alias of $\reg{14}$), which is used to point to 
+the top of the previous stack frame is not allowed. Only the execution of instructions  
+$\Psave$, which is used to allocate a new stack frame, 
+and $\Prestore{}$, which is used to free the current stack frame, can modify them. 
+The evaluation of the opand and address expression in high-level is defined formally 
+below : 
+\[
+    \begin{array}{ll}
+        \begin{array}{lcl}
+            \evalR{\oexp}{\hRfile} & \define &
+                \left\{
+                    \begin{array}{ll}
+                        R(r) &\quad \cif \ \oexp = r \\
+                        \\[-8pt]
+                        w &\quad \cif \ \oexp = \word, \\
+                        & \quad \quad -4096 \leq \word \leq 4095 \\
+                        \\[-8pt]
+                        \perp &\quad \otherwise
+                    \end{array}
+                \right.
+        \end{array} & \quad
+        \begin{array}{lcl}
+            \evalR{\aexp}{\hRfile} & \define &
+                \left\{
+                    \begin{array}{ll}
+                        \evalR{\oexp}{\hRfile} &\quad \cif \ \aexp = \oexp \\
+                        \\[-8pt]
+
+                        \val_1 \!+\! \val_2
+                        &\quad \cif \ \aexp = \regr \!+\! \oexp,\
+                        \hRfile(\regr) \!=\! \val_1 \\
+                        & \quad \quad \tand \ \evalR{\oexp}{\hRfile} = \val_2 \\
+
+                        \\[-8pt]
+                        \perp &\quad \otherwise
+                    \end{array}
+                \right.
+        \end{array}
+    \end{array}
+\]
+
+The `` $\Psave \ \word$ " can be viewed as a macro of 
+`` $\csave{} \ \spreg, -\word, \spreg$ ", and `` $\Prestore{}$ " 
+can be viewed as a marco of `` $\crestore{} \ \greg{0}, \greg{0}, \greg{0}$ ". 
+\begin{figure}[h]
+    \centering
+    \[
+        \begin{array}{c|c}
+            \begin{array}{lcl}
+                \csave{} & \quad & \spreg, -128, \spreg \\
+                \cadd{} & & \ireg{0}, \ireg{1}, \ireg{0} \\
+                \ret{} \\
+                \crestore{} & & \greg{0}, \greg{0}, \greg{0} \\
+                & (a)
+            \end{array} \qquad & \qquad 
+            \begin{array}{lcl}
+                \Psave & \quad & 128 \\
+                \cadd{} & & \ireg{0}, \ireg{1}, \ireg{0} \\
+                \ret{} \\
+                \Prestore{} & & \\
+                & (b)
+            \end{array}
+        \end{array}
+    \]
+    \caption{Realistic SPARCv8 Code and Pseudo-SPARCv8 Code}
+    \label{fig:Realistic SPARCv8 Code and Pseudo-SPARCv8 Code}
+\end{figure}
+
+\Fig{\ref{fig:Realistic SPARCv8 Code and Pseudo-SPARCv8 Code}} 
+gives a simple comparision with the realistic SPARCv8 code 
+and our Pseudo SPARCv8 code in high-level. 
+\Fig{\ref{fig:Realistic SPARCv8 Code and Pseudo-SPARCv8 Code}} 
+(a) is the realistic SPARCv8 code. 
+It uses instruction `` $\csave{} \, \spreg, -64, \spreg$ " 
+to store the caller's context and allocate a new stack frame 
+size 128 bytes for the current procedure, and use instruction
+`` $\crestore{} \ \greg{0}, \greg{0}, \greg{0}$ " to restore 
+the caller's context at the exitance of the current procedure. 
+\Fig{\ref{fig:Realistic SPARCv8 Code and Pseudo-SPARCv8 Code}} (b) is 
+the same function in Pseudo-SPARCv8 code, 
+and we can find that the instructions that 
+is responsible for saving and restoring the context of caller
+is replaced by `` $\Psave \ 128$ " and `` $\Prestore$ ". 

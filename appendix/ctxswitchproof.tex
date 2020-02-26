@@ -1,0 +1,1116 @@
+\section{Application of Extended Program Logic : Verifying a Simplified Version of Context Switch Routine}
+\newcounter{lnum}
+\setcounter{lnum}{1}
+\newcommand{\llnum}{\thelnum\addtocounter{lnum}{1}}
+\label{appendix:ctxswitchproof}
+
+\begin{figure}[!h]
+    \small
+    \centering
+    \[ 
+        \begin{array}{lll}
+            \multicolumn{3}{l}
+                {
+                    \quad \lab{\texttt{switch}}: 
+                } \\
+            \llnum \quad \ \  
+            & \call{} \qquad \quad & \WinSave \\
+            \llnum 
+            & \nop{} \\
+            \llnum 
+            & \sett & \TaskCur, \lreg{1} \\
+            \llnum 
+            & \ld & [\lreg{1}], \lreg{1} \\
+            % \llnum 
+            % & \cadd{} & \lreg{1}, \texttt{CONTEXT}\_\texttt{OFFSET}, \lreg{1} \\
+            \llnum
+            & \call{} & \texttt{reg}\_\texttt{save} \\
+            \llnum
+            & \nop{} \\
+            \llnum
+            & \get & \regcwp, \greg{4} \\
+            \llnum
+            & \rd{} & \regwim, \greg{7} \\
+            \llnum
+            & \sett & 1, \greg{6} \\
+            \llnum & \sll & \greg{6}, \greg{4}, \greg{4} \\
+            \\[-5pt]
+            \multicolumn{3}{l}
+                {
+                    \quad \texttt{save}\_\texttt{usedwindow}: 
+                } \\
+            \llnum & \sll & \greg{4}, 1, \greg{5} \\
+            \llnum & \srl & \greg{4}, (\OSWINDOWs - 1), \greg{4} \\
+            \llnum & \cor{} & \greg{4}, \greg{5}, \greg{4} \\
+            \llnum & \andcc{} & \greg{4}, \greg{7}, \greg{0} \\
+            \llnum & \bne & \SwitchNewTask \\
+            \llnum & \nop{} \\
+            \llnum & \crestore{} & \greg{0}, \greg{0}, \greg{0} \\
+            \llnum & \call{} & \texttt{window}\_\texttt{save} \\
+            \llnum & \nop{} \\
+            \llnum & \jmp{} & \SaveUsedWin \\
+            \llnum & \nop{} \\
+            \\[-5pt]
+            \multicolumn{3}{l}
+                {
+                    \quad \texttt{switch}\_\texttt{new}\_\texttt{task}: 
+                } \\
+            \llnum & \sett & \TaskCur, \lreg{0} \\
+            \llnum & \sett & \TaskNew, \lreg{1} \\
+            \llnum & \ld & [\lreg{1}], \lreg{1} \\
+            \llnum & \st{} & \lreg{1}, [\lreg{0}] \\
+            % \llnum & \cadd{} & \oreg{1}, \texttt{CONTEXT}\_\texttt{OFFSET}, \lreg{1} \\
+            \llnum & \call{} & \texttt{reg}\_\texttt{restore} \\
+            \llnum & \nop{} \\
+            \llnum & \call{} & \texttt{window}\_\texttt{restore} \\
+            \llnum & \nop{} \\
+            \llnum & \retl{} \\
+            \llnum & \nop{}
+        \end{array}
+    \]
+    \caption{Main function of context switch routine}
+    \label{fig:Main function of context switch routine}
+\end{figure}
+
+In this section, we give a simplified version of context switch routine in 
+\Fig{\ref{fig:Main function of context switch routine}}. It reserves the 
+main functionalities of the context switch routine introduced in 
+\Sec{\ref{sec:ctxswitch}}, \eg saving the contexts of currrent thread 
+and restoring the new one. We omit some details like judging whether the 
+current thread is a valid thread. We give a simple introduction to the 
+function shown in \Fig{\ref{fig:Main function of context switch routine}}, 
+and show how to verify its correctness by applying our extended program 
+logic for SPARCv8. 
+
+\subsection{Simplified Context Switch Routine}
+
+At the entry of the context switch rountine shown in
+\Fig{\ref{fig:Main function of context switch routine}}, we first 
+call an internal function \texttt{window}\_\texttt{save} to 
+save the \localRN{} and \inRN{} registers into the stack in memory. 
+Then, as shown in line 3 to 7, we call the \texttt{reg}\_\texttt{save}  
+to store the \outRN{} and \globalRN{} registers into the TCB 
+of the current thread. As for the line 8 to 11, we get the identity of 
+the current register window and the value of the \regwim{}. 
+The block \SaveUsedWin (line 12 to 22) saves the register windows 
+(except the current one) into the stack of the current task in memory. 
+It checks whether the previous window is valid. If it's valid, it 
+uses the instruction $\crestore{}$ to set the previous window as the 
+current one, and calls function \texttt{window}\_\texttt{save} to 
+save its contents into stack (in memory), then check the previous 
+one continuously. 
+The block \texttt{switch}\_\texttt{new}\_\texttt{task} is responsible 
+for restoring the context of the new task. From line 23 to 26, it 
+sets the new task as the current one. Then, it calls function 
+\texttt{reg}\_\texttt{restore} to restore the $\outRN$ and $\globalRN$ 
+registers from the new task's TCB, and calls 
+function \texttt{window}\_\texttt{restore} restore the 
+$\localRN$ and $\inRN$ registers from the new task's stack in memory. 
+The implementations of the internal functions are omitted here. 
+
+\subsection{Specification of the Simplified Context Switch Routine}
+
+First, we define the abstract assembly primitive $\primsw$, which is 
+already introduced in the \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}. 
+{
+    \small
+    $$
+    \begin{array}{lcl}
+        \primsw & \define & 
+        \lambda \, \args{\val}, \hpstate, \hpstate'. \ 
+        \exists \, \thrdid'. \ 
+        \Mem(\TaskNew) = (\thrdid', 0) \, \land \, 
+        \thrdpool(\thrdid') = 
+            (\hRstate', \pc', \npc') \\ 
+        & & \hspace*{8em} \land \, 
+        \thrdpool' = \thrdpool\{ \thrdid \rightsquigarrow 
+        (\hRstate, \pc, \npc) \}
+        \, \land \, \thrdid \neq \thrdid'
+        \, \land \, \args{\val} = \nil \\
+        \\[-8pt] 
+        \multicolumn{3}{l}
+        {
+        	\hspace*{1.8em}
+            \text{where } \, 
+            \hpstate = 
+                (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), \, 
+            \hpstate' = 
+            (\thrdpool', \thrdid', 
+            	(\hRstate', \lab{} + 8, \lab{} + 12), \Mem), \lab{} = \hRstate'.\hRfile(\reg{15}). 
+%            \lab{} = \hRstate'.\hRfile(\reg{15}). 
+            % \,
+            % \AftExt(\hRstate, \pc, \npc) \define 
+            % (\hRstate, \hRstate.\hRfile(\reg{15}) + 8, 
+            %     \hRstate.\hRfile(\reg{15}) + 12)
+        }
+    \end{array}
+    $$
+}
+Then we show the specification of the simplified context switch routine below, and some auxiliary 
+definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}: 
+{
+    \small
+    \[
+        \begin{array}{lcl}
+            \Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n) 
+            & \define & 
+            \Env{\env} \sepstar
+            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) \sepstar 
+            \metricAst{20} \sepstar \\
+            & & \quad 
+            \RelCurT{\thrdid_c}{\notCare}{\env}{\hthrdlocalst_c} \sepstar 
+            \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+            \safePrimAst{\, \primsw(\nil) \,} \\
+            \\[-5pt]
+            \Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
+            & \define & \exists \, \env', \hthrdlocalst'. \, \Env{\env'} 
+            \sepstar (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) 
+            \sepstar \\
+            & & 
+            \quad 
+            \RelCurT{\thrdid_n}{\nst}{\env'}{\hthrdlocalst'} \sepstar 
+            \RelRdyT{\thrdid_c}{\pEnv{\env}}{\hthrdlocalst_c} \sepstar 
+            \safePrimAst{\, \primdone \,}  
+        \end{array}
+    \]
+} 
+
+\begin{figure}[!t]
+    \centering
+    \small
+    \[
+        \begin{array}{l}
+            \hspace*{-0.15em}
+            \begin{array}{lcl}
+                \RelStkFm{\block}{\fm_1}{\fm_2} & \define & 
+                (\msto{(\block, 0)}{\fm_1[0]}) \sepstar \dots \sepstar 
+                (\msto{(\block, 28)}{\fm_1[7]}) \\
+                & & \quad \sepstar 
+                (\msto{(\block, 32)}{\fm_2[0]}) \sepstar 
+                \dots \sepstar
+                (\msto{(\block, 60)}{\fm_2[7]})
+            \end{array} \\
+            \\[-5pt]
+            \hspace*{-0.15em}
+            \begin{array}{lcl}
+                \RelStk{\block}{\Wstack}{\hWstk} & \define & 
+                \left\{
+                    \begin{array}{ll}
+                        \RelStkFm{\block}{\notCare}{\notCare} \sepstar
+                        \RelStk{\block'}{\Wstack'}{\hWstk'} & 
+                            \quad \cif \  
+                            \fm_2[6] = (\block', 0), \, \Wstack = \fm_1 \stCons \fm_2 \stCons \Wstack' \\
+                            & \quad \ \ \hWstk = (\block, \fm_1, \fm_2) \stCons \hWstk' \\
+                            \\[-8pt]
+                        \RelStkFm{\block}{\fm_1}{\fm_2} \sepstar 
+                        \RelStk{\block'}{\Wstack'}{\hWstk'} & 
+                            \quad \cif \ 
+                            \fm_2[6] = (\block', 0), \, \Wstack = \nil \\
+                            & \quad \ \ \hWstk = (\block, \fm_1, \fm_2) \stCons \hWstk' \\
+                            \\[-8pt]
+                        \empAst & \quad \cif \ \Wstack = \nil, \hWstk = \nil \\
+                            \\[-8pt]
+                        \afalse & \quad \otherwise
+                    \end{array}
+                \right. 
+            \end{array} \\
+            \\[-5pt]
+            \LRegs{\RFile} \ \define \ \regst{\globalRN}{\RFile(\globalRN)} \sepstar 
+            \regst{\outRN}{\RFile(\outRN)} \sepstar \regst{\localRN}{\RFile(\localRN)} 
+            \sepstar \regst{\inRN}{\RFile(\inRN)} \sepstar \\
+            \hspace*{7em} \regst{\regn}{\RFile(\regn)} \sepstar 
+            \regst{\regz}{\RFile(\regz)} \sepstar \regst{\regc}{\RFile(\regz)} 
+            \sepstar \regst{\regv}{\RFile(\regv)}
+            \\
+            \\[-5pt]
+            % \HRegs{\hRfile} \ \define \ \hregsto{\globalRN}{\hRfile(\globalRN)} \sepstar
+            % \hregsto{\outRN}{\RFile(\outRN)} \sepstar \hregsto{\localRN}{\hRfile(\localRN)} 
+            % \sepstar \hregsto{\inRN}{\hRfile(\inRN)} \\
+            % \hspace*{7em} \hregsto{\regn}{\hRfile(\regn)} \sepstar 
+            % \hregsto{\regz}{\hRfile(\regz)} \sepstar \hregsto{\regc}{\hRfile(\regz)} 
+            % \sepstar \hregsto{\regv}{\hRfile(\regv)} \\
+            % \\[-5pt]
+            \wfwin{\RFile}{\Wstack} \ \define \ 
+            (\stackAstP{\RFile(\regcwp)}{\Wstack} \sepstar 
+                \regst{\regwim}{\RFile(\regwim)}) 
+            \, \land \, \ctxfm(\RFile, \Wstack)
+            \\
+            \\[-5pt]
+            \hspace*{-0.15em}
+            \begin{array}{lll}
+                \relcontext{\thrdid}{\block}{\nst} & \define & 
+                (\msto{(\thrdid, \ofsGOne)}{\nst(\greg{0})}) 
+                \sepstar \, \dots \, \sepstar
+                (\msto{(\thrdid, \ofsGEig)}{\nst(\greg{7})}) \\
+                & & 
+                \sepstar
+                (\msto{(\thrdid, \ofsOOne)}{\nst(\oreg{0})}) 
+                \sepstar \, \dots \, \sepstar
+                (\msto{(\thrdid, \ofsOEig)}{\nst(\oreg{7})}) \\
+                & & 
+                \sepstar 
+                (\msto{(\thrdid, \ofsN)}{\nst(\regn)}) \sepstar \, \dots 
+                \sepstar (\msto{(\thrdid, \ofsV)}{\nst(\regv)}) \\
+                & & 
+                \sepstar \RelStkFm{\block}{\nst[\localRN]}{\nst[\inRN]}
+                % \sepstar
+                % (\msto{(\block, 0)}{\nst(\lreg{0})}) 
+                % \sepstar \, \dots \, \sepstar
+                % (\msto{(\block, 28)}{\nst(\lreg{7})}) 
+                % \\
+                % & & 
+                % \sepstar
+                % (\msto{(\block, 32)}{\nst(\ireg{0})}) 
+                % \sepstar \, \dots \, \sepstar
+                % (\msto{(\block, 60)}{\nst(\ireg{7})})
+            \end{array}
+            \\
+            \\
+            \Env{\env} \ \define \ 
+                \LRegs{\RFile} \sepstar 
+                % \HRegs{\hRfile} \sepstar 
+                \wfwin{\RFile}{\Wstack} \qquad \qquad 
+                \text{where} \ \env = (\RFile, \Wstack)
+                \\
+            %     \\[-9pt]
+            % \qquad\qquad 
+            % \text{where} \ \env = (\RFile, \Wstack), \, 
+            % \hthrdlocalst = ((\hRfile, \block, \hWstk), \pc, \npc) \\
+            \\[-5pt]
+            \hspace*{-0.15em}
+            \begin{array}{lll}
+                \RelCurTAux{\thrdid_c}{\nst}{\env}{\hthrdlocalst} & \define &
+                (\relcontext{\thrdid_c}{\block}{\nst} \sepstar 
+                \RelStk{\block'}{\Wstack}{\hWstk} \sepstar (\astCurCont{\thrdid_c}{\hthrdlocalst})) \\
+                & & \, \land \,  \RFile(\spreg) = (\block, 0) \, \land \, 
+                \Rinj{\RFile}{\hRfile}
+                % ((\msto{\TaskCur}{\thrdid_c}) \sepstar 
+                % (\relcontext{\thrdid_n}{\block}{\nst} \, \land \, \RFile(\spreg) = (\block, 0)) \sepstar \\
+                % & & \RelStk{\block'}{\Wstack}{\hWstk} \sepstar (\astCurCont{\thrdid_c}{\hthrdlocalst}))
+                % \, \land \, (\Rinj{\RFile}{\hRfile}) 
+            \end{array}
+            \\
+            \\[-9pt]
+            \qquad\qquad
+            \text{where} \ \env = (\RFile, \Wstack), \, 
+            \hthrdlocalst = ((\hRfile, \block, \hWstk), \pc, \npc), 
+            \, \RFile(\fpreg) = (\block', 0), \nst \in \text{RegFile} \\
+            \\[-5pt]
+            \RelCurT{\thrdid_c}{\nst}{\env}{\hthrdlocalst} \define 
+            (\msto{\TaskCur}{(\thrdid_c, 0)}) \sepstar 
+            \RelCurTAux{\thrdid_c}{\nst}{\env}{\hthrdlocalst} \\
+            \\[-5pt]
+            \hspace*{-0.15em}
+            \begin{array}{lll}
+                \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst} & \define & 
+                (\relcontext{\thrdid_n}{\block}{\nst}
+                \sepstar 
+                \RelStk{\block'}{\nil}{\hWstk} \sepstar 
+                (\astRdyCont{\thrdid_n}{\hthrdlocalst})) \\
+                & &  
+                \, \land \, 
+                \Rinj{\nst}{\hRfile} \, \land \, \RFile(\spreg) = (\block, 0)
+            \end{array}  \\
+            \\[-9pt]
+            \qquad\qquad
+            \text{where} \ \hthrdlocalst = ((\hRfile, \block, \hWstk), \pc, \npc), 
+            \, \nst(\fpreg) = (\block', 0), \, \nst \in \text{RegFile} \\
+            \\[-5pt]
+            \pEnv{\env} \ \define \ \RFile \qquad \ \ \text{where} \ \env = (\RFile, \Wstack) 
+        \end{array}
+    \]
+    \caption{Auxiliary Definitions for Specification}
+    \label{def:aux-def-spec}
+\end{figure}
+
+Note that the execution of context switch routine will 
+call function \texttt{reg\_save}, \texttt{reg\_restore}, and  
+\texttt{window\_restore} once, and call function \WinSave{} 
+and jump to block \texttt{save\_usedwindow} no more than 8 times separately, 
+because the number of the register windows is 8. So, assigning 20 tokens 
+to the precondition of the context switch routine is enough. 
+According to the logic rules of extended program logic shown 
+in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}, 
+we need to check whether the specification of context switch rountine 
+is well-defined. 
+
+\begin{lemma}
+    \em
+    \label{lemma:wdspec}
+    $\wdSpec{\Apre}{\Apost}{\primsw}$. 
+\end{lemma}
+\begin{proof}
+    We unfold $\wdSpec{\Apre}{\Apost}{\primsw}$ by \Def{\ref{def:well-defined specification}}, 
+    and we need to prove three properities about the specification and 
+    abstract assembly primitive $\primsw$. 
+    \begin{enumerate}
+        \item 
+        for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$. 
+            if $\primsw(\args{\val})(\hpstate)(\hpstate')$, and 
+            $\hpstate \perp \hpstate_r$, 
+            then the following holds : 
+            \begin{itemize}
+                \item $\hpstate'.\hthrdlocalst.\pc = \lab{} + 8$, 
+                    $\hpstate'.\hthrdlocalst.\npc = \lab{} + 12$
+                    (where $\hpstate'.\hthrdlocalst.\hRstate.\hRfile
+                        ({\color{red} \reg{15}}) = \lab{}$);
+                \item there exists $\hpstate'', \hpstate_r'$, 
+                    $\primsw(\args{\val})(\hpstate \uplus \hpstate_r) 
+                        (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$, 
+                    and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$, 
+                    $\hpstate_r.\Mem = \hpstate_r'.\Mem$; 
+            \end{itemize}
+        \vspace*{0.3em}
+        The correctness proof of this property can be achieved directly from the definition 
+        of the $\primsw$. 
+        \vspace*{0.5em}
+        
+        \item for any $\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n$,
+            \begin{itemize}
+                \item $\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n) 
+                    \Longrightarrow \safePrimAst{\primsw} \sepstar \atrue$; 
+                \item $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n) 
+                    \Longrightarrow \safePrimAst{\primdone} \sepstar \atrue$; 
+            \end{itemize}   
+        \vspace*{0.3em}
+        According the definition of $\Apre$ and $\Apost$, 
+        this property's proof is trivial.
+        \vspace*{0.5em}
+        
+        \item for any $\args{\val}, \state, \hpstate$, 
+        if $(\state, \hpstate, \notCare, \notCare) \in 
+            \INV{(\primsw(\args{\val}), \args{\val})}$, 
+        then there exists $\thrdid_c, \thrdid_n, \env$, $\nst, 
+        \hthrdlocalst_c, \hthrdlocalst_n, \relastP_r$ and $\word$, 
+        such that:
+        \begin{itemize}
+            \item $\asrtmodel{(\state, \hpstate, \primsw(\args{\val}), \word)}
+                {\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, 
+                \hthrdlocalst_n) \sepstar \relastP_r}$; 
+            \item  $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, 
+                \hthrdlocalst_n) \sepstar \relastP_r \Longrightarrow 
+                \INV{(\primdone, \notCare)}$; 
+            \item $\Sta(\primsw(\args{\val}), \relastP_r)$. 
+        \end{itemize}
+        \vspace*{0.3em}
+        The key to prove this case is to find $\thrdid_c$, $\thrdid_n$, $\env$, 
+        $\nst$, $\hthrdlocalst_c$, $\hthrdlocalst_n$, $\relastP_r$ and $\word$. 
+        Because we have $(\state, \hpstate, \notCare, \notCare) \in 
+            \INV{(\primsw(\args{\val}), \args{\val})}$, we can know that there exists 
+        a ready thread $\thrdid'$, a prefix of the frame list $\Wstack'$ 
+        and a register state $\Rstate'$, where 
+        $\hpstate.\thrdpool(\thrdid') = \hthrdlocalst'$, 
+        $\thrdid \neq \thrdid'$, $\hpstate.\Mem(\TaskNew) = (\thrdid', 0)$, 
+        $\ctxfm(\state.\Rstate) = \Wstack'$ 
+        and $\restoreCtx{\state.\Mem}{\thrdid'}{\Rstate'}$ hold. 
+        And we require $\thrdid_c = \hpstate.\thrdid$, $\thrdid_n = \thrdid'$, 
+        $\env = (\state.\Rstate.\RFile, \Wstack')$, $\nst = \Rstate'.\RFile$, $\word = 20$, 
+        and $\relastP_r = \exists \, \Mem, \thrdpool. \, \MemRAsrt{\Mem}
+        \sepstar \RdyTsRAsrt{\thrdpool} \sepstar \rRegs$. Then, we can finish 
+        the proof. 
+
+        \begin{figure}[!t]
+            \centering
+            \[
+                \begin{array}{lcl}
+                    \centering
+                    \MemRAsrt{\Mem} & \define & 
+                    \left\{
+                        \begin{array}{ll}
+                            \empAst & \quad \cif \ \Mem = \emptyset \\
+                            \\[-9pt]
+                            (\msto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val}) 
+                            & \quad \cif \ \Mem = \{ \loc \rightsquigarrow \val \} \\
+                            \\[-9pt]
+                            \exists \, \Mem_1, \Mem_2. \,
+                            \MemRAsrt{\Mem_1} \sepstar \MemRAsrt{\Mem_2}
+                            & \quad \otherwise
+                        \end{array}
+                    \right. \\
+                    \\[-8pt]
+                    \RdyTsRAsrt{\thrdpool} & \define & 
+                    \left\{
+                        \begin{array}{ll}
+                            \empAst & \quad \cif \ \thrdpool = \emptyset \\
+                            \\[-9pt]
+                            \RelRdyT{\thrdid}{\notCare}{\hthrdlocalst} & 
+                            \quad \cif \ \thrdpool = \{ \thrdid \rightsquigarrow \hthrdlocalst \} \\
+                            \\[-9pt]
+                            \exists \, \thrdpool_1, \thrdpool_2. \, 
+                            \RdyTsRAsrt{\thrdpool_1} \sepstar \RdyTsRAsrt{\thrdpool_2} & 
+                            \quad \otherwise 
+                        \end{array}
+                    \right. \\
+                    \\[-5pt]
+                    \restoreCtx{\Mem}{\thrdid}{(\RFile, \Wstack)} & \define & 
+                    \exists \, \block. \, 
+                    \RFile(\greg{0}) = \Mem(\thrdid, \ofsGOne) \, \land \, \dots \, \land \, 
+                    \RFile(\greg{7}) = \Mem(\thrdid, \ofsGEig) \\
+                    & & \, \land \, 
+                    \RFile(\oreg{0}) = \Mem(\thrdid, \ofsOOne) \, \land \, \dots \, \land \, 
+                    \RFile(\oreg{7}) = \Mem(\thrdid, \ofsOEig)  \\
+                    & & \, \land \, 
+                    \RFile(\regn) = \Mem(\thrdid, \ofsN) \, \land \, \dots \, \land \, 
+                    \RFile(\regv) = \Mem(\thrdid, \ofsV) \\
+                    & & \, \land \, 
+                    \RFile(\lreg{0}) = \Mem(\block, 0) \, \land \, \dots \, \land \, 
+                    \RFile(\lreg{7}) = \Mem(\block, 28) \\
+                    & & \, \land \, 
+                    \RFile(\ireg{0}) = \Mem(\block, 32) \, \land \, \dots \, \land \, 
+                    \RFile(\ireg{7}) = \Mem(\block, 60) \, \land \, 
+                    \RFile(\spreg) = (\block, 0) \\
+                    & & \, \land \, 
+                    (\exists \, \cwp, n. \, \RFile(\regcwp) = \cwp \, \land \, 
+                    \RFile(\regwim) = 2^n \, \land \, \prevcwp{(\cwp)} = n) \\
+                    \\[-5pt]
+                    \rRegs & \define & \regst{\asr_0}{\notCare} \sepstar \dots 
+                        \regst{\asr_{31}}{\notCare} \sepstar \regst{\regY}{\notCare} 
+                \end{array}
+            \]
+            \caption{Auxiliary Definitions About Frame Assertion}
+        \end{figure}
+    \end{enumerate} 
+\end{proof}
+
+We use $\code_{\texttt{switch}}$ to represent the 
+code heap that stores the code of context switch rountine shown 
+in \Fig{\ref{fig:Main function of context switch routine}}. 
+The specifications of the internal function can be found in 
+\Fig{\ref{fig:Specifications of Internal Functions}}. The 
+function \texttt{reg\_save} is responsible for saving the 
+\localRN{}, \inRN{} and integer condition code fields $\regn$, 
+$\regz$, $\regc$ and $\regv$ registers into TCB in memory. 
+The \texttt{window\_save} stores the 
+$\localRN$ and $\inRN$ registers into current task's stack in memory. 
+Function \texttt{reg\_restore} does the reverse of 
+\texttt{reg\_save}, and function \texttt{window\_restore} does the 
+reverse of \texttt{window\_save}. The specification of code block 
+\texttt{save\_usedwindow} is a little complicated. 
+We can find its implementation is a loop, which checks whether the 
+previous window is valid and saving the contents of the valid 
+previous window until the previous one is invalid. 
+We need to define the loop invariant $I$ here. 
+
+\begin{figure}[!thp]
+    \centering
+    \[
+        \small
+        \begin{array}{l}
+            \textit{Loop invariant I}: \\
+            \\[-9pt] \ \ 
+            \wptr(\RFile_0) \define 
+            (\RFile_0(\greg{7}) = \RFile_0(\regwim)) \, \land \, \\
+            \hspace*{6em} 
+            ((\RFile_0(\greg{4}) = (1 <\!\!< \RFile_0(\regcwp))) \, \lor \, 
+                (\RFile_0(\greg{4}) = ((1 <\!\!< \RFile_0(\regcwp)) <\!\!< 8))) \\
+            \\[-5pt] \ \ 
+            \linkF((\block_1, \hWstk_1), (\block_2, \hWstk_2), \hWstk) \define 
+            \hWstk_1 \lstApp \hWstk_2 = \hWstk \, \land \, 
+            (\hWstk_1 = \nil \rightarrow \block_1 = \block_2) \\
+            \hspace*{10em}
+            (\forall \, \block, \fm_1, \fm_2, \hWstk'. \, 
+                \hWstk_1 = (\block, \fm_1, \fm_2) \stCons \hWstk' \rightarrow
+                \fm_2[6] = (\block_2, 0)
+            )
+            \\
+            \\[-5pt]
+            \begin{array}{lcl} \ 
+                I(\thrdid_c, \RFile, \hthrdlocalst_c) & \define & 
+                \exists \, \RFile_0, \Wstack_0. \, 
+                (\Env{\RFile_0, \Wstack_0} \, \land \, 
+                \wptr(\RFile_0)) \sepstar 
+                \metricAst{|\Wstack_0| + 2} \\
+                & & 
+                \sepstar
+                (
+                (
+                    \msto{\TaskCur}{(\thrdid_c, 0)} \sepstar 
+                    \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
+                    \astCurCont{\thrdid_c}{\hthrdlocalst_c}
+                ) 
+                \, \land \, \Rinj{\RFile}{\hRfile}) \\
+                % \, \land \, 
+                % \RFile(\spreg) = (\block, 0) \, \land \, \RFile(\fpreg) = (\block', 0)
+                & & \sepstar
+                (
+                    \exists \, \block'', \hWstk_1, \hWstk_2. \, 
+                    (\RelStk{\block'}{\nil}{\hWstk_1} \sepstar 
+                        \RelStk{\block''}{\Wstack_0}{\hWstk_2}) \,
+                    \land \, 
+                    \RFile_0(\spreg) = (\block'', 0) \\
+                    & & \quad
+                    \, \land \, 
+                    \linkF((\block', \hWstk_1), (\block'', \hWstk_2), \hWstk)
+                ) \\
+                \\[-9pt]
+                \multicolumn{3}{l}
+                {
+                    \qquad 
+                    \text{where} \ 
+                    \hthrdlocalst_c = (\hRfile, \block, \hWstk), \, 
+                    \RFile(\spreg) = (\block, 0), \text{and } 
+                    \RFile(\fpreg) = (\block', 0)
+                }
+            \end{array} 
+            \\
+            \\
+            \texttt{reg\_save}: \ (\lgvl = (\thrdid, \hthrdlocalst, \RFile, \Wstack, 
+            \primcom, \nst)) \\
+            \\[-9pt]
+            \quad 
+            \relspecpre_{\textit{rs}} \ \lgvl \define 
+            \Env{\RFile, \Wstack} \sepstar 
+            \context{\thrdid, \block, \nst} \sepstar 
+            (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar \safePrimAst{\primcom} \\
+            \\[-9pt]
+            \quad
+            \relspecpost_{\textit{rs}} \ \lgvl \define 
+            (\exists \, \nst'. \, \Env{\RFile, \Wstack} \sepstar
+            \relcontext{\thrdid}{\block}{\nst'}) \sepstar 
+            (\astCurCont{\thrdid}{\hthrdlocalst} \sepstar \safePrimAst{\primcom}) \\
+            \hspace*{5em}
+            \, \land \, 
+            \nst' = \nst\{ \globalRN \rightsquigarrow \RFile(\globalRN), 
+                \outRN \rightsquigarrow \RFile(\outRN), 
+                \regn \rightsquigarrow \RFile(\regn), \dots, 
+                \regv \rightsquigarrow \RFile(\regv) \}  \\
+            \\[-5pt]
+            \texttt{window\_save}: \ (\lgvl = (\thrdid, \hthrdlocalst, \RFile, 
+                \Wstack, \primcom, \block)) \\
+            \\[-9pt]
+            \quad
+            \relspecpre_{\textit{ws}} \ \lgvl \define 
+            (\Env{\RFile, \Wstack} \sepstar \RelStkFm{\block}{\notCare}{\notCare}
+            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
+            \safePrimAst{\primcom}) \, \land \, \RFile(\spreg) = (\block, 0) \\
+            \\[-9pt]
+            \quad
+            \relspecpost_{\textit{ws}} \ \lgvl \define 
+            (\Env{\RFile, \Wstack} \sepstar 
+            \RelStkFm{\block}{\RFile(\localRN)}{\RFile(\inRN)}
+            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
+            \safePrimAst{\primcom}) \, \land \, \RFile(\spreg) = (\block, 0) \\
+            \\[-5pt]
+            \texttt{reg\_restore}: \ (\lgvl = (\thrdid, \hthrdlocalst, \RFile, \Wstack, 
+                \block, \nst)) \\
+            \\[-9pt]
+            \quad
+            \relspecpre_{\textit{rr}} \ \lgvl \define \Env{\RFile, \Wstack} \sepstar 
+            \relcontext{\thrdid}{\block}{\nst} \sepstar 
+            (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar \safePrimAst{\primcom} \\
+            \\[-9pt]
+            \quad
+            \relspecpost_{\textit{rr}} \ \lgvl \define \exists \, \RFile'. \,  (\Env{\RFile', \Wstack}
+            \sepstar \relcontext{\thrdid}{\block}{\nst} \sepstar 
+            (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar \safePrimAst{\primcom}
+            )  \\
+            \hspace*{5em}
+            \, \land \, 
+            \RFile' = \RFile\{ \globalRN \rightsquigarrow \nst(\globalRN), 
+                \outRN \rightsquigarrow \nst(\outRN), \regn \rightsquigarrow \nst(\regn), 
+                \dots, \regv \rightsquigarrow \nst(\regv) \} \\
+            \\[-5pt]
+            \texttt{window\_restore}: \ (\lgvl = (\thrdid, \hthrdlocalst, \RFile, \Wstack, 
+            \primcom, \block, \fm_1, \fm_2)) \\
+            \\[-9pt]
+            \quad
+            \relspecpre_{\textit{wr}} \ \lgvl \define 
+            (\Env{\RFile, \Wstack} \sepstar \RelStkFm{\block}{\fm_1}{\fm_2} 
+            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
+            \safePrimAst{\primcom}) \, \land \, \RFile(\spreg) = (\block, 0) \\
+            \\[-9pt]
+            \quad
+            \relspecpost_{\textit{wr}} \ \lgvl \define 
+            (\Env{\RFile\{ \localRN \rightsquigarrow \fm_1, \inRN \rightsquigarrow \fm_2 \}, \Wstack} \
+            \sepstar \RelStkFm{\block}{\fm_1}{\fm_2} 
+            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
+            \safePrimAst{\primcom}) \\
+            \hspace*{5em}
+            \, \land \, \RFile(\spreg) = (\block, 0) \\
+            \\[-5pt]
+            \texttt{save\_usedwindow}: \ 
+            (\lgvl = (\thrdid_c, \thrdid_n, \hthrdlocalst_c, \hthrdlocalst_n, 
+                \hthrdlocalst_c, \hthrdlocalst_n, \nst)) \\
+            \\[-9pt]
+            \quad
+            \relspecpre_{\textit{su}} \, \lgvl \define 
+            I(\thrdid_c, \RFile, \hthrdlocalst_c) \sepstar 
+            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) 
+            \sepstar
+            \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+            \safePrimAst{\, \primsw(\nil) \,} \\
+            \\[-9pt]
+            \quad
+            \relspecpost_{\textit{su}} \, \lgvl \define 
+            \exists \, \hthrdlocalst'. \, 
+            \Env{\nst, \nil} \sepstar 
+            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) \sepstar \\
+            \hspace*{6em}
+            \RelCurT{\thrdid_n}{\nst}{(\nst, \nil)}{\hthrdlocalst'} 
+            \sepstar \RelRdyT{\thrdid_c}{\RFile}{\hthrdlocalst_c}
+            \sepstar \safePrimAst{\, \primdone \,}
+            \\
+            \\[-5pt]
+            \texttt{switch\_newtask}: \ (\lgvl = (\thrdid_c, \thrdid_n, \hthrdlocalst_c, 
+            \hthrdlocalst_n, \RFile, \nst)) \\
+            \\[-9pt]
+            \quad 
+            \relspecpre_{\textit{sn}} \ \lgvl \define 
+            \exists \, \RFile_0. \, \Env{(\RFile_0, \nil)} \sepstar 
+            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+            \sepstar \metricAst{2} \sepstar \\
+            \hspace*{6em}
+            \RelCurT{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c} \sepstar
+            \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+            \safePrimAst{\, \primsw(\nil) \,} \\
+            \\[-9pt]
+            \quad
+            \relspecpost_{\textit{sn}} \, \lgvl \define 
+            \exists \, \hthrdlocalst'. \, 
+            \Env{\nst, \nil} \sepstar 
+            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) \sepstar \\
+            \hspace*{6em}
+            \RelCurT{\thrdid_n}{\nst}{(\nst, \nil)}{\hthrdlocalst'} 
+            \sepstar \RelRdyT{\thrdid_c}{\RFile}{\hthrdlocalst_c}
+            \sepstar \safePrimAst{\, \primdone \,}
+        \end{array}
+    \]
+    \caption{Specifications of Internal Functions}
+    \label{fig:Specifications of Internal Functions}
+\end{figure}
+
+\begin{lemma}
+    \em
+    \label{lemma:codeproof}
+    There exists $\Cspec_i$, for any $\lgvl$,
+    where $\lgvl = (\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, 
+    \hthrdlocalst_n)$,
+    $\wfcdhp{\code_{\texttt{switch}}}{\Cspec_i}$ and 
+    $\wdcblk{\Cspec_i}{\Apre \, \lgvl}{\Apost \, \lgvl}{\lab{\texttt{switch}}}
+        {\code_{\texttt{switch}}[\lab{\texttt{switch}}]}$ hold. 
+\end{lemma}
+
+\begin{figure}[!t]
+    \vspace*{-2em}
+    \[
+        \small
+        \hspace*{-1em}
+        \begin{array}{lll}
+            \multicolumn{3}{l}
+                {
+                    \quad \lab{\texttt{switch}}: 
+                } \\
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \{
+                    \Apre(\thrdid_c, \thrdid_n, (\RFile, \Wstack), \nst, 
+                        \hthrdlocalst_c, \hthrdlocalst_n)
+                \}  
+            } \\
+            \\[-9pt]
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \left\{
+                    \begin{array}{l}
+                        \Env{\RFile, \Wstack} \sepstar 
+                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+                        \sepstar \metricAst{20} \sepstar \\
+                        \quad 
+                        \RelCurT{\thrdid_c}{\notCare}{(\RFile, \Wstack)}{\hthrdlocalst_c} 
+                        \sepstar
+                        \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+                        \safePrimAst{\,\primsw(\nil)\,}
+                    \end{array}
+                \right\}^{\color{red} \textcircled{1}}  
+            } \\
+            1 \quad \ \  
+            & \call{} \qquad \quad & \WinSave \\
+            2 
+            & \nop{} \\
+            & \dots \\
+            5
+            & \call{} & \texttt{reg}\_\texttt{save} \\
+            6
+            & \nop{} \\
+            \\[-9pt]
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \left\{
+                    \begin{array}{l}
+                        \Env{\RFile\{ \lreg{1} \rightsquigarrow \notCare \}, \Wstack} \sepstar 
+                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+                        \sepstar \metricAst{18} \sepstar \\
+                        \quad 
+                        {
+                            \colorbox{yellow!80}
+                            {
+                                $\RelCurT{\thrdid_c}{\RFile}{(\RFile, \Wstack)}{\hthrdlocalst_c}$
+                            }
+                        } 
+                        \sepstar
+                        \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+                        \safePrimAst{\,\primsw(\nil)\,}
+                    \end{array}
+                \right\}^{\color{red} \textcircled{2}} 
+            } \\
+            \\[-9pt]
+            7
+            & \get & \regcwp, \greg{4} \\
+            8
+            & \rd{} & \regwim, \greg{7} \\
+            9
+            & \sett & 1, \greg{6} \\
+            10 & \sll & \greg{6}, \greg{4}, \greg{4} \\
+            \\[-9pt]
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \left\{
+                    \begin{array}{l}
+                        \exists \, \RFile_0. \, 
+                        (\Env{\RFile_0, \Wstack} \, \land \, \wptr(\RFile_0)) \sepstar 
+                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+                        \sepstar \metricAst{18} \sepstar \\
+                        \quad 
+                        \RelCurT{\thrdid_c}{\RFile}{(\RFile, \Wstack)}{\hthrdlocalst_c}
+                        \sepstar
+                        \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+                        \safePrimAst{\,\primsw(\nil)\,}
+                    \end{array}
+                \right\}  
+            } \\
+            \\[-5pt]
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \{
+                    I(\thrdid_c, \RFile, \hthrdlocalst_c) \sepstar 
+                    (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+                    \sepstar
+                    \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+                    \safePrimAst{\, \primsw(\nil) \,}
+                \}
+            }
+            \\
+            \\[-9pt]
+            \multicolumn{3}{l}
+                {
+                    \quad \texttt{save}\_\texttt{usedwindow}: 
+                } \\
+            11 & \sll & \greg{4}, 1, \greg{5} \\
+            & \dots \\
+            20 & \jmp{} & \SaveUsedWin \\
+            21 & \nop{} \\
+            \\[-5pt]
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \left\{
+                    \begin{array}{l}
+                        \exists \, \RFile_0. \, 
+                        {
+                            \colorbox{yellow!80}
+                            {
+                                $\Env{\RFile_0, \nil}$
+                            }
+                        } 
+                        \sepstar 
+                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        \thrdid_c \neq \thrdid_n) \sepstar \metricAst{2} \sepstar \\
+                        \quad 
+                        \RelCurT{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c}
+                        \sepstar
+                        \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+                        \safePrimAst{\, \primsw(\nil) \,}
+                    \end{array}
+                \right\}^{\color{red} \textcircled{3}}
+            } \\
+            \\[-9pt]
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \left\{
+                    \begin{array}{l}
+                        \exists \, \RFile_0. \, 
+                        \Env{\RFile_0, \nil} \sepstar 
+                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        \thrdid_c \neq \thrdid_n) \sepstar \metricAst{2} \sepstar 
+                        \safePrimAst{\, \primsw(\nil) \,} \\
+                        \\[-9pt] \quad \sepstar 
+                        {
+                            \colorbox{yellow!80}
+                            {
+                                $
+                                \msto{\TaskCur}{(\thrdid_c, 0)} \sepstar
+                                \RelCurTAux{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c}
+                                $
+                            }
+                        }
+                        \sepstar 
+                        \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n}
+                        % (
+                        %     \exists \, \block_0. \, 
+                        %     (\msto{\TaskCur}{(\thrdid_c, 0)} \sepstar 
+                        %     \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
+                        %     \RelStk{\block_0}{\nil}{\hWstk} \sepstar
+                        %     (\astCurCont{\thrdid_c}{((\hRfile, \block, \hWstk), \pc, \npc)})) \\
+                        %     \quad \ \ \, \land \, 
+                        %     \RFile(\spreg) = (\block, 0) \, \land \, 
+                        %     \RFile(\fpreg) = (\block_0, 0) \, \land \, 
+                        %     \Rinj{\RFile}{\hRfile} \, \land \, 
+                        %     \hthrdlocalst_c = 
+                        %     ((\hRfile, \block, \hWstk), \pc, \npc)
+                        % ) \\
+                        % \\[-9pt] \sepstar
+                        % (
+                        %     \exists \, \block_1. \, 
+                        %     (\relcontext{\thrdid_n}{\block'}{\nst} \sepstar 
+                        %     \RelStk{\block_1}{\nil}{\hWstk'} \sepstar 
+                        %     (\astRdyCont{\thrdid_n}{((\hRfile', \block', \hWstk'), \pc', \npc')})
+                        %     ) \\
+                        %     \quad \ \ \, \land \, 
+                        %     \nst(\spreg) = (\block', 0) \, \land \, 
+                        %     \nst(\fpreg) = (\block_1, 0) \, \land \, 
+                        %     \Rinj{\nst}{\hRfile'} \, \land \, 
+                        %     \hthrdlocalst_n = 
+                        %     ((\hRfile', \block', \hWstk'), \pc', \npc')
+                        % )
+                    \end{array}
+                \right\}
+            } \\
+            \\[-9pt]
+            \multicolumn{3}{l}
+                {
+                    \quad \texttt{switch}\_\texttt{new}\_\texttt{task}: 
+                } \\
+            22 & \sett & \TaskCur, \lreg{0} \\
+            23 & \sett & \TaskNew, \lreg{1} \\
+            & \dots \\ 
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \left\{
+                    \begin{array}{l}
+                        \colorbox{yellow!80}
+                        {
+                            $\Env{\nst, \nil}$
+                        } \sepstar 
+                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        \thrdid_c \neq \thrdid_n) \sepstar 
+                        \safePrimAst{\, \primsw(\nil) \,} \\
+                        \\[-9pt] \quad \sepstar
+                        \msto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
+                        \colorbox{gray!60}
+                        {
+                            $\RelCurTAux{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c}$
+                        } 
+                        \sepstar
+                        % \RelCur{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c} \sepstar
+                        \colorbox{green!60}
+                        {
+                            $\RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n}$
+                        }  
+                        % \colorbox{yellow!80}
+                        % {
+                        %     $\Env{\nst, \nil}$
+                        % } \sepstar 
+                        % (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        % \thrdid_c \neq \thrdid_n) \sepstar 
+                        % \safePrimAst{\, \primsw(\nil) \,} \\
+                        % \\[-9pt] \sepstar
+                        % (
+                        %     \exists \, \block_0. \, 
+                        %     (
+                        %         \colorbox{yellow!80}
+                        %         {
+                        %             $\msto{\TaskCur}{(\thrdid_n, 0)}$
+                        %         } 
+                        %         \sepstar 
+                        %     \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
+                        %     \RelStk{\block_0}{\nil}{\hWstk} \sepstar
+                        %     (\astCurCont{\thrdid_c}{((\hRfile, \block, \hWstk), \pc, \npc)})) \\
+                        %     \quad \ \ \, \land \, 
+                        %     \RFile(\spreg) = (\block, 0) \, \land \, 
+                        %     \RFile(\fpreg) = (\block_0, 0) \, \land \, 
+                        %     \Rinj{\RFile}{\hRfile} \, \land \, 
+                        %     \hthrdlocalst_c = 
+                        %     ((\hRfile, \block, \hWstk), \pc, \npc)
+                        % ) \\
+                        % \\[-9pt] \sepstar
+                        % (
+                        %     \exists \, \block_1. \, 
+                        %     (\relcontext{\thrdid_n}{\block'}{\nst} \sepstar 
+                        %     \RelStk{\block_1}{\nil}{\hWstk'} \sepstar 
+                        %     (\astCurCont{\thrdid_n}{((\hRfile', \block', \hWstk'), \pc', \npc')})
+                        %     ) \\
+                        %     \quad \ \ \, \land \, 
+                        %     \nst(\spreg) = (\block', 0) \, \land \, 
+                        %     \nst(\fpreg) = (\block_1, 0) \, \land \, 
+                        %     \Rinj{\nst}{\hRfile'} \, \land \, 
+                        %     \hthrdlocalst_n = 
+                        %     ((\hRfile', \block', \hWstk'), \pc', \npc')
+                        % )
+                    \end{array}
+                \right\}^{\color{red} \textcircled{4}}
+            } \\
+            \\[-9pt]
+            &
+                \begin{rotate}{90}
+                    \color{red}
+                    $\Lleftarrow$
+                \end{rotate}
+            & \\[-5pt]
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \left\{
+                    \begin{array}{l}
+                        \Env{\nst, \nil} \sepstar 
+                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        \thrdid_c \neq \thrdid_n) \sepstar 
+                        \safePrimAst{\, \primdone \,} \\
+                        \\[-9pt] \quad \sepstar
+                        \msto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
+                        \colorbox{green!60}
+                        {
+                            $\RelRdyT{\thrdid_c}{\RFile}{\hthrdlocalst_c}$
+                        } 
+                        \sepstar
+                        % \RelCur{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c} \sepstar
+                        \colorbox{gray!60}
+                        {
+                            $(\exists \, \hthrdlocalst'. \, 
+                                \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst'})$
+                        }  
+                        % \Env{\nst, \nil}\sepstar 
+                        % (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        % \thrdid_c \neq \thrdid_n) \sepstar 
+                        % \safePrimAst{\, \primsw(\nil) \,} \\
+                        % \\[-9pt] \sepstar
+                        % (
+                        %     \exists \, \block_0. \, 
+                        %     (
+                        %         \colorbox{green!60}
+                        %         {
+                        %             $\msto{\TaskCur}{(\thrdid_n, 0)}$
+                        %         } 
+                        %         \sepstar 
+                        %     \colorbox{yellow!80}
+                        %     {
+                        %         $
+                        %         \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
+                        %         \RelStk{\block_0}{\nil}{\hWstk} \sepstar    
+                        %         (\astCurCont{\thrdid_n}{((\hRfile', \block', \hWstk'), 
+                        %         \lab{}', \lab{}'\!+\!4))})
+                        %         $
+                        %     } \\
+                        %     \quad \ \ \, 
+                        %     \colorbox{yellow!80}
+                        %     {
+                        %         $
+                        %         \land \, 
+                        %         \RFile(\spreg) = (\block, 0) \, \land \, 
+                        %         \RFile(\fpreg) = (\block_0, 0) \, \land \, 
+                        %         \Rinj{\RFile}{\hRfile} \, \land \, 
+                        %         \hthrdlocalst_c = 
+                        %         ((\hRfile, \block, \hWstk), \pc, \npc)
+                        %         $
+                        %     }
+                        % ) \\
+                        % \\[-9pt] \sepstar
+                        % (
+                        %     \colorbox{green!60}
+                        %     {
+                        %         $\exists \, \block_1. \, 
+                        %         (\relcontext{\thrdid_n}{\block'}{\nst} \sepstar 
+                        %         \RelStk{\block_1}{\nil}{\hWstk'} \sepstar 
+                        %         (\astCurCont{\thrdid_n}{((\hRfile', \block', \hWstk'), \pc', \npc')}))$
+                        %     }
+                        %     \\
+                        %     \quad \ \ \, 
+                        %     \colorbox{green!60}
+                        %     {
+                        %         $\land \, 
+                        %         \nst(\spreg) = (\block', 0) \, \land \, 
+                        %         \nst(\fpreg) = (\block_1, 0) \, \land \, 
+                        %         \Rinj{\nst}{\hRfile'} \, \land \, 
+                        %         \hthrdlocalst_n = 
+                        %         ((\hRfile', \block', \hWstk'), \pc', \npc')$
+                        %     }
+                        % )
+                    \end{array}
+                \right\}^{\color{red} \textcircled{5}}
+            } \\
+            \\[-9pt]
+            30 & \retl{} \\
+            31 & \nop{} \\
+            \\[-9pt]
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \{
+                    \Apost(\thrdid_c, \thrdid_n, (\RFile, \Wstack), \hthrdlocalst_c, 
+                    \hthrdlocalst_n)    
+                \}
+            }
+        \end{array}
+    \]
+    \caption{Proof Sketch of the Context Switch Routine}
+    \label{fig:Proof Sketch of the Context Switch Routine}
+    \vspace*{-0.5em}
+\end{figure}
+
+\begin{proof}
+    The code heap specification $\Cspec_i$ is the collection of 
+    the specifications of each code block shown in 
+    \Fig{\ref{fig:Specifications of Internal Functions}}, and 
+    the verification of internal functions has no differences with 
+    the original proof of context switch routine introduced in 
+    \Sec{\ref{sec:ctxswitch}}. So, here we just give a proof sketch 
+    of the verifying of the main function, which can be found in 
+    \Fig{\ref{fig:Proof Sketch of the Context Switch Routine}}. 
+
+    Supposing in the inital state (described as assertion marked 
+    {\color{red} \textcircled{1}}), 
+    the register file is $\RFile$, 
+    and the part of the frame list, which is waitting for saving into 
+    the stack in memory, is $\Wstack$. The code segment 
+    from line 1 to line 6 is responsible for saving the register file  
+    $\RFile$ into current task's TCB, and we achieve assertion 
+    marked {\color{red} \textcircled{2}}. 
+
+    The codes from line 7 to 21 saves the prefix $\Wstack$ of the 
+    frame list into current task's stack in memory. After execution 
+    of this segment. The part of the frame list, waitting for storing 
+    into memory, becomes empty (\nil). And the assertion marked
+    {\color{red} \textcircled{3}} holds.  
+
+    Then, we prove the code block \texttt{switch\_new\_task}, which 
+    restores the context $\nst$ of the new task $\thrdid_n$. After 
+    executing the codes from line 22 to line 29, the context $\nst$ of 
+    the new task $\thrdid_n$ is restored (shown as $\Env{(\nst, \nil)}$), 
+    and the assertion marked {\color{red} \textcircled{4}} holds. 
+
+    Finally, we apply \textbf{ABSCSQ} rule, shown in 
+    \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}, 
+    to execute the abstract assembly primitive $\primsw{}$, and the 
+    assertion marked {\color{red} \textcircled{5}} holds. 
+    By applying \textbf{RETL} rule shown in 
+    \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}, 
+    we finish the proof. 
+\end{proof}
+
+\begin{theorem}
+    \em
+    $\wfprim{\{ \lab{\texttt{switch}} \rightsquigarrow 
+        (\Apre, \Apost) \}}{\code_{\texttt{switch}}}
+        {\{\lab{\texttt{switch}}\rightsquigarrow \primsw\}}$. 
+\end{theorem}
+\begin{proof}
+    The proof can be finished by applying 
+    \textbf{Lemma} \ref{lemma:wdspec} and 
+    \textbf{Lemma} \ref{lemma:codeproof}.
+\end{proof}

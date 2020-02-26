@@ -1,0 +1,476 @@
+% new defined Macro
+\newcommand{\etal}[1]{{#1} \textit{et al}.}
+\newcommand\eg[0]{\textit{e.g.}}
+\newcommand\ie[0]{\textit{i.e.}}
+\newcommand{\Def}[1]{\text{Def}. {#1}}
+\newcommand{\TYPE}[1]{\text{#1}}
+\newcommand{\evtabort}{\textbf{abort}}
+
+\newcommand{\circrightarrow}[1]{\ \circ\mkern-7mu\xrightarrow{#1}}
+\newcommand{\ptrightarrow}[1]{\ \bullet\mkern-7mu\xrightarrow{#1}}
+\newcommand{\maprightarrow}[1]{|\mkern-8mu\longrightarrow^{#1}}
+\newcommand{\sepconj}{\wedge \mkern-13mu \wedge}
+\newcommand{\sepdisj}{\vee \mkern-13mu \vee}
+
+\newcommand{\dlylsexcarrow}{\rightarrow \mkern-13mu \rightarrow}
+
+\newcommand{\nil}{\text{nil}}
+
+\newcommand\xorOP[0]{\oplus}
+
+\newcommand{\pc}{\texttt{pc}}
+\newcommand{\npc}{\texttt{npc}}
+\newcommand{\sparc}{\text{SPARCv8}}
+\newcommand{\dom}{\text{dom}}
+
+%\newcommand{\state}{S}
+\newcommand{\prog}[0]{\text{P}}
+\newcommand{\rst}{Q}
+\newcommand{\rf}{R}
+\newcommand{\fmls}{F}
+\newcommand{\code}{C}
+
+\newcommand\Cspec[0]{\Psi}
+\newcommand\Bspec[0]{\theta}
+
+% register Macro
+\newcommand\RAreg[0]{\reg{15}} % register for return address
+\newcommand{\regN}[0]{\texttt{rn}}
+\newcommand{\psr}[0]{\texttt{psr}}
+\newcommand\regr[0]{\texttt{r}}
+\newcommand{\reg}[1]{\texttt{r}_{#1}}
+\newcommand{\asr}{\texttt{asr}}
+\newcommand{\regn}{\texttt{n}}
+\newcommand{\regz}{\texttt{z}}
+\newcommand{\regv}{\texttt{v}}
+\newcommand{\regc}{\texttt{c}}
+\newcommand{\regY}{\texttt{Y}}
+\newcommand{\sr}{\texttt{sr}}
+\newcommand{\RFile}[0]{R}
+\newcommand{\DBuf}[0]{D}
+\newcommand\mem[0]{M}
+\newcommand{\Wstack}[0]{F}
+
+
+\newcommand{\word}[0]{w}
+\newcommand{\val}[0]{v}
+\newcommand\tick[0]{t}
+\newcommand{\loc}[0]{l}
+\newcommand{\state}[0]{S}
+\newcommand{\Rstate}[0]{Q}
+
+\newcommand{\cwp}{w_{\textit{id}}}
+
+\newcommand{\ireg}[1]{\%\texttt{i}_{#1}}
+\newcommand{\lreg}[1]{\%\texttt{l}_{#1}}
+\newcommand{\oreg}[1]{\%\texttt{o}_{#1}}
+\newcommand{\greg}[1]{\%\texttt{g}_{#1}}
+\newcommand{\spreg}{\%\texttt{sp}}
+
+\newcommand{\fm}{\text{fm}}
+
+\newcommand{\regwim}{\texttt{wim}}
+\newcommand{\regcwp}{\texttt{cwp}}
+
+\newcommand\nextcwp[0]{\textbf{next\_cwp}}
+\newcommand\prevcwp[0]{\textbf{prev\_cwp}}
+\newcommand{\precwp}{\nextcwp}
+\newcommand{\postcwp}{\prevcwp}
+%\newcommand{\precwp}{\textbf{pre\_cwp}}
+%\newcommand{\postcwp}{\textbf{post\_cwp}}
+
+\newcommand{\winmask}{\textbf{win\_mask}}
+\newcommand{\setwin}{\textbf{set\_win}}
+
+\newcommand{\setdelay}{\textbf{set\_delay}}
+\newcommand{\exedelay}{\textbf{exe\_delay}}
+\newcommand\Dstep[2]{{#1}\rightrightarrows{#2}}
+\newcommand\DstepN[3]{{#2}\rightrightarrows^{#1}{#3}}
+
+\newcommand{\letin}[2]{\textbf{let} \; {#1} \; \textbf{in} \; {#2}}
+
+\newcommand{\wfcblk}[4]{\Psi \vdash \{({#1}, {#2})\} \; {#3} : \, {#4}}
+\newcommand{\wfins}[3]{\vdash \{{#1}\} \, {#2} \, \{{#3}\}}
+
+\newcommand{\lgvl}{\iota}
+\newcommand{\aexp}{\texttt{a}}
+\newcommand{\oexp}{\texttt{o}}
+
+\newcommand{\cblk}{\mathbb{I}}
+\newcommand{\lab}[1]{\texttt{f}_{#1}}
+
+% model
+\newcommand{\asrtmodel}[2]{{#1} \models {#2}}
+
+% operation macro
+\newcommand{\xor}{\textbf{xor}}
+
+% command macro
+\newcommand\simplins{\texttt{i}}
+\newcommand\jmpl{\texttt{jmpl}}
+\newcommand\be{\texttt{be}}
+\newcommand\call{\texttt{call}}
+\newcommand\retl{\texttt{retl}}
+\newcommand\nop{\texttt{nop}}
+\newcommand\ld{\texttt{ld}}
+\newcommand\st{\texttt{st}}
+\newcommand\csave{\texttt{save}}
+\newcommand\crestore{\texttt{restore}}
+\newcommand\rd{\texttt{rd}}
+\newcommand\cwr{\texttt{wr}}
+\newcommand\mov{\texttt{mov}}
+\newcommand\cadd{\texttt{add}}
+\newcommand\csll{\texttt{sll}}
+\newcommand\csrl{\texttt{srl}}
+\newcommand\cor{\texttt{or}}
+\newcommand\andcc{\texttt{andcc}}
+\newcommand\bnz{\texttt{bnz}}
+\newcommand\rett{\texttt{rett}}
+\newcommand\ret{\texttt{ret}}
+\newcommand\jmp{\texttt{jmp}}
+
+% operational semantics
+\newcommand{\ptrans}[2]{C \vdash {#1} \longmapsto {#2}}
+\newcommand{\cttrans}[2]{C \vdash {#1} \; \circrightarrow{\quad} {#2}}
+\newcommand\ccttrans[3]{{#1} \vdash {#2} \; \circrightarrow{\quad} {#3}}
+\newcommand{\swtrans}[3]{{#1} \ptrightarrow{{#2}} {#3}}
+\newcommand{\itrans}[3]{{#1} \xrightarrow{{#2}} {#3}}
+
+% operations for save and restore
+%\newcommand{\decwin}[1]{\textbf{dec\_win}{#1}}
+%\newcommand{\incwin}[1]{\textbf{inc\_win}{#1}}
+\newcommand{\decwin}[1]{\textbf{save}{#1}}
+\newcommand{\incwin}[1]{\textbf{restore}{#1}}
+%
+\newcommand\globalRN[0]{\textsf{global}}
+\newcommand{\outRN}[0]{\textsf{out}}
+\newcommand{\inRN}[0]{\textsf{in}}
+\newcommand{\localRN}[0]{\textsf{local}}
+%
+\newcommand\Rout[0]{\RFile_o}
+\newcommand\Rin[0]{\RFile_i}
+\newcommand\Rlocal[0]{\RFile_l}
+%
+\newcommand{\eval}[1]{{\llbracket {#1} \rrbracket}_R}
+\newcommand{\evalR}[2]{{\llbracket {#1} \rrbracket}_{#2}}
+\newcommand{\rightwin}[1]{\textbf{right\_win}{#1}}
+\newcommand{\leftwin}[1]{\textbf{left\_win}{#1}}
+\newcommand{\fetch}[1]{\textbf{fetch}{#1}}
+\newcommand{\replace}[1]{\textbf{replace}{#1}}
+\newcommand{\rightrot}[1]{\textbf{right}{#1}}
+\newcommand{\leftrot}[1]{\textbf{left}{#1}}
+\newcommand{\Rget}[1]{R[{#1}]}
+\newcommand{\Rupd}[2]{R\{[{#1}] \rightsquigarrow {#2}\}}
+\newcommand{\winvalid}[1]{\textbf{win\_valid}{#1}}
+\newcommand{\cif}{\textbf{if}}
+\newcommand{\otherwise}{\textbf{otherwise}}
+\newcommand{\where}{\textbf{where}}
+
+% assertion macro
+\newcommand\pto[0]{\!\mapsto\!}
+\newcommand{\regst}[2]{{#1} \pto {#2}}
+\newcommand{\msto}[2]{{#1} \pto {#2}}
+%\newcommand{\dlyregst}[3]{[#1]{#2} \pto {#3}}
+\newcommand{\dlyast}[2]{\rhd_{#1}{#2}}
+\newcommand{\dlyregst}[3]{\rhd_{#1}{#2} \pto {#3}}
+\newcommand{\dlytmregst}[3]{\{{#1}\}{#2} \pto {#3}}
+%\newcommand{\frmst}[2]{\{\texttt{cwp} = {#1}, {#2}\}}
+\newcommand{\asrttm}[1]{\nxtAst{#1}} %{{#1}\!\downarrow}
+\newcommand{\atrue}{\text{true}}
+\newcommand{\afalse}{\text{false}}
+\newcommand{\apure}[1]{\langle {#1} \rangle}
+\newcommand{\oexpeq}[2]{{#1}\!=\!{#2}}
+\newcommand{\aexpeq}[2]{{#1}\!=_{a}\!{#2}}
+
+\newcommand{\sepline}{\; | \;}
+\newcommand{\wordaligned}[1]{\textbf{word\_align}{#1}}
+\newcommand{\tand}{\textbf{and}}
+
+\newcommand{\imp}{\Longrightarrow}
+\newcommand{\prop}{\mathsf{P}}
+
+% structure for inference rule
+\newcommand{\cdhp}{\textbf{CDHP}}
+\newcommand{\supimpl}[4]{({#1} \Rightarrow {#3}) \, \wedge \, ({#4} \Rightarrow {#2})}
+\newcommand{\undef}{\textbf{undefined}}
+%\newcommand{\OutRegs}[1]{\text{R}_{\texttt{o}} \pto {#1}}
+%\newcommand{\LocalRegs}[1]{\text{R}_{\texttt{l}} \pto {#1}}
+%\newcommand{\InRegs}[1]{\text{R}_{\texttt{i}} \pto {#1}}
+%
+\newcommand{\OutRegs}[1]{\outRN \pto {#1}}
+\newcommand{\LocalRegs}[1]{\localRN \pto {#1}}
+\newcommand{\InRegs}[1]{\inRN \pto {#1}}
+\newcommand{\Regs}[3]{(\OutRegs{#1}) * (\LocalRegs{#2}) * (\InRegs{#3})}
+\newcommand{\pr}{p_r}
+
+\newcommand{\callrule}[0]{\textbf{CALL}}
+\newcommand{\retlrule}[0]{\textbf{RETL}}
+\newcommand\myrule[1]{\textbf{#1}}
+\newcommand{\RAsta}[2]{\textbf{fretlSta} \, ({#1}, {#2})}
+
+% example
+\newcommand{\con}[2]{\{({#1} \, , \, {#2})\}}
+\newcommand{\Rs}[1]{\textbf{Rs}({#1})}
+\newcommand{\WinsValid}[3]{\textbf{WinValid}({#1}, \{{#2}\})}
+\newcommand{\WinSt}[4]{\textbf{WinSt}({#1}, {#2}, {#3}, \{{#4}\})}
+\newcommand{\WinValid}[2]{\textbf{WinValid}({#1}, {#2})}
+
+\newcommand{\define}{::\!\!{=}}
+
+\newcommand{\getfrmIn}[2]{{\llbracket {#1} \rrbracket}^{\text{in}}_{#2}}
+\newcommand{\getfrmOut}[2]{{\llbracket {#1} \rrbracket}^{\text{out}}_{#2}}
+\newcommand{\getfrmLocal}[2]{{\llbracket {#1} \rrbracket}^{\text{local}}_{#2}}
+
+\newcommand{\updfrmOut}[3]{{#1}\{ {#2} \rightsquigarrow {#3} \}^{\text{out}}}
+\newcommand{\updfrmIn}[3]{{#1}\{ {#2} \rightsquigarrow {#3} \}^{\text{in}}}
+\newcommand{\updfrmLoal}[3]{{#1}\{ {#2} \rightsquigarrow {#3} \}^{\text{loc}}}
+\newcommand{\updfrmGlb}[3]{{#1}\{ {#2} \rightsquigarrow {#3} \}^{\text{glb}}}
+
+\newcommand{\enablerot}[3]{\textbf{enable}_{\text{rot}}({#1}, {#2}, {#3})}
+
+%soundness
+\newcommand{\semwfins}[2]{\models \{{#1}\} \, \simplins \, \{{#2}\}}
+\newcommand{\semwfseq}[3]{\Psi \models \{({#1}, {#2})\} \; \lab{} \!:\! {#3}}
+\newcommand{\safetins}{\mathsf{safe\_insSeq}}
+\newcommand{\safe}[1]{\mathsf{safe}^{#1}}
+\newcommand{\multiptrans}[3]{C \vdash {#2} \longmapsto^{#1} {#3}}
+\newcommand{\specpre}{\text{fp}}
+\newcommand{\specpost}{\text{fq}}
+
+%ctxswitch module
+\newcommand{\GR}[4]
+{\text{R}_g = {#1} * \text{R}_o = {#2} * \text{R}_l = {#3} *  \text{R}_i = {#4}}
+\newcommand{\GlobalRegs}[1]{\text{R}_g = {#1}}
+\newcommand{\Fs}[3]{\textbf{Fs}({#1}, {#2}, {#3})}
+\newcommand{\stack}[1]{\text{stack}({#1})}
+\newcommand{\SFInv}[3]{\textbf{SFInv}({#1}, {#2}, {#3})}
+\newcommand{\CWPInv}[2]{\textbf{CWPInv}({#1}, {#2})}
+\newcommand{\stkfm}[2]{\{| {#1} |\}_{{#2}}}
+\newcommand{\sfmatch}[4]{\textbf{sf\_match} ({#1}, {#2}, {#3}, {#4})}
+\newcommand{\sfpt}[5]{\textbf{sf\_pt} ({#1}, {#2}, {#3}, {#4}, {#5})}
+
+\newcommand{\Null}[0]{\text{null}}
+\newcommand{\ctid}[0]{t_c}
+\newcommand{\ntid}[0]{t_n}
+\newcommand{\tid}[0]{t}
+\newcommand{\flag}[0]{\textit{flag}}
+\newcommand{\Env}[1]{\mathsf{Env}({#1})}
+\newcommand{\CurTask}[3]{\mathsf{CurT}({#1}, {#2}, {#3})}
+\newcommand{\NoCurTask}[2]{\mathsf{NoCurT}({#1}, {#2})}
+\newcommand{\SwitchFlag}[0]{\mathsf{SwitchFlag}}
+\newcommand{\TaskCur}[0]{\mathsf{TaskCur}}
+\newcommand{\TaskNew}[0]{\mathsf{TaskNew}}
+\newcommand{\stkfmPt}[2]{\mathsf{stkfm\_pt({#1}, {#2})}}
+\newcommand{\Top}[0]{\mathsf{Top}}
+
+\newcommand{\apre}[0]{\mathsf{a}_{\textit{pre}}}
+\newcommand{\apost}[0]{\mathsf{a}_{\textit{post}}}
+\newcommand{\env}[0]{\textit{env}}
+\newcommand{\cst}[0]{\textit{cst}}
+\newcommand{\nst}[0]{\textit{nst}}
+\newcommand{\tskst}[0]{\textit{st}}
+\newcommand{\ctx}[0]{\textit{ctx}}
+\newcommand{\stk}[0]{\textit{stk}}
+\newcommand{\stkcont}[0]{l}
+\newcommand{\offsetctx}[0]{\textit{offset}_{\text{ctx}}}
+
+\newcommand{\context}[1]{\mathsf{context}({#1})}
+\newcommand{\stackCons}[1]{\mathsf{stack}({#1})}
+\newcommand{\pEnv}[1]{\mathsf{p\_env}({#1})}
+
+\newcommand{\oid}{w_{oid}}
+\newcommand{\ow}{\textit{ow}}
+\newcommand{\cw}{\textit{cw}}
+\newcommand{\OSWINS}{\text{OS\_WINS}}
+
+\newcommand{\RNum}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+
+\newcommand\stackAst[1]{[#1]}
+\newcommand{\stackAstP}[2]{\regcwp\pto\llparenthesis\, #1,#2\,\rrparenthesis}
+\newcommand{\frmst}[2]{\stackAstP{#1}{#2}}
+\newcommand{\astP}[0]{p}
+\newcommand{\astQ}[0]{q}
+\newcommand{\aemp}[0]{\textsf{emp}}
+\newcommand{\stCons}[0]{\!::\!}
+\newcommand{\dbCons}[0]{\!::\!}
+\newcommand{\nxtAst}[1]{{#1}\!\downarrow}
+\newcommand{\substFld}[2]{{#1}[{#2}]}
+\newcommand\fsubst[3]{{#1}\{{#2}\rightsquigarrow {#3}\}}
+\newcommand\DtoS[1]{\{\!\!\{ {#1} \}\!\!\}}
+\newcommand{\noDup}[2]{\textbf{noDup}({#1}, {#2})}
+
+\newcommand\lstApp[0]{\!\bm{\cdot}\!}
+%\newcommand\lstApp[0]{\!\bullet\!}
+%\newcommand\lstApp[0]{\!\adfbullet{43}\!}
+\newcommand\modOP[0]{\texttt{\%}}
+\newcommand\bitAND[0]{\texttt{\&}}
+
+\newcommand\addrEq[0]{\!=_{\textit{a}}\!}
+\newcommand{\notCare}[0]{\underline{\ \,}}
+\newcommand\lv[0]{\textit{lv}}
+
+
+% aditional notation
+\newcommand{\sepcancel}{\textsf{sep\_cancel}}
+\newcommand{\sepstar}{*}
+\newcommand{\sepsto}[2]{{#1} \mapsto {#2}}
+\newcommand{\Sec}[1]{\text{Sec}. {#1}}
+\newcommand{\Fig}[1]{\text{Fig}. {#1}}
+
+% refinement
+\newcommand{\HProg}{\mathbb{P}}
+\newcommand{\hprimset}{\Omega}
+\newcommand{\HMd}{\Pi}
+\newcommand{\hpstate}{\mathbb{S}}
+\newcommand{\hprim}{\Upsilon}
+\newcommand{\comm}{c}
+\newcommand{\Psave}{\texttt{Psave}}
+\newcommand{\Prestore}{\texttt{Prestore}}
+\newcommand{\cprint}{\texttt{print}}
+\newcommand{\sz}{\textit{sz}}
+\newcommand{\block}{b}
+\newcommand{\parl}{\parallel}
+\newcommand{\Ztype}{\mathbb{Z}}
+\newcommand{\Addr}{\text{Addr}}
+\newcommand{\thrdpool}{T}
+\newcommand{\thrdid}{t}
+\newcommand{\hthrdlocalst}{\mathcal{K}}
+\newcommand{\hrn}{\hat{\texttt{rn}}}
+\newcommand{\hRstate}{\mathbb{Q}}
+\newcommand{\hRfile}{\mathbb{R}}
+\newcommand{\hWstk}{\mathbb{F}}
+\newcommand{\Mem}{M}
+\newcommand{\hRegUpd}[1]{\{\!| \, {#1} \, |\!\}}
+\newcommand{\fpreg}{\%{\texttt{fp}}}
+
+\newcommand{\HGlobTrans}[3]{{#1} :\xLongrightarrow{#2} {#3}}
+\newcommand{\HGlobMultiTrans}[4]{{#1} :\xLongrightarrow{#2}{}\!\!^{#3} \, {#4}}
+\newcommand{\hlocalstep}[4]{{#1} \Vdash {#2} \circrightarrow{#3} {#4}}
+\newcommand{\hlocalMultiStep}[6]{{#1} \Vdash {#2} \circrightarrow{#3}{}\!\!^{#5} \ {#4}}
+\newcommand{\LGlobTrans}[3]{{#1} ::\xLongrightarrow{#2} {#3}}
+\newcommand{\LGlobMultiTrans}[4]{{#1} ::\xLongrightarrow{#2}{}\!\!^{#3} \, {#4}}
+\newcommand{\llocalstep}[4]{{#1} \vdash {#2} \circrightarrow{#3} {#4}}
+\newcommand{\llocalMultiStep}[6]{{#1} \vdash {#2} \circrightarrow{#3}{}\!\!^{#5} \ {#4}}
+\newcommand{\hmsg}{\alpha}
+\newcommand{\lmsg}{\beta}
+\newcommand{\outEvt}[1]{\textsf{out}({#1})}
+\newcommand{\callEvt}[1]{\textsf{call}({#1})}
+\newcommand{\empmsg}{\tau}
+\newcommand{\event}{e}
+\newcommand{\args}[1]{\overline{#1}}
+\newcommand{\hexeci}[2]{\textbf{execi}{{#1}} =_{\textsf{H}} {#2}}
+\newcommand{\lexeci}[2]{\textbf{execi}{{#1}} =_{\textsf{L}} {#2}}
+\newcommand{\arguments}{\textbf{args}}
+\newcommand{\malloc}{\textbf{\textit{alloc}}}
+\newcommand{\mfree}{\textbf{\textit{free}}}
+\newcommand{\fresh}{\textbf{fresh}}
+\newcommand{\Array}[1]{ [ {#1} ] }
+\newcommand{\Vundef}{\text{undef}}
+\newcommand{\winOverFlow}[2]{{#1} \upuparrows {#2}}
+\newcommand{\winUnderFlow}[2]{{#1} \downdownarrows {#2}}
+\newcommand{\asmimp}{\code_{\text{as}}}
+\newcommand{\progsafe}{\textsf{ProgSafe}}
+\newcommand{\evttr}{\mathcal{B}}
+\newcommand{\Etr}[1]{\textit{Etr}{#1}}
+\newcommand{\refine}{\sqsubseteq}
+\newcommand{\gdom}{\textit{g}}
+\newcommand{\stateRel}[2]{{#1} \sim {#2}}
+\newcommand{\stkRel}[2]{{#1} \Downarrow {#2}}
+\newcommand{\framMem}[1]{ \{ {#1} \} }
+\newcommand{\curStRel}[2]{{#1} \Downarrow_{\textsf{c}} {#2}}
+\newcommand{\rdyStRel}[2]{{#1} \Downarrow_{\textsf{r}} {#2}}
+
+\newcommand{\DomCtx}[1]{\textsf{DomCtxM}{#1}}
+\newcommand{\restoreCtx}[3]{{#1} \blacktriangleright_{#2} {#3}}
+\newcommand{\ctxfm}{\textsf{ctxfm}}
+\newcommand{\Rinj}[2]{{#1}\hookrightarrow{#2}}
+
+% logic refinement
+\newcommand{\relastP}{\mathbbmss{p}}
+\newcommand{\relastQ}{\mathbbmss{q}}
+\newcommand{\primcom}{\textit{A}}
+\newcommand{\hregsto}[2]{{#1} \rightarrowtail {#2}}
+\newcommand{\hmsto}[2]{{#1} \rightarrowtail {#2}}
+\newcommand{\safePrimAst}[1]{\llparenthesis {#1} \rrparenthesis}
+\newcommand{\astCurCont}[2]{{#1} \leadsto_{\textsf{c}} {#2}}
+\newcommand{\astRdyCont}[2]{{#1} \leadsto_{\textsf{r}} {#2}}
+\newcommand{\Metric}{\mathcal{D}}
+\newcommand{\metricAst}[1]{\blacklozenge({#1})}
+\newcommand{\primTrans}[2]{{#1} \dashrightarrow {#2}}
+\newcommand{\primTransMulti}[3]{{#1} \dashrightarrow^{#2} {#3}}
+\newcommand{\primMultiTrans}[3]{{#1} \dashrightarrow^{#2} {#3}}
+\newcommand{\primdone}{\perp}
+\newcommand{\empAst}{\texttt{Emp}}
+
+\newcommand{\primsw}{\mathsf{switch}}
+\newcommand{\RelBspec}[0]{\hat{\theta}}
+\newcommand{\intSpec}{\Cspec_{\textsf{i}}}
+\newcommand{\relspecpre}{\mathbbmss{fp}}
+\newcommand{\relspecpost}{\mathbbmss{fq}}
+\newcommand{\wfprim}[3]{{#1} \vdash {#2} : {#3}}
+\newcommand{\wfcdhp}[2]{\vdash {#1} : {#2}}
+\newcommand{\wdSpec}[3]{\textsf{wdSpec}({#1}, {#2}, {#3})}
+\newcommand{\wdcblk}[5]{{#1} \vdash \{ ({#2}, {#3}) \} \, {#4} : \, {#5}}
+\newcommand{\relwfins}[3]{\Vdash \{{#1}\} \, {#2} \, \{{#3}\}}
+\newcommand{\absExec}[2]{{#1} \Rrightarrow {#2}}
+\newcommand{\absExecImp}{\Rrightarrow}
+\newcommand{\INV}[1]{\textsf{INV}{#1}}
+\newcommand{\semWdPrim}[3]{{#1} \models {#2} : {#3}}
+\newcommand{\simFunction}[3]{{#1} \preccurlyeq^{#2} {#3}}
+\newcommand{\simFunctionSt}[5]{{#1} \models {#2} \preccurlyeq_{#3}^{#4} {#5}}
+\newcommand{\Index}{\textit{Index}}
+\newcommand{\AftExt}{\textsf{AftExt}}
+\newcommand{\primAdd}{\textsf{ADD}}
+\newcommand{\Sta}{\textsf{Sta}}
+
+% notation of internal assembly function
+\newcommand{\WinSave}{\texttt{window}\_\texttt{save}}
+\newcommand{\SaveUsedWin}{\texttt{save}\_\texttt{usedwindow}}
+\newcommand{\OSWINDOWs}{\texttt{OS}\_\texttt{WINDOWS}}
+\newcommand{\SwitchNewTask}{\texttt{switch}\_\texttt{new}\_\texttt{task}}
+\newcommand{\sett}{\texttt{set}}
+\newcommand{\get}{\texttt{get}}
+\newcommand{\sll}{\texttt{sll}}
+\newcommand{\srl}{\texttt{srl}}
+\newcommand{\bne}{\texttt{bne}}
+
+\newcommand{\RelEnv}[1]{\textsf{RelEnv}({#1})}
+\newcommand{\RelCurTAux}[4]{\textsf{RelCurT'}({#1}, {#2}, {#3}, {#4})}
+\newcommand{\RelCurT}[4]{\textsf{RelCurT}({#1}, {#2}, {#3}, {#4})}
+\newcommand{\RelRdyT}[3]{\textsf{RelRdyT}({#1}, {#2}, {#3})}
+\newcommand{\relcontext}[3]{\textsf{context}({#1}, {#2}, {#3})}
+\newcommand{\RelStk}[3]{\textsf{RelStk}({#1}, {#2}, {#3})}
+\newcommand{\RelStkFm}[3]{\textsf{StkFrm}({#1}, {#2}, {#3})}
+\newcommand{\wfwin}[2]{\textsf{wfwin}({#1}, {#2})}
+\newcommand{\HRegs}[1]{\textsf{HRegs}({#1})}
+\newcommand{\LRegs}[1]{\textsf{LRegs}({#1})}
+\newcommand{\wkRinj}[2]{{#1} \looparrowright {#2}}
+
+\newcommand{\ofsGOne}{\texttt{G0\_OFFSET}}
+\newcommand{\ofsGTwo}{\texttt{G1\_OFFSET}}
+\newcommand{\ofsGThr}{\texttt{G2\_OFFSET}}
+\newcommand{\ofsGFou}{\texttt{G3\_OFFSET}}
+\newcommand{\ofsGFiv}{\texttt{G4\_OFFSET}}
+\newcommand{\ofsGSix}{\texttt{G5\_OFFSET}}
+\newcommand{\ofsGSev}{\texttt{G6\_OFFSET}}
+\newcommand{\ofsGEig}{\texttt{G7\_OFFSET}}
+\newcommand{\ofsOOne}{\texttt{O0\_OFFSET}}
+\newcommand{\ofsOTwo}{\texttt{O1\_OFFSET}}
+\newcommand{\ofsOThr}{\texttt{O2\_OFFSET}}
+\newcommand{\ofsOFou}{\texttt{O3\_OFFSET}}
+\newcommand{\ofsOFiv}{\texttt{O4\_OFFSET}}
+\newcommand{\ofsOSix}{\texttt{O5\_OFFSET}}
+\newcommand{\ofsOSev}{\texttt{O6\_OFFSET}}
+\newcommand{\ofsOEig}{\texttt{O7\_OFFSET}}
+\newcommand{\ofsN}{\texttt{N\_OFFSET}}
+\newcommand{\ofsZ}{\texttt{Z\_OFFSET}}
+\newcommand{\ofsC}{\texttt{C\_OFFSET}}
+\newcommand{\ofsV}{\texttt{V\_OFFSET}}
+
+\newcommand{\Apre}{\textit{A}_\textit{pre}}
+\newcommand{\Apost}{\textit{A}_\textit{post}}
+\newcommand{\MemRAsrt}[1]{\textsf{Mem}({#1})}
+\newcommand{\RdyTsRAsrt}[1]{\textsf{RdyTs}({#1})}
+\newcommand{\rRegs}{\textsf{rRegs}}
+\newcommand{\wptr}{\textsf{wptr}}
+\newcommand{\linkF}{\textsf{linkF}}

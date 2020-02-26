@@ -1,0 +1,31 @@
+\begin{figure*}[!htb]
+    \centering
+    \begin{tikzpicture}[scale=1.2, font=\scriptsize]
+        \node(low-level) at (-0.8, 2) {\bf \scriptsize \color{blue} Low-level};
+        \node(memT) at (3, 2) {$\Mem_T = \Mem_1 \uplus \dots \uplus \Mem_n$};
+        \node(TaskCur) at (6.5, 2) {$\{ \TaskCur \rightsquigarrow (\thrdid, 0) \}$};
+        \node(CurStateLow) at (9, 2) {$\Rstate, \, \Mem_c$};
+        \node(sharedMem) at (10.5, 2) {$\Mem'$};
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        \draw[->] (2.7, 1.8) -- (2.42, 0.2);
+        \draw[->] (3.9, 1.8) -- (3.9, 0.2);
+        \draw[->] (6.5, 1.8) -- (6.5, 0.2);
+        \draw[->] (9, 1.8) -- (9, 0.2);
+        \draw[->] (10.5, 1.8) -- (10.5, 0.2);
+        \draw[-,dashed, green] (-0.7, 1) -- (11, 1);
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        \node(high-level) at (-0.8, 0) {\bf \scriptsize \color{red} High-level};
+        \node(T) at (2.8, 0) {$\thrdpool\backslash\{ \thrdid \} = 
+            \{ \thrdid_1 \rightsquigarrow \hthrdlocalst_1, \dots, 
+                \thrdid_n \rightsquigarrow \hthrdlocalst_n \}$};
+        \node(Tid) at (6.5, 0) {$\thrdid$};
+        \node(CurStateHigh) at (9, 0) {$\hthrdlocalst$};
+        \node(sharedMem) at (10.5, 0) {$\Mem'$};
+    \end{tikzpicture} 
+    \caption{State Relation between Low- and High-level Program State}
+    \label{fig:State Relation between Low- and High-level Program State}
+\end{figure*}

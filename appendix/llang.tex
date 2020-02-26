@@ -1,0 +1,392 @@
+\section{More about Low-level Language}
+\label{sec:more-llang}
+
+The machine states and syntax low-level SPARCv8 language 
+(defined in \Fig{\ref{fig:machine-state-syntax-low-level-sparc}}) 
+are taken from the model of SPARCv8 defined in 
+\Fig{\ref{fig:Machine States and Language for SPARC Code}}. 
+So, we omit some definitions, like RegName and DelayCycle, 
+which are same as ones defined in 
+\Fig{\ref{fig:Machine States and Language for SPARC Code}} here.
+
+\begin{figure}[!h]
+    \centering
+    \vspace{-2em}
+    \[
+        \begin{array}{rcclcrccl}
+            \text{(LProg)} & \ \prog \ & \define & (\code, \state, \pc, \npc) 
+            & \quad \ \ &
+            \text{(LState)} & \ \state \ & \define & (\Mem, \Rstate, \DBuf) 
+            \\
+            \text{(LRstate)} & \ \Rstate \ & \define & (\RFile, \Wstack) & &
+            \text{(LRegFile)} & \RFile & \define & 
+                \text{RegName} \rightharpoonup \text{Val} \\
+            \text{(LFrmList)} & \Wstack & \define & \nil \sepline \fm \stCons \Wstack 
+            & &
+            \text{(LFrame)} & \fm & \define & [\val_0, \dots, \val_7]
+            \\
+            \text{(DBuf)} & \DBuf & \define & \nil \sepline (\tick, X, \val) & & 
+            \text{(LMsg)} & \ \lmsg \ & \define & \empmsg \sepline \outEvt{\val}
+        \end{array}
+    \]
+    \vspace{-1em}
+    \caption{Machine States and Syntax for Low-level SPARCv8 Language}
+    \label{fig:machine-state-syntax-low-level-sparc}
+    \vspace{-1em}
+\end{figure}
+The low-level program $\prog$ is a tuple including the code heap $\code$, 
+low-level program state $\state$, program counter $\pc$ and $\npc$. The 
+code heap $\code$ is defined in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. 
+The low-level program state $\state$ uses the block-based memory model $\Mem$, 
+which is the same as the high-level program. The low-level message does not need 
+$\callEvt{\lab{}, \args{\val}}$, because the low-level program does not call 
+abstract assembly primitive, but call its corresponding implementation, which 
+is a function. 
+
+\begin{figure}[!t]
+    \centering
+    \small
+    \subfigure[Low-level Program Transition]{
+        \begin{minipage}[b]{1\textwidth}
+        \[
+            \begin{array}{c}
+                \infer
+                {
+                    \LGlobTrans{(\code, (\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+                        { \ \lmsg \ }
+                        {(\code, (\Mem, (\RFile'', \Wstack'), \DBuf''))}
+                }
+                {
+                    \begin{array}{l}
+                        \Dstep{(\RFile, \Wstack)}{(\RFile', \Wstack')} \\
+                        \llocalstep{\code}
+                            {((\Mem, (\RFile', \Wstack), \DBuf'), \pc, \npc)}
+                            { \ \lmsg \ }
+                            {(\Mem', (\RFile'', \Wstack'), \DBuf'')}
+                    \end{array}
+                }
+            \end{array}
+        \]
+        \vspace{0.2em}
+        \end{minipage}
+    }
+
+    \subfigure[Low-level Control Transfer Instruction Transition]{
+        \begin{minipage}[b]{1\textwidth}
+        \[
+            \begin{array}{c}
+                \infer
+                {
+                    \llocalstep{\code}
+                        {((\Mem, \Rstate, \DBuf), \pc, \npc)}
+                        { \ \empmsg \ }
+                        {((\Mem', \Rstate', \DBuf'), \npc, \npc + 4)}
+                }
+                {
+                    \code(\pc) = \simplins{} \quad \ \ 
+                    \lexeci{(\simplins{}, (\Mem, \Rstate, \DBuf))}
+                        {(\Mem', \Rstate', \DBuf')}
+                } \\
+                \\
+                \infer
+                {
+                    \llocalstep{\code}
+                        {((\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+                        { \ \empmsg \ }
+                        {((\Mem, (\RFile, \Wstack), \DBuf), \npc, \lab{})}
+                }
+                {
+                    \code(\pc) = \jmp{} \ \aexp \quad \ \ 
+                    \evalR{\aexp}{\RFile} = \lab{}
+                } \\
+                \\
+                \infer
+                {
+                    \llocalstep{\code}
+                        {((\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+                        { \ \empmsg \ }
+                        {((\Mem, (\RFile\{ \reg{15} \rightsquigarrow \pc \}, 
+                            \Wstack), \DBuf), \npc, \lab{})}
+                }
+                {
+                    \code(\pc) = \call \ \lab{} \quad \ \ 
+                    \reg{15} \in \dom(\RFile)
+                } \\
+                \\
+                \infer
+                {
+                    \llocalstep{\code}
+                        {((\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+                        { \ \empmsg \ }
+                        {((\Mem, (\RFile, \Wstack), \DBuf), \npc, \lab{} + 8)}
+                }
+                {
+                    \code(\pc) = \retl{} \quad \ \ \RFile(\reg{15}) = \lab{}
+                } \\
+                \\
+                \infer
+                {
+                    \llocalstep{\code}
+                        {((\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+                        { \, \outRN(\val) \, }
+                        {((\Mem, (\RFile, \Wstack), \DBuf), \npc, \npc + 4)}
+                }
+                {
+                    \code(\pc) = \cprint \quad \ \ \RFile(\oreg{0}) = \val
+                } \\
+                \\
+                \infer
+                {
+                    \llocalstep{\code}
+                        {((\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+                        { \, \empmsg \, }
+                        {((\Mem', (\RFile', \Wstack'), \DBuf), \pc, \npc)}
+                }
+                {
+                    \code(\pc) = \Psave \ \word \quad \ \ 
+                    \decwin{(\RFile, \Wstack)} = \undef \quad \ \ 
+                    \winOverFlow{(\Mem, \RFile, \Wstack)}
+                        {(\Mem', \RFile', \Wstack')}
+                } \\
+                \\
+                \infer
+                {
+                    \llocalstep{\code}
+                        {((\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+                        { \, \empmsg \, }
+                        {((\Mem', (\RFile', \Wstack'), \DBuf), \pc, \npc)}
+                }
+                {
+                    \code(\pc) = \Prestore \quad \ \ 
+                    \incwin{(\RFile, \Wstack)} = \undef \quad \ \ 
+                    \winUnderFlow{(\Mem, \RFile, \Wstack)}
+                        {(\Mem', \RFile', \Wstack')}
+                }
+            \end{array}
+        \]
+        \vspace{0.2em}
+        \end{minipage}
+    }
+
+    \subfigure[Low-level Instruction Transition]
+    {
+        \begin{minipage}[b]{1\textwidth}
+        \[
+            \begin{array}{c}
+                \infer
+                {
+                    \lexeci{(\Psave \ \word, (\Mem, (\RFile, \Wstack), \DBuf))}
+                        {(\Mem', (\RFile', \Wstack'), \DBuf)}
+                }
+                {
+                    \malloc(\Mem, \block, 0, \word) = \Mem' \quad \ \ 
+                    \decwin{(\RFile, \Wstack)} = (\RFile', \Wstack') \quad \ \ 
+                    \RFile'' = \RFile'\{ \spreg \rightsquigarrow (\block, 0) \}
+                } \\
+                \\
+                \infer
+                {
+                    \lexeci{(\Prestore, (\Mem, (\RFile, \Wstack), \DBuf))}
+                        {(\Mem', (\RFile'', \Wstack'), \DBuf)}
+                }
+                {
+                    \mfree(\block, \Mem) = \Mem' \quad \ \ 
+                    \incwin{(\RFile, \Wstack)} = (\RFile', \Wstack') 
+                } \\
+                \\
+                \infer
+                {
+                    \lexeci{(\csave{} \ \reg{s} \ \oexp \ \reg{d}, 
+                        (\Mem, (\RFile, \Wstack), \DBuf))}
+                        {(\Mem', (\RFile', \Wstack'), \DBuf)}
+                }
+                {
+                    \decwin{(\RFile, \Wstack)} = (\RFile'', \Wstack') \quad \ \ 
+                    \evalR{\oexp}{\RFile} = \val \quad \ \ 
+                    \RFile'' = \RFile'\{ \reg{d} \rightsquigarrow 
+                        \RFile(\reg{s}) + \val \}
+                } \\
+                \\
+                \infer
+                {
+                    \lexeci{(\crestore{} \ \reg{s} \ \oexp \ \reg{d}, 
+                        (\Mem, (\RFile, \Wstack), \DBuf))}
+                        {(\Mem, (\RFile'', \Wstack'), \DBuf')}
+                }
+                {
+                    \incwin{(\RFile, \Wstack)} = (\RFile', \Wstack') \quad \ \
+                    \evalR{\oexp}{\RFile} = \val \quad \ \ 
+                    \RFile'' = \RFile'\{ \reg{d} \rightsquigarrow 
+                        \RFile(\reg{s}) + \val \}
+                }
+            \end{array}
+        \]
+        \vspace{0.2em}
+        \end{minipage}
+    }
+
+    \subfigure[Low-level Expression Semantics]
+	{
+		\begin{minipage}[b]{1\linewidth}
+            $$
+            \begin{array}{ll}
+                \begin{array}{lcl}
+                    \evalR{\oexp}{R} & \define &
+                    \left\{
+                        \begin{array}{ll}
+                            R(r) &\quad \cif \ \oexp = r \\
+                            \\[-8pt]
+                            w &\quad \cif \ \oexp = (\block, \word') \, \textbf{or} \, 
+                                \oexp = \word, \\
+                            & \quad \quad -4096 \leq \word \leq 4095 \\
+                            \\[-8pt]
+                            \perp &\quad \otherwise
+                        \end{array}
+                    \right.
+                \end{array} & \quad
+                \begin{array}{lcl}
+                    \evalR{\aexp}{R} & \define &
+                    \left\{
+                        \begin{array}{ll}
+                            \evalR{\oexp}{R} &\quad \cif \ \aexp = \oexp \\
+                            \\[-8pt]
+
+                            \val_1 \!+\! \val_2
+                              &\quad \cif \ \aexp = \regr \!+\! \oexp,\
+                              R(\regr) \!=\! \val_1 \\
+                            & \quad \quad \tand \ 
+                                \evalR{\oexp}{\RFile} = \val_2 \\
+
+                            \\[-8pt]
+                            \perp &\quad \otherwise
+                        \end{array}
+                    \right.
+                \end{array}
+            \end{array}
+            $$
+			\vspace{0.3cm}
+		\end{minipage}	
+	}
+    \caption{Selected operational semantics rules for low-level program}
+    \label{fig:selected-opsem-low-level-program}
+    \vspace{-1em}
+\end{figure} 
+
+\begin{figure}[!t]
+    \centering
+    \small
+    \[
+        \begin{array}{l}
+            \fresh(\block, \Mem) \ \define \ \forall \ \word. \, (\block, \word) \notin \dom(\Mem)
+            \\
+            \\[-5pt]
+            \malloc(\Mem, \block, \word_l, \word_h) = \Mem' \ \define \ 
+            (\Mem' = \Mem \, \land \, \word_l = \word_h) \, \lor \, 
+            \\
+            \qquad\qquad
+            (\Mem' = \Mem 
+                        \{ (\block, \word_l) \rightsquigarrow \notCare, \dots, 
+                            (\block, \word_h - 1) \rightsquigarrow \notCare \}
+            \, \land \, \fresh(\block, \Mem) \, \land \, 
+            \word_l < \word_h) 
+            \\
+            \\[-5pt]
+            \mfree(\block, \Mem) = \Mem' \ \define \ 
+            \forall \, \block' \neq \block, \word'. \ 
+            \Mem'(\block', \word') = \Mem(\block', \word') \, \land \, 
+            \nexists \, \word. \ (\block, \word) \in \dom(\Mem)
+        \end{array}
+    \]
+    \caption{Auxiliary Definitions for Memory Operation}
+    \label{fig:Auxiliary Definitions for Memory Operation}
+    \vspace{-0.5em}
+\end{figure}
+
+\begin{figure}[!t]
+    \centering
+    \[
+		\begin{array}{c}
+			\infer
+			{
+				\winOverFlow{(\mem, (\RFile, \Wstack))}{(\mem', (\RFile', \Wstack'))}
+			}
+			{
+                \begin{array}{c}
+                    \Wstack = \Wstack_1 \lstApp \fm_1 \lstApp \fm_2 \lstApp 
+                        \fm_3 \lstApp \fm_4 \quad  \ \ \fm_1[6] = (\block, 0) \\
+                    \RFile(\regwim) = 2^n \quad \ \ 
+                    \{ (\block_0, 0), \dots, (\block_0, 15) \} \subseteq \dom(\mem) \quad \ \ 
+                    \RFile' = \RFile''\{ \regwim \rightsquigarrow 2^{\nextcwp{(n)}} \} \\
+                    \mem' = \mem\{ \Array{(\block_0, 0), \dots, (\block_0, 7)} \rightsquigarrow 
+						\RFile_0([\localRN]) \}
+						\{ \Array{(\block_0, 8), \dots, (\block_0, 15)} \rightsquigarrow 
+							\RFile_0([\inRN]) \}
+					% \decwin{(\decwin{(\RFile, \Wstack)})} = (\RFile_0, \Wstack_0) \quad \ \ 
+					% \RFile_0(\spreg) = (\block_0, 0) \quad \ \ \RFile(\regwim) = 2^n \\
+					% \{ (\block_0, 0), \dots, (\block_0, 15) \} \subseteq \dom(\mem) \\
+					% \mem' = \mem\{ \Array{(\block_0, 0), \dots, (\block_0, 7)} \rightsquigarrow 
+					% 	\RFile_0([\localRN]) \}
+					% 	\{ \Array{(\block_0, 8), \dots, (\block_0, 15)} \rightsquigarrow 
+					% 		\RFile_0([\inRN]) \} \\
+					% \incwin{(\incwin(\RFile_0, \Wstack_0))} = (\RFile'', \Wstack') \quad \ \ 
+					% \RFile' = \RFile''\{ \regwim \rightsquigarrow 2^{\nextcwp{(n)}} \}
+				\end{array}
+			} \\
+			\\[-5pt]
+			\infer
+			{
+				\winUnderFlow{(\mem, (\RFile, \Wstack))}{(\mem, (\RFile', \Wstack'))}
+			}
+			{
+                \begin{array}{c}
+                    \Wstack = \fm_1 \stCons \fm_2 \stCons \Wstack'' \quad \ \ 
+                    \RFile(\reg{30}) = (\block, 0) \quad \ \ \RFile(\regwim) = 2^n \\ 
+                    \{
+						\Array{(\block_0, 0), \dots, (\block_0, 7)} \rightsquigarrow \fm_1', 
+						\Array{(\block_0, 8), \dots, (\block_0, 15)} \rightsquigarrow \fm_2'
+                    \} \subseteq \mem' \\
+                    \RFile' = \RFile''\{\regwim \rightsquigarrow 2^{\prevcwp{(n)}}\} \quad \ \ 
+                    \Wstack' = \fm_1' \stCons \fm_2' \stCons \Wstack'' 
+					% \incwin{(\RFile, \Wstack)} = (\RFile_0, \Wstack_0) \quad \ \ 
+					% \RFile_0(\spreg) = (\block_0, 0) \quad \ \ 
+					% \RFile(\regwim) = 2^n \\
+					% \{
+					% 	\Array{(\block_0, 0), \dots, (\block_0, 7)} \rightsquigarrow \fm_1, 
+					% 	\Array{(\block_0, 8), \dots, (\block_0, 15)} \rightsquigarrow \fm_2
+					% \} \subseteq \mem \\
+					% \RFile_0' = \RFile_0\{ \localRN \rightsquigarrow \fm_1, 
+					% 	\inRN \rightsquigarrow \fm_2 \} \\
+					% \decwin{(\RFile_0', \Wstack_0)} = (\RFile'', \Wstack') \quad \ \ 
+					% \RFile' = \RFile''\{\regwim \rightsquigarrow 2^{\prevcwp{(n)}}\}
+				\end{array}
+			}
+		\end{array}
+    \]
+    \caption{Windows Over- and UnderFlow}
+    \label{fig:Windows Over- and UnderFlow}
+    \vspace{-0.5em}
+\end{figure}
+
+\paragraph{\bf Operational Semantics for Low-level Code.} 
+The operational semantics for low-level program is defined in 
+\Fig{\ref{fig:selected-opsem-low-level-program}}. Most of the 
+state transition rules are taken from 
+\Fig{\ref{Selected Operational Semantics}}. Here, we use 
+``$\lexeci{(\simplins{}, \notCare)}{\notCare}$" to represent 
+the step for simple instruction $\simplins{}$.
+
+The execution of instruction $\Psave$ is discussed in divided 
+into two cases : (1) if we can successfully set the next register 
+window as the current one (represented as 
+$\decwin{(\RFile, \Wstack)} = (\RFile', \Wstack')$),   
+a new stack frame in memory will be allocated
+(shown as $\malloc(\Mem, \block, 0, \word) = \Mem'$); 
+(2) if we can't set the next register window as the current 
+one (represented as $\decwin{(\RFile, \Wstack)} = \undef$), 
+a windows overflow trap will be triggered, and we redo the 
+instruction $\Psave$. The execution of instruction $\Prestore$ 
+does the reverse. Here, we use ``$\winOverFlow{\notCare}{\notCare}$" 
+to represent the state transition caused by window overflow trap and 
+use ``$\winUnderFlow{\notCare}{\notCare}$" to represent the state 
+transition caused by window underflow trap. Their formal definitions 
+are shown in \Fig{\ref{fig:Windows Over- and UnderFlow}}. 

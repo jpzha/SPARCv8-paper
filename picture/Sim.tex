@@ -1,0 +1,37 @@
+\begin{figure}[!t]
+    \centering
+    \begin{tikzpicture}[scale=1]
+        \node(low-level) at (0, 1.5) {\bf \scriptsize \color{blue} Low-level};
+        \node(lnode1) at (1.5, 1.5) {$\circ$};
+        \node(lnode2) at (2.5, 1.5) {$\circ$};
+        \node(lnode3) at (4, 1.5) {$\circ$};
+        \node(lnode4) at (5, 1.5) {$\circ$};
+
+        \draw[->] (1.55, 1.5) -- (2.45, 1.5);
+        \draw[-,dashed] (2.55, 1.5) -- (3.95, 1.5);
+        \draw[->] (4.05, 1.5) -- (4.95, 1.5);
+
+        \node(linitState) at (1.5, 1.8) {\scriptsize $\state$};
+        \node(lfinishState) at (5, 1.8) {\scriptsize $\state'$};
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        \draw[-,dashed, purple] (1.52, 1.46) -- (2.46, 0.04);
+        \draw[-, dashed] (2.5, 1.45) -- (2.5, 0.05);
+        \draw[-, dashed] (4, 1.45) -- (4, 0.05);
+        \draw[-,dashed, purple] (4.94, 1.46) -- (4.05, 0.06);
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        \node(high-level) at (0, 0) {\bf \scriptsize \color{red} High-level};
+        \node(hnode2) at (2.5, 0) {$\circ$};
+        \node(hnode3) at (4, 0) {$\circ$};
+
+        \draw[->] (2.55, 0) -- (3.95, 0);
+        \node(hinitState) at (2.5, -0.3) {\scriptsize $\hpstate$};
+        \node(hfinishState) at (4, -0.3) {\scriptsize $\hpstate'$};
+    \end{tikzpicture}
+    \caption{Logic Ensures State Relation Reestablished}
+    \label{fig:Logic Ensures State Relation Reestablished}
+    \vspace{-1em}
+\end{figure}
