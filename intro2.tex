@@ -184,8 +184,9 @@ in this example says,
 in addition to operate the register window,  
 the execution of this instruction will also 
 allocate a new stack frame size 64 bytes 
-to callee (\texttt{ChangY}). Here, $\spreg$ register, 
-which is an alias of $\reg{14}$, acts as the stack pointer. 
+to \texttt{ChangY}. Here, $\spreg$ register, 
+which is an alias of $\reg{14}$, usually 
+acts as the stack pointer in SPARCv8. 
 Since the $\crestore{}$ instruction restores 
 the stack pointer of the caller, the stack frame 
 allocated for callee will be freed after executing 
@@ -250,7 +251,7 @@ define a set of abstract assembly primitives,
 which are atomic operations and act as the specifications of 
 the assembly functions, 
 to substitute their concrete implementations 
-for some convenience in program verification. 
+for some convenience of program verification. 
 % Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
 % define an abstract assembly  
 % primitive $\primsw{}$ to substitute the concrete 
@@ -433,9 +434,9 @@ verification are our new contributions.}:
     SPARCv8 functions and their corresponding 
     abstract assembly primitives. In order to support 
     this extension, we need to define a simulation 
-    relation, which can be established 
+    relation, which is established 
     between the execution of each SPARCv8 function's 
-    implementation and its abstract assembly primitive. 
+    implementation and abstract assembly primitive. 
     Thanks for our direct-style semantics interpretation 
     for the logic judgments proposed before, 
     which allows us to establish the correctness of 
@@ -471,11 +472,15 @@ Then we propose the program logic in Sec.~\ref{sec:logic},
 including the inference rules and the soundness proof, 
 and show how our logic supprts the three main features of SPARCv8.
 We show the verification of the main body of the context switch routine
-in Sec.~\ref{sec:ctxswitch}. The extended program logic to 
-support refinement verification is presented in 
-\Sec{\ref{sec:refine-verification-sparc}}, including 
-the high-level Pseudo-SPARCv8 program introduced in 
-\Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}. 
+in Sec.~\ref{sec:ctxswitch}. 
+The high-level Pseudo-SPARCv8 program and extended 
+program logic to support refinement verification is 
+presented in \Sec{\ref{sec:refine-verification-sparc}}. 
+% The extended program logic to 
+% support refinement verification is presented in 
+% \Sec{\ref{sec:refine-verification-sparc}}, including 
+% the high-level Pseudo-SPARCv8 program introduced in 
+% \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}. 
 Finally we discuss more on
 related work and conclude in Sec. \ref{sec:conclusion}.
 %Sec.~\ref{sec:ctxswitch} gives an actual application of our logic

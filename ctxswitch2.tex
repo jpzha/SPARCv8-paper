@@ -327,16 +327,16 @@ by $\NoCurTask{\ctid}{\pEnv{\env}}$.
             \\[-5pt]
             \infer[L_5]
             {
-                \nxtAst{(\regst{\regN}{\word})} \sepstar \astP_1 \Longrightarrow 
-                \regst{\regN}{\word} \sepstar \astP_2
+                \nxtAst{(\regst{\regN}{\val})} \sepstar \astP_1 \Longrightarrow 
+                \regst{\regN}{\val} \sepstar \astP_2
             }
             {
                 \astP_1 \Longrightarrow \astP_2
             } \qquad 
             \infer[L_6]
             {
-                \nxtAst{(\sepsto{\loc}{\word})} \sepstar \astP \Longrightarrow 
-                (\sepsto{\loc}{\word'}) \sepstar \astP'
+                \nxtAst{(\sepsto{\loc}{\val})} \sepstar \astP \Longrightarrow 
+                (\sepsto{\loc}{\val}) \sepstar \astP'
             }
             {
                 \astP_1 \Longrightarrow \astP_2
@@ -406,10 +406,10 @@ the extended \sepcancel{} directly.
 \begin{multline*}
     \nxtAst{(\dlyregst{3}{\regY}{\word_1} \sepstar 
     \dlyregst{0}{\regwim}{\word_2} \sepstar 
-    \regst{\reg{5}}{\word_3})} \Longrightarrow \\
+    \regst{\reg{5}}{\val})} \Longrightarrow \\
     \dlyregst{2}{\regY}{\word_1} \sepstar 
     \regst{\regwim}{\word_2} \sepstar 
-    \regst{\reg{5}}{\word_3}
+    \regst{\reg{5}}{\val}
 \end{multline*}
 % \[
 %     \nxtAst{(\dlyregst{3}{\regY}{\word_1} \sepstar 
@@ -511,8 +511,9 @@ definition of well-formed code heap, which is defined
 as ``{\tt wf\_cdhp}" in Coq. According to the 
 definition of ``$\wfcdhp{\code}{\Cspec}$" in 
 \Fig{\ref{fig:Seleted Inference rules}}, we need to 
-proof the correctness of each code block given specification 
-in code heap. We use \texttt{SwitchEntry} as an example 
+prove the correctness of each code block in code heap shown in 
+\Fig{\ref{fig:The Structure of Context Switch Module}}. 
+We use \texttt{SwitchEntry} as an example 
 of proving the correctness of code block 
 (instruction sequence) in Coq. 
 The Coq lemma ``\texttt{SwitchEntryProof}" in 

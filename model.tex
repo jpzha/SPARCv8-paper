@@ -170,13 +170,11 @@ Labels are also 32-bit integers (called {\em words}),
 which can be viewed as addresses or locations 
 where the commands are saved in code heap. 
 The operand expression $\oexp$, which is either a general 
-register $\reg{}$ or an immediate value $\word$, 
+register $\reg{}$ or a word $\word$, 
 and address expression $\aexp$, 
 which is either a operand expression or a 
 sum of the value of register $\reg{}$ and an operation 
 expression, are auxiliary definitions used as paramters of commands. 
-Note, the immediate value is a word, and not 
-allowed to be an address in our work.   
 Commands in \sparc{} can be classified into two categories,
 the simple instructions $\simplins$ and the
 control-transfer instructions like $\call$ and $\jmp$.
@@ -483,7 +481,7 @@ from $\lab{}$ in $\code$ below.
 			
 			\\[-8pt]
 			
-			\undef & \quad \quad \text{otherwise}
+			\undef & \quad \ \ \text{otherwise}
 		\end{array}
 	\right.
 \]
@@ -890,10 +888,13 @@ Here, we define the sum of two values $\val_1$
 and $\val_2$ below. The result of $\val_1\!+\!\val_2$ 
 is legel, if both of the $\val_1$ and $\val_2$ 
 are words (Int32), or $\val_1$ is an address and 
-$\val_2$ is an offset. This is explain why the 
-immediate value in our work is a word, because 
-immediate value usually acts as an offset, which 
-is a word, in the calculation of address. 
+$\val_2$ is an offset. The offset is a word, 
+which acts as an immediate value in the 
+calculation of address.
+% This is explain why the 
+% immediate value in our work is a word, because 
+% immediate value usually acts as an offset, which 
+% is a word, in the calculation of address. 
 \[
 	\val_1 + \val_2 \ \define \ 
 	\left\{
