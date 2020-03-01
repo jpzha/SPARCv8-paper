@@ -1590,7 +1590,7 @@ and we explain them in turn in the following.
                 \item $\hpstate'.\hthrdlocalst.\pc = \lab{} + 8$, 
                     $\hpstate'.\hthrdlocalst.\npc = \lab{} + 12$
                     (where $\hpstate'.\hthrdlocalst.\hRstate.\hRfile
-                        ({\color{red} \reg{15}}) = \lab{}$);
+                        (\reg{15}) = \lab{}$);
                 \item there exists $\hpstate'', \hpstate_r'$, 
                     $\hprim(\args{\val})(\hpstate \uplus \hpstate_r) 
                         (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$, 
@@ -1830,9 +1830,9 @@ the execution of primtive $\primsw$ will not be safe.
 \[
     \small
     \begin{array}{l}
-        \INV{(\primsw(\nil), \word, \nil)} 
+        \INV{(\primsw(\nil), \nil)} 
         \Longrightarrow \\ 
-        \hspace*{6em}
+        \hspace*{5em}
         \exists \, \thrdid, \hthrdlocalst. \, 
         \hmsto{\TaskNew}{(\thrdid, 0)} 
         \sepstar 
