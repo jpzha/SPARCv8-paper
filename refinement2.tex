@@ -1520,17 +1520,29 @@ is defined below formally:
 \[
     \small
     \begin{array}{l}
-        \forall \, \state, \hpstate, \primcom, \word. \, 
-        (\asrtmodel{(\state, \hpstate, \primcom, \word)}{\relastP})
-        \imp \\ \\[-9.5pt]
-        \quad
-        ((\exists \, \hpstate', \primcom', \word'. \, 
-        (\primTransMulti{(\primcom, \hpstate)}{*}
+        (\relastP \Rightarrow \relastP') \, \lor \\
+        \\[-9.5pt]
+        (
+            \forall \state, \hpstate, \primcom, \word. \, 
+            (\asrtmodel{(\state, \hpstate, \primcom, \word)}
+                {\relastP}) \Longrightarrow \\
+            \quad
+            ((\exists \, \hpstate', \primcom', \word'. \, 
+        (\primTrans{(\primcom, \hpstate)}
         	{(\primcom', \hpstate')})
         \, \land \, 
-        (\asrtmodel{(\state, \hpstate', \primcom', \word')}{\relastP'}))
-        \\
-        \qquad \, \lor \, \relastP = \relastP')
+        (\asrtmodel{(\state, \hpstate', \primcom', \word')}{\relastP'})))
+        % \forall \, \state, \hpstate, \primcom, \word. \, 
+        % (\asrtmodel{(\state, \hpstate, \primcom, \word)}{\relastP})
+        % \imp \\ \\[-9.5pt]
+        % \quad
+        % ((\exists \, \hpstate', \primcom', \word'. \, 
+        % (\primTransMulti{(\primcom, \hpstate)}{*}
+        % 	{(\primcom', \hpstate')})
+        % \, \land \, 
+        % (\asrtmodel{(\state, \hpstate', \primcom', \word')}{\relastP'}))
+        % \\
+        % \qquad \, \lor \, \relastP = \relastP')
     \end{array}
 \]
 The inference rules for verifying instructions, 
