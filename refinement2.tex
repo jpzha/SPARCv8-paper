@@ -602,8 +602,8 @@ The size of the block $\block$ is from 64 byte to $\word$ byte.
 The reason why it starts from 64 byte is that the 0 to 64 bytes 
 (16 words) in a stack frame are usually reserved to save 
 the contents of the register window in convention \cite{sparc}.  
-The number of register windows is {\it limited}, it is required 
-to be saved into stack frame when overflow occurs. 
+The number of register windows is {\it limited}, and their contents  
+need to be saved into stack frame when overflow occurs. 
 However, we don't need to save the register windows 
 into memory in high-level, because they have already been 
 saved in high-level stack frame $\hWstk$, 
@@ -730,8 +730,8 @@ More details of the low-level program can be found in Appendix
 % refinement verification is to establish the states relation between 
 % low- and high-level program.
 In order to achieve refinement verification, we need to 
-establish the states relation as an {\it invariant} 
-between low- and high-level program. 
+establish a relation as an {\it invariant} 
+between low- and high-level program state. 
 We illustrate this relation, defined as 
 ``$\stateRel{\state}{\hpstate}$" 
 formally below, with \Fig{\ref{fig:State Relation between 
