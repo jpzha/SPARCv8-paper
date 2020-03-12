@@ -618,10 +618,10 @@ from $\lab{}$ in $\code$ below.
                 }
                 {
                     \decwin{(R, F)} = (R', F') \quad
-                    \eval{\oexp} = \word
+                    \eval{\oexp} = \val
                     \quad
                     \RFile'' =
-                      \fsubst{\RFile'}{\reg{d}}{\RFile(\reg{s}) \!+\! \word}
+                      \fsubst{\RFile'}{\reg{d}}{\RFile(\reg{s}) \!+\! \val}
                 }
                 \vspace{0.3cm}
                 \infer
@@ -632,10 +632,10 @@ from $\lab{}$ in $\code$ below.
                 }
                 {
                     \incwin{(R, F)} = (R', F') \quad
-                    \eval{\oexp} = \word
+                    \eval{\oexp} = \val
                     \quad
                     \RFile'' =
-                      \fsubst{\RFile'}{\reg{d}}{\RFile(\reg{s}) \!+\! \word}
+                      \fsubst{\RFile'}{\reg{d}}{\RFile(\reg{s}) \!+\! \val}
                     %R'' = R'\{ \reg{d} \rightsquigarrow \eval{\reg{s}} + \word \}
                 }
             \end{minipage}
