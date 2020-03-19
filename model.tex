@@ -612,12 +612,13 @@ from $\lab{}$ in $\code$ below.
             \begin{minipage}{1\textwidth}
                 \infer
                 {
-                    \swtrans{(M, (R, F), D)}
+                    \swtrans{(\Mem, (\RFile, \Wstack), \DBuf)}
                     {\csave \; \reg{s} \; \oexp \; \reg{d}}
-                    {(M, (R'', F'), D)}
+                    {(\Mem, (\RFile'', \Wstack'), \DBuf)}
                 }
                 {
-                    \decwin{(R, F)} = (R', F') \quad
+					\decwin{(\RFile, \Wstack)} = 
+						(\RFile', \Wstack') \quad
                     \eval{\oexp} = \val
                     \quad
                     \RFile'' =
@@ -626,12 +627,12 @@ from $\lab{}$ in $\code$ below.
                 \vspace{0.3cm}
                 \infer
                 {
-                    \swtrans{(M, (R, F), D)}
+                    \swtrans{(\Mem, (\RFile, \Wstack), \DBuf)}
                     {\crestore \; \reg{s} \; \oexp \; \reg{d}}
-                    {(M, (R'', F'), D)}
+                    {(\Mem, (\RFile'', \Wstack'), \DBuf)}
                 }
                 {
-                    \incwin{(R, F)} = (R', F') \quad
+                    \incwin{(\RFile, \Wstack)} = (\RFile', \Wstack') \quad
                     \eval{\oexp} = \val
                     \quad
                     \RFile'' =
