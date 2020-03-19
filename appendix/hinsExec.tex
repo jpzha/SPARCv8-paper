@@ -124,7 +124,7 @@ gives a simple comparision with the realistic SPARCv8 code
 and our Pseudo SPARCv8 code in high-level. 
 \Fig{\ref{fig:Realistic SPARCv8 Code and Pseudo-SPARCv8 Code}} 
 (a) is the realistic SPARCv8 code. 
-It uses instruction `` $\csave{} \, \spreg, -64, \spreg$ " 
+It uses instruction `` $\csave{} \, \spreg, -128, \spreg$ " 
 to store the caller's context and allocate a new stack frame 
 size 128 bytes for the current procedure, and use instruction
 `` $\crestore{} \ \greg{0}, \greg{0}, \greg{0}$ " to restore 
