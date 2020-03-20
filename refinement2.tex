@@ -786,7 +786,8 @@ Low- and High-level Program State}}.
 
 The low-level memory $\Mem$ is splitted into four parts: 
 $\Mem_c$ used to save the context of the current thread $\thrdid$; 
-$\Mem_T$ saving the contexts of the ready threads; a singleton memory 
+$\Mem_T$ saving the contexts of the ready threads, 
+except the current thread; a singleton memory 
 cell located $\TaskCur$ saving the current thread id; and shared 
 memory $\Mem'$. Note, ready threads are threads in thread pool, 
 except the current thread $\thrdid$. The delayed buffer $\DBuf$ is 
@@ -1705,9 +1706,11 @@ the \textbf{RETL} rule in our logic also restricts
 that the execution of low-level program will return to 
 code pointers according to $\reg{15}$ register 
 in low-level state when function returns. 
-We also restrict that the execution of 
-abstract assembly primitive should satisfy {\it locality}, 
-which means that if an abstract assembly primitive 
+We also restrict that 
+% the execution of 
+% abstract assembly primitive should satisfy {\it locality}, 
+% which means that 
+if an abstract assembly primitive 
 can execute safely on a subset of program state, 
 it can also execute safely on the whole program state, 
 and additional program state keeps unchanged.  
