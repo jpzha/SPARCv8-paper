@@ -308,19 +308,17 @@ is a function.
 		\begin{array}{c}
 			\infer
 			{
-				\winOverFlow{(\mem, (\RFile, \Wstack))}{(\mem', (\RFile', \Wstack'))}
+				\winOverFlow{(\mem, (\RFile, \Wstack))}{(\mem', (\RFile', \Wstack))}
 			}
 			{
                 \begin{array}{c}
                     \Wstack = \Wstack_1 \lstApp \fm_1 \lstApp \fm_2 \lstApp 
                         \fm_3 \lstApp \fm_4 \quad  \ \ \fm_1[6] = (\block, 0) \\
                     \RFile(\regwim) = 2^n \quad \ \ 
-                    \{ (\block_0, 0), \dots, (\block_0, 15) \} \subseteq \dom(\mem) \quad \ \ 
+                    \{ (\block, 0), \dots, (\block, 15) \} \subseteq \dom(\mem) \quad \ \ 
                     \RFile' = \RFile''\{ \regwim \rightsquigarrow 2^{\nextcwp{(n)}} \} \\
-                    \mem' = \mem\{ \Array{(\block_0, 0), \dots, (\block_0, 7)} \rightsquigarrow 
-						\RFile_0([\localRN]) \}
-						\{ \Array{(\block_0, 8), \dots, (\block_0, 15)} \rightsquigarrow 
-							\RFile_0([\inRN]) \}
+                    \mem' = \mem\{ \Array{(\block, 0), \dots, (\block, 7)} \rightsquigarrow \fm_2 \}
+						\{ \Array{(\block, 8), \dots, (\block, 15)} \rightsquigarrow \fm_3 \}
 					% \decwin{(\decwin{(\RFile, \Wstack)})} = (\RFile_0, \Wstack_0) \quad \ \ 
 					% \RFile_0(\spreg) = (\block_0, 0) \quad \ \ \RFile(\regwim) = 2^n \\
 					% \{ (\block_0, 0), \dots, (\block_0, 15) \} \subseteq \dom(\mem) \\
@@ -342,8 +340,8 @@ is a function.
                     \Wstack = \fm_1 \stCons \fm_2 \stCons \Wstack'' \quad \ \ 
                     \RFile(\reg{30}) = (\block, 0) \quad \ \ \RFile(\regwim) = 2^n \\ 
                     \{
-						\Array{(\block_0, 0), \dots, (\block_0, 7)} \rightsquigarrow \fm_1', 
-						\Array{(\block_0, 8), \dots, (\block_0, 15)} \rightsquigarrow \fm_2'
+						\Array{(\block, 0), \dots, (\block, 7)} \rightsquigarrow \fm_1', 
+						\Array{(\block, 8), \dots, (\block, 15)} \rightsquigarrow \fm_2'
                     \} \subseteq \mem' \\
                     \RFile' = \RFile''\{\regwim \rightsquigarrow 2^{\prevcwp{(n)}}\} \quad \ \ 
                     \Wstack' = \fm_1' \stCons \fm_2' \stCons \Wstack'' 
