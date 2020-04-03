@@ -31,11 +31,11 @@ We define the Pseudo-SPARCv8 language in this
 subsection. The Pseudo-SPARCv8 code contains 
 two part: the SPARCv8 code as client code, 
 and the set of abstract assembly primitives. 
-Here, the execution of client SPARCv8 code 
+Here, we require that the execution of client SPARCv8 code 
 should preserves a relation between register 
-window and stack in memory, which is shown 
+window and stack in memory, shown
 as the left side in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}
-(we omit the details of overlapping of adjacent windows in the figure).
+(the details of overlapping of adjacent windows are omitted in the figure).
 \begin{center}
     \input{picture/RegWinAbs2}
     \figurecaption{Abstraction of context management}
@@ -63,8 +63,9 @@ in this window can be stored correctly
 in memory when needed. For example, as we have 
 introduced in \Sec{\ref{sec:ctxswitch}}, the 
 execution of context switch routine will check 
-whether the previous window is valid, and use 
-instruction $\crestore{}$ to set it as the 
+whether the previous window is valid 
+(clockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
+and use instruction $\crestore{}$ to set it as the 
 current one and save its contents into stack 
 (in memory) until the previous one is invalid 
 (marked in blue in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}). 
@@ -83,7 +84,7 @@ hold when calling context switch routine.
 Otherwise, the correctness of context switch 
 routine can't be proved if we are unclear where 
 to save the contents of windows that need to 
-be saved in memory. In order to make the execution 
+be stored in memory. In order to make the execution 
 of client code preserves this relation, we do 
 the following when defining Pseudo-SPARCv8 program: 
 \begin{itemize}
@@ -97,9 +98,9 @@ the following when defining Pseudo-SPARCv8 program:
     we using $\csave{}$ instruction, a new 
     \spreg{} pointing to the stack frame in 
     memory allocated newly will also be generated. 
-    So, the requirement that the stack pointer (\spreg) 
-    saved in each window used points to the corresponding 
-    stack frame can be preserved after its execution. 
+    So, the requirement that the stack pointers (\spreg) 
+    saved in windows point to their corresponding 
+    stack frames can be preserved after its execution. 
     We also introduce ``$\Prestore$", which can 
     be viewed as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
     \footnote{In SPARCv8, $\greg{0}$ is always equal to 0, 
@@ -133,7 +134,7 @@ the following when defining Pseudo-SPARCv8 program:
     (marked in yellow in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
     % Supposing the register window and  
     So, for simplicity, we omit them 
-    in the Pseudo-SPARCv8 program. Operating them 
+    in the Pseudo-SPARCv8 program state. Operating them 
     is hidden in the implementation of the 
     abstract assembly primitives. 
     \item 
@@ -141,25 +142,26 @@ the following when defining Pseudo-SPARCv8 program:
     we find that we can abstract the register window 
     and the stack of memory for storing contexts as a list (defined as 
     the HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}). 
-    This abstraction simplifies 
-    the program state and semantics of Pseudo-SPARCv8
-    program, because we don't need to care about whether the 
-    contexts are saved in register window or 
+    After this abstraction, we don't need to care about 
+    whether the contexts are saved in register window or 
     stack in memory and describe the contents of window unused 
+    (the windows in white color in 
+    \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) 
     at the Pseudo-SPARCv8 level. 
     The low-level program in our work doesn't use this 
     abstraction, because the low-level program 
     is the realistically modelled SPARCv8 program, 
-    and the implementation of some primitives 
+    and the implementations of some primitives 
     need to know the existance of register window,  
-    for example, the context switch routine 
+    for instance, the context switch routine 
     needs to save the contents 
-    of the register window into memory.
+    of the register window into stack (in memory).
 \end{itemize}
 
 \begin{figure*}[!t]
     \centering
     \vspace{-2em}
+    \small
     \[
         \begin{array}{rcclcrccl}
             \TYPE{(HCode)} & \ \HMd \ & \define & (\code, \hprimset) & & 
@@ -205,13 +207,14 @@ the following when defining Pseudo-SPARCv8 program:
                 \rd \ \sr \ \reg{d} \sepline \cwr \ \reg{s} \ \oexp \ \sr 
                 \sepline \dots
             } 
-            % \\
-            % & & \quad | & 
-            % \multicolumn{6}{l}
-            % {
-            %     \rd \ \sr \ \reg{d} \sepline \cwr \ \reg{s} \ \oexp \ \reg{d} 
-            %     \sepline \dots
-            % } 
+            \\
+            & & \quad | & 
+            \multicolumn{6}{l}
+            {
+                \csave{} \ \reg{s} \ \oexp \ \reg{d} \sepline 
+                \crestore{} \ \reg{s} \ \oexp \ \reg{d} \sepline
+                \dots
+            } 
             \\
             \\[-8pt]
             \TYPE{(HMsg)} & \hmsg & \define & \empmsg \sepline \outEvt{\val} \sepline 
@@ -225,6 +228,7 @@ the following when defining Pseudo-SPARCv8 program:
 \end{figure*}
 \begin{figure*}[!t]
     \centering
+    \small
     \[
         \begin{array}{rcclrcclrccl}
             \TYPE{(HProg)} & \ \HProg \ & \define & 
@@ -306,16 +310,16 @@ the following when defining Pseudo-SPARCv8 program:
 
 We define the syntax of the high-level Pseudo-SPARCv8 language 
 in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. 
-The code $\HMd$ in high-level has two parts : 
+The code $\HMd$ has two parts : 
 the code heap $\code$, whose definition is similar with  
 the one defined 
 in \Fig{\ref{fig:Machine States and Language for SPARC Code}}; 
 and a set of abstract primitives $\hprimset$, 
 which is a partial mapping from labels to 
 abstract assembly primitive. The code heap $\code$ in $\HMd$ 
-can be viewed as the client code to 
+acts as the client code to 
 call abstract assembly primitive. 
-The high-level abstract assembly primitive $\hprim$ 
+The abstract assembly primitive $\hprim$ 
 is defined as a relation that takes a list of values 
 as arguments and maps a high-level program state 
 (defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}) 
@@ -687,12 +691,9 @@ The size of the block $\block$ is from 64 byte to $\word$ byte.
 The reason why it starts from 64 byte is that the 0 to 64 bytes 
 (16 words) in a stack frame are usually reserved to save 
 the contents of the register window in convention \cite{sparc}.  
-The number of register windows is {\it limited}, and their contents  
-need to be saved into stack frame when overflow occurs. 
-However, we don't need to save the register windows 
-into memory in high-level, because they have already been 
-saved in high-level stack frame $\hWstk$, 
-whose upper bound is {\it unlimited}. 
+However this part of memory is abstracted away in 
+Pseudo-SPARCv8 program as we have explained and shown in 
+\Fig{\ref{fig:Abstraction of Register Windows and Memory}}.
 The instruction $\Prestore$ does the reverse, 
 freeing the block of current stack frame
 (represented as $\mfree(\block, \Mem) = \Mem'$), and 
