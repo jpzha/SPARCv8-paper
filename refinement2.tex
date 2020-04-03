@@ -1702,8 +1702,8 @@ and we explain them in turn in the following.
             such that \\
             $
                 \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-                     {\relspecpre \ \lgvl \sepstar \relastP_r}, 
-                \relspecpost \ \lgvl \sepstar \relastP_r 
+                     {(\relspecpre \ \lgvl \sepstar \relastP_r)}, 
+                (\relspecpost \ \lgvl \sepstar \relastP_r) 
                     \Longrightarrow 
                     \INV{(\primdone, \notCare)}
             $,   
@@ -1943,7 +1943,7 @@ the execution of primtive $\primsw$ will not be safe.
 We introduce frame $\relastP_r$ here for local reasoning, 
 and it should be stable under the execution 
 of the abstract assembly primitive
-(described as $\Sta(\hprim(\args{\val}), \relastP_r)$, 
+(described as $\Sta(\hprim(\args{\val}), \relastP_r)$), 
 whose definition is omitted here). 
 We show that our extended program logic is sufficient 
 to prove the contextual refinement between 
