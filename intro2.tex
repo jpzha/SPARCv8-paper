@@ -307,9 +307,8 @@ routine, whose correctness we hope to prove in our work.
             \semantics{\code[\asmimp]}^{\textsf{SPARCv8}}
         \end{array}
     $
-    \figurecaption{Idea to achieve fully certified
-        OS kernal for aerospace crafts}
-    \label{fig:idea to fully certified OS kernal}
+    \figurecaption{Idea to establish contextual refinement}
+    \label{fig:idea to establish contextual refinement}
 \end{center}
 % some constraints in interaction semantics and 
 % features of SPARCv8 make it difficult to use 
@@ -327,10 +326,11 @@ We consider a method to establish the contextual
 refinement between implementations and their 
 corresponding abstract assembly primitives and 
 avoid multi-language linking. 
-We use \Fig{\ref{fig:idea to fully certified OS kernal}} 
-to illustrate our idea. We introduce this 
-figure from top to down. The source program of OS kernal, 
-which is represented as $\Clang[\hprimset]$, 
+We use \Fig{\ref{fig:idea to establish contextual refinement}} 
+to illustrate our idea. 
+% We introduce this figure from top to down. 
+The source program of OS kernal  
+represented as $\Clang[\hprimset]$  
 is implementated as C language 
 with a set of abstract assembly primtives. 
 The source program executes 
@@ -340,7 +340,8 @@ $\semantics{\notCare}^{\textsf{C}}$). The compiler
 SPARCv8 code $\code$. 
 As {\color{blue} \textcircled{1}} shown, 
 we hope the compilation makes sure the 
-refinement relation between $\code[\hprimset]$, which 
+refinement relation between  $\Clang[\hprimset]$ and 
+$\code[\hprimset]$ that 
 executes under Pseudo-SPARCv8 semantics represented as 
 $\semantics{\notCare}^{\textsf{P-SPARCv8}}$. 
 In step {\color{blue} \textcircled{2}},
@@ -551,8 +552,8 @@ verification are our new contributions.}:
     abstract assembly primitives. In order to support 
     this extension, we need to define a simulation 
     relation, which is established 
-    between the execution of each SPARCv8 function's 
-    implementation and abstract assembly primitive. 
+    between the execution of each SPARCv8 function 
+    and abstract assembly primitive. 
     Thanks for our direct-style semantics interpretation 
     for the logic judgments proposed before, 
     which allows us to establish the correctness of 
