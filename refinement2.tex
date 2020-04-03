@@ -27,115 +27,125 @@ Finally, logic soundness is shown in
 % \Sec{\ref{sec:modeling}} as the {\it low-level} 
 % program. And 
 
-The semantics of Pseudo-SPARCv8 language is 
-a little different with the realistically modelled 
-SPARCv8 program introduced before. We detail these 
-differences below: 
+We define the Pseudo-SPARCv8 language in this 
+subsection. The Pseudo-SPARCv8 code contains 
+two part: the SPARCv8 code as client code, 
+and the set of abstract assembly primitives. 
+Here, the execution of client SPARCv8 code 
+should preserves a relation between register 
+window and stack in memory, which is shown 
+as the left side in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}.
+\begin{center}
+    \input{picture/RegWinAbs2}
+    \figurecaption{Abstraction of context management}
+    \label{fig:Abstraction of Register Windows and Memory}
+    \vspace{-0.5em}
+\end{center}
+In SPARCv8, part of previous 
+procedures' contexts 
+(the green part in the left side of the 
+\Fig{\ref{fig:Abstraction of Register Windows and Memory}}) 
+are saving in register window, the others 
+(the pink part in the left side of the 
+\Fig{\ref{fig:Abstraction of Register Windows and Memory}})
+need to be stored in stack in memory, 
+% (shown as the red arrow in 
+% \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
+because the number of windows is limited. 
+The stack pointer of each procedure, 
+whose contexts are saved in register 
+window currently, should point to its stack frame 
+(shown as the red arrow in 
+\Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
+so that the contexts saved 
+in this window can be stored correctly 
+in memory when needed. For example, as we have 
+introduced in \Sec{\ref{sec:ctxswitch}}, the 
+execution of context switch routine will check 
+whether the previous window is valid, and use 
+instruction $\crestore{}$ to set it as the 
+current one and save its contents into stack 
+(in memory) until the previous one is invalid 
+(marked in blue in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}). 
+We require the execution of client code 
+preserving this relation so that the relation 
+hold when calling context switch routine. 
+Otherwise, the correctness of context switch 
+routine can't be proved if we are unclear where 
+to save the contents of windows that need to 
+be saved in memory. In order to make the execution 
+of client code preserves this relation, we do 
+the following when defining Pseudo-SPARCv8 program: 
 \begin{itemize}
-    \item The Pseudo-SPARCv8 program should be 
-        multi-threaded because we hope to 
-        verify the $\primsw$ primitive, 
-        whose execution will set a ready thread 
-        as the current one. The low-level SPARCv8 
-        program state doesn't have thread pool.
-        \begin{center}
-            \input{picture/RegWinAbs2}
-            \figurecaption{Abstraction of context management}
-            \label{fig:Abstraction of Register Windows and Memory}
-            \vspace{-0.5em}
-        \end{center} 
-    \item We make an abstraction for register window 
-        mechanism in SPARCv8. We use 
-        \Fig{\ref{fig:Abstraction of Register Windows and Memory}}
-        to illustrate this abstraction. 
-        In SPARCv8, part of previous 
-        procedures' contexts 
-        (the green part in the left side of the 
-        \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) 
-        are saving in register window, the others 
-        (the pink part in the left side of the 
-        \Fig{\ref{fig:Abstraction of Register Windows and Memory}})
-        need to be stored in stack in memory, 
-        % (shown as the red arrow in 
-        % \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
-        because the number of windows is limited. 
-        The stack pointer of each procedure, 
-        whose contexts are saved in register 
-        window currently, should point to its stack frame 
-        (shown as the red arrow in 
-        \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
-        so that the contexts saved 
-        in this window can be stored correctly 
-        in memory when needed. 
-        In the Pseudo-SPARCv8 program, we abstract 
-        the contexts saved as a list (defined as 
-        the HFrmList). This abstraction simplifies 
-        the program state and semantics of Pseudo-SPARCv8
-        program, because we don't need to care about whether the 
-        contexts are saved in register window or 
-        stack in memory at the Pseudo-SPARCv8 level. 
-        The low-level program doesn't use this 
-        abstraction, because the low-level program 
-        is the realistically modelled SPARCv8 program, 
-        and the implementation of some primitives 
-        need to know the existance of register window,  
-        for example, the context switch routine, 
-        which is abstracted as $\primsw$ primitive
-        in high-leve, needs to save the contents 
-        of the register window into memory.  
-        
-    \item The delay buffer $\DBuf$ and special registers 
-        are omitted in Pseudo-SPARCv8 program. The special registers 
-        are  usually  used  to  record  the state 
-        of the processors and modifying them should be 
-        carefully. So, for simplicity, we omit them 
-        in the Pseudo-SPARCv8 program. Operating them 
-        is hidden in the implementation of the 
-        abstract assembly primitives.  
-        % So, modifying them should 
-        % be carefully and hidden in the implementations 
-        % of the abstract assembly primitives.
+    \item
+    We introduce ``$\Psave \ \word$", 
+    which can be viewed as a macro of 
+    ``$\csave{} \ \spreg, -\word, \spreg$" to 
+    avoid the client code using instruction 
+    $\csave{}$ arbitrarily. The execution of 
+    ``$\Psave \ \word$" makes sure that, when 
+    we using $\csave{}$ instruction, a new 
+    \spreg{} pointing to the stack frame in 
+    memory allocated newly will also be generated. 
+    So, the requirement that the stack pointer (\spreg) 
+    saved in each window used points to the corresponding 
+    stack frame can be preserved after its execution. 
+    We also introduce ``$\Prestore$", which can 
+    be viewed as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
+    \footnote{In SPARCv8, $\greg{0}$ is always equal to 0, 
+    and usually used as parameters when instructions do not 
+    require specific parameters.} to use synchronously 
+    with ``$\Psave \ \word$". It restores the contexts 
+    of previous window and frees the stack frame of 
+    the current procedure.
+    \item 
+    The delay buffer $\DBuf$ and special registers 
+    are omitted in Pseudo-SPARCv8 program. The special registers 
+    are  usually  used  to  record  the state 
+    of the processors and modifying them should be carefully. 
+    For example,  
+    if we set the value of \regwim{} shown in 
+    \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
+    which is a special register, to mark another window 
+    invalid, as shown in  
+    \ref{fig:problem of modifying wim arbitrary}. 
+    \begin{center}
+        \input{picture/ProblemModwim.tex}
+        \figurecaption{Problem of modifying 
+        \regwim{} arbitrary}
+        \label{fig:problem of modifying wim arbitrary}
+    \end{center}
+    Supposing we call context switch routine, which will  
+    save the contents of window into memory, at this moment, 
+    there will be a problem that we don't know 
+    where to save the contents of window that 
+    is marked invalid originally. 
+    % Supposing the register window and  
+    So, for simplicity, we omit them 
+    in the Pseudo-SPARCv8 program. Operating them 
+    is hidden in the implementation of the 
+    abstract assembly primitives. 
+    \item 
+    As shown in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
+    we find that we can abstract the register window 
+    and the stack of memory for storing contexts as a list (defined as 
+    the HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}). 
+    This abstraction simplifies 
+    the program state and semantics of Pseudo-SPARCv8
+    program, because we don't need to care about whether the 
+    contexts are saved in register window or 
+    stack in memory and describe the contents of window unused 
+    at the Pseudo-SPARCv8 level. 
+    The low-level program in our work doesn't use this 
+    abstraction, because the low-level program 
+    is the realistically modelled SPARCv8 program, 
+    and the implementation of some primitives 
+    need to know the existance of register window,  
+    for example, the context switch routine 
+    needs to save the contents 
+    of the register window into memory.
 \end{itemize}
 
-
-% Let's think about what the {\it high-level} program 
-% should look like. {\it \textbf{First}}, the high-level 
-% program should be multi-threaded, because we hope to 
-% verify the $\primsw$ primitive, whose execution will 
-% set a ready thread as the current one. {\it \textbf{Second}}, 
-% the high-level program needs to support calling abstract 
-% assembly primitive in semantics, 
-% like calling context switch primitive $\primsw$.  
-% % considering programmers in this level 
-% % may define various abstract assembly primitives, 
-% % we should just give the type of the abstract 
-% % assembly primitive, which is like an interface and 
-% % its implementation is remained for users to complete. 
-% % The abstract 
-% % assembly primitive should be like an interface, whose 
-% % implementations are remained to user to complete. 
-% {\it \textbf{Third}}, 
-% % the programmers in the high-level 
-% % don't need to know the existance of delayed buffer $\DBuf$.
-% delay buffer $\DBuf$ is not needed in high-level program state.  
-% % introduced in \Sec{\ref{sec:modeling}}. 
-% The special registers are usually used to record the state of 
-% the processors. So, modifying them should 
-% be carefully and hidden in the implementations of 
-% the abstract assembly primitives. {\it \textbf{Fourth}}, 
-% the programmers in the high-level do not need to understand 
-% the full complexities of {\it register window} 
-% mechanism. They can ignore some details of window rotation 
-% and just need to know that we can use 
-% instruction $\csave{}$ to save the contents of 
-% the current window and allocate a new stack frame for callee, 
-% and use $\crestore{}$ to restore the contexts 
-% of the previous procedure and free the current stack frame. 
-% According to these considerations, 
-% we define the Pseudo-SPARCv8 program as our 
-% high-level program in this subsection.  
-% Readers who want to achieve more details of the high-level Pseudo 
-% SPARCv8 program can see the Appendix \ref{appendix:more-about-high-level-insExec}. 
 \begin{figure*}[!t]
     \centering
     \vspace{-2em}
@@ -306,16 +316,9 @@ to another.
 Comparing the simple instruction with the one shown in 
 \Fig{\ref{fig:Machine States and Language for SPARC Code}}, 
 we add three pseudo instructions. The $\Psave \ \word$ 
-can be viewed as a macro of 
-``$\csave{} \ \spreg, -\word, \spreg$" and 
-is used to save the contents of the current window and 
+saves the contents of the current window and 
 allocate a new stack frame of size $\word$ bytes for new procedure. 
-The $\Prestore$ can be viewed as a marco of 
-``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
-\footnote{In SPARCv8, $\greg{0}$ is always equal to 0, 
-and usually used as parameters when instructions do not 
-require specific parameters.} 
-and is responsible for 
+The $\Prestore$ is responsible for 
 freeing the current stack frame and 
 restore the contents of the previous window. 
 % we add two pseudo instructions $\Psave \ \word$ and $\Prestore$ 
@@ -329,7 +332,7 @@ restore the contents of the previous window.
 % % same thing. 
 % The $\Prestore$ will free the cuurent stack frame 
 % and restore the contexts of the previous procedure. 
-We also introduce a pseudo instruction $\cprint$, 
+We also introduce $\cprint$, 
 whose execution will occur an output $\outEvt{\val}$, 
 to replace the system call of function print. 
 The high-level message 
