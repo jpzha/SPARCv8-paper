@@ -425,59 +425,6 @@ are defined below:
 	\end{array}
 \]
 
-\begin{figure}[!t]
-	\[
-		\small
-		\begin{array}{ll}
-			\begin{array}{ll}
-				- & \{(\text{fp}, \text{fq})\} \\
-				& \cadd \quad \ireg{0}, \, \ireg{1}, \, \lreg{7} \\
-				& \cadd \quad \lreg{7}, \, \ireg{2}, \, \lreg{7} \\
-				& \retl \\
-				& \nop
-			\end{array} & \quad\quad
-			
-			\begin{array}{lcl}
-				\text{fp} & \define &
-                \lambda \, \lv.\, %\\
-                %\;
-				%\exists \; x, y, z, \lab{\text{ret}}. \\
-%				& &
-%				{\langle \lv = x \dbCons y \dbCons z
-%                  \dbCons \lab{\text{ret}} \dbCons \text{nil} \rangle} \\
-				
-                 %\\ & &
-				(\regst{\ireg{0}}{\lv[0]})
-                * (\regst{\ireg{1}}{\lv[1]})
-                * (\regst{\ireg{2}}{\lv[2]}) \\
-				& &
-				\hspace*{6ex} * \regst{\lreg{7}}{\notCare}
-                              * (\regst{\reg{15}}{\lv[3]}) \\
-
-				
-				\\[-8pt]
-				
-				\text{fq} & \define & \lambda \, lv. \;
-%				\exists \; x, y, z, \lab{\text{ret}}. \\
-%				& &
-%				{\langle lv = x \dbCons y \dbCons z
-%                                \dbCons \lab{\text{ret}}
-%                                \dbCons \text{nil} \rangle} \\
-%				& &
-				(\regst{\ireg{0}}{\lv[0]})
-                * (\regst{\ireg{1}}{\lv[1]})
-                * (\regst{\ireg{2}}{\lv[2]}) \\
-				& &
-                \hspace*{6ex}
-				* (\regst{\lreg{7}}{\lv[0] \!+\! \lv[1] \!+\! \lv[2]})
-                              * (\regst{\reg{15}}{\lv[3]})
-			\end{array}
-		\end{array}
-	\]
-	\caption{Example for Function Specification}
-	\label{fig:functionSpec}
-\end{figure}
-
 The code heap specification $\Psi$ maps the code labels
 for basic blocks to their specifications $\theta$,
 which is a pair of pre- and post-conditions.

@@ -291,23 +291,23 @@ by $\NoCurTask{\ctid}{\pEnv{\env}}$.
 \begin{figure*}[!t]
     \[
         \begin{array}{c}
-            % \infer[L_3]
-            % {
-            %     (\regst{\regN}{\val}) \sepstar \astP_1 \Longrightarrow 
-            %     (\regst{\regN}{\val}) \sepstar \astP_2
-            % }
-            % {
-            %     \astP_1 \Longrightarrow \astP_2
-            % } \qquad 
-            % \infer[L_4]
-            % {
-            %     (\dlyregst{t}{\st}{\word}) \sepstar \astP_1 \Longrightarrow 
-            %     (\dlyregst{t}{\st}{\word}) \sepstar \astP_2
-            % }
-            % {
-            %     \astP_1 \Longrightarrow \astP_2
-            % } \\
-            % \\[-5pt]
+            \infer[L_3]
+            {
+                (\regst{\regN}{\val}) \sepstar \astP_1 \Longrightarrow 
+                (\regst{\regN}{\val}) \sepstar \astP_2
+            }
+            {
+                \astP_1 \Longrightarrow \astP_2
+            } \qquad 
+            \infer[L_4]
+            {
+                (\dlyregst{t}{\st}{\word}) \sepstar \astP_1 \Longrightarrow 
+                (\dlyregst{t}{\st}{\word}) \sepstar \astP_2
+            }
+            {
+                \astP_1 \Longrightarrow \astP_2
+            } \\
+            \\[-5pt]
             \infer[L_3]
             {
                 \nxtAst{(\dlyregst{0}{\sr}{\word})} \sepstar \astP_2 \Longrightarrow 
@@ -360,9 +360,9 @@ by $\NoCurTask{\ctid}{\pEnv{\env}}$.
 \paragraph{\textbf{Tactics for Automated Reasoning.}} 
 \etal{Cao}\cite{practical-tactics} propose a set of practical tactics 
 for verifiying C program in Coq. 
-% including \sepcancel{}, which uses some 
-% inference rules (\eg{} $L_1$ and $L_2$ shown as following) 
-% repeatedly to solve $\astP \Longrightarrow \astQ$. 
+including \sepcancel{}, which uses some 
+inference rules (\eg{} $L_1$ and $L_2$ shown as following) 
+repeatedly to solve $\astP \Longrightarrow \astQ$. 
 \[
     \small
     \infer[L_1]
@@ -388,13 +388,13 @@ and uses the rules in library repeatedly to solve
 let we can use \sepcancel{} to eliminate the 
 subterms, which describe the same resources, 
 in $\astP$ and $\astQ$.
-% Recalling the introduction in \Sec{\ref{subsec:assertions}}, 
-% registers in our work are also treated as resource. 
-% So, we extend the inference rules used by original \sepcancel{} tactics
-% and let it  
+Recalling the introduction in \Sec{\ref{subsec:assertions}}, 
+registers in our work are also treated as resource. 
+So, we extend the inference rules used by original \sepcancel{} tactics
+and let it  
 
-% Recalling the introduction in \Sec{\ref{subsec:assertions}}, 
-% registers in our work are also treated as resource, like memory location. 
+Recalling the introduction in \Sec{\ref{subsec:assertions}}, 
+registers in our work are also treated as resource, like memory location. 
 In our work, we add some additional rules $L_3 \sim L_7$ 
 (defined in \Fig{\ref{fig:ext-rule-tac-sepcancel}})
 to the library of \sepcancel{}. The soundness of rules $L_3 \sim L_7$ 
@@ -411,14 +411,14 @@ the extended \sepcancel{} directly.
     \regst{\regwim}{\word_2} \sepstar 
     \regst{\reg{5}}{\val}
 \end{multline*}
-% \[
-%     \nxtAst{(\dlyregst{3}{\regY}{\word_1} \sepstar 
-%     \dlyregst{0}{\regwim}{\word_2} \sepstar 
-%     \regst{\reg{5}}{\word_3})} \Longrightarrow 
-%     \dlyregst{2}{\regY}{\word_1} \sepstar 
-%     \regst{\regwim}{\word_2} \sepstar 
-%     \regst{\reg{5}}{\word_3}
-% \] 
+\[
+    \nxtAst{(\dlyregst{3}{\regY}{\word_1} \sepstar 
+    \dlyregst{0}{\regwim}{\word_2} \sepstar 
+    \regst{\reg{5}}{\word_3})} \Longrightarrow 
+    \dlyregst{2}{\regY}{\word_1} \sepstar 
+    \regst{\regwim}{\word_2} \sepstar 
+    \regst{\reg{5}}{\word_3}
+\] 
 Using the extended \sepcancel{} can greatly simplify our verification 
 work, and improve the efficiency of code proving. 
 
@@ -432,112 +432,112 @@ of assembly code,
 and we verify it by 6690 lines of %(including the tactics and libraries)
 Coq proof scripts.
 
-We briefly show how we verify the 
-context switch routine in Coq using our program logic. 
-% \input{code/ctxSwitchCoq}
-\begin{center}
-    \vspace*{-0.8cm}
-    $$ \ 
-    {\tt Theorem \ \ CtxSwitch\_Correct: } \ \ 
-    {\tt wf\_cdhp \ \, spec \ C}.
-    $$
-    $$
-    \begin{array}{l}
-        {\tt Lemma \ \ SwitchEntryProof: } \\
-        \qquad 
-        {\tt forall \ vl,} \\
-        \qquad \qquad
-        {\tt spec \ |- \ \{\{ \ \colorbox{yellow!80}{switch\_entry\_pre \ vl} \ \}\} } \\
-        \qquad \qquad \qquad \qquad \qquad
-        {\tt f0 : switch\_entry\_code} \\
-        \qquad \qquad \qquad \qquad
-        {\tt \ \{\{ \ \colorbox{yellow!80}{switch\_entry\_post \ vl} \ \}\}. }
-    \end{array}
-    $$
-    \figurecaption{Coq Code Example}
-    \label{fig:Coq code Example}
-\end{center}
-% \begin{figure}[!t]
-%     \centering
-%     \small
-%     \[
-%         \begin{array}{c|c}
-%         \begin{array}{l}
-%             {\tt Theorem \ \ CtxSwitch\_Correct: } \\
-%             \qquad 
-%             {\tt wf\_cdhp \ \, spec \ C}. \\
-%             {\tt Proof. }  \\
-%             \qquad \dots \ \ \dots \ \ \dots \\ 
-%             {\tt Qed. }
-%         \end{array} \quad & \quad
-%         \begin{array}{l}
-%             {\tt Lemma \ \ SwitchEntryProof: } \\
-%             \qquad 
-%             {\tt forall \ vl,} \\
-%             \qquad \qquad
-%             {\tt spec \ |- \ \{\{ \ \colorbox{yellow!80}{switch\_entry\_pre \ vl} \ \}\} } \\
-%             \qquad \qquad \qquad \qquad \qquad
-%             {\tt f0 : switch\_entry\_code} \\
-%             \qquad \qquad \qquad \qquad
-%             {\tt \ \{\{ \ \colorbox{yellow!80}{switch\_entry\_post \ vl} \ \}\}. } \\
-%             {\tt Proof.} \\
-%             \qquad \dots \ \ \dots \ \ \dots \\ 
-%             {\tt Qed. }
-%         \end{array} \\
-%         \\[-5pt]
-%         \text{(a)} & \text{(b)}
-%         \end{array}
-%     \]
-%     \caption{Example of Context Switch Routine Proof in Coq}
-%     \label{fig:CorrectCtx-Coq}
-%     \vspace{-0.5em}
-% \end{figure}
-The Coq theorem named ``{\tt CtxSwitch\_Correct}" in 
-\Fig{\ref{fig:Coq code Example}} is the final theorem of 
-the correctness of context routine in Coq.
-% \Fig{\ref{fig:CorrectCtx-Coq}} (a) is the final theorem of 
-% the correctness of context routine in Coq. The 
-% ``{\tt CtxSwitch\_Correct}" is the name of this 
-% theorem. And 
-The ``{\tt wf\_cdhp spec C}" is the  
-Coq implementation of well-formed code heap 
-``$\wfcdhp{\code}{\Cspec}$". Here, the code heap 
-``{\tt C}" is the code heap storing the context 
-switch code, and ``{\tt spec}" is the specifications 
-of each code block shown in 
-\Fig{\ref{fig:The Structure of Context Switch Module}}. 
-The correctness of this theorem can be proved by the 
-definition of well-formed code heap, which is defined 
-as ``{\tt wf\_cdhp}" in Coq. According to the 
-definition of ``$\wfcdhp{\code}{\Cspec}$" in 
-\Fig{\ref{fig:Seleted Inference rules}}, we need to 
-prove the correctness of each code block in code heap shown in 
-\Fig{\ref{fig:The Structure of Context Switch Module}}. 
-We use \texttt{SwitchEntry} as an example 
-of proving the correctness of code block 
-(instruction sequence) in Coq. 
-The Coq lemma ``\texttt{SwitchEntryProof}" in 
-\Fig{\ref{fig:Coq code Example}}
-describes the correctness of \texttt{SwitchEntry} 
-in Coq. This lemma can be viewed as the a Coq implementation 
-of the following properties. 
-\[
-    \text{for all } \, \lgvl. \ 
-    \wfcblk{\apre \ \lgvl}{\apost \ \lgvl}{\lab{0}}
-        {\texttt{SwitchEntry}}
-\]
-As shown in \Fig{\ref{fig:The Structure of Context Switch Module}}, 
-the {\texttt{SwitchEntry}} is the entry of the context switch 
-routine. So, it's specification is the $\apre$ and $\apost$ defined 
-before, according to the meaning of the specification of a code block. 
-% The name of this lemma is \texttt{SwitchEntryProof} in Coq. 
-The ``{\tt switch\_entry\_pre}" and ``{\tt switch\_entry\_post}" 
-are Coq implementations of $\apre$ and $\apost$. 
-The ``{\tt vl}" and ``{\tt f0}" are logical variables 
-and the starting label of code block {\texttt{SwitchEntry}} in Coq 
-respectively. And the code block {\tt SwitchEntry} is defined as 
-``{\tt switch\_entry\_code}" in Coq, which is an instruction sequence 
-extracted from label ``{\tt f0}" in code heap ``{\tt C}". 
+% We briefly show how we verify the 
+% context switch routine in Coq using our program logic. 
+% % \input{code/ctxSwitchCoq}
+% \begin{center}
+%     \vspace*{-0.8cm}
+%     $$ \ 
+%     {\tt Theorem \ \ CtxSwitch\_Correct: } \ \ 
+%     {\tt wf\_cdhp \ \, spec \ C}.
+%     $$
+%     $$
+%     \begin{array}{l}
+%         {\tt Lemma \ \ SwitchEntryProof: } \\
+%         \qquad 
+%         {\tt forall \ vl,} \\
+%         \qquad \qquad
+%         {\tt spec \ |- \ \{\{ \ \colorbox{yellow!80}{switch\_entry\_pre \ vl} \ \}\} } \\
+%         \qquad \qquad \qquad \qquad \qquad
+%         {\tt f0 : switch\_entry\_code} \\
+%         \qquad \qquad \qquad \qquad
+%         {\tt \ \{\{ \ \colorbox{yellow!80}{switch\_entry\_post \ vl} \ \}\}. }
+%     \end{array}
+%     $$
+%     \figurecaption{Coq Code Example}
+%     \label{fig:Coq code Example}
+% \end{center}
+% % \begin{figure}[!t]
+% %     \centering
+% %     \small
+% %     \[
+% %         \begin{array}{c|c}
+% %         \begin{array}{l}
+% %             {\tt Theorem \ \ CtxSwitch\_Correct: } \\
+% %             \qquad 
+% %             {\tt wf\_cdhp \ \, spec \ C}. \\
+% %             {\tt Proof. }  \\
+% %             \qquad \dots \ \ \dots \ \ \dots \\ 
+% %             {\tt Qed. }
+% %         \end{array} \quad & \quad
+% %         \begin{array}{l}
+% %             {\tt Lemma \ \ SwitchEntryProof: } \\
+% %             \qquad 
+% %             {\tt forall \ vl,} \\
+% %             \qquad \qquad
+% %             {\tt spec \ |- \ \{\{ \ \colorbox{yellow!80}{switch\_entry\_pre \ vl} \ \}\} } \\
+% %             \qquad \qquad \qquad \qquad \qquad
+% %             {\tt f0 : switch\_entry\_code} \\
+% %             \qquad \qquad \qquad \qquad
+% %             {\tt \ \{\{ \ \colorbox{yellow!80}{switch\_entry\_post \ vl} \ \}\}. } \\
+% %             {\tt Proof.} \\
+% %             \qquad \dots \ \ \dots \ \ \dots \\ 
+% %             {\tt Qed. }
+% %         \end{array} \\
+% %         \\[-5pt]
+% %         \text{(a)} & \text{(b)}
+% %         \end{array}
+% %     \]
+% %     \caption{Example of Context Switch Routine Proof in Coq}
+% %     \label{fig:CorrectCtx-Coq}
+% %     \vspace{-0.5em}
+% % \end{figure}
+% The Coq theorem named ``{\tt CtxSwitch\_Correct}" in 
+% \Fig{\ref{fig:Coq code Example}} is the final theorem of 
+% the correctness of context routine in Coq.
+% % \Fig{\ref{fig:CorrectCtx-Coq}} (a) is the final theorem of 
+% % the correctness of context routine in Coq. The 
+% % ``{\tt CtxSwitch\_Correct}" is the name of this 
+% % theorem. And 
+% The ``{\tt wf\_cdhp spec C}" is the  
+% Coq implementation of well-formed code heap 
+% ``$\wfcdhp{\code}{\Cspec}$". Here, the code heap 
+% ``{\tt C}" is the code heap storing the context 
+% switch code, and ``{\tt spec}" is the specifications 
+% of each code block shown in 
+% \Fig{\ref{fig:The Structure of Context Switch Module}}. 
+% The correctness of this theorem can be proved by the 
+% definition of well-formed code heap, which is defined 
+% as ``{\tt wf\_cdhp}" in Coq. According to the 
+% definition of ``$\wfcdhp{\code}{\Cspec}$" in 
+% \Fig{\ref{fig:Seleted Inference rules}}, we need to 
+% prove the correctness of each code block in code heap shown in 
+% \Fig{\ref{fig:The Structure of Context Switch Module}}. 
+% We use \texttt{SwitchEntry} as an example 
+% of proving the correctness of code block 
+% (instruction sequence) in Coq. 
+% The Coq lemma ``\texttt{SwitchEntryProof}" in 
+% \Fig{\ref{fig:Coq code Example}}
+% describes the correctness of \texttt{SwitchEntry} 
+% in Coq. This lemma can be viewed as the a Coq implementation 
+% of the following properties. 
+% \[
+%     \text{for all } \, \lgvl. \ 
+%     \wfcblk{\apre \ \lgvl}{\apost \ \lgvl}{\lab{0}}
+%         {\texttt{SwitchEntry}}
+% \]
+% As shown in \Fig{\ref{fig:The Structure of Context Switch Module}}, 
+% the {\texttt{SwitchEntry}} is the entry of the context switch 
+% routine. So, it's specification is the $\apre$ and $\apost$ defined 
+% before, according to the meaning of the specification of a code block. 
+% % The name of this lemma is \texttt{SwitchEntryProof} in Coq. 
+% The ``{\tt switch\_entry\_pre}" and ``{\tt switch\_entry\_post}" 
+% are Coq implementations of $\apre$ and $\apost$. 
+% The ``{\tt vl}" and ``{\tt f0}" are logical variables 
+% and the starting label of code block {\texttt{SwitchEntry}} in Coq 
+% respectively. And the code block {\tt SwitchEntry} is defined as 
+% ``{\tt switch\_entry\_code}" in Coq, which is an instruction sequence 
+% extracted from label ``{\tt f0}" in code heap ``{\tt C}". 
 
 Readers may find that the \textbf{CALL} rule in our logic,
 defined in \Fig{\ref{fig:Seleted Inference rules}}, doesn't 

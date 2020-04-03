@@ -246,35 +246,151 @@ we try to address these challenges and propose a practical
 program logic for realistically modelled \sparc{} code.
 We have applied our logic to verify the main body of
 the task context switch routine in the kernel. 
-Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
-define a set of abstract assembly primitives, 
-which are atomic operations and act as the specifications of 
-the assembly functions, 
-to substitute their concrete implementations 
-for some convenience of program verification. 
-% Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
-% define an abstract assembly  
-% primitive $\primsw{}$ to substitute the concrete 
-% implementation of context switch rontine,  
-We extend our program logic to support refinement 
-verification to bridge the gap.  
-The extended program logic ensures the 
-{\it contextual refinement} relation \cite{liang13pldi,Xu16cav}
-between the implementation 
-of SPARCv8 function and its corresponding abstract assembly 
-primitive. The {\it contextual refinement} can be represented 
-as the following form, which means that 
-calling a SPARCv8 function $\asmimp$ 
-will not produce more observable behaviors than calling 
-its corresponding abstract assembly primitive $\hprim$
-under {\it any context} $\code$:
-% the abstract assembly primitive $\hprim$ will not produce more 
-% observable behaviors than calling their implementation $\asmimp$
-% under {\it any context} $\code$:  
+
+However, the OS kernal is implemented as 
+C language mainly and SPARCv8 as inline assembly. 
+Just having a traditional Hoare-style 
+program logic for SPARCv8, which can only make sure 
+the safe execution of SPARCv8 program if the initial 
+state satisfies the precondition required, is insufficient.
+\etal{Xu}~\cite{Xu16cav} propose a program logic for 
+verifying the correctness of OS kernal implementated in 
+C language with inline assembly, 
+but they use abstract assembly primitives to 
+substitute the inline assembly in their verification work.
+As a supplement to their work, we need to extend our 
+program logic so that it can make sure the  
+contextual refinement relation between the implementations
+and their corresponding abstract assembly primitives, 
+which can be presented as the following form, where 
+we use $\Clang$, $\hprimset$, and $\asmimp$ to represent 
+the C language program, the set of abstract assembly 
+primitive $\hprimset$, and the implementations of 
+abstract assembly primtives: 
 \[
-    \forall \ \code. \, \code[\asmimp] \subseteq 
-        \code[\hprim]
+    \forall \, \Clang. \, 
+    \Clang[\hprimset] \refine \Clang[\asmimp]
 \]
+However, if we use C program as a client code to 
+call inline assembly code, we define define the 
+semantics of C-assembly linking. 
+It may be possible to use
+\textit{interaction semantics}~\cite{Stewart15popl}
+to implement multi-language linking. However, 
+there is a contraint in interaction semantics that 
+it requires that callee must return to caller when 
+finished. So, it can't handle calling context switch 
+routine, whose correctness we hope to prove in our work. 
+\begin{center}
+    $
+        \begin{array}{l}
+            \semantics{\Clang[\hprimset]}^{\textsf{C}}
+            \\
+            \\[-5pt]
+            \ 
+            {\color{blue} \textcircled{1}} \ \ 
+            \rotatebox[origin=c]{90}{$\refine$} \ \  
+            \Longleftarrow \ \ 
+            \boxed{C = \textit{Comp}(\Clang)}
+            \\
+            \\[-5pt]
+            \semantics{\code[\hprimset]}^{\textsf{P-SPARCv8}}
+            \\
+            \\[-5pt]
+            \  
+            {\color{blue} \textcircled{2}} \ \ 
+            \rotatebox[origin=c]{90}{$\refine$} \ \ 
+            \Longleftarrow \ \ 
+            \boxed{\vdash\asmimp:\hprimset}
+            \\
+            \\[-5pt]
+            \semantics{\code[\asmimp]}^{\textsf{SPARCv8}}
+        \end{array}
+    $
+    \figurecaption{Idea to achieve fully certified
+        OS kernal for aerospace crafts}
+    \label{fig:idea to fully certified OS kernal}
+\end{center}
+% some constraints in interaction semantics and 
+% features of SPARCv8 make it difficult to use 
+% interaction semantics in our work. 
+% \textbf{First}, interaction semantics requires that 
+% the callee must return to caller when finished. 
+% So, it can't handle calling context switch routine. 
+% \textbf{Second}, it's also difficult to instantiate 
+% the SPARCv8 language in interaction semantics. 
+% The features of SPARCv8 makes the semantics of 
+% SPARCv8 code context-dependent. For example, 
+% the caller of 
+
+We consider a method to establish the contextual 
+refinement between implementations and their 
+corresponding abstract assembly primitives and 
+avoid multi-language linking. 
+We use \Fig{\ref{fig:idea to fully certified OS kernal}} 
+to illustrate our idea. We introduce this 
+figure from top to down. The source program of OS kernal, 
+which is represented as $\Clang[\hprimset]$, 
+is implementated as C language 
+with a set of abstract assembly primtives. 
+The source program executes 
+under C language semantics (represented as 
+$\semantics{\notCare}^{\textsf{C}}$). The compiler 
+(\textit{Comp}) translates the C program $\Clang$ to 
+SPARCv8 code $\code$. 
+As {\color{blue} \textcircled{1}} shown, 
+we hope the compilation makes sure the 
+refinement relation between $\code[\hprimset]$, which 
+executes under Pseudo-SPARCv8 semantics represented as 
+$\semantics{\notCare}^{\textsf{P-SPARCv8}}$. 
+In step {\color{blue} \textcircled{2}},
+we extend our program logic to support refinement 
+verification and get the totally SPARCv8 program 
+$\code[\asmimp]$ executing under the realistically
+modelled SPARCv8 semantics, represented as 
+$\semantics{\notCare}^{\textsf{SPARCv8}}$, refines 
+the program $\code[\hprimset]$ executing 
+under Pseudo-SPARCv8 semantics. 
+The Pseudo-SPARCv8 language $\code[\hprimset]$ 
+and its semantics will be defined in the following. 
+Finally, we can get 
+$\semantics{\Clang[\hprimset]}^{\textsf{C}}
+\refine
+\semantics{\code[\asmimp]}^{\textsf{SPARCv8}}$. 
+In this work, we focus on 
+step {\color{blue} \textcircled{2}}, and 
+remain step {\color{blue} \textcircled{1}} 
+as a future work. 
+
+% Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
+% define a set of abstract assembly primitives, 
+% which are atomic operations and act as the specifications of 
+% the assembly functions, 
+% to substitute their concrete implementations 
+% for some convenience of program verification. 
+% % Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
+% % define an abstract assembly  
+% % primitive $\primsw{}$ to substitute the concrete 
+% % implementation of context switch rontine,  
+% We extend our program logic to support refinement 
+% verification to bridge the gap.  
+% The extended program logic ensures the 
+% {\it contextual refinement} relation \cite{liang13pldi,Xu16cav}
+% between the implementation 
+% of SPARCv8 function and its corresponding abstract assembly 
+% primitive. The {\it contextual refinement} can be represented 
+% as the following form, which means that 
+% calling a SPARCv8 function $\asmimp$ 
+% will not produce more observable behaviors than calling 
+% its corresponding abstract assembly primitive $\hprim$
+% under {\it any context} $\code$:
+% % the abstract assembly primitive $\hprim$ will not produce more 
+% % observable behaviors than calling their implementation $\asmimp$
+% % under {\it any context} $\code$:  
+% \[
+%     \forall \ \code. \, \code[\asmimp] \subseteq 
+%         \code[\hprim]
+% \]
 
 Our work is based on earlier work on assembly code
 verification but makes the following contributions

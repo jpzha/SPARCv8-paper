@@ -1,13 +1,7 @@
 \section{The \sparc{} Assembly Language}
 \label{sec:modeling}
 
-We introduce the key \sparc{} instructions, the model of machine
-states, and the operational semantics in this section.
-
-\subsection{Language syntax and states}
-\label{subsec:syntax}
-
-\begin{figure*}[!t]
+\begin{figure*}
 	\centering
 	\[
 		\begin{array}{rcclcrccl}
@@ -88,7 +82,48 @@ states, and the operational semantics in this section.
 	\caption{Machine States and Language for SPARCv8 Code}
 	\label {fig:Machine States and Language for SPARC Code}
 \end{figure*}
+\begin{figure*}[!t]
+	\begin{tabular}{rcclcrccl}
+		(RegFile) & $\RFile$ & $\in$ & $\text{RegName} \rightharpoonup 
+			\text{Val}$
 
+         & $\quad$ &
+        (RegName) & $\regN$ & $\define$ &
+         $\reg{0} \sepline \dots \sepline \reg{31} \sepline \psr \sepline \sr$ \\
+		
+		%(GenReg) & $r$ & $\define$ &
+		%$\reg{0} \sepline \dots \sepline \reg{31}$ & $\quad\quad$ &
+		(PsrReg) & $\psr$ & $\define$ &
+		$\regn \sepline
+			\regz \sepline
+			\regv \sepline
+			\regc \sepline \regcwp$ & $\quad$ &
+        %		
+		(SpeReg) & $\sr$ & $\define$ &
+		$\regwim \sepline
+			\regY \sepline
+\asr_0 \sepline \dots \sepline \asr_{31}$ \\
+		
+		(FrameList) & $\Wstack$ & $\define$ &
+                            $\nil \sepline \fm \stCons \Wstack$ & $\quad$ &
+		(Frame) & $\fm$ & := & $[\val_0, \dots, \val_7]$ \\
+		
+		(DelayBuff) & $\DBuf$ & $\define$ & $\nil \sepline
+                                  (\tick, \sr, \word) \dbCons \DBuf$
+                                  & $\quad$
+                                  %& & & & \\		
+		%(DelayItem) & $d$ & $\define$ & $(\tick, \sr, \word)$ & $\quad$
+		& (DelayCycle) & $\tick$ & $\in$ & $\{ 0, 1, \dots, X \}$
+	\end{tabular}
+	\caption{Register File, Frame List and DelayBuffer}
+	\label{fig:Register File and Frame List}
+\end{figure*}
+
+We introduce the key \sparc{} instructions, the model of machine
+states, and the operational semantics in this section.
+
+\subsection{Language syntax and states}
+\label{subsec:syntax}
 % \begin{figure*}[!t]
 % 	\begin{tabular}{rcclcrccl}
 % 		(Word) & $\, \word$, $\lab{} \, $ & $\in$ & Int32 & & 
@@ -208,49 +243,17 @@ The latter three groups (\outRN{}, \localRN{} and \inRN{})
 form the current {\em register window}.
 
 \begin{figure*}[!t]
-	\begin{tabular}{rcclcrccl}
-		(RegFile) & $\RFile$ & $\in$ & $\text{RegName} \rightharpoonup 
-			\text{Val}$
-
-         & $\quad$ &
-        (RegName) & $\regN$ & $\define$ &
-         $\reg{0} \sepline \dots \sepline \reg{31} \sepline \psr \sepline \sr$ \\
-		
-		%(GenReg) & $r$ & $\define$ &
-		%$\reg{0} \sepline \dots \sepline \reg{31}$ & $\quad\quad$ &
-		(PsrReg) & $\psr$ & $\define$ &
-		$\regn \sepline
-			\regz \sepline
-			\regv \sepline
-			\regc \sepline \regcwp$ & $\quad$ &
-        %		
-		(SpeReg) & $\sr$ & $\define$ &
-		$\regwim \sepline
-			\regY \sepline
-\asr_0 \sepline \dots \sepline \asr_{31}$ \\
-		
-		(FrameList) & $\Wstack$ & $\define$ &
-                            $\nil \sepline \fm \stCons \Wstack$ & $\quad$ &
-		(Frame) & $\fm$ & := & $[\val_0, \dots, \val_7]$ \\
-		
-		(DelayBuff) & $\DBuf$ & $\define$ & $\nil \sepline
-                                  (\tick, \sr, \word) \dbCons \DBuf$
-                                  & $\quad$
-                                  %& & & & \\		
-		%(DelayItem) & $d$ & $\define$ & $(\tick, \sr, \word)$ & $\quad$
-		& (DelayCycle) & $\tick$ & $\in$ & $\{ 0, 1, \dots, X \}$
-	\end{tabular}
-	\caption{Register File, Frame List and DelayBuffer}
-	\label{fig:Register File and Frame List}
-\end{figure*}
-
-\begin{figure*}[!t]
 	\centering
 	%\includegraphics[width=63ex]{window}
-	\includegraphics[width=60ex]{window}
+	\includegraphics[width=50ex]{window}
 	\caption{Register Windows (figure taken from \cite{sparc})}
 	\label{fig:RegisterWindows}
 \end{figure*}
+% \begin{center}
+% 	\includegraphics[width=60ex]{window}
+% 	\figurecaption{Register Windows (figure taken from \cite{sparc})}
+% 	\label{fig:RegisterWindows}
+% \end{center}
 
 At the entry and exit of functions and traps, one may need to
 save and restore some of the general registers as execution
