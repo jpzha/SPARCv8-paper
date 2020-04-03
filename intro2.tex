@@ -266,13 +266,13 @@ which can be presented as the following form, where
 we use $\Clang$, $\hprimset$, and $\asmimp$ to represent 
 the C language program, the set of abstract assembly 
 primitive $\hprimset$, and the implementations of 
-abstract assembly primtives: 
+abstract assembly primtives respectively: 
 \[
     \forall \, \Clang. \, 
     \Clang[\hprimset] \refine \Clang[\asmimp]
 \]
 However, if we use C program as a client code to 
-call inline assembly code, we define define the 
+call inline assembly code, we need to define the 
 semantics of C-assembly linking. 
 It may be possible to use
 \textit{interaction semantics}~\cite{Stewart15popl}

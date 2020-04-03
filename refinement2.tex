@@ -34,7 +34,8 @@ and the set of abstract assembly primitives.
 Here, the execution of client SPARCv8 code 
 should preserves a relation between register 
 window and stack in memory, which is shown 
-as the left side in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}.
+as the left side in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}
+(we omit the details of overlapping of adjacent windows in the figure).
 \begin{center}
     \input{picture/RegWinAbs2}
     \figurecaption{Abstraction of context management}
@@ -70,6 +71,15 @@ current one and save its contents into stack
 We require the execution of client code 
 preserving this relation so that the relation 
 hold when calling context switch routine. 
+% \footnote{The requirement for client code
+% preserving such relation will not restrict the 
+% application of our work, because such relation
+% is also mentioned as a SPARCv8 programming 
+% convention in The SPARC Architecture Manual(version 8)~\cite{sparc},
+% which says that "It is essential 
+% that \spreg{} always contains the correct value, 
+% so that when (and if) a register window overflow/underflow trap occurs, 
+% the register window can be correctly stored to or reloaded from memory "}.
 Otherwise, the correctness of context switch 
 routine can't be proved if we are unclear where 
 to save the contents of windows that need to 
