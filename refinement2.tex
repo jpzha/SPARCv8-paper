@@ -35,15 +35,17 @@ Here, we require that the execution of client SPARCv8 code
 should preserves a relation between register 
 window and stack in memory, shown
 as the left side in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}
-(the details of overlapping of adjacent windows are omitted in the figure).
+(\regcwp{} points to the current window and \regwim{} marks 
+the invalid window, the details of overlapping 
+of adjacent windows are omitted in the figure).
 \begin{center}
     \input{picture/RegWinAbs2}
     \figurecaption{Abstraction of context management}
     \label{fig:Abstraction of Register Windows and Memory}
     \vspace{-0.5em}
 \end{center}
-In SPARCv8, part of previous 
-procedures' contexts 
+During the execution of SPARCv8 program, 
+part of previous procedures' contexts 
 (the green part in the left side of the 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) 
 are saving in register window, the others 
@@ -62,16 +64,17 @@ so that the contexts saved
 in this window can be stored correctly 
 in memory when needed. For example, as we have 
 introduced in \Sec{\ref{sec:ctxswitch}}, the 
-execution of context switch routine will check 
+context switch routine will check 
 whether the previous window is valid 
-(clockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
+(in clockwise direction in 
+\Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
 and use instruction $\crestore{}$ to set it as the 
 current one and save its contents into stack 
 (in memory) until the previous one is invalid 
 (marked in blue in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}). 
 We require the execution of client code 
 preserving this relation so that the relation 
-hold when calling context switch routine. 
+holds when calling context switch routine. 
 % \footnote{The requirement for client code
 % preserving such relation will not restrict the 
 % application of our work, because such relation
@@ -1703,7 +1706,7 @@ and we explain them in turn in the following.
             $
                 \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
                      {(\relspecpre \ \lgvl \sepstar \relastP_r)}, 
-                (\relspecpost \ \lgvl \sepstar \relastP_r) 
+                (\relspecpost \ \lgvl \sepstar \relastP_r)w 
                     \Longrightarrow 
                     \INV{(\primdone, \notCare)}
             $,   
