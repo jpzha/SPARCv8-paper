@@ -41,6 +41,7 @@ of adjacent windows are omitted in the figure).
 \begin{center}
     \input{picture/RegWinAbs2}
     \figurecaption{Abstraction of context management}
+    \vspace*{-0.5em}
     \label{fig:Abstraction of Register Windows and Memory}
     \vspace{-0.5em}
 \end{center}
@@ -56,12 +57,13 @@ need to be stored in stack in memory,
 % \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
 because the number of windows is limited. 
 The stack pointer of each procedure, 
+including the current one and the previous one, 
 whose contexts are saved in register 
 window currently, should point to its stack frame 
 (shown as the red arrow in 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
-so that the contexts saved 
-in this window can be stored correctly 
+so that the contexts 
+in these window can be stored correctly 
 in memory when needed. For example, as we have 
 introduced in \Sec{\ref{sec:ctxswitch}}, the 
 context switch routine will check 
@@ -86,55 +88,61 @@ holds when calling context switch routine.
 % the register window can be correctly stored to or reloaded from memory "}.
 Otherwise, the correctness of context switch 
 routine can't be proved if we are unclear where 
-to save the contents of windows that need to 
-be stored in memory. In order to make the execution 
+to save the contents of some windows. 
+In order to make the execution 
 of client code preserves this relation, we do 
 the following when defining Pseudo-SPARCv8 program: 
 \begin{itemize}
     \item
+    The \csave{} and \crestore{} instructions, which operate  
+    register window, can't be used arbitrarily, 
+    so as to preserve the requirement that each 
+    stack pointer (\spreg) points 
+    to its corresponding stack frames
+    during the execution of client code. 
+    So, the execution of \csave{} should generate a new 
+    \spreg{} pointing to the stack frame in 
+    memory allocated newly, and the execution of 
+    \crestore{} shouldn't modify the value of 
+    \spreg{} in the window restored.  
     We introduce ``$\Psave \ \word$", 
     which can be viewed as a macro of 
-    ``$\csave{} \ \spreg, -\word, \spreg$" to 
-    avoid the client code using instruction 
-    $\csave{}$ arbitrarily. The execution of 
+    ``$\csave{} \ \spreg, -\word, \spreg$". 
+    The execution of 
     ``$\Psave \ \word$" makes sure that, when 
     we using $\csave{}$ instruction, a new 
     \spreg{} pointing to the stack frame in 
     memory allocated newly will also be generated. 
-    So, the requirement that the stack pointers (\spreg) 
-    saved in windows point to their corresponding 
-    stack frames can be preserved after its execution. 
-    We also introduce ``$\Prestore$", which can 
-    be viewed as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
+    We also introduce ``$\Prestore$", 
+    as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
     \footnote{In SPARCv8, $\greg{0}$ is always equal to 0, 
     and usually used as parameters when instructions do not 
-    require specific parameters.} to use synchronously 
-    with ``$\Psave \ \word$". It restores the contexts 
-    of previous window and frees the stack frame of 
-    the current procedure.
+    require specific parameters.}. 
+    Its execution just restores the previous window 
+    and doesn't modify any register value. 
+    The original \csave{} and \crestore{} instructions 
+    have \textit{no} semantics in high-level client code. 
+
     \item 
-    The delay buffer $\DBuf$ and special registers 
-    are omitted in Pseudo-SPARCv8 program. The special registers 
-    are  usually  used  to  record  the state 
-    of the processors and modifying them should be carefully. 
-    For example,  
-    if we set the value of \regwim{} shown in 
+    The special registers also can't be modified arbitrarily.
+    The special registers in SPARCv8 usually act specific 
+    roles, for example, \regwim{} marks which window are 
+    invalid. If we set the value of \regwim{} shown in 
     \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
-    which is a special register, to mark another window 
-    invalid, as shown in  
-    \ref{fig:problem of modifying wim arbitrary}. 
+    to mark another window invalid, as shown in  
+    \ref{fig:problem of modifying wim arbitrary},  
     \begin{center}
         \input{picture/ProblemModwim.tex}
         \figurecaption{Problem of modifying 
         \regwim{} arbitrary}
         \label{fig:problem of modifying wim arbitrary}
     \end{center}
-    Supposing we call context switch routine, which will  
-    save the contents of window into memory, at this moment, 
-    there will be a problem that we don't know 
+    and call context switch routine, which will  
+    save the contents of window into memory, at this moment. 
+    There will be a problem that we don't know 
     where to save the contents of window that 
     is marked invalid originally 
-    (marked in yellow in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
+    (window in yellow in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
     % Supposing the register window and  
     So, for simplicity, we omit them 
     in the Pseudo-SPARCv8 program state. Operating them 
@@ -375,14 +383,9 @@ register state $\hRstate$ consists:
 the high-level register file $\hRfile$, 
 the block of the current stack frame $\block$, 
 and the high-level frame list $\hWstk$. 
-We can find that the high-level register names $\hrn$ 
-do not include the $\regcwp$ and special registers 
-$\sr$, because we require that only the implementation 
-of the abstract assembly primitives will operate them. 
-So, we also {\it do not} give the semantics for instructions,
-like $\cwr$, $\rd{}$, $\csave{}$, and $\crestore{}$, 
-whose  execution will operate these registers, 
-in high-level program. 
+$\hrn$ is the high-level register names, where 
+the $\regcwp$ is abstracted away and special registers 
+$\sr$ are omitted as introduced.
 The high-level frame list $\hWstk$ is a list of the triple 
 $(\block, \fm_1, \fm_2)$, which is used to record 
 the block id $\block$ of the stack frame and  
