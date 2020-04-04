@@ -187,10 +187,9 @@ allocate a new stack frame size 64 bytes
 to \texttt{ChangY}. Here, $\spreg$ register, 
 which is an alias of $\reg{14}$, usually 
 acts as the stack pointer in SPARCv8. 
-Since the $\crestore{}$ instruction restores 
-the stack pointer of the caller, the stack frame 
-allocated for callee will be freed after executing 
-$\crestore{}$ (at line 11).
+The $\crestore{}$ instruction does the inverse 
+and the arguments it takes are irrelevant here 
+and can be ignored.  
 
 % assign the value of ($\spreg\!-\!64$), where the value 
 % of the register $\spreg$ is taken 
@@ -247,14 +246,14 @@ program logic for realistically modelled \sparc{} code.
 We have applied our logic to verify the main body of
 the task context switch routine in the kernel. 
 
-However, the OS kernal is implemented as 
+However, the OS kernel is implemented as 
 C language mainly and SPARCv8 as inline assembly. 
 Just having a traditional Hoare-style 
 program logic for SPARCv8, which can only make sure 
 the safe execution of SPARCv8 program if the initial 
 state satisfies the precondition required, is insufficient.
 \etal{Xu}~\cite{Xu16cav} propose a program logic for 
-verifying the correctness of OS kernal implementated in 
+verifying the correctness of OS kernel implementated in 
 C language with inline assembly, 
 but they use abstract assembly primitives to 
 substitute the inline assembly in their verification work.
@@ -263,13 +262,13 @@ program logic so that it can make sure the
 contextual refinement relation between the implementations
 and their corresponding abstract assembly primitives, 
 which can be presented as the following form, where 
-we use $\Clang$, $\hprimset$, and $\asmimp$ to represent 
+we use $\Clang$, $\AbsPrimC$, and $\asmimp$ to represent 
 the C language program, the set of abstract assembly 
-primitive $\hprimset$, and the implementations of 
+primitive and the implementations of 
 abstract assembly primtives respectively: 
 \[
     \forall \, \Clang. \, 
-    \Clang[\hprimset] \refine \Clang[\asmimp]
+    \Clang[\AbsPrimC] \refine \Clang[\asmimp]
 \]
 However, if we use C program as a client code to 
 call inline assembly code, we need to define the 
@@ -284,7 +283,7 @@ routine, whose correctness we hope to prove in our work.
 \begin{center}
     $
         \begin{array}{l}
-            \semantics{\Clang[\hprimset]}^{\textsf{C}}
+            \semantics{\Clang[\AbsPrimC]}^{\textsf{C}}
             \\
             \\[-5pt]
             \ 
@@ -329,21 +328,30 @@ avoid multi-language linking.
 We use \Fig{\ref{fig:idea to establish contextual refinement}} 
 to illustrate our idea. 
 % We introduce this figure from top to down. 
-The source program of OS kernal  
-represented as $\Clang[\hprimset]$  
+The source program of OS kernel  
+shown as $\Clang[\AbsPrimC]$, which executes
+under C language semantics (shown as 
+$\semantics{\notCare}^{\textsf{C}}$),   
 is implementated as C language 
-with a set of abstract assembly primtives. 
-The source program executes 
-under C language semantics (represented as 
-$\semantics{\notCare}^{\textsf{C}}$). The compiler 
-(\textit{Comp}) translates the C program $\Clang$ to 
-SPARCv8 code $\code$. 
+with a set of abstract assembly primtives $\AbsPrimC$. 
+The compiler (\textit{Comp}) translates the 
+C program $\Clang$ to SPARCv8 code $\code$. 
 As {\color{blue} \textcircled{1}} shown, 
 we hope the compilation makes sure the 
-refinement relation between  $\Clang[\hprimset]$ and 
+refinement relation between $\Clang[\AbsPrimC]$ and 
 $\code[\hprimset]$ that 
-executes under Pseudo-SPARCv8 semantics represented as 
+executes under Pseudo-SPARCv8 semantics shown as 
 $\semantics{\notCare}^{\textsf{P-SPARCv8}}$. 
+Here, the $\hprimset$ represents the set of 
+abstract assembly primitives in the middle layer. 
+We use distinguished notations to represent 
+the set of abstract assembly primitives in source 
+and intermediate level, because they execute on 
+different program states and have different semantics. 
+The Pseudo-SPARCv8 language $\code[\hprimset]$,  
+which uses SPARCv8 as client code and is able to 
+call abstract assembly primtive in $\hprimset$, 
+will be defined in the following.
 In step {\color{blue} \textcircled{2}},
 we extend our program logic to support refinement 
 verification and get the totally SPARCv8 program 
@@ -351,9 +359,7 @@ $\code[\asmimp]$ executing under the realistically
 modelled SPARCv8 semantics, represented as 
 $\semantics{\notCare}^{\textsf{SPARCv8}}$, refines 
 the program $\code[\hprimset]$ executing 
-under Pseudo-SPARCv8 semantics. 
-The Pseudo-SPARCv8 language $\code[\hprimset]$ 
-and its semantics will be defined in the following. 
+under Pseudo-SPARCv8 semantics.  
 Finally, we can get 
 $\semantics{\Clang[\hprimset]}^{\textsf{C}}
 \refine
