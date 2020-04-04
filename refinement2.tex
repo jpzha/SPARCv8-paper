@@ -1699,8 +1699,8 @@ and we explain them in turn in the following.
             $\hpstate \perp \hpstate_r$, 
             then the following holds : 
             \begin{itemize}
-                \item $\hpstate'.\hthrdlocalst.\pc = \lab{} + 8$, 
-                    $\hpstate'.\hthrdlocalst.\npc = \lab{} + 12$
+                \item $\hpstate'.\hthrdlocalst.\pc = \lab{}\!+\!8$, 
+                    $\hpstate'.\hthrdlocalst.\npc = \lab{}\!+\!12$ 
                     (where $\hpstate'.\hthrdlocalst.\hRstate.\hRfile
                         (\reg{15}) = \lab{}$);
                 \item there exists $\hpstate'', \hpstate_r'$, 
@@ -1728,7 +1728,7 @@ and we explain them in turn in the following.
             $
                 \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
                      {(\relspecpre \ \lgvl \sepstar \relastP_r)}, 
-                (\relspecpost \ \lgvl \sepstar \relastP_r) 
+                (\relspecpost \ \lgvl \sepstar \relastP_r)
                     \Longrightarrow 
                     \INV{(\primdone, \notCare)}
             $,   

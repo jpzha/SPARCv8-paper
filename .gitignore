@@ -31,3 +31,5 @@
 *-blx.bib
 *.run.xml
 paper.fdb_latexmk
+paper.synctex.gz
+paper.fdb_latexmk
