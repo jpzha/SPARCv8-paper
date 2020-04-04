@@ -1,7 +1,4 @@
-\section{The \sparc{} Assembly Language}
-\label{sec:modeling}
-
-\begin{figure*}
+\begin{figure*}[!t]
 	\centering
 	\small
 	\[
@@ -83,6 +80,10 @@
 	\caption{Machine States and Language for SPARCv8 Code}
 	\label {fig:Machine States and Language for SPARC Code}
 \end{figure*}
+
+\section{The \sparc{} Assembly Language}
+\label{sec:modeling}
+
 \begin{figure*}[!t]
 	\small
 	\begin{tabular}{rcclcrccl}
@@ -235,6 +236,14 @@ and $\regcwp$ recording the id of the current register window.
 We explain the frame list $\Wstack$ and the delay buffer
 $\DBuf$ below.
 
+\begin{figure*}[!t]
+	\centering
+	%\includegraphics[width=63ex]{window}
+	\includegraphics[width=50ex]{window}
+	\caption{Register Windows (figure taken from \cite{sparc})}
+	\label{fig:RegisterWindows}
+\end{figure*}
+
 \paragraph{\textbf{Register windows and frame List.}}
 \sparc{} provides 32 general registers, which are split into
 four groups
@@ -243,14 +252,6 @@ as \globalRN{} ($\reg{0} \sim \reg{7}$),
 and \inRN{} ($\reg{24} \sim \reg{31}$) registers.
 The latter three groups (\outRN{}, \localRN{} and \inRN{})
 form the current {\em register window}.
-
-\begin{figure*}[!t]
-	\centering
-	%\includegraphics[width=63ex]{window}
-	\includegraphics[width=50ex]{window}
-	\caption{Register Windows (figure taken from \cite{sparc})}
-	\label{fig:RegisterWindows}
-\end{figure*}
 % \begin{center}
 % 	\includegraphics[width=60ex]{window}
 % 	\figurecaption{Register Windows (figure taken from \cite{sparc})}
