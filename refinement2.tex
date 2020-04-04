@@ -172,7 +172,8 @@ of client code preserves such restriction:
     whether the contexts are saved in register window or 
     stack in memory and describe the contents of window unused 
     (the windows in white color in 
-    \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) 
+    \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
+    but excluding the current one pointed by \regcwp{}) 
     at the Pseudo-SPARCv8 level. 
     The low-level program in our work doesn't use this 
     abstraction, because the low-level program 
