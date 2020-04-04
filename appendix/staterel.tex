@@ -15,7 +15,7 @@ in memory, because the number of register windows is limited;
 is multithreaded, but the low-level SPARCv8 program does not have 
 the concept of thread pool. 
 
-\begin{figure}[!t]
+\begin{figure}[!h]
     \centering
     \small
     \[
@@ -27,7 +27,7 @@ the concept of thread pool.
             {} \qquad \quad
             \infer
             {
-                \stkRel{(\block, \nil, \Mem_K)}{(\block, \fm_1, \fm_2) \stCons \hWstk}
+                \stkRel{(\block, \nil, \Mem_K)}{(\fm_1, \fm_2) \stCons \hWstk}
             }
             {
                 \Mem_K = \framMem{(\block, \fm_1, \fm_2)} \uplus \Mem_K' 
@@ -39,10 +39,10 @@ the concept of thread pool.
             {
                 \stkRel{(\block,
                 	\fm_1 \stCons \fm_2 \stCons \Wstack, \Mem_K)}
-                    {(\block, \fm_1', \fm_2') \stCons \hWstk}
+                    {(\fm_1, \fm_2) \stCons \hWstk}
             }
             {
-                \fm_1 = \fm_1' \quad \ \ \fm_2 = \fm_2' \quad \ \  
+                % \fm_1 = \fm_1' \quad \ \ \fm_2 = \fm_2' \quad \ \  
                 \Mem_K = \framMem{(\block, \notCare, \notCare)} \uplus \Mem_K'
                 \quad \ \ 
                 \fm_2[6] = (\block', 0) \quad \ \ 
@@ -169,13 +169,13 @@ used to store the contexts of threads.
             \infer
             {
                 \curStRel{(\Mem_c, (\RFile, \Wstack))}
-                    {(\thrdid, ((\hRfile, \block, \hWstk), \pc, \npc))}
+                    {(\thrdid, ((\hRfile, \hWstk), \pc, \npc))}
             }
             {
                 \begin{array}{c}
                     \Mem_c = \Mem_{\text{ctx}} \uplus \Mem_K 
                     \quad \ \ 
-                    \dom(\Mem_{\text{ctx}}) = \DomCtx{(\thrdid, \block)}
+                    \dom(\Mem_{\text{ctx}}) = \DomCtx{(\thrdid)}
                     \quad \ \ 
                     \RFile(\spreg) = (\block, 0) 
                     \\

@@ -283,7 +283,7 @@ of client code preserves such restriction:
             \TYPE{(Tid)} & \thrdid & \in & \Ztype \\
             \\
             \TYPE{(HRstate)} & \hRstate & \define & 
-            (\hRfile, \block, \hWstk) \\
+            (\hRfile, \hWstk) \\
             \\[-8pt]
             \TYPE{(HRegFile)} & \hRfile & \in & 
             \TYPE{HRegName} \rightharpoonup \TYPE{Val} 
@@ -296,7 +296,7 @@ of client code preserves such restriction:
             } \\
             \\[-8pt]
             \TYPE{(HFrmList)} & \hWstk & \define & 
-            \nil \sepline (\block, \fm_1, \fm_2) \stCons \hWstk
+            \nil \sepline (\fm_1, \fm_2) \stCons \hWstk
             & \qquad
             \TYPE{(HFrame)} & \fm & \define & 
             [\val_0, \dots, \val_7]
@@ -398,14 +398,14 @@ is a triple of high-level register state $\hRstate$,
 and program conunters $\pc$ and $\npc$. The high-level 
 register state $\hRstate$ consists: 
 the high-level register file $\hRfile$, 
-the block of the current stack frame $\block$, 
+% the block of the current stack frame $\block$, 
 and the high-level frame list $\hWstk$. 
 $\hrn$ is the high-level register names, where 
 the $\regcwp$ is abstracted away and special registers 
 $\sr$ are omitted as introduced.
-The high-level frame list $\hWstk$ is a list of the triple 
-$(\block, \fm_1, \fm_2)$, which is used to save 
-the block id $\block$ of the stack frame and  
+The high-level frame list $\hWstk$ is a list of pair 
+$(\fm_1, \fm_2)$, which is used to save 
+% the block id $\block$ of the stack frame and  
 the contexts (\localRN{} and \inRN{} registers) 
 $\fm_1$ and $\fm_2$ of the previous procedure.
 % Here, $\block$ is the block 
@@ -573,10 +573,10 @@ and after execution of $\primsw{}$ respectively.
                 % \\
                 \infer
                 {
-                    \hlocalstep{\code}{(((\hRfile, \block, \hWstk), \pc, \npc), \Mem)}
+                    \hlocalstep{\code}{(((\hRfile, \hWstk), \pc, \npc), \Mem)}
                         { \ \empmsg \ }
                         {(((\hRfile\{ \reg{15} \rightsquigarrow \pc \}, 
-                            \block, \hWstk), \npc, \lab{}), \Mem)}
+                            \hWstk), \npc, \lab{}), \Mem)}
                 }
                 {
                     \code(\pc) = \call{} \ \lab{} \quad \reg{15} \in \dom(\hRfile)
@@ -584,9 +584,9 @@ and after execution of $\primsw{}$ respectively.
                 \\
                 \infer
                 {
-                    \hlocalstep{\code}{(((\hRfile, \block, \hWstk), \pc, \npc), \Mem)}
+                    \hlocalstep{\code}{(((\hRfile, \hWstk), \pc, \npc), \Mem)}
                         { \ \empmsg \ }
-                        {(((\hRfile, \block, \hWstk), \npc, \lab{}+8), \Mem)}
+                        {(((\hRfile, \hWstk), \npc, \lab{}+8), \Mem)}
                 }
                 {
                     \code(\pc) = \retl{} \quad \ \ \hRfile(\reg{15}) = \lab{}
@@ -594,9 +594,9 @@ and after execution of $\primsw{}$ respectively.
                 \\
                 \infer
                 {
-                    \hlocalstep{\code}{(((\hRfile, \block, \hWstk), \pc, \npc), \Mem)}
+                    \hlocalstep{\code}{(((\hRfile, \hWstk), \pc, \npc), \Mem)}
                         { \outEvt{\val} }
-                        {(((\hRfile, \block, \hWstk), \npc, \npc+4), \Mem)}
+                        {(((\hRfile, \hWstk), \npc, \npc+4), \Mem)}
                 }
                 {
                     \code(\pc) = \cprint \quad \ \ \hRfile(\oreg{0}) = \val
@@ -631,7 +631,7 @@ and after execution of $\primsw{}$ respectively.
                 }
                 {
                     \begin{array}{c}
-                        \hRstate =  (\hRfile, \block_0, \hWstk) \quad \ \
+                        \hRstate =  (\hRfile, \hWstk) \quad \ \
                         \hRfile' = \hRfile\{ \outRN  \rightsquigarrow \notCare, 
                             \localRN \rightsquigarrow \notCare, 
                             \inRN \rightsquigarrow \hRfile([\outRN]) \}
@@ -639,7 +639,7 @@ and after execution of $\primsw{}$ respectively.
 %                        \hRfile(\spreg) = (\block_0, 0) \quad \ \ 
                         \malloc(\Mem, \block, 64, \word) = \Mem' \quad \ \ 
                         \hRstate' = 
-                        (\hRfile', \block, (\block_0, \hRfile([\localRN]), 
+                        (\hRfile', (\hRfile([\localRN]), 
                             \hRfile([\inRN])) \stCons \hWstk) 
                     \end{array}
                 } \\
@@ -650,8 +650,9 @@ and after execution of $\primsw{}$ respectively.
                 }
                 {
                     \begin{array}{c}
-                        \hRstate = (\hRfile, \block, (\block_0, \fm_1, \fm_2) 
-                            \stCons \hWstk) \quad \ \ 
+                        \hRstate = (\hRfile, (\fm_1, \fm_2) 
+                            \stCons \hWstk) \quad \ \
+                        \hRfile(\spreg) = (\block, 0) \quad \ \  
                         \mfree(\block, \Mem) = \Mem' 
 %                        \quad \ \  
 %                        \hRfile'(\spreg) = (\block_0, 0) 
@@ -659,7 +660,7 @@ and after execution of $\primsw{}$ respectively.
                         \hRfile' = \hRfile\{ \outRN \rightsquigarrow 
                             \hRfile([\inRN]), \localRN \rightsquigarrow \fm_1, 
                             \inRN \rightsquigarrow \fm_2 \} \quad \ \ 
-                        \hRstate' = (\hRfile', \block_0, \hWstk)
+                        \hRstate' = (\hRfile', \hWstk)
                     \end{array}
                 }
             \end{array}        
@@ -704,9 +705,9 @@ We show the state transition relation for pseudo instructions
 $\Psave \ \word$ and $\Prestore$ in 
 \Fig{\ref{fig:selected-opsem-high-level-prog}} (c). 
 Supposing the current register state $\hRstate$ is 
-$(\hRfile, \block_0, \hWstk)$, executing instruction
+$(\hRfile, \hWstk)$, executing instruction
 $\Psave \ \word$ will save the \localRN{} and \inRN{} registers 
-and the block id  $\block_0$ of the current stack frame 
+% and the block id  $\block_0$ of the current stack frame 
 into high-level frame list $\hWstk$. It also allocates 
 a new block $\block$ as a new stack frame in memory 
 (represented as $\malloc(\Mem, \block, 64, \word) = \Mem'$). 
@@ -1348,7 +1349,7 @@ $\Cspec$ for refinement verification are defined below :
                     % \, \land \, \npc' = \hRfile(\reg{15})\!+\!12
                     % \, \land \, \args{\val} = \nil 
                     \hpstate' = 
-                    (\thrdpool, \thrdid, ((\hRfile', \block, \hWstk), 
+                    (\thrdpool, \thrdid, ((\hRfile', \hWstk), 
                         \hRfile(\reg{15})\!+\!8, 
                         \hRfile(\reg{15})\!+\!12), \Mem)
                     \\
@@ -1358,7 +1359,7 @@ $\Cspec$ for refinement verification are defined below :
                     	\hspace*{1em}
                         \TYPE{where } \, 
                         \hpstate = (\thrdpool, \thrdid, 
-                        ((\hRfile, \block, \hWstk), 
+                        ((\hRfile, \hWstk), 
                             \pc, \npc), \Mem), \, 
                         \hRfile' = \hRfile\{ \lreg{7} \rightsquigarrow 
                                 (\hRfile(\ireg{0}) \!+ \!\hRfile(\ireg{1}) 
