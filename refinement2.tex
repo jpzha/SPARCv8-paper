@@ -138,7 +138,7 @@ of client code preserves such restriction:
     \item 
     The special registers also can't be modified arbitrarily.
     The special registers in SPARCv8 usually act specific 
-    roles, for example, \regwim{} marks which window are 
+    roles, for example, \regwim{} marks which window is 
     invalid. If we set the value of \regwim{} shown in 
     \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     to mark another window invalid, as shown in  
@@ -156,7 +156,8 @@ of client code preserves such restriction:
     is marked invalid originally 
     (window in yellow in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
     % Supposing the register window and  
-    So, for simplicity, we omit them 
+    So, for simplicity, we don't allow client code 
+    to modify special registers and omit them 
     in the Pseudo-SPARCv8 program state. Operating them 
     is hidden in the implementation of the 
     abstract assembly primitives. 
@@ -168,7 +169,7 @@ of client code preserves such restriction:
     we find that we can abstract the register window 
     and the stack of memory for storing contexts as a list (defined as 
     the HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}). 
-    After this abstraction, we don't need to care about 
+    After this abstraction, We don't need to care about 
     whether the contexts are saved in register window or 
     stack in memory and describe the contents of window unused 
     (the windows in white color in 
@@ -275,7 +276,7 @@ of client code preserves such restriction:
             \\[-8pt]
             \TYPE{(ThrdPool)} & \thrdpool & \define & 
             \{ \thrdid \rightsquigarrow \hthrdlocalst \}^{*}
-            & \qquad
+            & \ \ 
             \TYPE{(ThrdLcSt)} & \ \hthrdlocalst \ & \define & 
             (\hRstate, \pc, \npc) 
             & \qquad
@@ -286,7 +287,7 @@ of client code preserves such restriction:
             \\[-8pt]
             \TYPE{(HRegFile)} & \hRfile & \in & 
             \TYPE{HRegName} \rightharpoonup \TYPE{Val} 
-            & \qquad
+            & \quad
             \TYPE{(HRegName)} & \hrn & \define & 
             \multicolumn{5}{l}
             {
@@ -403,7 +404,7 @@ $\hrn$ is the high-level register names, where
 the $\regcwp$ is abstracted away and special registers 
 $\sr$ are omitted as introduced.
 The high-level frame list $\hWstk$ is a list of the triple 
-$(\block, \fm_1, \fm_2)$, which is used to record 
+$(\block, \fm_1, \fm_2)$, which is used to save 
 the block id $\block$ of the stack frame and  
 the contexts (\localRN{} and \inRN{} registers) 
 $\fm_1$ and $\fm_2$ of the previous procedure.
@@ -420,7 +421,7 @@ $\fm_1$ and $\fm_2$ of the previous procedure.
 % And use the instruction $\Prestore$ to restore them from $\hWstk$, when callee 
 % returns to caller. 
 After introducing the state of high-level program, 
-We can define the primitive $\primsw$ as 
+We define the primitive $\primsw$ as 
 an instantiation of $\hprim$ following: 
 \[
     \small
