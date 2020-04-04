@@ -41,7 +41,6 @@ of adjacent windows are omitted in the figure).
 \begin{center}
     \input{picture/RegWinAbs2}
     \figurecaption{Abstraction of context management}
-    \vspace*{-0.5em}
     \label{fig:Abstraction of Register Windows and Memory}
     \vspace{-0.5em}
 \end{center}
@@ -148,6 +147,9 @@ the following when defining Pseudo-SPARCv8 program:
     in the Pseudo-SPARCv8 program state. Operating them 
     is hidden in the implementation of the 
     abstract assembly primitives. 
+    We also do \textit{not} give semantics to 
+    \cwr{} and \rd{} instructions in high-level 
+    client code. 
     \item 
     As shown in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     we find that we can abstract the register window 
