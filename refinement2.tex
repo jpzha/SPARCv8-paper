@@ -1971,11 +1971,25 @@ the execution of primtive $\primsw$ will not be safe.
 %     \sepstar \atrue
 % \]
 % } 
-We introduce frame $\relastP_r$ here for local reasoning, 
+We introduce frame $\relastP_r$ for local reasoning, 
 and it should be stable under the execution 
 of the abstract assembly primitive
-(described as $\Sta(\hprim(\args{\val}), \relastP_r)$), 
-whose definition is omitted here). 
+(shown as $\Sta(\hprim(\args{\val}), \relastP_r)$)
+defined below). 
+
+{\small
+\begin{multline*}
+    \Sta(\hprim(\args{\val}), \relastP_r) 
+    \define 
+    \forall \, \state, \hpstate, \hpstate', \word. \\ 
+    ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
+        {\relastP_r\sepstar\atrue}) 
+    \,\land\,
+    \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
+    \asrtmodel{(\state, \hpstate', \primdone, \word)}
+        {\relastP_r\sepstar\atrue} 
+\end{multline*}
+}
 We show that our extended program logic is sufficient 
 to prove the contextual refinement between 
 a context switch routine written in SPARCv8
