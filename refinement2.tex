@@ -615,7 +615,7 @@ and after execution of $\primsw{}$ respectively.
                 }
                 { 
                     \pc \notin \dom(\code) \quad \ \ 
-                    \npc = \pc + 4 \quad \ \  
+                    \npc = \pc\!+\!4 \quad \ \  
                     \arguments(\hRstate, \Mem, \args{\val}) 
                 }
             \end{array}
@@ -761,81 +761,8 @@ an output $\outEvt{\val}$, which is produced by the instruction
 $\cprint$ and acts as an observable behavior. 
 More details of the low-level program can be found in Appendix 
 \ref{sec:more-llang}. 
-\input{picture/StateRel}
 
-\begin{figure*}[!t]
-    \centering
-    \[
-        \begin{array}{c}
-            \TYPE{(EvtTrace)} \ \ \evttr \ \define \ 
-            \outEvt{\val} \stCons \evttr \sepline \nil \sepline 
-            \evtabort \quad \ \ \TYPE{(co-induction)} \\
-            \\
-            \infer=
-            {
-                \Etr{(\prog, \evtabort)}
-            }
-            {
-                \neg
-                (\exists \, \prog'. \ 
-                 \LGlobMultiTrans{\prog}{}{+}{\prog'})
-            } \qquad \ \ 
-            \infer= 
-            {
-                \Etr{(\prog, \nil)}
-            }
-            {
-                \LGlobMultiTrans{\prog}{ \, \empmsg \ }{+}{\prog'} 
-                \quad \ \ 
-                \Etr{(\prog', \nil)}
-            } \quad \ \ 
-            \infer=
-            {
-                \Etr{(\prog, \outEvt{\val} \stCons \evttr)}
-            }
-            {
-                \LGlobMultiTrans{\prog}{\!\!\outEvt{\val}\!}{+}{\prog'}
-                \quad \ \ 
-                \Etr{(\prog', \evttr)}
-            } \\
-            \\[-5pt]
-            \infer=
-            {
-                \Etr{(\HProg, \evtabort)}
-            }
-            {
-                \neg
-                (\exists \, \HProg'. \ 
-                 \HGlobMultiTrans{\HProg}{}{+}{\HProg'})
-            } \qquad \ \ 
-            \infer= 
-            {
-                \Etr{(\HProg, \nil)}
-            }
-            {
-                \HGlobMultiTrans{\HProg}{ \, \empmsg \ }{+}{\HProg'} 
-                \quad \ \ 
-                \Etr{(\HProg', \nil)}
-            } \quad \ \ 
-            \infer=
-            {
-                \Etr{(\HProg, \outEvt{\val} \stCons \evttr)}
-            }
-            {
-                \HGlobMultiTrans{\HProg}{\!\!\outEvt{\val}\!}{+}{\HProg'}
-                \quad \ \ 
-                \Etr{(\HProg', \evttr)}
-            } \\
-            \\
-            \prog \refine \HProg \ \define \ 
-                \forall \, \evttr. \, 
-                \Etr{(\prog, \evttr)} \Longrightarrow
-                \Etr{(\HProg, \evttr)}  
-        \end{array}
-    \]
-    \caption{Event Trace Refinement}
-    \label{fig:event-trace-refinement}
-\end{figure*}
+\input{picture/StateRel}
 
 \subsection{State Relation between Low- and High-level Program}
 \label{subsec:state-rel}
@@ -918,6 +845,80 @@ can be found in Appendix \ref{sec:more-staterel}.
 \subsection{Correctness of Abstract Assembly Primitive}
 \label{subsec:correctness-primitive}
 
+\begin{figure*}[!t]
+    \centering
+    \[
+        \begin{array}{c}
+            \TYPE{(EvtTrace)} \ \ \evttr \ \define \ 
+            \outEvt{\val} \stCons \evttr \sepline \nil \sepline 
+            \evtabort \quad \ \ \TYPE{(co-induction)} \\
+            \\
+            \infer=
+            {
+                \Etr{(\prog, \evtabort)}
+            }
+            {
+                \neg
+                (\exists \, \prog'. \ 
+                 \LGlobMultiTrans{\prog}{}{+}{\prog'})
+            } \qquad \ \ 
+            \infer= 
+            {
+                \Etr{(\prog, \nil)}
+            }
+            {
+                \LGlobMultiTrans{\prog}{ \, \empmsg \ }{+}{\prog'} 
+                \quad \ \ 
+                \Etr{(\prog', \nil)}
+            } \quad \ \ 
+            \infer=
+            {
+                \Etr{(\prog, \outEvt{\val} \stCons \evttr)}
+            }
+            {
+                \LGlobMultiTrans{\prog}{\!\!\outEvt{\val}\!}{+}{\prog'}
+                \quad \ \ 
+                \Etr{(\prog', \evttr)}
+            } \\
+            \\[-5pt]
+            \infer=
+            {
+                \Etr{(\HProg, \evtabort)}
+            }
+            {
+                \neg
+                (\exists \, \HProg'. \ 
+                 \HGlobMultiTrans{\HProg}{}{+}{\HProg'})
+            } \qquad \ \ 
+            \infer= 
+            {
+                \Etr{(\HProg, \nil)}
+            }
+            {
+                \HGlobMultiTrans{\HProg}{ \, \empmsg \ }{+}{\HProg'} 
+                \quad \ \ 
+                \Etr{(\HProg', \nil)}
+            } \quad \ \ 
+            \infer=
+            {
+                \Etr{(\HProg, \outEvt{\val} \stCons \evttr)}
+            }
+            {
+                \HGlobMultiTrans{\HProg}{\!\!\outEvt{\val}\!}{+}{\HProg'}
+                \quad \ \ 
+                \Etr{(\HProg', \evttr)}
+            } \\
+            \\
+            \prog \refine \HProg \ \define \ 
+                \forall \, \evttr. \, 
+                \Etr{(\prog, \evttr)} \Longrightarrow
+                \Etr{(\HProg, \evttr)}  
+        \end{array}
+    \]
+    \caption{Event Trace Refinement}
+    \label{fig:event-trace-refinement}
+\end{figure*}
+
 The correctness of abstract assembly primitive can be defined in terms of  
 {\it contextual refinement}.  
 Below we will give the formal definition in 
@@ -939,7 +940,8 @@ proposed by \etal{Liang} \cite{liang14lics}.
         $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$).  
 \end{definition}
 
-Here, we use $\asmimp$, which is a code heap, 
+Here, we use a code heap $\asmimp$
+% , which is a code heap, 
 to represent the implementations of abstract 
 assembly primitives and $\hprimset$ to represent the set of corresponding 
 abstract assembly primitives. The contextual refinement between 
