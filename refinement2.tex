@@ -101,27 +101,16 @@ Pseudo-SPARCv8 program to make the execution
 of client code preserves such restriction:  
 \begin{itemize}
     \item
-    The \csave{} and \crestore{} instructions that operate  
-    register window can't be used arbitrarily. 
-    When we use \csave{} to rotate to next window
-    (counterclockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),  
-    a new stack pointer \spreg{} should 
-    be generated to point to the stack frame 
-    in memory allocated newly. 
-    And when we use \crestore{} to rotate to previous window 
-    (in clockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
-    its execution shouldn't modify x
-    the value of \spreg{} in the previous window.
-    % So as to preserve the requirement that each 
-    % stack pointer (\spreg) points 
-    % to its corresponding stack frame
-    % during the execution of client code,  
-    % the execution of \csave{} should generate a new 
-    % \spreg{} pointing to the stack frame in 
-    % memory allocated newly, and the execution of 
-    % \crestore{} shouldn't modify the value of 
-    % \spreg{} in the window restored.  
-    So, we introduce ``$\Psave \ \word$" as a macro of 
+    In order to ensure that 
+    the stack pointer (\spreg{}) always 
+    point to its stack frame, we require that   
+    each instruction, like \cadd{} and \ld{}, whose 
+    execution will not rotate register window, 
+    is not allowed to update the value of \spreg{}; 
+    and as for the \csave{} and \crestore{}, whose executions 
+    will rotate register window, we restrict them 
+    to be used in specific forms. 
+    we introduce ``$\Psave \ \word$" as a macro of 
     ``$\csave{} \ \spreg, -\word, \spreg$", 
     whose execution makes sure that a new \spreg{} 
     will be generated and point to the stack frame 
@@ -134,7 +123,42 @@ of client code preserves such restriction:
     whose execution just restores the previous window 
     and doesn't modify any register value. 
     The original \csave{} and \crestore{} instructions 
-    have \textit{no} semantics in high-level client code. 
+    have \textit{no} semantics in high-level client code.   
+    
+    % The \csave{} and \crestore{} instructions that operate  
+    % register window can't be used arbitrarily. 
+    % When we use \csave{} to rotate to next window
+    % (counterclockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),  
+    % a new stack pointer \spreg{} should 
+    % be generated to point to the stack frame 
+    % in memory allocated newly. 
+    % And when we use \crestore{} to rotate to previous window 
+    % (in clockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
+    % its execution shouldn't modify x
+    % the value of \spreg{} in the previous window.
+    % % So as to preserve the requirement that each 
+    % % stack pointer (\spreg) points 
+    % % to its corresponding stack frame
+    % % during the execution of client code,  
+    % % the execution of \csave{} should generate a new 
+    % % \spreg{} pointing to the stack frame in 
+    % % memory allocated newly, and the execution of 
+    % % \crestore{} shouldn't modify the value of 
+    % % \spreg{} in the window restored.  
+    % So, we introduce ``$\Psave \ \word$" as a macro of 
+    % ``$\csave{} \ \spreg, -\word, \spreg$", 
+    % whose execution makes sure that a new \spreg{} 
+    % will be generated and point to the stack frame 
+    % size $w$ allocated newly. 
+    % We also introduce ``$\Prestore$" 
+    % as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
+    % \footnote{In SPARCv8, $\greg{0}$ is always equal to 0, 
+    % and usually used as parameters when instructions do not 
+    % require specific parameters.},  
+    % whose execution just restores the previous window 
+    % and doesn't modify any register value. 
+    % The original \csave{} and \crestore{} instructions 
+    % have \textit{no} semantics in high-level client code. 
 
     \item 
     The special registers also can't be modified arbitrarily.
