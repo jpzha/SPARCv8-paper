@@ -1652,9 +1652,8 @@ There is an omitted side condition in presentation that:
 the states about {\it current thread} 
 ($\astCurCont{\thrdid}{\hthrdlocalst}$)  
 and {\it high-level primitive command} 
-($\safePrimAst{\primcom}$) are not permitted
-to describe in frame $\relastP_r$ 
-in \textbf{JMP} and \textbf{CALL} rule, 
+($\safePrimAst{\primcom}$) are not specified in frame 
+$\relastP_r$ in \textbf{JMP} and \textbf{CALL} rule, 
 because they are not separated by 
 separation conjunction $\sepstar$.
 % the correctness of frame assertion $\relastP_r$ is 
@@ -2017,7 +2016,7 @@ defined below).
         {\relastP_r\sepstar\atrue}) 
     \,\land\,
     \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
-    \asrtmodel{(\state, \hpstate'c, \primdone, \word)}
+    \asrtmodel{(\state, \hpstate', \primdone, \word)}
         {\relastP_r\sepstar\atrue} 
 \end{multline*}
 }
