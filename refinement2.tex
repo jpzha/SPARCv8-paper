@@ -76,7 +76,7 @@ current one and save its contents into stack
 We require the execution of client code 
 preserving such restriction. Otherwise, some SPARCv8 
 functions like context switch routine whose 
-implementation will store the contexts saved in 
+implementations will store the contexts saved in 
 register window into stack in memory cannot be 
 verified if it's unclear where to save the 
 contents of some windows. 
@@ -138,8 +138,9 @@ of client code preserves such restriction:
     \item 
     The special registers also can't be modified arbitrarily.
     The special registers in SPARCv8 usually act specific 
-    roles, for example, \regwim{} marks which window is 
-    invalid. If we set the value of \regwim{} shown in 
+    roles and modifying them should be carefully, 
+    for example, \regwim{} marks which window is 
+    invalid. If we change its value shown in 
     \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     to mark another window invalid, as shown in  
     \ref{fig:problem of modifying wim arbitrary},  
@@ -150,7 +151,8 @@ of client code preserves such restriction:
         \label{fig:problem of modifying wim arbitrary}
     \end{center}
     and call context switch routine, which will  
-    save the contents of window into memory, at this moment. 
+    save the contents of previous windows into memory
+    until the invalid one, at this moment. 
     There will be a problem that we don't know 
     where to save the contents of window that 
     is marked invalid originally 
