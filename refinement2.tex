@@ -59,7 +59,7 @@ The restriction is that the stack pointer
 (\spreg{}) of each procedure, 
 including the current one and the previous one, 
 whose contexts are saved in register 
-window currently, should point to its stack frame 
+window currently, should point to the top of its stack frame 
 (shown as the red arrow in 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
 so that the contexts 
@@ -103,7 +103,7 @@ of client code preserves such restriction:
     \item
     In order to ensure that 
     the stack pointer (\spreg{}) always 
-    point to its stack frame, we require that   
+    point to the top of its stack frame, we require that   
     each instruction, like \cadd{} and \ld{}, whose 
     execution will not rotate register window, 
     is not allowed to update the value of \spreg{}; 
