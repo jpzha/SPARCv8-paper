@@ -40,6 +40,7 @@ the invalid window, the details of overlapping
 of adjacent windows are omitted in the figure).
 \begin{center}
     \input{picture/RegWinAbs2}
+    \vspace*{-0.5em}
     \figurecaption{Abstraction of context management}
     \label{fig:Abstraction of Register Windows and Memory}
     \vspace{-0.5em}
@@ -114,14 +115,15 @@ of client code preserves such restriction:
     ``$\csave{} \ \spreg, -\word, \spreg$", 
     whose execution makes sure that a new \spreg{} 
     will be generated and point to the stack frame 
-    size $w$ allocated newly. 
+    size $w$ allocated newly when rotating to the next window. 
     We also introduce ``$\Prestore$" 
     as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
     \footnote{In SPARCv8, $\greg{0}$ is always equal to 0, 
     and usually used as parameters when instructions do not 
     require specific parameters.},  
     whose execution just restores the previous window 
-    and doesn't modify any register value. 
+    and doesn't modify the value of any register 
+    in the previous window restored. 
     The original \csave{} and \crestore{} instructions 
     have \textit{no} semantics in high-level client code.   
     
@@ -170,9 +172,11 @@ of client code preserves such restriction:
     to mark another window invalid, as shown in  
     \ref{fig:problem of modifying wim arbitrary},  
     \begin{center}
+        \vspace*{-0.5em}
         \input{picture/ProblemModwim.tex}
         \figurecaption{Problem of modifying 
         \regwim{} arbitrary}
+        \vspace*{-0.5em}
         \label{fig:problem of modifying wim arbitrary}
     \end{center}
     and call context switch routine, which will  
