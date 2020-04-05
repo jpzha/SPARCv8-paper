@@ -1376,8 +1376,8 @@ $\Cspec$ for refinement verification are defined below :
                     {
                         \regN = \hrn' \ \define \ 
                         \exists \, \val. \, 
-                        \regst{\regN}{\val} \sepstar 
-                        \hregsto{\hrn}{\val}
+                        (\regst{\regN}{\val} \,\land\,
+                            \hregsto{\hrn}{\val})
                     }
                 \end{array}
             }
@@ -1618,11 +1618,11 @@ Here, we require that verifying the instruction \jmp{} and \call{}
 will consume a token, shown as $\metricAst{1}$, in order to avoid 
 infinite loops and recursive function calls. 
 There is an omitted side condition in presentation that: 
-the states of {\it current thread} 
+the states about {\it current thread} 
 ($\astCurCont{\thrdid}{\hthrdlocalst}$)  
 and {\it high-level primitive command} 
 ($\safePrimAst{\primcom}$) are not permitted
-to describe in frame $\relastP_r$ used 
+to describe in frame $\relastP_r$ 
 in \textbf{JMP} and \textbf{CALL} rule, 
 because they are not separated by 
 separation conjunction $\sepstar$.
