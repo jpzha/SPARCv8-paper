@@ -230,7 +230,7 @@ of client code preserves such restriction:
             {
                 % \csave{} \ \reg{s} \ \oexp \ \reg{d} \sepline 
                 % \crestore{} \ \reg{s} \ \oexp \ \reg{d} \sepline
-                \Psave \ \word \sepline \Prestore  \sepline \cprint \sepline 
+                \Psave \ \word \sepline \Prestore  \sepline \cprint \ \reg{} \sepline 
                 \ld{} \ \aexp \ \reg{d} \sepline 
                 \st{} \ \reg{s} \ \aexp \sepline \cadd{} \ \reg{s} \ \oexp \ \reg{d}
                 \sepline
@@ -377,8 +377,10 @@ restore the contents of the previous window.
 % % same thing. 
 % The $\Prestore$ will free the cuurent stack frame 
 % and restore the contexts of the previous procedure. 
-We also introduce $\cprint$, 
-whose execution will occur an output $\outEvt{\val}$, 
+We also introduce $\cprint \ \reg{}$, 
+whose execution will output the value $\val$ in $\reg{}$ and 
+occur an message $\outEvt{\val}$, 
+% whose execution will occur an output $\outEvt{\val}$, 
 to replace the system call of function print. 
 The high-level message 
 $\hmsg$ can be either an empty message $\empmsg$, or an output 
@@ -601,7 +603,7 @@ and after execution of $\primsw{}$ respectively.
                         {(((\hRfile, \hWstk), \npc, \npc+4), \Mem)}
                 }
                 {
-                    \code(\pc) = \cprint \quad \ \ \hRfile(\oreg{0}) = \val
+                    \code(\pc) = \cprint \ \reg{} \quad \ \ \hRfile(\reg{}) = \val
                 } \\
                 \\
                 \infer
