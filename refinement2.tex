@@ -1,4 +1,4 @@
-\section{Refinement Verification for SPARCv8}
+\section{Refinement Verification of SPARCv8}
 \label{sec:refine-verification-sparc}
 
 Inspired by the {\it relational} program logic for 
@@ -55,7 +55,8 @@ are stored in stack in memory,
 % (shown as the red arrow in 
 % \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
 because the number of windows is limited. 
-The restriction is that the stack pointer of each procedure, 
+The restriction is that the stack pointer 
+(\spreg{}) of each procedure, 
 including the current one and the previous one, 
 whose contexts are saved in register 
 window currently, should point to its stack frame 
@@ -108,9 +109,9 @@ of client code preserves such restriction:
     be generated to point to the stack frame 
     in memory allocated newly. 
     And when we use \crestore{} to rotate to previous window 
-    (clockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
-    its execution shouldn't modify 
-    the value of \spreg{} in the window restored.
+    (in clockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
+    its execution shouldn't modify x
+    the value of \spreg{} in the previous window.
     % So as to preserve the requirement that each 
     % stack pointer (\spreg) points 
     % to its corresponding stack frame
@@ -169,15 +170,19 @@ of client code preserves such restriction:
     \item 
     As shown in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     we find that we can abstract the register window 
-    and the memory in stack for storing contexts as a list (defined as 
-    the HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}). 
+    and the memory in stack for storing contexts 
+    into a list (defined as 
+    HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}).  
     After this abstraction, We don't need to care about 
     whether the contexts are saved in register window or 
-    stack in memory and describe the contents of window unused 
+    memory and describe the contents of window unused 
     (the windows in white color in 
     \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     but excluding the current one pointed by \regcwp{}) 
     at the Pseudo-SPARCv8 level. 
+    The \regcwp{} register is no longer needed in 
+    Pseudo-SPARCv8 program because the register window 
+    is abstract away. 
     The low-level program in our work doesn't use this 
     abstraction, because the low-level program 
     is the realistically modelled SPARCv8 program, 
@@ -341,9 +346,7 @@ of client code preserves such restriction:
 We define the syntax of the high-level Pseudo-SPARCv8 language 
 in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. 
 The code $\HMd$ has two parts : 
-the code heap $\code$, whose definition is similar with  
-the one defined 
-in \Fig{\ref{fig:Machine States and Language for SPARC Code}}; 
+the code heap $\code$ 
 and a set of abstract primitives $\hprimset$, 
 which is a partial mapping from labels to 
 abstract assembly primitive. The code heap $\code$ in $\HMd$ 
