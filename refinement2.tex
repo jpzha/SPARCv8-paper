@@ -188,13 +188,20 @@ of client code preserves such restriction:
     (window in yellow in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
     % Supposing the register window and  
     So, for simplicity, we don't allow client code 
-    to modify special registers and omit them 
-    in the Pseudo-SPARCv8 program state. Operating them 
-    is hidden in the implementation of the 
-    abstract assembly primitives. 
-    We also do \textit{not} give semantics to 
-    \cwr{} and \rd{} instructions in high-level 
-    client code. 
+    to modify special registers and do \textit{not} 
+    give semantics to \cwr{} instruction in high-level 
+    client code. Modifying them is hidden in the 
+    implementation of the abstract assembly primitives
+    in low-level. 
+    And the delay buffer is also no longer needed 
+    in Pseudo-SPARCv8 program state. 
+    % omit them 
+    % in the Pseudo-SPARCv8 program state. Operating them 
+    % is hidden in the implementation of the 
+    % abstract assembly primitives. 
+    % We also do \textit{not} give semantics to 
+    % \cwr{} and \rd{} instructions in high-level 
+    % client code. 
     \item 
     As shown in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     we find that we can abstract the register window 
@@ -327,7 +334,8 @@ of client code preserves such restriction:
             \multicolumn{5}{l}
             {
                 \reg{0} \sepline \dots \sepline \reg{31} \sepline 
-                \regn \sepline \regz \sepline \regc \sepline \regv
+                \regn \sepline \regz \sepline \regc \sepline \regv 
+                \sepline \sr
             } \\
             \\[-8pt]
             \TYPE{(HFrmList)} & \hWstk & \define & 
@@ -436,8 +444,8 @@ the high-level register file $\hRfile$,
 % the block of the current stack frame $\block$, 
 and the high-level frame list $\hWstk$. 
 $\hrn$ is the high-level register names, where 
-the $\regcwp$ is abstracted away and special registers 
-$\sr$ are omitted as introduced.
+the $\regcwp$ is omitted because the register window
+is abstracted away as introduced.
 The high-level frame list $\hWstk$ is a list of pair 
 $(\fm_1, \fm_2)$, which is used to save 
 % the block id $\block$ of the stack frame and  
