@@ -626,9 +626,11 @@ from $\lab{}$ in $\code$ below.
 					\decwin{(\RFile, \Wstack)} = 
 						(\RFile', \Wstack') \quad
                     \eval{\oexp} = \val
-                    \quad
+					\quad
+					\val' = \RFile(\reg{s}) \!+\! \val
+					\quad
                     \RFile'' =
-                      \fsubst{\RFile'}{\reg{d}}{\RFile(\reg{s}) \!+\! \val}
+                      \fsubst{\RFile'}{\reg{d}}{\val'}
                 }
                 \vspace{0.3cm}
                 \infer
@@ -640,9 +642,11 @@ from $\lab{}$ in $\code$ below.
                 {
                     \incwin{(\RFile, \Wstack)} = (\RFile', \Wstack') \quad
                     \eval{\oexp} = \val
-                    \quad
+					\quad
+					\val' = \RFile(\reg{s}) \!+\! \val
+					\quad
                     \RFile'' =
-                      \fsubst{\RFile'}{\reg{d}}{\RFile(\reg{s}) \!+\! \val}
+                      \fsubst{\RFile'}{\reg{d}}{\val'}
                     %R'' = R'\{ \reg{d} \rightsquigarrow \eval{\reg{s}} + \word \}
                 }
             \end{minipage}
@@ -674,12 +678,13 @@ from $\lab{}$ in $\code$ below.
 						\itrans{(M, R)}{\cadd \; \reg{s} \; \oexp \; \reg{d}}
 						{
 							(M, R\{\reg{d}
-                                 \rightsquigarrow \val_1 \!+\! \val_2\})	
+                                 \rightsquigarrow \val\})	
 						}
 					}
 					{
 						R(\reg{s}) = \val_1 \quad
 						{\llbracket \oexp \rrbracket}_R = \val_2 \quad
+						\val = \val_1\!+\!\val_2 \quad
 						\reg{d} \in \text{dom}(R)
 					}
 				\]
