@@ -237,31 +237,20 @@ and register windows.
 We have applied the program logic to verify
 the main body of the context switch routine
 in a realistic embedded OS kernel. 
-And we also extend the program logic to support refinement 
-verification. The extended program logic in our current 
-work is designed for verifying the {\it contextual refinement} 
-between the implementation of context switch routine 
-and $\primsw$ primitive mainly. It will be interesting to 
-improve and use our extended program logic to verify 
-the correctness of more abstract assembly primitives, 
-like thread creating primitive \textsf{spawn}, and 
-thread joining primitive \textsf{join}, whose execution 
-will add or delete some threads. 
+And we also extend the program logic to support 
+refinement verification. 
 Our current work can only handle
-sequential \sparc{} program verification, and do not 
-consider interrupts in our machine model. 
-Finally, the client code in our contextual 
-refinement verification is SPARCv8 code. However, 
-many works, like \cite{Xu16cav}, use C program 
-as the client code of calling abstract assembly primitive.  
-We would like to link the verified inline assembly
-with verified C code for whole system
-verification in the future. Maybe it's possible to 
-follow some complier verification works, 
-\eg{\cite{CompCert, CASCompCert}}, to make sure that 
-the behaviors of the client C code is equivalent with 
-the complied SPARCv8 code, which acts as a client code 
-in our work.  
+sequential \sparc{} program verification and 
+do not consider interrupt in machine model.  
+We will extend it for concurrency verification 
+and finish the step {\color{blue} \textcircled{1}} shown in
+\Fig{\ref{fig:idea to establish contextual refinement}}
+that the compilant can ensure the behaviors 
+of the Pseudo-SPARCv8 code calling abstraction assembly 
+primitives in intermediate level refines 
+the behaviors of 
+the client C code calling abstract assembly primitives 
+in source level in the future. 
 % %and accurate models of \sparc{} program,
 % %and supports module, local, function call/return
 % %and main features of \sparc{} verification.
