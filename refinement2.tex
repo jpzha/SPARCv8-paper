@@ -1991,14 +1991,15 @@ primitive command $\primcom$.
 For example, if $\INV{(\primsw(\nil), \nil)}$
 holds, we can know that the location $\TaskNew$ 
 must save a pointer pointing to a ready thread
-in thread pool.
+in thread pool from the safe execution of primitive $\primsw$. 
 % and we 
 % can write them in the precondition of the specification 
 % of the context switch routine. 
-Otherwise, 
-the execution of primtive $\primsw$ will not be safe. 
-So, the memory location $\TaskNew$ in low-level memory 
-also saves such pointer according the state relation 
+% Otherwise, 
+% the execution of primtive $\primsw$ will not be safe. 
+And we can know that the memory location $\TaskNew$ 
+in low-level state also saves such pointer 
+according the state relation 
 between low- and high-level program state. 
 \[
     \small
@@ -2027,7 +2028,7 @@ between low- and high-level program state.
 % } 
 We introduce frame $\relastP_r$ for local reasoning, 
 and it should be stable under the execution 
-of the abstract assembly primitive
+of the abstract assembly primitive 
 (shown as $\Sta(\hprim(\args{\val}), \relastP_r)$)
 defined below). 
 
@@ -2038,7 +2039,7 @@ defined below).
     \forall \, \state, \hpstate, \hpstate', \word. \\ 
     ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
         {\relastP_r\sepstar\atrue}) 
-    \,\land\,
+    \land
     \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
     \asrtmodel{(\state, \hpstate', \primdone, \word)}
         {\relastP_r\sepstar\atrue} 
