@@ -217,7 +217,7 @@ of client code preserves such restriction:
     at the Pseudo-SPARCv8 level. 
     The \regcwp{} register is no longer needed in 
     Pseudo-SPARCv8 program because the register window 
-    is abstract away. 
+    is abstracted away. 
     The low-level program in our work doesn't use this 
     abstraction, because the low-level program 
     should be realistically modelled, 
@@ -756,7 +756,8 @@ a new block $\block$ as a new stack frame in memory
 The size of the block $\block$ is from 64 byte to $\word$ byte. 
 The reason why it starts from 64 byte is that the 0 to 64 bytes 
 (16 words) in a stack frame are usually reserved to save 
-the contents of the register window in convention \cite{sparc}.  
+the contexts in window (\localRN{} and \inRN{} registers)
+in convention \cite{sparc}.  
 However this part of memory is abstracted away in 
 Pseudo-SPARCv8 program as we have explained and shown in 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}.
