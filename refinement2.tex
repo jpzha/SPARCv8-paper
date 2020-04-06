@@ -400,11 +400,14 @@ to another.
 Comparing the simple instruction with the one shown in 
 \Fig{\ref{fig:Machine States and Language for SPARC Code}}, 
 we add three pseudo instructions. The $\Psave \ \word$ 
-saves the contents of the current window and 
-allocate a new stack frame of size $\word$ bytes for new procedure. 
-The $\Prestore$ is responsible for 
-freeing the current stack frame and 
-restore the contents of the previous window. 
+and $\Prestore$ restrict the \csave{} and \crestore{}
+instructions can only be used in specific form as 
+mentioned before.  
+% saves the contents of the current window and 
+% allocate a new stack frame of size $\word$ bytes for new procedure. 
+% The $\Prestore$ is responsible for 
+% freeing the current stack frame and 
+% restore the contents of the previous window. 
 % we add two pseudo instructions $\Psave \ \word$ and $\Prestore$ 
 % in simple instruction. 
 % In the introduction of the example shown in 
