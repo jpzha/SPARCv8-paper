@@ -261,11 +261,13 @@ As a supplement to their work, we need to extend our
 program logic so that it can make sure the  
 contextual refinement relation between the implementations
 and their corresponding abstract assembly primitives, 
-which can be presented as the following form, where 
+which can be presented as the following form. Here,  
 we use $\Clang$, $\AbsPrimC$, and $\asmimp$ to represent 
 the C language program, the set of abstract assembly 
 primitive and the implementations of 
-abstract assembly primtives respectively: 
+abstract assembly primtives respectively. 
+It means $\asmimp$ refines $\AbsPrimC$ under 
+\textit{any context} $\Clang$. 
 \[
     \forall \, \Clang. \, 
     \Clang[\asmimp] \refine \Clang[\AbsPrimC]
