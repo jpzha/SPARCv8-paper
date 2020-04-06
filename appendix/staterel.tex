@@ -154,8 +154,8 @@ used to store the contexts of threads.
             (\forall \, i \in \{ 0, \dots, 31 \}. \, 
                 \RFile(\reg{i}) = \hRfile(\reg{i}))
                 \, \land \, 
-                (\forall \, \sr. \, \exists \, \word. \  
-                \RFile(\sr) = \word) \\
+                (\forall \, \sr \neq \regwim.   
+                \RFile(\sr) = \hRfile(\sr)) \\
             & & \quad \, \land \, 
             \RFile(\regn) = \hRfile(\regn) \, \land \, 
             \RFile(\regz) = \hRfile(\regz) \, \land \, 
