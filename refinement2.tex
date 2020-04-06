@@ -1240,12 +1240,16 @@ and a word $\word$ recording the number of the tokens.
 The high-level primitive command $\primcom$ is 
 either an abstract assembly primitive $\hprim$ 
 parametered with its arguments $\args{\val}$, or a 
-$\primdone$ meaning that the primitive has already been 
-executed. Compared with the assertion defined before in 
-\Fig{\ref{fig:Syntax of Assertions}}, relational 
-asssertion $\relastP$ reserves original assertion 
-$\astP$ describing the low-level state $\state$, and 
-adds some new ones to describe the high-level state. 
+$\primdone$ meaning the primitive has already been 
+executed. The relational assertion $\relastP$ reserves
+original assertion $\astP$ describing the low-level 
+state $\state$. 
+
+% Compared with the assertion defined before in 
+% \Fig{\ref{fig:Syntax of Assertions}}, relational 
+% asssertion $\relastP$ reserves original assertion 
+% $\astP$ describing the low-level state $\state$, and 
+% adds some new ones to describe the high-level state. 
 
 $\hregsto{\hrn}{\val}$ says that value in register 
 $\hrn$ in high-level register file is $\val$. 
@@ -1945,15 +1949,15 @@ We define \INV{} to represent this invariant below formally:
 \[
     \small
     \begin{array}{l}
-        \INV{(\primdone, \args{\val})} \ \define \ 
-        \{
-        (\state, \hpstate, \primcom, \word) \sepline
-        \stateRel{\state}{\hpstate}
-        \land 
-        \arguments(\hpstate.\hthrdlocalst.\hRstate, \,  
-        \hpstate.\Mem, \args{\val})
-        \} \\
-        \\[-8pt]
+        % \INV{(\primdone, \args{\val})} \ \define \ 
+        % \{
+        % (\state, \hpstate, \primcom, \word) \sepline
+        % \stateRel{\state}{\hpstate}
+        % \land 
+        % \arguments(\hpstate.\hthrdlocalst.\hRstate, \,  
+        % \hpstate.\Mem, \args{\val})
+        % \} \\
+        % \\[-8pt]
         \INV{(\primcom, \args{\val})} \ \define \ 
         \{
             (\state, \hpstate, \primcom, \word) \sepline
@@ -1962,8 +1966,9 @@ We define \INV{} to represent this invariant below formally:
             \colorbox{yellow!80}
             {\!\!\!
                 $\exists \, \hpstate'. \,
-                \primTrans{(\primcom, 
-                    \hpstate)}{(\primdone, \hpstate')}$ 
+                \primMultiTrans
+                    {(\primcom, \hpstate)}
+                    {*}{(\primdone, \hpstate')}$ 
             \!\!\!} \\
             \hspace*{15.8em} 
             \land \
@@ -1976,11 +1981,13 @@ The invariant consists of the state relation between low- and
 high-level program state 
 (define as $\stateRel{\state}{\hpstate}$ in 
 \Fig{\ref{fig:State Relation between Low- and High-level Program State}}), 
-and the safe execution of the primitive command. 
-Including the safe execution of the primitive command is 
-important 
+and the safe execution of the primitive command
+($\primMultiTrans{}{*}{}$ means zero or one step). 
+Including the safe execution of 
+the primitive command is essential 
 because we can get some knowledges of high-level program 
-state from safe execution of specific primitive command $\primcom$. 
+state from the safe execution of 
+primitive command $\primcom$. 
 For example, if $\INV{(\primsw(\nil), \nil)}$
 holds, we can know that the location $\TaskNew$ 
 must save a pointer pointing to a ready thread
@@ -1989,17 +1996,21 @@ in thread pool.
 % can write them in the precondition of the specification 
 % of the context switch routine. 
 Otherwise, 
-the execution of primtive $\primsw$ will not be safe.
+the execution of primtive $\primsw$ will not be safe. 
+So, the memory location $\TaskNew$ in low-level memory 
+also saves such pointer according the state relation 
+between low- and high-level program state. 
 \[
     \small
     \begin{array}{l}
         \INV{(\primsw(\nil), \nil)} 
         \Longrightarrow \\ 
-        \hspace*{5em}
         \exists \, \thrdid, \hthrdlocalst. \, 
-        \hmsto{\TaskNew}{(\thrdid, 0)} 
+        (\hmsto{\TaskNew}{(\thrdid, 0)}) 
         \sepstar 
         (\astRdyCont{\thrdid}{\hthrdlocalst})
+        \sepstar
+        (\msto{\TaskNew}{(\thrdid, 0)})
         \sepstar \atrue
     \end{array}
 \]
