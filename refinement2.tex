@@ -754,9 +754,10 @@ $(\hRfile, \hWstk)$, executing instruction
 $\Psave \ \word$ will save the \localRN{} and \inRN{} registers 
 % and the block id  $\block_0$ of the current stack frame 
 into high-level frame list $\hWstk$. It also allocates 
-a new block $\block$ as a new stack frame in memory 
+a new block $\block$, size from 64 byte to $\word$ byte, 
+as a new stack frame in memory 
 (represented as $\malloc(\Mem, \block, 64, \word) = \Mem'$). 
-The size of the block $\block$ is from 64 byte to $\word$ byte. 
+% The size of the block $\block$ is from 64 byte to $\word$ byte. 
 The reason why it starts from 64 byte is that the 0 to 64 bytes 
 (16 words) in a stack frame are usually reserved to save 
 the contexts in window (\localRN{} and \inRN{} registers)
@@ -877,9 +878,10 @@ cell located $\TaskCur$ saving the current thread id; and shared
 memory $\Mem'$. 
 % Note, ready threads are threads in thread pool, 
 % except the current thread $\thrdid$. 
-The delayed buffer $\DBuf$ is 
-$\nil$, because the execution of high-level program will never operate 
-the special registers. The memory $\Mem_T$ used to 
+The delayed buffer $\DBuf$ is $\nil$, because client 
+code is not permitted to modify special register by 
+$\cwr{}$ instruction. 
+The memory $\Mem_T$ used to 
 save the contexts of the ready threads is {\it abstracted} as a thread pool 
 in high-level program. Their relation is represented as 
 ``$\rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}$".  
@@ -897,7 +899,7 @@ can be found in Appendix \ref{sec:more-staterel}.
         \begin{array}{c}
             \TYPE{(EvtTrace)} \ \ \evttr \ \define \ 
             \outEvt{\val} \stCons \evttr \sepline \nil \sepline 
-            \evtabort \quad \ \ \TYPE{(co-induction)} \\
+            \evtabort \quad \ \ \TYPE{(co-inductive)} \\
             \\
             \infer=
             {
@@ -1137,14 +1139,21 @@ state $\state$.
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\astCurCont{\thrdid}{\hthrdlocalst}}
                 & \define & 
-                \hpstate.\thrdid = \thrdid \, \land \, 
-                \hpstate.\hthrdlocalst = \hthrdlocalst \, \land \, 
-                \asrtmodel{(\state, \hpstate, \primcom, \word)}{\empAst} \\
+                % \hpstate.\thrdid = \thrdid \, \land \, 
+                % \hpstate.\hthrdlocalst = \hthrdlocalst 
+                % \, \land \, 
+                % \asrtmodel{(\state, \hpstate, \primcom, \word)}{\empAst}
+                \exists \, \thrdpool. \, 
+                \hpstate = (\thrdpool, \tid, \hthrdlocalst, \emptyset)
+                \,\land\, \thrdpool\backslash\{\tid\} = \emptyset
+                \,\land\, \asrtmodel{\state}{\aemp}
+                \\
                 \\[-5pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\astRdyCont{\thrdid}{\hthrdlocalst}} & \define &
                 \hpstate.\thrdpool =\{ \thrdid \rightsquigarrow \hthrdlocalst \}
-                \, \land \, \hpstate.\Mem = \emptyset \, \land \, 
+                \, \land \, \hpstate.\Mem = \emptyset \, \land \,
+                \tid \neq \hpstate.\tid\,\land\, 
                 \asrtmodel{\state}{\aemp} \\
             \\[-5pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
