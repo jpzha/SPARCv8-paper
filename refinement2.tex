@@ -1075,6 +1075,24 @@ program in the following subsections.
 %     \label{fig:Syntax of Relational Assertion}
 % \end{figure}
 
+\Fig{\ref{fig:Syntax of Relational Assertion}} gives 
+the {\it relational} assertion language, and its semantics 
+is given in \Fig{\ref{fig:Semantics of Relation Assertion}}. 
+The relational assertions are interpreted over relational 
+states $(\state, \hpstate, \primcom, \word)$, which 
+contains the low-level state $\state$, 
+the high-level state $\hpstate$, 
+the abstract assembly primitive command $\primcom$ 
+defined in \Fig{\ref{fig:Semantics of Relation Assertion}}, 
+and a word $\word$ recording the number of the tokens. 
+The high-level primitive command $\primcom$ is 
+either an abstract assembly primitive $\hprim$ 
+parametered with its arguments $\args{\val}$, or a 
+$\primdone$ meaning the primitive has already been 
+executed. The relational assertion $\relastP$ reserves
+original assertion $\astP$ describing the low-level 
+state $\state$.
+
 \begin{figure*}[!t]
     \centering
     \vspace{-0.5em}
@@ -1226,24 +1244,6 @@ program in the following subsections.
     \caption{Semantics of Relation Assertion}
     \label{fig:Semantics of Relation Assertion}
 \end{figure*}
-
-\Fig{\ref{fig:Syntax of Relational Assertion}} gives 
-the {\it relational} assertion language, and its semantics 
-is given in \Fig{\ref{fig:Semantics of Relation Assertion}}. 
-The relational assertions are interpreted over relational 
-states $(\state, \hpstate, \primcom, \word)$, which 
-contains the low-level state $\state$, 
-the high-level state $\hpstate$, 
-the abstract assembly primitive command $\primcom$ 
-defined in \Fig{\ref{fig:Semantics of Relation Assertion}}, 
-and a word $\word$ recording the number of the tokens. 
-The high-level primitive command $\primcom$ is 
-either an abstract assembly primitive $\hprim$ 
-parametered with its arguments $\args{\val}$, or a 
-$\primdone$ meaning the primitive has already been 
-executed. The relational assertion $\relastP$ reserves
-original assertion $\astP$ describing the low-level 
-state $\state$. 
 
 % Compared with the assertion defined before in 
 % \Fig{\ref{fig:Syntax of Assertions}}, relational 
@@ -1454,7 +1454,7 @@ in the precondition $\relspecpre$. In the postcondition
 $\relspecpost$, we require that the abstract assembly 
 primitive has been done (shown as $\safePrimAst{\primdone}$). 
 
-\begin{figure*}
+\begin{figure*}[!t]
     \centering
     \subfigure
     {

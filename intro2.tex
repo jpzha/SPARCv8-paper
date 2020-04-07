@@ -177,19 +177,19 @@ registers in the original window are no longer accessible,
 and the original \outRN{} registers becomes the \inRN{} registers
 in the current window.
 The $\crestore$ instruction does the inverse.
-% The arguments taken by the $\csave$ and  $\crestore$ instructions
-% are irrelevant here and can be ignored.
-Note that the arguments taken by the $\csave{}$ 
-in this example says, 
-in addition to operate the register window,  
-the execution of this instruction will also 
-allocate a new stack frame size 64 bytes 
-to \texttt{ChangY}. Here, $\spreg$ register, 
-which is an alias of $\reg{14}$, usually 
-acts as the stack pointer in SPARCv8. 
-The $\crestore{}$ instruction does the inverse 
-and the arguments it takes are irrelevant here 
-and can be ignored.  
+The arguments taken by the $\csave$ and  $\crestore$ instructions
+are irrelevant here and can be ignored.
+% Note that the arguments taken by the $\csave{}$ 
+% in this example says, 
+% in addition to operate the register window,  
+% the execution of this instruction will also 
+% allocate a new stack frame size 64 bytes 
+% to \texttt{ChangY}. Here, $\spreg$ register, 
+% which is an alias of $\reg{14}$, usually 
+% acts as the stack pointer in SPARCv8. 
+% The $\crestore{}$ instruction does the inverse 
+% and the arguments it takes are irrelevant here 
+% and can be ignored.  
 
 % assign the value of ($\spreg\!-\!64$), where the value 
 % of the register $\spreg$ is taken 

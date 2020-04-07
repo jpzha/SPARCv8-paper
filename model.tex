@@ -1,3 +1,6 @@
+\section{The \sparc{} Assembly Language}
+\label{sec:modeling}
+
 \begin{figure*}[!t]
 	\centering
 	\small
@@ -77,49 +80,10 @@
 			}
 		\end{array}
 	\]
+	\vspace*{-0.5em}
 	\caption{Machine States and Language for SPARCv8 Code}
 	\label {fig:Machine States and Language for SPARC Code}
-\end{figure*}
-
-\section{The \sparc{} Assembly Language}
-\label{sec:modeling}
-
-\begin{figure*}[!t]
-	\small
-	\begin{tabular}{rcclcrccl}
-		(RegFile) & $\RFile$ & $\in$ & $\text{RegName} \rightharpoonup 
-			\text{Val}$
-
-         & $\quad$ &
-        (RegName) & $\regN$ & $\define$ &
-         $\reg{0} \sepline \dots \sepline \reg{31} \sepline \psr \sepline \sr$ \\
-		
-		%(GenReg) & $r$ & $\define$ &
-		%$\reg{0} \sepline \dots \sepline \reg{31}$ & $\quad\quad$ &
-		(PsrReg) & $\psr$ & $\define$ &
-		$\regn \sepline
-			\regz \sepline
-			\regv \sepline
-			\regc \sepline \regcwp$ & $\quad$ &
-        %		
-		(SpeReg) & $\sr$ & $\define$ &
-		$\regwim \sepline
-			\regY \sepline
-\asr_0 \sepline \dots \sepline \asr_{31}$ \\
-		
-		(FrameList) & $\Wstack$ & $\define$ &
-                            $\nil \sepline \fm \stCons \Wstack$ & $\quad$ &
-		(Frame) & $\fm$ & := & $[\val_0, \dots, \val_7]$ \\
-		
-		(DelayBuff) & $\DBuf$ & $\define$ & $\nil \sepline
-                                  (\tick, \sr, \word) \dbCons \DBuf$
-                                  & $\quad$
-                                  %& & & & \\		
-		%(DelayItem) & $d$ & $\define$ & $(\tick, \sr, \word)$ & $\quad$
-		& (DelayCycle) & $\tick$ & $\in$ & $\{ 0, 1, \dots, X \}$
-	\end{tabular}
-	\caption{Register File, Frame List and DelayBuffer}
-	\label{fig:Register File and Frame List}
+	\vspace*{-0.5em}
 \end{figure*}
 
 We introduce the key \sparc{} instructions, the model of machine
@@ -235,6 +199,44 @@ and used for conditional control-transfer,
 and $\regcwp$ recording the id of the current register window.
 We explain the frame list $\Wstack$ and the delay buffer
 $\DBuf$ below.
+
+\begin{figure*}[!t]
+	\small
+	\begin{tabular}{rcclcrccl}
+		(RegFile) & $\RFile$ & $\in$ & $\text{RegName} \rightharpoonup 
+			\text{Val}$
+
+         & $\quad$ &
+        (RegName) & $\regN$ & $\define$ &
+         $\reg{0} \sepline \dots \sepline \reg{31} \sepline \psr \sepline \sr$ \\
+		
+		%(GenReg) & $r$ & $\define$ &
+		%$\reg{0} \sepline \dots \sepline \reg{31}$ & $\quad\quad$ &
+		(PsrReg) & $\psr$ & $\define$ &
+		$\regn \sepline
+			\regz \sepline
+			\regv \sepline
+			\regc \sepline \regcwp$ & $\quad$ &
+        %		
+		(SpeReg) & $\sr$ & $\define$ &
+		$\regwim \sepline
+			\regY \sepline
+\asr_0 \sepline \dots \sepline \asr_{31}$ \\
+		
+		(FrameList) & $\Wstack$ & $\define$ &
+                            $\nil \sepline \fm \stCons \Wstack$ & $\quad$ &
+		(Frame) & $\fm$ & := & $[\val_0, \dots, \val_7]$ \\
+		
+		(DelayBuff) & $\DBuf$ & $\define$ & $\nil \sepline
+                                  (\tick, \sr, \word) \dbCons \DBuf$
+                                  & $\quad$
+                                  %& & & & \\		
+		%(DelayItem) & $d$ & $\define$ & $(\tick, \sr, \word)$ & $\quad$
+		& (DelayCycle) & $\tick$ & $\in$ & $\{ 0, 1, \dots, X \}$
+	\end{tabular}
+	\caption{Register File, Frame List and DelayBuffer}
+	\label{fig:Register File and Frame List}
+\end{figure*}
 
 \begin{figure*}[!t]
 	\centering
