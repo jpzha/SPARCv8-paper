@@ -1038,13 +1038,14 @@ of abstract assembly primitive.
     \[
         \begin{array}{rcl}
             \textit{(RelAsrt)} \quad \relastP, \relastQ & \ \define \ & 
+            \empAst \sepline
+            \astP \sepline
             \hregsto{\hrn}{\val} \sepline 
-            \hmsto{\loc}{\val} \sepline
-            \empAst \\
+            \hmsto{\loc}{\val} \\
             & \ \ \ | &
             \astCurCont{\thrdid}{\hthrdlocalst} \sepline 
             \astRdyCont{\thrdid}{\hthrdlocalst} \sepline
-            \astP \sepline \safePrimAst{\primcom} \sepline 
+            \safePrimAst{\primcom} \sepline 
             \metricAst{\word} \\
             & \ \ \ | & 
             \nxtAst{\relastP} \sepline 
@@ -1105,12 +1106,18 @@ state $\state$.
     \vspace{-0.5em}
     \[
         \begin{array}{lcl}
+            \asrtmodel{(\state, \hpstate, \primcom, \word)}
+            {\empAst} & \define & 
+            \hpstate.\Mem = \emptyset \, \land \, 
+            \hpstate.\thrdpool = \emptyset \, \land \, 
+            \asrtmodel{\state}{\aemp} \\
+            \\[-8pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}{\astP}
             & \, \define \, & 
             \asrtmodel{\state}{\astP} \, \land \, 
             \hpstate.\Mem = \emptyset \, \land \, 
             \hpstate.\thrdpool = \emptyset  \\
-            \\[-5pt]
+            \\[-8pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\hregsto{\hrn}{\val}} & \define & 
                 \hpstate.\hthrdlocalst.\hRstate.\hRfile(\hrn) 
@@ -1133,12 +1140,6 @@ state $\state$.
                 {\hmsto{\loc}{\val}} & \define & 
                 \hpstate.\Mem = \{ \loc \rightsquigarrow \val \}
                 \, \land \, 
-                \hpstate.\thrdpool = \emptyset \, \land \, 
-                \asrtmodel{\state}{\aemp} \\
-            \\[-8pt]
-            \asrtmodel{(\state, \hpstate, \primcom, \word)}
-                {\empAst} & \define & 
-                \hpstate.\Mem = \emptyset \, \land \, 
                 \hpstate.\thrdpool = \emptyset \, \land \, 
                 \asrtmodel{\state}{\aemp} \\
             \\[-8pt]
