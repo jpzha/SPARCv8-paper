@@ -111,7 +111,7 @@ of client code preserves such restriction:
     and as for the \csave{} and \crestore{}, whose executions 
     will rotate register window, we restrict them 
     to be used in specific forms. 
-    we introduce ``$\Psave \ \word$" as a macro of 
+    We introduce ``$\Psave \ \word$" as a macro of 
     ``$\csave{} \ \spreg, -\word, \spreg$", 
     whose execution makes sure that a new \spreg{} 
     will be generated for the next window
@@ -187,7 +187,7 @@ of client code preserves such restriction:
     is marked invalid originally 
     (window in yellow in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
     % Supposing the register window and  
-    So, for simplicity, we don't allow client code 
+    So, we don't allow client code 
     to modify special registers and do \textit{not} 
     give semantics to \cwr{} instruction in high-level 
     client code. Modifying them is hidden in the 
@@ -423,7 +423,7 @@ We also introduce $\cprint \ \reg{}$,
 whose execution will output the value $\val$ in $\reg{}$ and 
 occur an message $\outEvt{\val}$, 
 % whose execution will occur an output $\outEvt{\val}$, 
-to replace the system call of function print. 
+to generate observable event. 
 The high-level message 
 $\hmsg$ can be either an empty message $\empmsg$, or an output 
 $\outEvt{\val}$, or a $\callEvt{\lab{}, \args{\val}}$ meaning to 
@@ -804,7 +804,7 @@ $\cprint$ and acts as an observable behavior.
 More details of the low-level program can be found in Appendix 
 \ref{sec:more-llang}. 
 
-\input{picture/StateRel}
+% \input{picture/StateRel}
 
 \subsection{State Relation between Low- and High-level Program}
 \label{subsec:state-rel}
@@ -815,10 +815,12 @@ More details of the low-level program can be found in Appendix
 In order to achieve refinement verification, we need to 
 establish a relation as an {\it invariant} 
 between low- and high-level program state. 
-We illustrate this relation, defined as 
-``$\stateRel{\state}{\hpstate}$" 
-formally below, with \Fig{\ref{fig:State Relation between 
-Low- and High-level Program State}}.
+We define this relation below, shown as 
+``$\stateRel{\state}{\hpstate}$". 
+% We illustrate this relation, defined as 
+% ``$\stateRel{\state}{\hpstate}$" 
+% formally below, with \Fig{\ref{fig:State Relation between 
+% Low- and High-level Program State}}.
 \[
     \small
     \infer
