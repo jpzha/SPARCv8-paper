@@ -1143,9 +1143,16 @@ state $\state$.
                 % \hpstate.\hthrdlocalst = \hthrdlocalst 
                 % \, \land \, 
                 % \asrtmodel{(\state, \hpstate, \primcom, \word)}{\empAst}
-                \exists \, \thrdpool. \, 
-                \hpstate = (\thrdpool, \tid, \hthrdlocalst, \emptyset)
-                \,\land\, \thrdpool\backslash\{\tid\} = \emptyset
+                \hpstate.\thrdpool\backslash\{\tid\} = \emptyset
+                \,\land\,
+                \hpstate.\tid = \tid 
+                \,\land\,
+                \hpstate.\hthrdlocalst = \hthrdlocalst
+                \,\land\,
+                \hpstate.\Mem = \emptyset
+                % \exists \, \thrdpool. \, 
+                % \hpstate = (\thrdpool, \tid, \hthrdlocalst, \emptyset)
+                % \,\land\, \thrdpool\backslash\{\tid\} = \emptyset
                 \,\land\, \asrtmodel{\state}{\aemp}
                 \\
                 \\[-5pt]
