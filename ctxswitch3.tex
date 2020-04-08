@@ -69,6 +69,7 @@ $\hthrdlocalst_n$.
             \Env{\env} \sepstar
             (\relmsto{\TaskNew}{(\thrdid_n, 0)}) \sepstar 
             \metricAst{10} \sepstar \\
+            \quad
             \RelCurT{\thrdid_c}{\notCare}{\env}{\hthrdlocalst_c} \sepstar 
             \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
             \safePrimAst{\, \primsw(\nil) \,}
@@ -83,9 +84,11 @@ $\hthrdlocalst_n$.
             \sepstar (\relmsto{\TaskNew}{(\thrdid_n, 0)}) 
             \sepstar \
             \\
+            \quad
             (\RelCurT{\thrdid_n}{\nst}{\env'}{\hthrdlocalst'}
             \,\land\,\pEnv{\env'} = \nst) \sepstar 
             \\
+            \qquad
             \RelRdyT{\thrdid_c}{\pEnv{\env}}{\hthrdlocalst_c} \sepstar 
             \safePrimAst{\, \primdone \,}
         \end{array}
@@ -136,8 +139,8 @@ the context switch is saved, as specified
 $\RelRdyT{\ctid}{\pEnv{\env}}{\hthrdlocalst_c}$. 
 The execution of $\primsw$ should be done in the final state. 
 We use $\hthrdlocalst'$ to represent the thread local 
-state of $\ntid$ instead of $\hthrdlocalst_n$, because 
-the execution of $\primsw$ will modify the code pointer 
+state of $\ntid$ instead of $\hthrdlocalst_n$ in final state, 
+because the execution of $\primsw$ will modify the code pointer 
 in $\hthrdlocalst_n$. More details about verifying 
 context switch routine can be found in 
 appendix~\ref{appendix:ctxswitchproof}. 

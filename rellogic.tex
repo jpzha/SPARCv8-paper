@@ -1129,26 +1129,6 @@ of abstract assembly primitive.
 %     \caption{Syntax of Relational Assertion}
 %     \label{fig:Syntax of Relational Assertion}
 % \end{figure}
-
-\paragraph{Relational Assertion}
-\Fig{\ref{fig:Syntax of Relational Assertion}} gives 
-the {\it relational} assertion language, and its semantics 
-is given in \Fig{\ref{fig:Semantics of Relation Assertion}}. 
-The relational assertions are interpreted over relational 
-states $(\state, \hpstate, \primcom, \word)$, which 
-contains the low-level state $\state$, 
-the high-level state $\hpstate$, 
-the abstract assembly primitive command $\primcom$ 
-defined in \Fig{\ref{fig:Semantics of Relation Assertion}}, 
-and a word $\word$ recording the number of the tokens. 
-The high-level primitive command $\primcom$ is 
-either an abstract assembly primitive $\hprim$ 
-parametered with its arguments $\args{\val}$, or a 
-$\primdone$ meaning the primitive has already been 
-executed. The relational assertion $\relastP$ reserves
-original assertion $\astP$ describing the low-level 
-state $\state$.
-
 \begin{figure*}[!t]
     \centering
     \vspace{-0.5em}
@@ -1318,20 +1298,45 @@ state $\state$.
     \label{fig:Semantics of Relation Assertion}
 \end{figure*}
 
+\paragraph{Relational Assertion}
+\Fig{\ref{fig:Syntax of Relational Assertion}} gives 
+the {\it relational} assertion language, and its semantics 
+is given in \Fig{\ref{fig:Semantics of Relation Assertion}}. 
+The relational assertions are interpreted over relational 
+states $(\state, \hpstate, \primcom, \word)$, which 
+contains the low-level state $\state$, 
+the high-level state $\hpstate$, 
+the abstract assembly primitive command $\primcom$ 
+defined in \Fig{\ref{fig:Semantics of Relation Assertion}}, 
+and a word $\word$ recording the number of the tokens. 
+The high-level primitive command $\primcom$ is 
+either an abstract assembly primitive $\hprim$ 
+parametered with its arguments $\args{\val}$, or a 
+$\primdone$ meaning the primitive has already been 
+executed. The relational assertion $\relastP$ reserves
+original assertion $\astP$ describing the low-level 
+state $\state$.
+
 % Compared with the assertion defined before in 
 % \Fig{\ref{fig:Syntax of Assertions}}, relational 
 % asssertion $\relastP$ reserves original assertion 
 % $\astP$ describing the low-level state $\state$, and 
 % adds some new ones to describe the high-level state. 
-
-$\hregsto{\hrn}{\val}$ says that value in register 
-$\hrn$ in high-level register file is $\val$. 
-$\hmsto{\loc}{\val}$ specifies a singleton memory 
-cell with value $\val$ in the address of the location 
-$\loc$ in high-level memory. The assertion $\empAst$ 
+We define $\hregsto{\hrn}{\val}$ and $\hmsto{\loc}{\val}$ 
+to describe the state of 
+register file and memory in high-level. 
+The assertion $\empAst$ 
 says that the high-level memory and thread pool are 
 both empty, and the low-level state satisfies $\aemp$ 
-defined in \Fig{\ref{fig:Semantics of Assertions}}. 
+defined in \Fig{\ref{fig:Semantics of Assertions}}.
+% $\hregsto{\hrn}{\val}$ says that value in register 
+% $\hrn$ in high-level register file is $\val$. 
+% $\hmsto{\loc}{\val}$ specifies a singleton memory 
+% cell with value $\val$ in the address of the location 
+% $\loc$ in high-level memory. The assertion $\empAst$ 
+% says that the high-level memory and thread pool are 
+% both empty, and the low-level state satisfies $\aemp$ 
+% defined in \Fig{\ref{fig:Semantics of Assertions}}. 
 The assertion $\astCurCont{\thrdid}{\hthrdlocalst}$ 
 and $\astRdyCont{\thrdid}{\hthrdlocalst}$ represent 
 the thread local state of current thread and ready 
@@ -2129,20 +2134,36 @@ and it should be stable under the execution
 of the abstract assembly primitive 
 (shown as $\Sta(\hprim(\args{\val}), \relastP_r)$)
 defined below). 
+\[
+    \small
+    \begin{array}{l}
+        \Sta(\hprim(\args{\val}), \relastP_r) 
+        \define 
+        \forall \, \state, \hpstate, \hpstate', \word. \\   
+        \qquad
+        ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
+            {\relastP_r\sepstar\atrue}) 
+        \land
+        \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
+        \qquad    
+        \asrtmodel{(\state, \hpstate', \primdone, \word)}
+        {\relastP_r\sepstar\atrue}
+    \end{array}
+\]
 
-{\small
-\begin{multline*}
-    \Sta(\hprim(\args{\val}), \relastP_r) 
-    \define 
-    \forall \, \state, \hpstate, \hpstate', \word. \\ 
-    ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-        {\relastP_r\sepstar\atrue}) 
-    \land
-    \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
-    \asrtmodel{(\state, \hpstate', \primdone, \word)}
-        {\relastP_r\sepstar\atrue} 
-\end{multline*}
-}
+% {\small
+% \begin{multline*}
+%     \Sta(\hprim(\args{\val}), \relastP_r) 
+%     \define 
+%     \forall \, \state, \hpstate, \hpstate', \word. \\ 
+%     ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
+%         {\relastP_r\sepstar\atrue}) 
+%     \land
+%     \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
+%     \asrtmodel{(\state, \hpstate', \primdone, \word)}
+%         {\relastP_r\sepstar\atrue} 
+% \end{multline*}
+% }
 % We show that our extended program logic is sufficient 
 % to prove the contextual refinement between 
 % a context switch routine written in SPARCv8
