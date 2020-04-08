@@ -622,33 +622,31 @@ from $\lab{}$ in $\code$ below.
                 {
                     \swtrans{(\Mem, (\RFile, \Wstack), \DBuf)}
                     {\csave \; \reg{s} \; \oexp \; \reg{d}}
-                    {(\Mem, (\RFile'', \Wstack'), \DBuf)}
+                    {(\Mem, (\RFile\{ \reg{d} \rightsquigarrow \val' \}, \Wstack'), \DBuf)}
                 }
                 {
 					\decwin{(\RFile, \Wstack)} = 
 						(\RFile', \Wstack') \quad
                     \eval{\oexp} = \val
 					\quad
-					\val' = \RFile(\reg{s}) \!+\! \val
-					\quad
-                    \RFile'' =
-                      \fsubst{\RFile'}{\reg{d}}{\val'}
+					\val' = \RFile(\reg{s})\!+\!\val
+                    % \RFile'' =
+                    %   \fsubst{\RFile'}{\reg{d}}{\RFile(\reg{s}) \!+\! \val}
                 }
                 \vspace{0.3cm}
                 \infer
                 {
                     \swtrans{(\Mem, (\RFile, \Wstack), \DBuf)}
                     {\crestore \; \reg{s} \; \oexp \; \reg{d}}
-                    {(\Mem, (\RFile'', \Wstack'), \DBuf)}
+                    {(\Mem, (\RFile\{ \reg{s} \rightsquigarrow \val' \}, \Wstack'), \DBuf)}
                 }
                 {
                     \incwin{(\RFile, \Wstack)} = (\RFile', \Wstack') \quad
                     \eval{\oexp} = \val
 					\quad
-					\val' = \RFile(\reg{s}) \!+\! \val
-					\quad
-                    \RFile'' =
-                      \fsubst{\RFile'}{\reg{d}}{\val'}
+					\val' = \RFile(\reg{s})\!+\!\val
+                    % \RFile'' =
+                    %   \fsubst{\RFile'}{\reg{d}}{\RFile(\reg{s}) \!+\! \val}
                     %R'' = R'\{ \reg{d} \rightsquigarrow \eval{\reg{s}} + \word \}
                 }
             \end{minipage}
@@ -680,7 +678,8 @@ from $\lab{}$ in $\code$ below.
 						\itrans{(M, R)}{\cadd \; \reg{s} \; \oexp \; \reg{d}}
 						{
 							(M, R\{\reg{d}
-                                 \rightsquigarrow \val\})	
+                                %  \rightsquigarrow \val_1\!+\!\val_2\})	
+								\rightsquigarrow \val\})
 						}
 					}
 					{

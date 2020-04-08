@@ -1378,14 +1378,15 @@ $\Cspec$ for refinement verification are defined below :
                 % * \regst{\lreg{7}}{\notCare}
                 % * (\regst{\reg{15}}{\lv[3]})
                 \sepstar (\lreg{7} = \lreg{7}')
-                \sepstar (\reg{15} = \reg{15}') 
+                \sepstar (\reg{15} =_{\lab{}} \reg{15}') 
                 \sepstar
                 \colorbox{yellow!80}
                 	{$\safePrimAst{\,\primAdd(\nil)\,}$}
                 \\
 				\\[-8pt]
 				
-				\relspecpost & \define & \lambda \, lv. \;
+                \relspecpost & \define & 
+                \lambda \, lv. \;
 				% (\regst{\ireg{0}}{\lv[0]})
                 % * (\regst{\ireg{1}}{\lv[1]})
                 % * (\regst{\ireg{2}}{\lv[2]}) 
@@ -1406,7 +1407,7 @@ $\Cspec$ for refinement verification are defined below :
                 % * \regst{\lreg{7}}{\notCare}
                 % * (\regst{\reg{15}}{\lv[3]})
                 \sepstar (\lreg{7} = \lreg{7}')
-                \sepstar (\reg{15} = \reg{15}') 
+                \sepstar (\reg{15} =_{\lab{}} \reg{15}') 
                 \, \sepstar \, 
                 \colorbox{yellow!80}{$\safePrimAst{\,\primdone\,}$}
             \end{array} \\
@@ -1428,9 +1429,10 @@ $\Cspec$ for refinement verification are defined below :
                     % \, \land \, \npc' = \hRfile(\reg{15})\!+\!12
                     % \, \land \, \args{\val} = \nil 
                     \hpstate' = 
-                    (\thrdpool, \thrdid, ((\hRfile', \hWstk), 
-                        \hRfile(\reg{15})\!+\!8, 
-                        \hRfile(\reg{15})\!+\!12), \Mem)
+                    (\thrdpool, \thrdid, ((\hRfile
+                        \{ \lreg{7} \rightsquigarrow \val \}, \hWstk), 
+                        \lab{}\!+\!8, 
+                        \lab{}\!+\!12), \Mem)
                     \\
                     \\[-9pt]
                     \multicolumn{3}{l}
@@ -1440,9 +1442,12 @@ $\Cspec$ for refinement verification are defined below :
                         \hpstate = (\thrdpool, \thrdid, 
                         ((\hRfile, \hWstk), 
                             \pc, \npc), \Mem), \, 
-                        \hRfile' = \hRfile\{ \lreg{7} \rightsquigarrow 
-                                (\hRfile(\ireg{0}) \!+ \!\hRfile(\ireg{1}) 
-                                \!+\! \hRfile(\ireg{2})) \}
+                        \val = (\hRfile(\ireg{0}) \!+ \!\hRfile(\ireg{1}) 
+                        \!+\! \hRfile(\ireg{2})), \, 
+                        \lab{} = \hRfile(\reg{15})
+                        % \hRfile' = \hRfile\{ \lreg{7} \rightsquigarrow 
+                        %         (\hRfile(\ireg{0}) \!+ \!\hRfile(\ireg{1}) 
+                        %         \!+\! \hRfile(\ireg{2})) \}
                     } \\
                     \\[-5pt]
                     \multicolumn{3}{l}
@@ -1451,6 +1456,11 @@ $\Cspec$ for refinement verification are defined below :
                         \exists \, \val. \, 
                         (\regst{\regN}{\val} \,\land\,
                             \hregsto{\hrn}{\val})
+                        \qquad
+                        \regN =_{\lab{}} \hrn' \ \define \ 
+                        \exists \, \lab{}'. \, 
+                        (\regst{\regN}{\lab{}'} \,\land\,
+                            \hregsto{\hrn}{\lab{}'})
                     }
                 \end{array}
             }

@@ -858,13 +858,16 @@ $(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$.
 				{
 					\wfins{(\regst{\regwim}{\word}) * p}
 					{\csave \; \reg{s} \; \oexp \; \reg{d}}
-					{(\regst{\regwim}{\word}) * (\regst{\reg{d}}{\val_1 \!+\! \val_2}) * p_2}
+					{(\regst{\regwim}{\word}) * 
+					% (\regst{\reg{d}}{\val_1 \!+\! \val_2}) * p_2}
+					(\regst{\reg{d}}{\val}) * p_2}
 				}
 				{
 					\begin{array}{c}
 						p \Rightarrow (\reg{s} = \val_1 \wedge \oexp = \val_2) \quad \; \;
 						\cwp' = \precwp(\cwp) \quad \; \;
-						\word \,\bitAND\, 2^{\cwp'} = 0 \\
+						\word \,\bitAND\, 2^{\cwp'} = 0 \quad \; \;
+						\val = \val_1\!+\!\val_2 \\
 						p \Rightarrow
                         %(\regst\regcwp\cwp) *
                         %\stackAst{\Wstack} *
@@ -901,14 +904,16 @@ $(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$.
 					\wfins{(\regst{\regwim}{\word}) * p}
 					{\crestore \; \reg{s} \; \oexp \; \reg{d}}
 					{(\regst{\regwim}{\word}) *
-                       (\regst{\reg{d}}{\val_1 \!+\! \val_2}) * p_2}
+                    %    (\regst{\reg{d}}{\val_1 \!+\! \val_2}) * p_2}
+					(\regst{\reg{d}}{\val}) * p_2}
 				}
 				{
 					\begin{array}{c}
 						p \Rightarrow
                            (\reg{s} = \val_1 \wedge \oexp = \val_2) \quad \; \;
 						\cwp' = \postcwp(\cwp) \quad \; \;
-						\word \,\bitAND\, 2^{\cwp'} = 0\\
+						\word \,\bitAND\, 2^{\cwp'} = 0 \quad \;\;
+						\val = \val_1\!+\!\val_2\\
 						p \Rightarrow
                         %(\regst\regcwp\cwp) *
                         %\stackAst{\fm_1 \stCons \fm_2\stCons \Wstack} *
