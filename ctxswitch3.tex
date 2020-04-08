@@ -1,0 +1,143 @@
+\section{Verifying Context Switch Routine}
+\label{sec:ctxswitch}
+
+\indent
+We apply our relational program logic to verify
+that a context switch routine implemented in \sparc,
+which is used to save the current task's context and
+restore the new task's context, 
+have contextual refinement with the $\primsw{}$ primitive 
+defined in \Sec{\ref{sec:refine-verification-sparc}}. 
+
+\Fig{\ref{fig:The Structure of Context Switch Routine}}
+shows the structure of the code.
+\begin{center}
+    \input{picture/CodeStructure2}
+    \figurecaption{The Structure of Context Switch Routine}
+	\label{fig:The Structure of Context Switch Routine}
+\end{center}
+\begin{itemize}
+    \item \texttt{SwitchEntry}
+    is the entry of the context switch routine. 
+    It saves \localRN{} and \inRN{} registers of current
+    window into stack (in memory), and call 
+    \texttt{reg\_save} to save other registers into TCB.
+    
+    \item
+    \texttt{Save\_UsedWindows} saves
+	the register windows (except the current one)
+    into the current task's stack in memory. 
+    It checks whether the previous window is valid. 
+    If it's valid, use the instruction $\crestore{}$ 
+    to set the previous window as the current one, 
+    and save its contents into stack (in memory), 
+    then check the previous one continuously.
+
+    \item     
+    \texttt{Switch\_NewContext}
+    restores the general registers from the new task's TCB 
+    (by calling \texttt{reg\_restore})
+    and its stack in memory,
+    respectively. Then it sets the new task as
+    the current one.
+\end{itemize}
+
+The main complexity of the verification lies in
+the code manages the register windows.
+To save all the register windows, \texttt{Save\_UsedWindows}
+repetitively restores the next window into general registers
+(as the current window)
+and then saves them into memory, until all the windows are saved.
+
+\paragraph{\textbf{Specification.}}
+Below we give the pre- and post-conditions
+($\Apre$ and $\Apost$) of the verified module.
+Each of them takes 6 arguments, 
+the id of the current task $\ctid$, the id of the new 
+task $\ntid$, the values $\env$ of general registers and all
+other register windows, the new task's context $\nst$
+that needs to be restored, and the thread local state 
+of current task $\hthrdlocalst_c$ and the new task 
+$\hthrdlocalst_n$.  
+\[
+    \small
+    \begin{array}{l}
+        \Apre(\ctid, \ntid, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
+        \ \define \\
+        \quad
+        \begin{array}{l}
+            \Env{\env} \sepstar
+            (\relmsto{\TaskNew}{(\thrdid_n, 0)}) \sepstar 
+            \metricAst{10} \sepstar \\
+            \RelCurT{\thrdid_c}{\notCare}{\env}{\hthrdlocalst_c} \sepstar 
+            \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+            \safePrimAst{\, \primsw(\nil) \,}
+        \end{array}
+        \\
+        \\[-8pt]
+        \Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
+        \ \define \\ 
+        \quad
+        \begin{array}{l}
+            \exists \, \env', \hthrdlocalst'. \, \Env{\env'} 
+            \sepstar (\relmsto{\TaskNew}{(\thrdid_n, 0)}) 
+            \sepstar \
+            \\
+            (\RelCurT{\thrdid_n}{\nst}{\env'}{\hthrdlocalst'}
+            \,\land\,\pEnv{\env'} = \nst) \sepstar 
+            \\
+            \RelRdyT{\thrdid_c}{\pEnv{\env}}{\hthrdlocalst_c} \sepstar 
+            \safePrimAst{\, \primdone \,}
+        \end{array}
+    \end{array}
+\]
+In the specification,
+we use $\Env{\env}$ to specify the values of
+general registers and the register windows.
+We describe the state
+of the current task (its TCB and stack in memory)
+using $\RelCurT{\ctid}{\notCare}{\env}{\ctid}$. 
+It describes the memory of current task's TCB 
+and stack for saving contexts in low-level, 
+the thread local state $\hthrdlocalst_n$ in high-level, 
+and state relation of $\ctid$ in low- and high-level 
+program. Similarly, the $\RelRdyT{\ntid}{\nst}{\hthrdlocalst_n}$, 
+describes states of new task $\ntid$ in low- and high-level 
+program state and their relation. The memory location 
+$\TaskNew$ records the thread id of the new task.  
+Here, we use $\relmsto{\TaskNew}{(\ntid, 0)}$ to present 
+$\TaskNew$ in both low- and high-level memory saving 
+pointer $(\tid_n, 0)$. 
+\[
+    \relmsto{\loc}{\val} \ \define \ 
+    (\msto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val})
+\]
+The precondition takes 10 tokens ($\metricAst{10}$). 
+As we have explained, verifying instruction \call{} 
+and \jmp{} will consume a token. So, verifying calling 
+\textsf{reg\_save} and \textsf{reg\_restore} will 
+both consume a token. And \textsf{Save\_UsedWindows}, 
+which checks each previous window 
+and saves its contexts into memory until the invalid one, 
+will execute at most eight times, because upper bound of 
+the number of windows is eight. So, 10 tokens is sufficient. 
+
+If we compare $\Apre$ and $\Apost$, we can see that
+$\ntid$ becomes the current task
+($\RelCurT{\ntid}{\nst}{\env'}{\hthrdlocalst'}$),
+and its general registers and stack, specified by
+$\Env{\env'}$, are loaded from the saved context
+$\nst$ (\ie{} $\pEnv{\env'}\!=\!\nst$).
+Here $\pEnv{\env'}$ refers to the part of the environment
+that we want to save or restore as context.
+Correspondingly, $\ctid$ becomes non-current-thread,
+and part of its environment $\env$ at the entry of
+the context switch is saved, as specified
+$\RelRdyT{\ctid}{\pEnv{\env}}{\hthrdlocalst_c}$. 
+The execution of $\primsw$ should be done in the final state. 
+We use $\hthrdlocalst'$ to represent the thread local 
+state of $\ntid$ instead of $\hthrdlocalst_n$, because 
+the execution of $\primsw$ will modify the code pointer 
+in $\hthrdlocalst_n$. More details about verifying 
+context switch routine can be found in 
+appendix~\ref{appendix:ctxswitchproof}. 

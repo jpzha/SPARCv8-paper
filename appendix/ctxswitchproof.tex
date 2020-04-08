@@ -179,7 +179,7 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
             \Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n) 
             & \define & 
             \Env{\env} \sepstar
-            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) \sepstar 
+            (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) \sepstar 
             \metricAst{10} \sepstar \\
             & & \quad 
             \RelCurT{\thrdid_c}{\notCare}{\env}{\hthrdlocalst_c} \sepstar 
@@ -188,7 +188,7 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
             \\[-5pt]
             \Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
             & \define & \exists \, \env', \hthrdlocalst'. \, \Env{\env'} 
-            \sepstar (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) 
+            \sepstar (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) 
             \sepstar \\
             & & 
             \quad 
@@ -207,12 +207,12 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
             \hspace*{-0.15em}
             \begin{array}{lcl}
                 \RelStkFm{\block}{\fm_1}{\fm_2} & \define & 
-                (\msto{(\block, 0)}{\fm_1[0]}) \sepstar \dots \sepstar 
-                (\msto{(\block, 28)}{\fm_1[7]}) \\
+                (\relmsto{(\block, 0)}{\fm_1[0]}) \sepstar \dots \sepstar 
+                (\relmsto{(\block, 28)}{\fm_1[7]}) \\
                 & & \quad \sepstar 
-                (\msto{(\block, 32)}{\fm_2[0]}) \sepstar 
+                (\relmsto{(\block, 32)}{\fm_2[0]}) \sepstar 
                 \dots \sepstar
-                (\msto{(\block, 60)}{\fm_2[7]})
+                (\relmsto{(\block, 60)}{\fm_2[7]})
             \end{array} \\
             \\[-5pt]
             \hspace*{-0.15em}
@@ -244,7 +244,7 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
             \sepstar \regst{\inRN}{\RFile(\inRN)} \sepstar \\
             \hspace*{7em} \regst{\regn}{\RFile(\regn)} \sepstar 
             \regst{\regz}{\RFile(\regz)} \sepstar \regst{\regc}{\RFile(\regz)} 
-            \sepstar \regst{\regv}{\RFile(\regv)}
+            \sepstar \regst{\regv}{\RFile(\regv)} \sepstar \dots
             \\
             \\[-5pt]
             % \HRegs{\hRfile} \ \define \ \hregsto{\globalRN}{\hRfile(\globalRN)} \sepstar
@@ -263,30 +263,30 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
             \hspace*{-0.15em}
             \begin{array}{lll}
                 \relcontext{\thrdid}{\block}{\nst} & \define & 
-                (\msto{(\thrdid, \ofsGOne)}{\nst(\greg{0})}) 
+                (\relmsto{(\thrdid, \ofsGOne)}{\nst(\greg{0})}) 
                 \sepstar \, \dots \, \sepstar
-                (\msto{(\thrdid, \ofsGEig)}{\nst(\greg{7})}) \\
+                (\relmsto{(\thrdid, \ofsGEig)}{\nst(\greg{7})}) \\
                 & & 
                 \sepstar
-                (\msto{(\thrdid, \ofsOOne)}{\nst(\oreg{0})}) 
+                (\relmsto{(\thrdid, \ofsOOne)}{\nst(\oreg{0})}) 
                 \sepstar \, \dots \, \sepstar
-                (\msto{(\thrdid, \ofsOEig)}{\nst(\oreg{7})}) \\
+                (\relmsto{(\thrdid, \ofsOEig)}{\nst(\oreg{7})}) \\
                 & & 
                 \sepstar 
-                (\msto{(\thrdid, \ofsN)}{\nst(\regn)}) \sepstar \, \dots 
-                \sepstar (\msto{(\thrdid, \ofsV)}{\nst(\regv)}) \\
+                (\relmsto{(\thrdid, \ofsN)}{\nst(\regn)}) \sepstar \, \dots 
+                \sepstar (\relmsto{(\thrdid, \ofsV)}{\nst(\regv)}) \\
                 & & 
                 \sepstar \RelStkFm{\block}{\nst[\localRN]}{\nst[\inRN]}
                 % \sepstar
-                % (\msto{(\block, 0)}{\nst(\lreg{0})}) 
+                % (\relmsto{(\block, 0)}{\nst(\lreg{0})}) 
                 % \sepstar \, \dots \, \sepstar
-                % (\msto{(\block, 28)}{\nst(\lreg{7})}) 
+                % (\relmsto{(\block, 28)}{\nst(\lreg{7})}) 
                 % \\
                 % & & 
                 % \sepstar
-                % (\msto{(\block, 32)}{\nst(\ireg{0})}) 
+                % (\relmsto{(\block, 32)}{\nst(\ireg{0})}) 
                 % \sepstar \, \dots \, \sepstar
-                % (\msto{(\block, 60)}{\nst(\ireg{7})})
+                % (\relmsto{(\block, 60)}{\nst(\ireg{7})})
             \end{array}
             \\
             \\
@@ -308,7 +308,7 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
                 \RelStk{\block'}{\Wstack}{\hWstk} \sepstar (\astCurCont{\thrdid_c}{\hthrdlocalst})) \\
                 & & \, \land \,  \RFile(\spreg) = (\block, 0) \, \land \, 
                 \Rinj{\RFile}{\hRfile}
-                % ((\msto{\TaskCur}{\thrdid_c}) \sepstar 
+                % ((\relmsto{\TaskCur}{\thrdid_c}) \sepstar 
                 % (\relcontext{\thrdid_n}{\block}{\nst} \, \land \, \RFile(\spreg) = (\block, 0)) \sepstar \\
                 % & & \RelStk{\block'}{\Wstack}{\hWstk} \sepstar (\astCurCont{\thrdid_c}{\hthrdlocalst}))
                 % \, \land \, (\Rinj{\RFile}{\hRfile}) 
@@ -321,7 +321,7 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
             \, \RFile(\fpreg) = (\block', 0), \nst \in \text{RegFile} \\
             \\[-5pt]
             \RelCurT{\thrdid_c}{\nst}{\env}{\hthrdlocalst} \define 
-            (\msto{\TaskCur}{(\thrdid_c, 0)}) \sepstar 
+            (\relmsto{\TaskCur}{(\thrdid_c, 0)}) \sepstar 
             \RelCurTAux{\thrdid_c}{\nst}{\env}{\hthrdlocalst} \\
             \\[-5pt]
             \hspace*{-0.15em}
@@ -340,7 +340,10 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
             \text{where} \ \hthrdlocalst = ((\hRfile, \block, \hWstk), \pc, \npc), 
             \, \nst(\fpreg) = (\block', 0), \, \nst \in \text{RegFile} \\
             \\[-5pt]
-            \pEnv{\env} \ \define \ \RFile \qquad \ \ \text{where} \ \env = (\RFile, \Wstack) 
+            \pEnv{\env} \ \define \ \RFile \qquad \ \ \text{where} \ \env = (\RFile, \Wstack)
+            \qquad\qquad
+            \relmsto{\loc}{\val} \ \define \ 
+            \msto{\loc}{\val} \sepstar \hmsto{\loc}{\val} 
         \end{array}
     \]
     \caption{Auxiliary Definitions for Specification}
@@ -428,9 +431,9 @@ is well-defined.
         $\ctxfm(\state.\Rstate) = \Wstack'$ 
         and $\restoreCtx{\state.\Mem}{\thrdid'}{\Rstate'}$ hold. 
         And we require $\thrdid_c = \hpstate.\thrdid$, $\thrdid_n = \thrdid'$, 
-        $\env = (\state.\Rstate.\RFile, \Wstack')$, $\nst = \Rstate'.\RFile$, $\word = 20$, 
+        $\env = (\state.\Rstate.\RFile, \Wstack')$, $\nst = \Rstate'.\RFile$, $\word = 10$, 
         and $\relastP_r = \exists \, \Mem, \thrdpool. \, \MemRAsrt{\Mem}
-        \sepstar \RdyTsRAsrt{\thrdpool} \sepstar \rRegs$. Then, we can finish 
+        \sepstar \RdyTsRAsrt{\thrdpool}$. Then, we can finish 
         the proof. 
 
         \begin{figure}[!t]
@@ -443,7 +446,7 @@ is well-defined.
                         \begin{array}{ll}
                             \empAst & \quad \cif \ \Mem = \emptyset \\
                             \\[-9pt]
-                            (\msto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val}) 
+                            (\relmsto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val}) 
                             & \quad \cif \ \Mem = \{ \loc \rightsquigarrow \val \} \\
                             \\[-9pt]
                             \exists \, \Mem_1, \Mem_2. \,
@@ -486,9 +489,9 @@ is well-defined.
                     & & \, \land \, 
                     (\exists \, \cwp, n. \, \RFile(\regcwp) = \cwp \, \land \, 
                     \RFile(\regwim) = 2^n \, \land \, \prevcwp{(\cwp)} = n) \\
-                    \\[-5pt]
-                    \rRegs & \define & \regst{\asr_0}{\notCare} \sepstar \dots 
-                        \regst{\asr_{31}}{\notCare} \sepstar \regst{\regY}{\notCare} 
+                    % \\[-5pt]
+                    % \rRegs & \define & \regst{\asr_0}{\notCare} \sepstar \dots 
+                    %     \regst{\asr_{31}}{\notCare} \sepstar \regst{\regY}{\notCare} 
                 \end{array}
             \]
             \caption{Auxiliary Definitions About Frame Assertion}
@@ -515,7 +518,7 @@ previous window is valid and saving the contents of the valid
 previous window until the previous one is invalid. 
 We need to define the loop invariant $I$ here. 
 
-\begin{figure}[!thp]
+\begin{figure}[!t]
     \centering
     \[
         \small
@@ -548,7 +551,7 @@ We need to define the loop invariant $I$ here.
                 \sepstar
                 (
                 (
-                    \msto{\TaskCur}{(\thrdid_c, 0)} \sepstar 
+                    \relmsto{\TaskCur}{(\thrdid_c, 0)} \sepstar 
                     \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
                     \astCurCont{\thrdid_c}{\hthrdlocalst_c}
                 ) 
@@ -659,7 +662,7 @@ We need to define the loop invariant $I$ here.
             \quad
             \relspecpre_{\textit{su}} \, \lgvl \define 
             I(\thrdid_c, \RFile, \hthrdlocalst_c) \sepstar 
-            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) 
+            (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) 
             \sepstar
             \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
             \safePrimAst{\, \primsw(\nil) \,} \\
@@ -668,7 +671,7 @@ We need to define the loop invariant $I$ here.
             \relspecpost_{\textit{su}} \, \lgvl \define 
             \exists \, \hthrdlocalst'. \, 
             \Env{\nst, \nil} \sepstar 
-            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) \sepstar \\
+            (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) \sepstar \\
             \hspace*{6em}
             \RelCurT{\thrdid_n}{\nst}{(\nst, \nil)}{\hthrdlocalst'} 
             \sepstar \RelRdyT{\thrdid_c}{\RFile}{\hthrdlocalst_c}
@@ -681,7 +684,7 @@ We need to define the loop invariant $I$ here.
             \quad 
             \relspecpre_{\textit{sn}} \ \lgvl \define 
             \exists \, \RFile_0. \, \Env{(\RFile_0, \nil)} \sepstar 
-            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+            (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
             \sepstar \metricAst{1} \sepstar \\
             \hspace*{6em}
             \RelCurT{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c} \sepstar
@@ -692,7 +695,7 @@ We need to define the loop invariant $I$ here.
             \relspecpost_{\textit{sn}} \, \lgvl \define 
             \exists \, \hthrdlocalst'. \, 
             \Env{\nst, \nil} \sepstar 
-            (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) \sepstar \\
+            (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n) \sepstar \\
             \hspace*{6em}
             \RelCurT{\thrdid_n}{\nst}{(\nst, \nil)}{\hthrdlocalst'} 
             \sepstar \RelRdyT{\thrdid_c}{\RFile}{\hthrdlocalst_c}
@@ -739,7 +742,7 @@ We need to define the loop invariant $I$ here.
                 \left\{
                     \begin{array}{l}
                         \Env{\RFile, \Wstack} \sepstar 
-                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+                        (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
                         \sepstar \metricAst{10} \sepstar \\
                         \quad 
                         \RelCurT{\thrdid_c}{\notCare}{(\RFile, \Wstack)}{\hthrdlocalst_c} 
@@ -771,7 +774,7 @@ We need to define the loop invariant $I$ here.
                 \left\{
                     \begin{array}{l}
                         \Env{\RFile\{ \lreg{1} \rightsquigarrow \notCare \}, \Wstack} \sepstar 
-                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+                        (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
                         \sepstar \metricAst{9} \sepstar \\
                         \quad 
                         {
@@ -802,7 +805,7 @@ We need to define the loop invariant $I$ here.
                     \begin{array}{l}
                         \exists \, \RFile_0. \, 
                         (\Env{\RFile_0, \Wstack} \, \land \, \wptr(\RFile_0)) \sepstar 
-                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+                        (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
                         \sepstar \metricAst{9} \sepstar \\
                         \quad 
                         \RelCurT{\thrdid_c}{\RFile}{(\RFile, \Wstack)}{\hthrdlocalst_c}
@@ -818,7 +821,7 @@ We need to define the loop invariant $I$ here.
                 \color{blue}
                 \{
                     I(\thrdid_c, \RFile, \hthrdlocalst_c) \sepstar 
-                    (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
+                    (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, \thrdid_c \neq \thrdid_n)
                     \sepstar
                     \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
                     \safePrimAst{\, \primsw(\nil) \,}
@@ -848,7 +851,7 @@ We need to define the loop invariant $I$ here.
                             }
                         } 
                         \sepstar 
-                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
                         \thrdid_c \neq \thrdid_n) \sepstar \metricAst{1} \sepstar \\
                         \quad 
                         \RelCurT{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c}
@@ -866,7 +869,7 @@ We need to define the loop invariant $I$ here.
                     \begin{array}{l}
                         \exists \, \RFile_0. \, 
                         \Env{\RFile_0, \nil} \sepstar 
-                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
                         \thrdid_c \neq \thrdid_n) \sepstar \metricAst{1} \sepstar 
                         \safePrimAst{\, \primsw(\nil) \,} \\
                         \\[-9pt] \quad \sepstar 
@@ -874,7 +877,7 @@ We need to define the loop invariant $I$ here.
                             \colorbox{yellow!80}
                             {
                                 $
-                                \msto{\TaskCur}{(\thrdid_c, 0)} \sepstar
+                                \relmsto{\TaskCur}{(\thrdid_c, 0)} \sepstar
                                 \RelCurTAux{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c}
                                 $
                             }
@@ -883,7 +886,7 @@ We need to define the loop invariant $I$ here.
                         \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n}
                         % (
                         %     \exists \, \block_0. \, 
-                        %     (\msto{\TaskCur}{(\thrdid_c, 0)} \sepstar 
+                        %     (\relmsto{\TaskCur}{(\thrdid_c, 0)} \sepstar 
                         %     \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
                         %     \RelStk{\block_0}{\nil}{\hWstk} \sepstar
                         %     (\astCurCont{\thrdid_c}{((\hRfile, \block, \hWstk), \pc, \npc)})) \\
@@ -928,11 +931,11 @@ We need to define the loop invariant $I$ here.
                         {
                             $\Env{\nst, \nil}$
                         } \sepstar 
-                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
                         \thrdid_c \neq \thrdid_n) \sepstar 
                         \safePrimAst{\, \primsw(\nil) \,} \\
                         \\[-9pt] \quad \sepstar
-                        \msto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
+                        \relmsto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
                         \colorbox{gray!60}
                         {
                             $\RelCurTAux{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c}$
@@ -947,7 +950,7 @@ We need to define the loop invariant $I$ here.
                         % {
                         %     $\Env{\nst, \nil}$
                         % } \sepstar 
-                        % (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        % (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
                         % \thrdid_c \neq \thrdid_n) \sepstar 
                         % \safePrimAst{\, \primsw(\nil) \,} \\
                         % \\[-9pt] \sepstar
@@ -956,7 +959,7 @@ We need to define the loop invariant $I$ here.
                         %     (
                         %         \colorbox{yellow!80}
                         %         {
-                        %             $\msto{\TaskCur}{(\thrdid_n, 0)}$
+                        %             $\relmsto{\TaskCur}{(\thrdid_n, 0)}$
                         %         } 
                         %         \sepstar 
                         %     \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
@@ -999,11 +1002,11 @@ We need to define the loop invariant $I$ here.
                 \left\{
                     \begin{array}{l}
                         \Env{\nst, \nil} \sepstar 
-                        (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
                         \thrdid_c \neq \thrdid_n) \sepstar 
                         \safePrimAst{\, \primdone \,} \\
                         \\[-9pt] \quad \sepstar
-                        \msto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
+                        \relmsto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
                         \colorbox{green!60}
                         {
                             $\RelRdyT{\thrdid_c}{\RFile}{\hthrdlocalst_c}$
@@ -1016,7 +1019,7 @@ We need to define the loop invariant $I$ here.
                                 \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst'})$
                         }  
                         % \Env{\nst, \nil}\sepstar 
-                        % (\msto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        % (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
                         % \thrdid_c \neq \thrdid_n) \sepstar 
                         % \safePrimAst{\, \primsw(\nil) \,} \\
                         % \\[-9pt] \sepstar
@@ -1025,7 +1028,7 @@ We need to define the loop invariant $I$ here.
                         %     (
                         %         \colorbox{green!60}
                         %         {
-                        %             $\msto{\TaskCur}{(\thrdid_n, 0)}$
+                        %             $\relmsto{\TaskCur}{(\thrdid_n, 0)}$
                         %         } 
                         %         \sepstar 
                         %     \colorbox{yellow!80}
