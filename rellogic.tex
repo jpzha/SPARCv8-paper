@@ -10,8 +10,8 @@ SPARCv8 code.
 % refinement verification in this section. 
 We first define the high- and low-level program in 
 \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}} and 
-\Sec{\ref{subsec:low-level SPARCv8 Program}} respectively, 
-and their state relation in \Sec{\ref{subsec:state-rel}}. 
+\Sec{\ref{subsec:low-level SPARCv8 Program}} respectively. 
+% and their state relation in \Sec{\ref{subsec:state-rel}}. 
 The refinement relation is represented in 
 \Sec{\ref{subsec:correctness-primitive}}, 
 and program logic is shown in \Sec{\ref{subsec:rellogic}}
@@ -26,8 +26,8 @@ Finally, logic soundness is shown in
 % \Sec{\ref{sec:modeling}} as the {\it low-level} 
 % program. And 
 
-We define the Pseudo-SPARCv8 language in this 
-subsection. It contains two part: 
+The Pseudo-SPARCv8 language in this 
+contains two part: 
 the SPARCv8 code as client code, 
 and the set of abstract assembly primitives. 
 Here, we require that the execution of client SPARCv8 code 
@@ -161,14 +161,9 @@ of client code preserves such restriction:
     % have \textit{no} semantics in high-level client code. 
 
     \item 
-    The special registers can't be modified arbitrarily.
+    % The special registers can't be modified arbitrarily.
     The special registers in SPARCv8 usually act specific 
     roles and modifying them should be carefully, 
-    for example, \regwim{} marks which window is 
-    invalid. If we change its value shown in 
-    \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
-    to mark another window invalid, as shown in 
-    \Fig{\ref{fig:problem of modifying wim arbitrary}},  
     \begin{center}
         \vspace*{-0.5em}
         \input{picture/ProblemModwim.tex}
@@ -177,6 +172,11 @@ of client code preserves such restriction:
         \vspace*{-0.5em}
         \label{fig:problem of modifying wim arbitrary}
     \end{center}
+    for example, \regwim{} marks which window is 
+    invalid. If we change its value shown in 
+    \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
+    to mark another window invalid, as shown in 
+    \Fig{\ref{fig:problem of modifying wim arbitrary}}, 
     and call context switch routine, which will  
     save the contents of previous windows into memory
     until the invalid one, at this moment. 
@@ -537,6 +537,7 @@ and after execution of $\primsw{}$ respectively.
 \begin{figure*}[!t]
     \centering
     \small
+    \vspace*{-0.5em}
     \subfigure[High-level Program Transition]{
         \begin{minipage}[b]{1\textwidth}
         \[
@@ -805,22 +806,13 @@ $\cprint$ and acts as an observable behavior.
 % \ref{sec:more-llang}. 
 
 % \input{picture/StateRel}
+\subsection{Primitive Correctness}
+\label{subsec:correctness-primitive}
 
-\subsection{State Relation between Low- and High-level Program}
-\label{subsec:state-rel}
-% According to previous research works about refinement verification, 
-% \eg{\cite{CompCert,Liang12popl}}, one of the important thing to achieve 
-% refinement verification is to establish the states relation between 
-% low- and high-level program.
-In order to achieve refinement verification, we need to 
-establish a relation as an {\it invariant} 
+We first establish a relation as an {\it invariant} 
 between low- and high-level program state. 
 We define this relation below, shown as 
 ``$\stateRel{\state}{\hpstate}$". 
-% We illustrate this relation, defined as 
-% ``$\stateRel{\state}{\hpstate}$" 
-% formally below, with \Fig{\ref{fig:State Relation between 
-% Low- and High-level Program State}}.
 \[
     \small
     \infer
@@ -841,42 +833,12 @@ We define this relation below, shown as
         \end{array}
     }
 \]
-% \begin{figure}[!h]
-%     \centering
-%     \small
-%     \[
-%         \infer
-%         {
-%             \stateRel{(\Mem, \Rstate, \DBuf)}
-%                 {(\thrdpool, \thrdid, \hthrdlocalst, \Mem')}
-%         }
-%         {
-%             \begin{array}{c}
-%                 \Mem = \Mem_c \uplus \Mem_T \uplus 
-%                     \{ \TaskCur \rightsquigarrow (\thrdid, 0) \}
-%                     \uplus \Mem' \\
-%                 \curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}
-%                 \quad \ \ 
-%                 \rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}
-%                 \quad \ \ 
-%                 \DBuf = \nil
-%             \end{array}
-%         }
-%     \]
-%     \vspace{-1.5em}
-%     \caption{Relation for Whole Program State}
-%     \label{fig:rel-wp}
-%     \vspace{-0.5em}
-% \end{figure}
-
 The low-level memory $\Mem$ is splitted into four parts: 
 $\Mem_c$ used to save the context of the current thread $\thrdid$; 
 $\Mem_T$ saving the contexts of the ready threads, 
 except the current thread $\tid$; a singleton memory 
 cell located $\TaskCur$ saving the current thread id; and shared 
 memory $\Mem'$. 
-% Note, ready threads are threads in thread pool, 
-% except the current thread $\thrdid$. 
 The delayed buffer $\DBuf$ is $\nil$, because client 
 code is not permitted to modify special register by 
 $\cwr{}$ instruction. 
@@ -888,85 +850,7 @@ We use ``$\curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}$"
 to represent the state relation of current thread $\thrdid$ 
 in low- and high-level program. 
 Full definitions of the state relation 
-can be found in Appendix \ref{sec:more-staterel}. 
-
-% \begin{figure*}[!t]
-%     \centering
-%     \[
-%         \begin{array}{c}
-%             \TYPE{(EvtTrace)} \ \ \evttr \ \define \ 
-%             \outEvt{\val} \stCons \evttr \sepline \nil \sepline 
-%             \evtabort \quad \ \ \TYPE{(co-inductive)} \\
-%             \\
-%             \infer=
-%             {
-%                 \Etr{(\prog, \evtabort)}
-%             }
-%             {
-%                 \neg
-%                 (\exists \, \prog'. \ 
-%                  \LGlobMultiTrans{\prog}{}{+}{\prog'})
-%             } \qquad \ \ 
-%             \infer= 
-%             {
-%                 \Etr{(\prog, \nil)}
-%             }
-%             {
-%                 \LGlobMultiTrans{\prog}{ \, \empmsg \ }{+}{\prog'} 
-%                 \quad \ \ 
-%                 \Etr{(\prog', \nil)}
-%             } \quad \ \ 
-%             \infer=
-%             {
-%                 \Etr{(\prog, \outEvt{\val} \stCons \evttr)}
-%             }
-%             {
-%                 \LGlobMultiTrans{\prog}{\!\!\outEvt{\val}\!}{+}{\prog'}
-%                 \quad \ \ 
-%                 \Etr{(\prog', \evttr)}
-%             } 
-%             % \\
-%             % \\[-5pt]
-%             % \infer=
-%             % {
-%             %     \Etr{(\HProg, \evtabort)}
-%             % }
-%             % {
-%             %     \neg
-%             %     (\exists \, \HProg'. \ 
-%             %      \HGlobMultiTrans{\HProg}{}{+}{\HProg'})
-%             % } \qquad \ \ 
-%             % \infer= 
-%             % {
-%             %     \Etr{(\HProg, \nil)}
-%             % }
-%             % {
-%             %     \HGlobMultiTrans{\HProg}{ \, \empmsg \ }{+}{\HProg'} 
-%             %     \quad \ \ 
-%             %     \Etr{(\HProg', \nil)}
-%             % } \quad \ \ 
-%             % \infer=
-%             % {
-%             %     \Etr{(\HProg, \outEvt{\val} \stCons \evttr)}
-%             % }
-%             % {
-%             %     \HGlobMultiTrans{\HProg}{\!\!\outEvt{\val}\!}{+}{\HProg'}
-%             %     \quad \ \ 
-%             %     \Etr{(\HProg', \evttr)}
-%             % } \\
-%             % \\
-%             % \prog \refine \HProg \ \define \ 
-%             %     \forall \, \evttr. \, 
-%             %     \Etr{(\prog, \evttr)} \Longrightarrow
-%             %     \Etr{(\HProg, \evttr)}  
-%         \end{array}
-%     \]
-%     \caption{Event Trace Refinement}
-%     \label{fig:event-trace-refinement}
-% \end{figure*}
-
-\subsection{Correctness of Abstract Assembly Primitive}
-\label{subsec:correctness-primitive}
+can be found in Appendix \ref{sec:more-staterel}.
 
 The correctness of abstract assembly primitive can be defined in terms of  
 {\it contextual refinement}.  
@@ -1014,66 +898,276 @@ is defined below formally :
         \HGlobTrans{\HProg'}{}{\HProg''})
 \]
 
-\paragraph{\textbf{Event Trace Refinement.}}
-We define the event trace refinement co-inductively 
-in \Fig{\ref{fig:event-trace-refinement}}. 
-\begin{center}
-    \[
-        \small
-        \begin{array}{c}
-            \TYPE{(EvtTrace)} \ \ \evttr \ \define \ 
-            \outEvt{\val} \stCons \evttr \sepline \nil \sepline 
-            \evtabort \quad \ \ \TYPE{(co-inductive)} \\
-            \\
-            \infer=
-            {
-                \Etr{(\prog, \evtabort)}
-            }
-            {
-                \neg
-                (\exists \, \prog'. \ 
-                 \LGlobMultiTrans{\prog}{}{+}{\prog'})
-            } \qquad \ \ 
-            \infer= 
-            {
-                \Etr{(\prog, \nil)}
-            }
-            {
-                \LGlobMultiTrans{\prog}{ \, \empmsg \ }{+}{\prog'} 
-                \quad \ \ 
-                \Etr{(\prog', \nil)}
-            } \\
-            \infer=
-            {
-                \Etr{(\prog, \outEvt{\val} \stCons \evttr)}
-            }
-            {
-                \LGlobMultiTrans{\prog}{\!\!\outEvt{\val}\!}{+}{\prog'}
-                \quad \ \ 
-                \Etr{(\prog', \evttr)}
-            }  \\
-            \\
-            \prog \refine \HProg \ \define \ 
-            \forall \, \evttr. \, 
-            \Etr{(\prog, \evttr)} \Longrightarrow
-            \Etr{(\HProg, \evttr)}
-        \end{array}
-    \]
-    \figurecaption{Event Trace Refinement}
-    \label{fig:event-trace-refinement}
-\end{center}
-``$\nil$" means 
-an empty trace. A trace is a sequence of output $\outEvt{\val}$, 
-and may end with a abort marker \evtabort{}. 
-$\prog \refine \HProg$ means that all the event trace 
-generated by the low-level program $\prog$ can also 
-generated by the high-level program $\HProg$. 
-We use $\Etr{(\prog, \evttr)}$, which is also defined 
-co-inductively, to say that the trace 
-$\evttr$ is produced by the execution of $\prog$. 
-In following subsection, we introduce our 
-extended program logic for verifying the correctness 
-of abstract assembly primitive. 
+
+
+% \subsection{State Relation between Low- and High-level Program}
+% \label{subsec:state-rel}
+% % According to previous research works about refinement verification, 
+% % \eg{\cite{CompCert,Liang12popl}}, one of the important thing to achieve 
+% % refinement verification is to establish the states relation between 
+% % low- and high-level program.
+% In order to achieve refinement verification, we need to 
+% establish a relation as an {\it invariant} 
+% between low- and high-level program state. 
+% We define this relation below, shown as 
+% ``$\stateRel{\state}{\hpstate}$". 
+% % We illustrate this relation, defined as 
+% % ``$\stateRel{\state}{\hpstate}$" 
+% % formally below, with \Fig{\ref{fig:State Relation between 
+% % Low- and High-level Program State}}.
+% \[
+%     \small
+%     \infer
+%     {
+%         \stateRel{(\Mem, \Rstate, \DBuf)}
+%             {(\thrdpool, \thrdid, \hthrdlocalst, \Mem')}
+%     }
+%     {
+%         \begin{array}{c}
+%             \Mem = \Mem_c \uplus \Mem_T \uplus 
+%                 \{ \TaskCur \rightsquigarrow (\thrdid, 0) \}
+%                 \uplus \Mem' \\
+%             \curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}
+%             \quad \ \ 
+%             \rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}
+%             \quad \ \ 
+%             \DBuf = \nil
+%         \end{array}
+%     }
+% \]
+% % \begin{figure}[!h]
+% %     \centering
+% %     \small
+% %     \[
+% %         \infer
+% %         {
+% %             \stateRel{(\Mem, \Rstate, \DBuf)}
+% %                 {(\thrdpool, \thrdid, \hthrdlocalst, \Mem')}
+% %         }
+% %         {
+% %             \begin{array}{c}
+% %                 \Mem = \Mem_c \uplus \Mem_T \uplus 
+% %                     \{ \TaskCur \rightsquigarrow (\thrdid, 0) \}
+% %                     \uplus \Mem' \\
+% %                 \curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}
+% %                 \quad \ \ 
+% %                 \rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}
+% %                 \quad \ \ 
+% %                 \DBuf = \nil
+% %             \end{array}
+% %         }
+% %     \]
+% %     \vspace{-1.5em}
+% %     \caption{Relation for Whole Program State}
+% %     \label{fig:rel-wp}
+% %     \vspace{-0.5em}
+% % \end{figure}
+
+% The low-level memory $\Mem$ is splitted into four parts: 
+% $\Mem_c$ used to save the context of the current thread $\thrdid$; 
+% $\Mem_T$ saving the contexts of the ready threads, 
+% except the current thread $\tid$; a singleton memory 
+% cell located $\TaskCur$ saving the current thread id; and shared 
+% memory $\Mem'$. 
+% % Note, ready threads are threads in thread pool, 
+% % except the current thread $\thrdid$. 
+% The delayed buffer $\DBuf$ is $\nil$, because client 
+% code is not permitted to modify special register by 
+% $\cwr{}$ instruction. 
+% The memory $\Mem_T$ used to 
+% save the contexts of the ready threads is {\it abstracted} as a thread pool 
+% in high-level program. Their relation is represented as 
+% ``$\rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}$".  
+% We use ``$\curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}$" 
+% to represent the state relation of current thread $\thrdid$ 
+% in low- and high-level program. 
+% Full definitions of the state relation 
+% can be found in Appendix \ref{sec:more-staterel}. 
+
+% % \begin{figure*}[!t]
+% %     \centering
+% %     \[
+% %         \begin{array}{c}
+% %             \TYPE{(EvtTrace)} \ \ \evttr \ \define \ 
+% %             \outEvt{\val} \stCons \evttr \sepline \nil \sepline 
+% %             \evtabort \quad \ \ \TYPE{(co-inductive)} \\
+% %             \\
+% %             \infer=
+% %             {
+% %                 \Etr{(\prog, \evtabort)}
+% %             }
+% %             {
+% %                 \neg
+% %                 (\exists \, \prog'. \ 
+% %                  \LGlobMultiTrans{\prog}{}{+}{\prog'})
+% %             } \qquad \ \ 
+% %             \infer= 
+% %             {
+% %                 \Etr{(\prog, \nil)}
+% %             }
+% %             {
+% %                 \LGlobMultiTrans{\prog}{ \, \empmsg \ }{+}{\prog'} 
+% %                 \quad \ \ 
+% %                 \Etr{(\prog', \nil)}
+% %             } \quad \ \ 
+% %             \infer=
+% %             {
+% %                 \Etr{(\prog, \outEvt{\val} \stCons \evttr)}
+% %             }
+% %             {
+% %                 \LGlobMultiTrans{\prog}{\!\!\outEvt{\val}\!}{+}{\prog'}
+% %                 \quad \ \ 
+% %                 \Etr{(\prog', \evttr)}
+% %             } 
+% %             % \\
+% %             % \\[-5pt]
+% %             % \infer=
+% %             % {
+% %             %     \Etr{(\HProg, \evtabort)}
+% %             % }
+% %             % {
+% %             %     \neg
+% %             %     (\exists \, \HProg'. \ 
+% %             %      \HGlobMultiTrans{\HProg}{}{+}{\HProg'})
+% %             % } \qquad \ \ 
+% %             % \infer= 
+% %             % {
+% %             %     \Etr{(\HProg, \nil)}
+% %             % }
+% %             % {
+% %             %     \HGlobMultiTrans{\HProg}{ \, \empmsg \ }{+}{\HProg'} 
+% %             %     \quad \ \ 
+% %             %     \Etr{(\HProg', \nil)}
+% %             % } \quad \ \ 
+% %             % \infer=
+% %             % {
+% %             %     \Etr{(\HProg, \outEvt{\val} \stCons \evttr)}
+% %             % }
+% %             % {
+% %             %     \HGlobMultiTrans{\HProg}{\!\!\outEvt{\val}\!}{+}{\HProg'}
+% %             %     \quad \ \ 
+% %             %     \Etr{(\HProg', \evttr)}
+% %             % } \\
+% %             % \\
+% %             % \prog \refine \HProg \ \define \ 
+% %             %     \forall \, \evttr. \, 
+% %             %     \Etr{(\prog, \evttr)} \Longrightarrow
+% %             %     \Etr{(\HProg, \evttr)}  
+% %         \end{array}
+% %     \]
+% %     \caption{Event Trace Refinement}
+% %     \label{fig:event-trace-refinement}
+% % \end{figure*}
+
+% \subsection{Correctness of Abstract Assembly Primitive}
+% \label{subsec:correctness-primitive}
+
+% The correctness of abstract assembly primitive can be defined in terms of  
+% {\it contextual refinement}.  
+% Below we will give the formal definition in 
+% \Def{\ref{def:prim-correctness}}.  
+% And we use {\it event trace refinement} 
+% proposed by \etal{Liang} \cite{liang14lics}.
+
+% \begin{definition}[Primitive Correctness]
+%     \em
+%     \label{def:prim-correctness}
+%     $\asmimp \refine \hprimset$ iff  \\
+%     for any $\code, \, \state, \, \hpstate, \, \pc$ and $\npc$, if 
+%     $\stateRel{\state}{\hpstate}$, and $\progsafe(\HProg)$, 
+%     then $\prog \refine \HProg$ holds. 
+%     % \\
+%     % \\[-9pt]
+%     (where $\prog = (\code \uplus \asmimp, \state, \pc, \npc), \, 
+%         \HProg = ((\code, \hprimset), \hpstate)$, and 
+%         $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$).  
+% \end{definition}
+
+% Here, we use a code heap $\asmimp$
+% % , which is a code heap, 
+% to represent the implementations of abstract 
+% assembly primitives and $\hprimset$ to represent the set of corresponding 
+% abstract assembly primitives. The contextual refinement between 
+% $\asmimp$ and $\hprimset$, denoted as $\asmimp \refine \hprimset$, 
+% says that if and only if for any client code 
+% (or context) $\code$, low-level program 
+% state $\state$, high-level program state $\hpstate$, program counters 
+% $\pc$ and $\npc$, if the low- and high-level program states satisfy the 
+% state relation $\stateRel{\state}{\hpstate}$ and the high-level program 
+% will never get stuck (shown as $\progsafe(\HProg)$), 
+% then there is an {\it event trace refinement} relation 
+% between low- and high-level program. The property $\progsafe(\HProg)$, 
+% % which means that the high-level program will never get stuck,  
+% is defined below formally : 
+% \[
+%     \progsafe(\HProg) \ \define \ 
+%     \forall \, \HProg'. \, 
+%     (\HGlobMultiTrans{\HProg}{}{*}{\HProg'}) 
+%     \Longrightarrow 
+%     (\exists \, \HProg''. \, 
+%         \HGlobTrans{\HProg'}{}{\HProg''})
+% \]
+
+% \paragraph{\textbf{Event Trace Refinement.}}
+% We define the event trace refinement co-inductively 
+% in \Fig{\ref{fig:event-trace-refinement}}. 
+% \begin{center}
+%     \[
+%         \small
+%         \begin{array}{c}
+%             \TYPE{(EvtTrace)} \ \ \evttr \ \define \ 
+%             \outEvt{\val} \stCons \evttr \sepline \nil \sepline 
+%             \evtabort \quad \ \ \TYPE{(co-inductive)} \\
+%             \\
+%             \infer=
+%             {
+%                 \Etr{(\prog, \evtabort)}
+%             }
+%             {
+%                 \neg
+%                 (\exists \, \prog'. \ 
+%                  \LGlobMultiTrans{\prog}{}{+}{\prog'})
+%             } \qquad \ \ 
+%             \infer= 
+%             {
+%                 \Etr{(\prog, \nil)}
+%             }
+%             {
+%                 \LGlobMultiTrans{\prog}{ \, \empmsg \ }{+}{\prog'} 
+%                 \quad \ \ 
+%                 \Etr{(\prog', \nil)}
+%             } \\
+%             \infer=
+%             {
+%                 \Etr{(\prog, \outEvt{\val} \stCons \evttr)}
+%             }
+%             {
+%                 \LGlobMultiTrans{\prog}{\!\!\outEvt{\val}\!}{+}{\prog'}
+%                 \quad \ \ 
+%                 \Etr{(\prog', \evttr)}
+%             }  \\
+%             \\
+%             \prog \refine \HProg \ \define \ 
+%             \forall \, \evttr. \, 
+%             \Etr{(\prog, \evttr)} \Longrightarrow
+%             \Etr{(\HProg, \evttr)}
+%         \end{array}
+%     \]
+%     \figurecaption{Event Trace Refinement}
+%     \label{fig:event-trace-refinement}
+% \end{center}
+% ``$\nil$" means 
+% an empty trace. A trace is a sequence of output $\outEvt{\val}$, 
+% and may end with a abort marker \evtabort{}. 
+% $\prog \refine \HProg$ means that all the event trace 
+% generated by the low-level program $\prog$ can also 
+% generated by the high-level program $\HProg$. 
+% We use $\Etr{(\prog, \evttr)}$, which is also defined 
+% co-inductively, to say that the trace 
+% $\evttr$ is produced by the execution of $\prog$. 
+% In following subsection, we introduce our 
+% extended program logic for verifying the correctness 
+% of abstract assembly primitive. 
 % Our extended program logic to ensure 
 % the event trace refinement between low- and high-level 
 % program in the following subsections. 
@@ -2215,7 +2309,8 @@ and high-level primitive can still execute safely.
 The $\word$ in simulation records the number of tokens. 
 The tokens will be consumed when meeting \jmp{} and \call{} 
 instructions, so as to avoid infinite loop and recursive 
-function.  
+function. The execution of high-level abstract assembly 
+primitive can reset the number of tokens. 
 
 \begin{definition}[Simulation for Instruction Sequence]
     \label{def:siminsseq}

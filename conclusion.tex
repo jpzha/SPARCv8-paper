@@ -65,30 +65,37 @@ hardware, we remain it as a future work.
 
 \etal{Ni}~\cite{ctxm} verify a context switch module of 19 lines
 in x86 code to show case the support of embedded
-code pointers (ECP) in XCAP~\cite{xcap}. The context switch
-module we verify comes from a practical OS kernel,
-which is more realistic and consists of more than 250 lines
-of assembly code, but our logic (\textbf{CALL} rule) 
-does not really support the switch of return pointers,   
-which requires further extension like OCAP~\cite{FengTLDI07}. 
-Our focus is to verify the
-code manages the register windows, and the function calls made internally. 
-We address this problem of calling context switch routine in 
-another way in our work, such that we can use the extended 
-program logic to verify the contextual refinement between 
-context switch routine and $\primsw{}$ primitive. 
-The method of verifying context switch primitive in our work is 
-inspired by the approach used by \etal{Guo}~\cite{ctxmGuo}
-that protects the TCBs through abstraction, but the state 
-relation between low- and high-level program state in our work is more 
-sophisticated than theirs, because of some specific mechanisms, 
-like register windows, in SPARCv8. 
-They also do not develop a general program 
-logic for refinement verification of the assembly.  
-Our extended program logic is based on the relational program logic, 
-which has already been well used 
-successfully in the refinement verification 
-of C-style language \cite{Xu16cav,liang13pldi,liang14lics}.  
+code pointers (ECP) in XCAP~\cite{xcap}. 
+We use our extended program logic to verify the contextual 
+refinement between a context switch routine in \sparc{} 
+and $\primsw{}$ primitive. The context switch routine 
+implemented in \sparc{} is more complicated then 
+implemented in x86, because of the requirement to save 
+the contexts stored in register window in memory.
+% The context switch
+% module we verify comes from a practical OS kernel,
+% which is more realistic and consists of more than 250 lines
+% of assembly code, but our logic (\textbf{CALL} rule) 
+% does not really support the switch of return pointers,   
+% which requires further extension like OCAP~\cite{FengTLDI07}. 
+% Our focus is to verify the
+% code manages the register windows, and the function calls made internally. 
+% We address this problem of calling context switch routine in 
+% another way in our work, such that we can use the extended 
+% program logic to verify the contextual refinement between 
+% context switch routine and $\primsw{}$ primitive. 
+% The method of verifying context switch primitive in our work is 
+% inspired by the approach used by \etal{Guo}~\cite{ctxmGuo}
+% that protects the TCBs through abstraction, but the state 
+% relation between low- and high-level program state in our work is more 
+% sophisticated than theirs, because of some specific mechanisms, 
+% like register windows, in SPARCv8. 
+% They also do not develop a general program 
+% logic for refinement verification of the assembly.  
+% Our extended program logic is based on the relational program logic, 
+% which has already been well used 
+% successfully in the refinement verification 
+% of C-style language \cite{Xu16cav,liang13pldi,liang14lics}.  
 
 Yang and Hawblitzel~\cite{YangPLDI10} verify Verve, an x86 
 implementation of an experimental operating system. Verve has two 
@@ -113,9 +120,9 @@ logic for C and can generate machine-checkable Coq proofs too.
 That said, many of the automated verification techniques can
 be applied to reduce the manual efforts to write Coq proofs,
 which we would like to study in the future work. 
-We have already shown that it's possible to apply some 
-Coq tactics based on separation logic \cite{practical-tactics} 
-in our work.  
+% We have already shown that it's possible to apply some 
+% Coq tactics based on separation logic \cite{practical-tactics} 
+% in our work.  
 
 
 % %Most of our code verification works are done by hand now.
@@ -234,11 +241,17 @@ Our logic is based on a realistic semantics
 model and supports main features of \sparc,
 including delayed control transfer, delayed writes,
 and register windows.
-We have applied the program logic to verify
-the main body of the context switch routine
-in a realistic embedded OS kernel. 
 And we also extend the program logic to support 
-refinement verification. 
+refinement verification and apply the extended 
+program logic to verify 
+that there is a contextual refinement between 
+a context switch routine implementated 
+in \sparc{} and $\primsw$ primitive for task switching. 
+% We have applied the program logic to verify
+% the main body of the context switch routine
+% in a realistic embedded OS kernel. 
+% And we also extend the program logic to support 
+% refinement verification. 
 Our current work can only handle
 sequential \sparc{} program verification and 
 do not consider interrupt in machine model.  

@@ -433,7 +433,7 @@ is well-defined.
         And we require $\thrdid_c = \hpstate.\thrdid$, $\thrdid_n = \thrdid'$, 
         $\env = (\state.\Rstate.\RFile, \Wstack')$, $\nst = \Rstate'.\RFile$, $\word = 10$, 
         and $\relastP_r = \exists \, \Mem, \thrdpool. \, \MemRAsrt{\Mem}
-        \sepstar \RdyTsRAsrt{\thrdpool}$. Then, we can finish 
+        \sepstar \RdyTsRAsrt{\thrdpool} \sepstar \rRegs$. Then, we can finish 
         the proof. 
 
         \begin{figure}[!t]
@@ -489,9 +489,9 @@ is well-defined.
                     & & \, \land \, 
                     (\exists \, \cwp, n. \, \RFile(\regcwp) = \cwp \, \land \, 
                     \RFile(\regwim) = 2^n \, \land \, \prevcwp{(\cwp)} = n) \\
-                    % \\[-5pt]
-                    % \rRegs & \define & \regst{\asr_0}{\notCare} \sepstar \dots 
-                    %     \regst{\asr_{31}}{\notCare} \sepstar \regst{\regY}{\notCare} 
+                    \\[-5pt]
+                    \rRegs & \define & \regst{\asr_0}{\notCare} \sepstar \dots 
+                        \regst{\asr_{31}}{\notCare} \sepstar \regst{\regY}{\notCare} 
                 \end{array}
             \]
             \caption{Auxiliary Definitions About Frame Assertion}
@@ -718,10 +718,8 @@ We need to define the loop invariant $I$ here.
 \end{lemma}
 
 \begin{figure}[!t]
-    \vspace*{-2em}
     \[
         \small
-        \hspace*{-1em}
         \begin{array}{lll}
             \multicolumn{3}{l}
                 {
@@ -1147,3 +1145,56 @@ We need to define the loop invariant $I$ here.
     \textbf{Lemma} \ref{lemma:wdspec} and 
     \textbf{Lemma} \ref{lemma:codeproof}.
 \end{proof}
+
+\begin{figure*}[!t]
+    \subfigure[Save \localRN{} and \outRN{} into memory]
+    {
+        \begin{minipage}[b]{0.5\textwidth}
+        \[
+            \begin{array}{ll}
+                \st & \lreg{0}, \ [\spreg + \texttt{L0\_OFFSET}] \\
+                \st & \lreg{1}, \ [\spreg + \texttt{L1\_OFFSET}] \\
+                \st & \lreg{2}, \ [\spreg + \texttt{L2\_OFFSET}] \\
+                \st & \lreg{3}, \ [\spreg + \texttt{L3\_OFFSET}] \\
+                \st & \lreg{4}, \ [\spreg + \texttt{L4\_OFFSET}] \\
+                \st & \lreg{5}, \ [\spreg + \texttt{L5\_OFFSET}] \\
+                \st & \lreg{6}, \ [\spreg + \texttt{L6\_OFFSET}] \\
+                \st & \lreg{7}, \ [\spreg + \texttt{L7\_OFFSET}] \\
+                \st & \ireg{0}, \ [\spreg + \texttt{I0\_OFFSET}] \\
+                \st & \ireg{1}, \ [\spreg + \texttt{I1\_OFFSET}] \\
+                \st & \ireg{2}, \ [\spreg + \texttt{I2\_OFFSET}] \\
+                \st & \ireg{3}, \ [\spreg + \texttt{I3\_OFFSET}] \\
+                \st & \ireg{4}, \ [\spreg + \texttt{I4\_OFFSET}] \\
+                \st & \ireg{5}, \ [\spreg + \texttt{I5\_OFFSET}] \\
+                \st & \ireg{6}, \ [\spreg + \texttt{I6\_OFFSET}] \\
+                \st & \ireg{7}, \ [\spreg + \texttt{I7\_OFFSET}]
+            \end{array}
+        \]
+        \end{minipage}
+    }
+    \subfigure[Restore \localRN{} and \inRN{} from memory]{
+        \begin{minipage}[b]{0.5\textwidth}
+        \[
+            \begin{array}{ll}
+                \ld & [\spreg + \texttt{L0\_OFFSET}], \ \lreg{0} \\
+                \ld & [\spreg + \texttt{L1\_OFFSET}], \ \lreg{1} \\
+                \ld & [\spreg + \texttt{L2\_OFFSET}], \ \lreg{2} \\
+                \ld & [\spreg + \texttt{L3\_OFFSET}], \ \lreg{3} \\
+                \ld & [\spreg + \texttt{L4\_OFFSET}], \ \lreg{4} \\
+                \ld & [\spreg + \texttt{L5\_OFFSET}], \ \lreg{5} \\
+                \ld & [\spreg + \texttt{L6\_OFFSET}], \ \lreg{6} \\
+                \ld & [\spreg + \texttt{L7\_OFFSET}], \ \lreg{7} \\
+                \ld & [\spreg + \texttt{I0\_OFFSET}], \ \ireg{0} \\
+                \ld & [\spreg + \texttt{I1\_OFFSET}], \ \ireg{1} \\
+                \ld & [\spreg + \texttt{I2\_OFFSET}], \ \ireg{2} \\
+                \ld & [\spreg + \texttt{I3\_OFFSET}], \ \ireg{3} \\
+                \ld & [\spreg + \texttt{I4\_OFFSET}], \ \ireg{4} \\
+                \ld & [\spreg + \texttt{I5\_OFFSET}], \ \ireg{5} \\
+                \ld & [\spreg + \texttt{I6\_OFFSET}], \ \ireg{6} \\
+                \ld & [\spreg + \texttt{I7\_OFFSET}], \ \ireg{7}
+            \end{array}
+        \]
+        \end{minipage}
+    }
+    \caption{Code for saving and restoring \localRN{} and \inRN{} registers}
+\end{figure*}
