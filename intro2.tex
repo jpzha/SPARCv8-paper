@@ -242,12 +242,12 @@ reasoning of \sparc{} assembly code.
 Working towards a fully certified OS kernel for aerospace
 crafts whose inline assembly is written in \sparc,
 we try to address these challenges and propose a practical
-program logic for realistically modelled \sparc{} code.
+Hoare-style program logic for realistically modelled \sparc{} code.
 % We have applied our logic to verify the main body of
 % the task context switch routine in the kernel. 
 However, the OS kernel is implemented as 
 C language mainly and SPARCv8 as inline assembly. 
-Just having a traditional Hoare-style program logic 
+A traditional Hoare-style program logic 
 for \sparc{}, which can only make sure the 
 partial correctness of \sparc{} program, is insufficient.
 \etal{Xu}~\cite{Xu16cav} propose a program logic for 
@@ -437,9 +437,9 @@ verification but makes the following contributions:
 
 \begin{itemize}
 	\item
-    We propose a traditional Hoare-style program logic 
-    for \sparc{} and support all the above features of \sparc 
-    % Our logic supports all the above features of \sparc.
+    We propose a program logic for verifying partial 
+    correctness of \sparc{} code.   
+    Our logic supports all the above features of \sparc.
     We redefine basic blocks to include the instruction
     following the jump or return as the tail of a
     block, which models the delayed control
@@ -632,8 +632,8 @@ In the rest of paper,
 %and give an overview of our approach.
 we present the program model
 and operational semantics of \sparc{} in Sec.~\ref{sec:modeling}.
-Then we propose our traditional Hoare-style program logic 
-for \sparc{} in Sec.~\ref{sec:logic} and show 
+Then we propose the program logic for verifying 
+partial correctness of \sparc{} code in Sec.~\ref{sec:logic} and show 
 how our logic supprts the three main features of SPARCv8.
 % the program logic in Sec.~\ref{sec:logic},
 % including the inference rules and the soundness proof, 
