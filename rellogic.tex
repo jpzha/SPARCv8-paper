@@ -445,7 +445,8 @@ the high-level register file $\hRfile$,
 and the high-level frame list $\hWstk$. 
 $\hrn$ is the high-level register names, where 
 the $\regcwp$ is omitted as introduced before,  and 
-we also omit special register, because we don't allow 
+we also omit special register for simplicity, 
+because we don't allow 
 the high-level client code to modify them. 
 The high-level frame list $\hWstk$ is a list of pair 
 $(\fm_1, \fm_2)$, which is used to save 
@@ -873,10 +874,10 @@ proposed by \etal{Liang} \cite{liang14lics}.
         $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$).  
 \end{definition}
 
-Here, we use a code heap $\asmimp$
+We use a code heap $\asmimp$
 % , which is a code heap, 
-to represent the implementations of abstract 
-assembly primitives and $\hprimset$ to represent the set of corresponding 
+to represent the implementations
+ and $\hprimset$ to represent the set of corresponding 
 abstract assembly primitives. The contextual refinement between 
 $\asmimp$ and $\hprimset$, denoted as $\asmimp \refine \hprimset$, 
 says that if and only if for any client code 
@@ -885,8 +886,10 @@ state $\state$, high-level program state $\hpstate$, program counters
 $\pc$ and $\npc$, if the low- and high-level program states satisfy the 
 state relation $\stateRel{\state}{\hpstate}$ and the high-level program 
 will never get stuck (shown as $\progsafe(\HProg)$), 
-then there is an {\it event trace refinement} relation 
-between low- and high-level program. The property $\progsafe(\HProg)$, 
+then there is an {\it event trace refinement} relation, 
+which means $\prog$ produce no more observable behaviors 
+than $\HProg$ and is denoted as $\prog \refine \HProg$,  
+between low- and high-level program. $\progsafe(\HProg)$ 
 % which means that the high-level program will never get stuck,  
 is defined below formally : 
 \[
@@ -2058,7 +2061,7 @@ and we explain them in turn in the following.
 \textbf{First}, we should give some restrictions 
 for the execution of abstract assembly primitive. 
 The return code pointers should be equal to 
-$\lab{}+8$ and $\lab{}+12$, where $\lab{}$ 
+$\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$ 
 is contained in $\reg{15}$ register after the execution 
 of abstract assembly primitive.  
 This restriction ensures that the low-level function 
@@ -2294,7 +2297,7 @@ the end of the current instruction sequence ($\asmimp[\pc]$),
 and $\astQ$ holds if $\asmimp[\pc]$ ends with the return
 instruction $\retl{}$, and for each step of low-level 
 execution, the high-level program will execute zero or 
-one steps. 
+one step. 
 It is formally defined in Def.~\ref{def:siminsseq}.
 Here we use ``$\notCare \longmapsto^{n} \notCare$'' to
 represent $n$-step execution. The defintion can ensure 

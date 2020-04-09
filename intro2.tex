@@ -247,10 +247,9 @@ program logic for realistically modelled \sparc{} code.
 % the task context switch routine in the kernel. 
 However, the OS kernel is implemented as 
 C language mainly and SPARCv8 as inline assembly. 
-Just having a traditional Hoare-style 
-program logic for SPARCv8, which can only make sure 
-the safe execution of SPARCv8 program if the initial 
-state satisfies the precondition, is insufficient.
+Just having a traditional Hoare-style program logic 
+for \sparc{}, which can only make sure the 
+partial correctness of \sparc{} program, is insufficient.
 \etal{Xu}~\cite{Xu16cav} propose a program logic for 
 verifying the correctness of OS kernel implementated in 
 C language with inline assembly, 
@@ -438,7 +437,9 @@ verification are our new contributions.}:
 
 \begin{itemize}
 	\item
-    Our logic supports all the above features of \sparc.
+    We propose a traditional Hoare-style program logic 
+    for \sparc{} and support all the above features of \sparc 
+    % Our logic supports all the above features of \sparc.
     We redefine basic blocks to include the instruction
     following the jump or return as the tail of a
     block, which models the delayed control
@@ -584,9 +585,10 @@ verification are our new contributions.}:
     switching\footnote{We also apply our program logic to 
     verify the main body of the context switch routine
 	in a realistic embedded OS kernel for aerospace crafts,
-    which consists of around 250 lines of \sparc{} code. 
+    which consists of around 250 lines of \sparc{} code, 
+    by 6690 lines of Coq proof scripts. 
     But this part of code cannot 
-    be published due to copyright issues}. 
+    be published due to copyright issues.}. 
 
 	% We verify the main body of the context switch routine
 	% in a realistic embedded OS kernel for aerospace crafts,
@@ -630,14 +632,19 @@ In the rest of paper,
 %and give an overview of our approach.
 we present the program model
 and operational semantics of \sparc{} in Sec.~\ref{sec:modeling}.
-Then we propose the program logic in Sec.~\ref{sec:logic},
-including the inference rules and the soundness proof, 
-and show how our logic supprts the three main features of SPARCv8.
-We show the verification of the main body of the context switch routine
-in Sec.~\ref{sec:ctxswitch}. 
+Then we propose our traditional Hoare-style program logic 
+for \sparc{} in Sec.~\ref{sec:logic} and show 
+how our logic supprts the three main features of SPARCv8.
+% the program logic in Sec.~\ref{sec:logic},
+% including the inference rules and the soundness proof, 
+% and show how our logic supprts the three main features of SPARCv8. 
 The Pseudo-SPARCv8 program and extended 
-program logic to support refinement verification is 
+program logic for refinement verification is 
 presented in \Sec{\ref{sec:refine-verification-sparc}}. 
+We show the verification of a context switch routine 
+in \sparc{} in Sec.~\ref{sec:ctxswitch}. 
+% the main body of the context switch routine
+% in Sec.~\ref{sec:ctxswitch}.
 % The extended program logic to 
 % support refinement verification is presented in 
 % \Sec{\ref{sec:refine-verification-sparc}}, including 

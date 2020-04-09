@@ -510,10 +510,10 @@ $\lreg{7}$ at the end contains the sum of $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$,
 which it uses as the return address.
 To verify the function, we need to prove that it satisfies
 $(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$. 
-Here, $\lv[1]$ and $\lv[2]$ shouldn't be a memory address, 
-because summing a value and an address is illegal. 
-$\lv[3]$ also shouldn't be a memory address, because it 
-records a return code pointer, which is a word $\lab{}$. 
+Here, $\lv[1]$ and $\lv[2]$ cannot be a memory address, 
+because a value plus a memory address is illegal. 
+$\lv[3]$ also should be a word, because it 
+records a word as a return code pointer. 
 
 
 %In order to get connection between initial state and final state,
