@@ -2379,7 +2379,7 @@ can execute safely.
 	\mbox{}
     \begin{itemize}
     \item $\semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$ if and only if, for all
-    $\code$, $\state$, $\hpstate$, $\primcom$ and $\word$ 
+    $\asmimp$, $\state$, $\hpstate$, $\primcom$ and $\word$ 
     such that $\asmimp[\lab{}] = \cblk$
     and $(\state, \hpstate, \primcom, \word) \models \relastP$, we have
     % $\safetins(\code, \state, \lab{}, \lab{}\!+\!4, \astQ, \Psi)$.
@@ -2587,11 +2587,13 @@ $\asmimp$ and abstract assembly primitives $\hprimset$.
 
 \begin{lemma}[Logic Ensures Simulation]
     \em
-    \label{lemma:Logic Ensures Simulation}
-    \[
-        \wfprim{\Cspec}{\asmimp}{\hprimset} \Longrightarrow 
-        \semWdPrim{\Cspec}{\asmimp}{\hprimset}
-    \]
+    \label{lemma:Logic Ensures Simulation} \mbox{}
+    \begin{itemize}
+        \item $\wfcdhp{\asmimp}{\Cspec} \imp 
+            \models\asmimp:\Cspec$ 
+        \item $\wfprim{\Cspec}{\asmimp}{\hprimset} \imp
+            \semWdPrim{\Cspec}{\asmimp}{\hprimset}$
+    \end{itemize}
 \end{lemma}
 
 \begin{lemma}[Simulation Implies Primitive Correctness]

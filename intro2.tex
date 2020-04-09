@@ -243,9 +243,8 @@ Working towards a fully certified OS kernel for aerospace
 crafts whose inline assembly is written in \sparc,
 we try to address these challenges and propose a practical
 program logic for realistically modelled \sparc{} code.
-We have applied our logic to verify the main body of
-the task context switch routine in the kernel. 
-
+% We have applied our logic to verify the main body of
+% the task context switch routine in the kernel. 
 However, the OS kernel is implemented as 
 C language mainly and SPARCv8 as inline assembly. 
 Just having a traditional Hoare-style 
@@ -255,7 +254,8 @@ state satisfies the precondition, is insufficient.
 \etal{Xu}~\cite{Xu16cav} propose a program logic for 
 verifying the correctness of OS kernel implementated in 
 C language with inline assembly, 
-but they use abstract assembly primitives to 
+but they use abstract assembly primitives, 
+like $\primsw$ primitive for task switching, to 
 substitute the inline assembly in their verification work.
 As a supplement to their work, we need to extend our 
 program logic so that it can make sure the  
@@ -485,18 +485,18 @@ verification are our new contributions.}:
 %	shown in Fig. \ref{fig:three call conventions in SPARC}
 %	in a uniform way.
 	
-	\item
-    We give direct-style semantic interpretation for
-    the logic judgments, based on which we establish the
-    soundness. This is different from previous
-    work, which either does syntactic-based soundness proof
-    (\eg{} SCAP~\cite{Feng06pldi}) or treats return code pointers
-    as first-class code pointers and gives CPS-style 
-    (continuation-passing style) semantics.
-    Those approaches for soundness make it difficult to verify
-    the interaction between the inline assembly and the C
-    code in the kernel, the latter being verified following
-    a direct-style program logic.
+	% \item
+    % We give direct-style semantic interpretation for
+    % the logic judgments, based on which we establish the
+    % soundness. This is different from previous
+    % work, which either does syntactic-based soundness proof
+    % (\eg{} SCAP~\cite{Feng06pldi}) or treats return code pointers
+    % as first-class code pointers and gives CPS-style 
+    % (continuation-passing style) semantics.
+    % Those approaches for soundness make it difficult to verify
+    % the interaction between the inline assembly and the C
+    % code in the kernel, the latter being verified following
+    % a direct-style program logic.
 %    We establish the soundness of our logic
 %	by a semantic approach in our work
 %	and prove that our logic is sound by Coq proof assistant \cite{coq}.
@@ -519,23 +519,14 @@ verification are our new contributions.}:
 %	and the operation of \exedelay{}, which will do in each cycle,
 %	in our predicate.
 	
-	\item
-	Context switch of concurrent tasks is an important
-    component in OS kernels. It is usually implemented
-    as inline assembly because of the need to access
-    registers and the stack.
-%	Most of context switch programs
-%	are implemented in assembly code
-%	because of the requirement to assess registers and stack.
-	We verify the main body of the context switch routine
-	in a realistic embedded OS kernel for aerospace crafts,
-%	\footnote[1]{We can't publish the source code verified here, because of a confidentiality agreement between OS kernel provider and us},
-    which consists of around 250 lines of \sparc{} code.
-%	and achieve good ratio (around 16:1) of Coq proof scripts
-%	to verified \sparc{} code.
-%	This work presents that
-%	our logic is useful
-%	and can check realistic \sparc{} code easily and conveniently.
+	% \item
+	% Context switch of concurrent tasks is an important
+    % component in OS kernels. It is usually implemented
+    % as inline assembly because of the need to access
+    % registers and the stack.
+	% We verify the main body of the context switch routine
+	% in a realistic embedded OS kernel for aerospace crafts,
+    % which consists of around 250 lines of \sparc{} code.
 
     \item 
     In order to support refinement verification, we define a 
@@ -556,26 +547,71 @@ verification are our new contributions.}:
     The extended logic can ensure 
     the {\it contextual refinement} between
     SPARCv8 functions and their corresponding 
-    abstract assembly primitives. In order to support 
-    this extension, we need to define a simulation 
-    relation, which is established 
-    between the execution of each SPARCv8 function 
-    and abstract assembly primitive. 
-    Thanks for our direct-style semantics interpretation 
-    for the logic judgments proposed before, 
-    which allows us to establish the correctness of 
-    each assembly function separatly. 
-    We can follow the same idea to define the  
-    simulation relation.  
+    abstract assembly primitives. 
+    % In order to support 
+    % this extension, we need to define a simulation 
+    % relation, which is established 
+    % between the execution of each SPARCv8 function 
+    % and abstract assembly primitive. 
+    % Thanks for our direct-style semantics interpretation 
+    % for the logic judgments proposed before, 
+    % which allows us to establish the correctness of 
+    % each assembly function separatly. 
+    % We can follow the same idea to define the  
+    % simulation relation.  
+
+    \item
+    We give direct-style semantic interpretation for
+    the logic judgments, based on which we establish the
+    soundness. This is different from previous
+    work, which either does syntactic-based soundness proof
+    (\eg{} SCAP~\cite{Feng06pldi}) or treats return code pointers
+    as first-class code pointers and gives CPS-style 
+    (continuation-passing style) semantics.
+    Those approaches for soundness make it difficult to verify
+    the interaction between the inline assembly and the C
+    code in the kernel, the latter being verified following
+    a direct-style program logic.
+
+    \item
+	Context switch of concurrent tasks is an important
+    component in OS kernels. It is usually implemented
+    as inline assembly because of the need to access
+    registers and the stack. 
+    We verify that there is a contextual refinement 
+    between a context switch routine implementated 
+    in \sparc{} and $\primsw$ primitive for task 
+    switching\footnote{We also apply our program logic to 
+    verify the main body of the context switch routine
+	in a realistic embedded OS kernel for aerospace crafts,
+    which consists of around 250 lines of \sparc{} code. 
+    But this part of code cannot 
+    be published due to copyright issues}. 
+
+	% We verify the main body of the context switch routine
+	% in a realistic embedded OS kernel for aerospace crafts,
+    % which consists of around 250 lines of \sparc{} code.
 
 \end{itemize}
-The program logic, its soundness proof, 
-the verification of the context switch module
-\footnote{Code of the context switch routine cannot 
-be published due to copyright issues}, 
-and the extended program logic for 
-refinememt verification have been mechanized in 
-Coq~\cite{coqimp}.
+The program logic, including the extended program logic 
+for refinement verification, and its soundness proof 
+have been mechanized in Coq~\cite{coqimp}. 
+
+This article extends the conference paper in 
+APLAS 2018~\cite{zha18aplas}. We extend 
+the program logic, which can only prove the partial 
+correctness of \sparc{} code in conference paper, 
+to support refinement verification and use it to  
+verify that there is a contextual refinement between 
+a context switch routine implementated 
+in \sparc{} and $\primsw$ primitive for task switching. 
+
+% the verification of the context switch module
+% \footnote{Code of the context switch routine cannot 
+% be published due to copyright issues}, 
+% and the extended program logic for 
+% refinememt verification have been mechanized in 
+% Coq~\cite{coqimp}.
 %Coq\footnote{We
 %do not give the URL of the code for anonymity. The code
 %is available upon request. The released package does not contain the
