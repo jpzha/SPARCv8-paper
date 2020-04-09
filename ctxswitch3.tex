@@ -37,7 +37,7 @@ shows the structure of the code.
     \texttt{Switch\_NewContext}
     restores the general registers from the new task's TCB 
     (by calling \texttt{reg\_restore})
-    and its stack in memory,
+    and its stack in memory 
     respectively. Then it sets the new task as
     the current one.
 \end{itemize}
@@ -98,32 +98,34 @@ In the specification,
 we use $\Env{\env}$ to specify the values of
 general registers and the register windows.
 We describe the state
-of the current task (its TCB and stack in memory)
-using $\RelCurT{\ctid}{\notCare}{\env}{\ctid}$. 
+of the current task 
+% (its TCB and stack in memory)
+using $\RelCurT{\ctid}{\notCare}{\env}{\hthrdlocalst_c}$. 
 It describes the memory of current task's TCB 
 and stack for saving contexts in low-level, 
-the thread local state $\hthrdlocalst_n$ in high-level, 
-and state relation of $\ctid$ in low- and high-level 
-program. Similarly, the $\RelRdyT{\ntid}{\nst}{\hthrdlocalst_n}$, 
+the thread local state $\hthrdlocalst_c$ in high-level, 
+and their state relation. 
+Similarly, the $\RelRdyT{\ntid}{\nst}{\hthrdlocalst_n}$, 
 describes states of new task $\ntid$ in low- and high-level 
 program state and their relation. The memory location 
-$\TaskNew$ records the thread id of the new task.  
-Here, we use $\relmsto{\TaskNew}{(\ntid, 0)}$ to present 
-$\TaskNew$ in both low- and high-level memory saving 
-pointer $(\tid_n, 0)$. 
+$\TaskNew$ records the identifier of the new task.  
+And we use $\relmsto{\TaskNew}{(\ntid, 0)}$ to present 
+$\TaskNew$ saving $(\tid_n, 0)$ 
+in both low- and high-level memory. 
 \[
     \relmsto{\loc}{\val} \ \define \ 
     (\msto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val})
 \]
-The precondition takes 10 tokens ($\metricAst{10}$). 
+The precondition takes ten tokens ($\metricAst{10}$). 
 As we have explained, verifying instruction \call{} 
 and \jmp{} will consume a token. So, verifying calling 
 \textsf{reg\_save} and \textsf{reg\_restore} will 
 both consume a token. And \textsf{Save\_UsedWindows}, 
 which checks each previous window 
 and saves its contexts into memory until the invalid one, 
-will execute at most eight times, because upper bound of 
-the number of windows is eight. So, 10 tokens is sufficient. 
+will execute at most eight times repeatedly, 
+because upper bound of 
+the number of windows is eight. So, ten tokens is sufficient. 
 
 If we compare $\Apre$ and $\Apost$, we can see that
 $\ntid$ becomes the current task
@@ -140,7 +142,7 @@ $\RelRdyT{\ctid}{\pEnv{\env}}{\hthrdlocalst_c}$.
 The execution of $\primsw$ should be done in the final state. 
 We use $\hthrdlocalst'$ to represent the thread local 
 state of $\ntid$ instead of $\hthrdlocalst_n$ in final state, 
-because the execution of $\primsw$ will modify the code pointer 
+because the execution of $\primsw$ will modify the program counters 
 in $\hthrdlocalst_n$. More details about verifying 
 context switch routine can be found in 
 appendix~\ref{appendix:ctxswitchproof}. 

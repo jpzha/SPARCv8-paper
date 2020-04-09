@@ -2381,8 +2381,8 @@ abstract assembly primitive executes.
                     \item 
                         % $\exists \word'' < \word'$, 
                         $\asrtmodel{(\state', \hpstate', \primcom', \word'')}
-                        {(\specpre \; \lgvl) \sepstar \relastP_r}$,  
-                        $(\relspecpost \; \lgvl) \sepstar \relastP_r 
+                        {(\specpre \; \lgvl) \sepstar \relastP_r},  
+                        (\relspecpost \; \lgvl) \sepstar \relastP_r 
                         \Rightarrow \relastQ$, $\wfFrm(\relastP_r)$. 
                 \end{enumerate}
             \end{itemize}
@@ -2466,13 +2466,13 @@ abstract assembly primitive executes.
 
 Then we can define the semantics for well-formed instruction
 sequences and well-formed internal function. 
-The semantics of well-formed instruction sequences tells us that 
-for any $\asmimp$, if the instruction sequence starting from label 
-$\lab{}$ is $\cblk$, then the instruction sequence $\cblk$ can 
-execute safely if the relational state satisfies the precondition 
-$\relastP$. And the semantics of well-formed code heap says that 
-all the instruction sequences in code heap $\asmimp$ 
-are well-formed. 
+% The semantics of well-formed instruction sequences tells us that 
+% for any $\asmimp$, if the instruction sequence starting from label 
+% $\lab{}$ is $\cblk$, then the instruction sequence $\cblk$ can 
+% execute safely if the relational state satisfies the precondition 
+% $\relastP$. And the semantics of well-formed code heap says that 
+% all the instruction sequences in code heap $\asmimp$ 
+% are well-formed. 
 
 \begin{definition}[Judgment Semantics]
 	\em
@@ -2498,7 +2498,7 @@ are well-formed.
     \end{itemize}
 \end{definition}
 
-Then we define the simulation for function in 
+Next We define the simulation for function in 
 \Def{\ref{def:simfunc}}. It means that if there 
 exists a relational state $(\state, \hpstate, \primcom, \word)$ 
 satisfies the precondition $\relastP$, then we have 
@@ -2506,6 +2506,16 @@ the simulation
 $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{} + 4)}
     {i}{0}{(\primcom, \hpstate)}$ defined in 
 \Def{\ref{def:sim-imp-prim-state}}.
+The definition of simulation 
+$\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}
+    {i}{k}{(\primcom, \hpstate)}$ carries an index $i$, 
+which is used to ensure the termination preserving, 
+and the depth $k$ of function call, which  
+increases by the \call{} instruction
+and decreases by \retl{} (unless $k=0$). 
+The simulation relation make sure 
+the safe execution of low-level SPARCv8 function  
+and the corresponding high-level abstract assembly primitive.
 
 \begin{definition}[Simulation for Function]
     \em
@@ -2575,8 +2585,8 @@ $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{} + 4)}
                         {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$; 
                 \item for any $\state', \pc', \npc'$, \\ if 
                 $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
-                    {2}{(\asmimp, \state', \pc', \npc')}$, then one of 
-                    the following holds: 
+                    {2}{(\asmimp, \state', \pc', \npc')}$, \\
+                    then one of the following holds: 
                 \begin{enumerate}
                     \item $\exists \, j < i. \ 
                         \simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
@@ -2625,18 +2635,8 @@ $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{} + 4)}
             \end{itemize}        
     \end{enumerate}
 \end{definition}
-
-The definition of simulation 
-$\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}
-    {i}{k}{(\primcom, \hpstate)}$ carries an index $i$, 
-which is used to ensure the termination preserving, 
-and the depth $k$ of function call, which  
-increases by the \call{} instruction
-and decreases by \retl{} (unless $k=0$). 
-The simulation relation make sure 
-the safe execution of low-level SPARCv8 function  
-and the corresponding high-level abstract assembly primitive. 
-The we give the semantics of well-formed primitive in 
+ 
+Then we give the semantics of well-formed primitive in 
 \Def{\ref{def:wdprim-sem}}. 
 \begin{definition}[Well-defined Primitive Set Semantics]
     \em
