@@ -2336,11 +2336,11 @@ abstract assembly primitive executes.
 		\begin{itemize}
 			\item
 			there exist $\state', \pc, \npc'$, such that \\
-			$\ptrans{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
+			$\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
 			
 			\item
 			for any $\state', \pc', \npc'$, \\ if
-            $\ptrans{(\state, \pc, \npc)}{(\state', \pc', \npc')}$, then
+            $\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$, then 
             there exists $\primcom', \hpstate'$ and $\word'$, such that: 
             \begin{enumerate}[(1)]
                 \item either $\primcom' = \primcom$, 
@@ -2360,11 +2360,11 @@ abstract assembly primitive executes.
             \begin{itemize}
                 \item there exist $\state', \pc', \npc'$, such that
                 \\
-                $\multiptrans{2}{(\state, \pc, \npc)}
+                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
                     {(\state', \pc', \npc')}$,
                 
                 \item for any $\state', \pc', \npc'$, \\ if
-                $\multiptrans{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
+                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
                 then there exists $\relspecpre, \relspecpost, \lgvl, 
                 \primcom', \hpstate'$, $\word'$, 
                 $\word'' < \word'$ and $\relastP_r$ 
@@ -2395,12 +2395,12 @@ abstract assembly primitive executes.
             \begin{itemize}
                 \item there exist $\state', \pc', \npc'$, such that
                 \\
-                $\multiptrans{2}{(\state, \pc, \npc)}
+                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
                     {(\state', \pc', \npc')}$,
                 
                 \item for any $\state', \pc'$ and $\npc'$, \\ 
                 if
-                $\multiptrans{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
+                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
                 then there exist $\relspecpre, \relspecpost, \lgvl, 
                 \primcom', \hpstate', \word', \word'' < \word'$ 
                 and $\relastP_r$, such that the following hold:
@@ -2442,12 +2442,12 @@ abstract assembly primitive executes.
             \begin{itemize}
                 \item there exist $\state', \pc', \npc'$, such that
                 \\
-                $\multiptrans{2}{(\state, \pc, \npc)}
+                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
                     {(\state', \pc', \npc')}$,
                 
                 \item for any $\state', \pc'$ and $\npc'$, \\ 
                 if
-                $\multiptrans{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
+                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
                 then there exists $\primcom', \hpstate'$, and $\word'$, 
                 such that: 
                 \begin{enumerate}[(1)]
