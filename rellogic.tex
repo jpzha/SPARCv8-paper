@@ -210,7 +210,7 @@ of client code preserves such restriction:
     HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}).  
     After this abstraction, We don't need to care about 
     whether the contexts are saved in register window or 
-    memory and describe the contents of windows unused 
+    memory, and don't need to describe the contents of windows unused 
     (the windows in white color in 
     \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     but excluding the current one pointed by \regcwp{}) 
@@ -396,9 +396,11 @@ to another.
 % the ones defined in \Fig{\ref{fig:Machine States and Language for SPARC Code}}, 
 % except that we add two pseudo instructions $\Psave \ \word$ and $\Prestore$ 
 % in simple instruction.
-Comparing the simple instruction with the one shown in 
-\Fig{\ref{fig:Machine States and Language for SPARC Code}}, 
-we add three pseudo instructions. The $\Psave \ \word$ 
+% Comparing the simple instruction with the one shown in 
+% \Fig{\ref{fig:Machine States and Language for SPARC Code}}, 
+% we add three pseudo instructions. 
+We add three pseudo instruction in simple instruction. 
+The $\Psave \ \word$ 
 and $\Prestore$ restrict the \csave{} and \crestore{}
 instructions can only be used in specific form as 
 mentioned before.  
@@ -440,7 +442,7 @@ $\hthrdlocalst$ of the current thread, and the memory $\Mem$.
 \paragraph{\textbf{Thread Local State.}} 
 The thread local state $\hthrdlocalst$ 
 is a triple of high-level register state $\hRstate$, 
-and program conunters $\pc$ and $\npc$. The high-level 
+and program counters $\pc$ and $\npc$. The high-level 
 register state $\hRstate$ consists: 
 the high-level register file $\hRfile$, 
 % the block of the current stack frame $\block$, 
@@ -726,7 +728,7 @@ is defined in \Fig{\ref{fig:selected-opsem-high-level-prog}}.
 The high-level program transition relation 
 $\HGlobTrans{(\HMd, \hpstate)}{\hmsg}{(\HMd, \hpstate')}$ is defined 
 in \Fig{\ref{fig:selected-opsem-high-level-prog}} (a). In each step, 
-the program may either execute the instruction pointed by $\pc$,  
+the program may either execute the instruction pointed by $\pc$   
 and occur empty message $\empmsg$ or an output $\outEvt{\val}$, 
 or call  an abtract assembly primitive in primitive set.
 When calling an abstract assembly primitive, 
@@ -888,7 +890,7 @@ state $\state$, high-level program state $\hpstate$, program counters
 $\pc$ and $\npc$, if the low- and high-level program states satisfy the 
 state relation $\stateRel{\state}{\hpstate}$ and the high-level program 
 will never get stuck (shown as $\progsafe(\HProg)$), 
-then there is an {\it event trace refinement} relation, 
+then there is an {\it event trace refinement}, 
 which means that $\prog$ produces no more observable behaviors 
 than $\HProg$ and is denoted as $\prog \refine \HProg$,  
 between low- and high-level program. $\progsafe(\HProg)$ 
@@ -2066,14 +2068,14 @@ The return code pointers should be equal to
 $\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$ 
 is contained in $\reg{15}$ register after the execution 
 of abstract assembly primitive.  
-This restriction ensures that the low-level function 
+It ensures that the low-level implementation 
 and high-level abstract assembly primtive will return to 
 the same code pointers after executions, because
 the \textbf{RETL} rule in our logic also restricts 
 that the execution of low-level program will return to 
 code pointers according to $\reg{15}$ register 
 in low-level state when function returns. 
-We also restrict that 
+We also require that 
 % the execution of 
 % abstract assembly primitive should satisfy {\it locality}, 
 % which means that 
