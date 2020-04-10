@@ -104,10 +104,13 @@ using $\RelCurT{\ctid}{\notCare}{\env}{\hthrdlocalst_c}$.
 It describes the memory of current task's TCB 
 and stack for saving contexts in low-level, 
 the thread local state $\hthrdlocalst_c$ in high-level, 
-and their state relation. 
+and the state relation of current thread between low- 
+and high-level.  
 Similarly, $\RelRdyT{\ntid}{\nst}{\hthrdlocalst_n}$  
 describes states of new task $\ntid$ in low- and high-level 
-program and their relation. The memory location 
+program and their relation. 
+Here, we use $\nst$ to present the saved context 
+of task $\ntid$. The memory location 
 $\TaskNew$ records the identifier of the new task $\ntid$.  
 And we use $\relmsto{\TaskNew}{(\ntid, 0)}$ to denote 
 $\TaskNew$ saving $(\tid_n, 0)$ 
