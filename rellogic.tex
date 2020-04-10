@@ -192,7 +192,7 @@ of client code preserves such restriction:
     client code. Modifying them is hidden in the 
     implementation of the abstract assembly primitives
     in low-level. 
-    The delay buffer can be omitted in high-level
+    And the delay buffer can be omitted in high-level
     program state. 
     % omit them 
     % in the Pseudo-SPARCv8 program state. Operating them 
@@ -596,7 +596,7 @@ and after execution of $\primsw{}$ respectively.
         \end{minipage}
     }
     
-    \subfigure[High-level Control Transfer Instruction Transition]
+    \subfigure[High-level Thread Local Transition]
     {
         \begin{minipage}[b]{1\textwidth}
         \[
@@ -749,7 +749,7 @@ from high-level state, and its definition is omitted here).
 %(shown as $\{\hthrdlocalst''.\pc, \hthrdlocalst''.\npc\}
 %\subseteq \dom(\code)$).
 
-The control transfer step is defined in  
+The thread local step is defined in  
 \Fig{\ref{fig:selected-opsem-high-level-prog}} (b). 
 Here, the step for simple instruction $\simplins{}$ is 
 represented as ``$\hexeci{(\simplins{}, \notCare)}{\notCare}$". 
@@ -768,8 +768,8 @@ as a new stack frame in memory
 The reason why it starts from 64 byte is that the 0 to 64 bytes 
 (16 words) in a stack frame are usually reserved to save 
 the contexts in window (\localRN{} and \inRN{} registers)
-in convention \cite{sparc}.  
-However this part of memory is abstracted away in 
+in convention \cite{sparc},   
+and this part of memory is abstracted away in 
 Pseudo-SPARCv8 program as we have explained and shown in 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}.
 The instruction $\Prestore$ does the reverse, 
@@ -1481,7 +1481,7 @@ current high-level primitive command is $\primcom$.
 % \] 
 And the assertion $\metricAst{\word}$ takes a word $\word$, 
 which can also be separated by separation conjunction, 
-to state that the number of token in current state is 
+to state that the number of tokens in current state is 
 \textit{no less} than $\word$. In the 
 introduction of the inference rules following, we use tokens 
 to avoid infinite loops and recursive calls to make sure 
