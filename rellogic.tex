@@ -450,7 +450,10 @@ $\hrn$ is the high-level register names, where
 the $\regcwp$ is omitted as introduced before,  and 
 we also omit special register for simplicity, 
 because we don't allow 
-the high-level client code to modify them. 
+the high-level client code to modify them
+\footnote{There is no problem to reserve special 
+registers in high-level register file and permit
+the high-level client code to read them.}. 
 The high-level frame list $\hWstk$ is a list of pair 
 $(\fm_1, \fm_2)$, which is used to save 
 % the block id $\block$ of the stack frame and  
