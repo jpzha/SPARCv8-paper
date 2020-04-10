@@ -165,6 +165,7 @@ of client code preserves such restriction:
     % The special registers can't be modified arbitrarily.
     The special registers in SPARCv8 usually act specific 
     roles and modifying them should be carefully, 
+    for example, \regwim{} marks which window is invalid.
     \begin{center}
         \vspace*{-0.5em}
         \input{picture/ProblemModwim.tex}
@@ -173,8 +174,7 @@ of client code preserves such restriction:
         \vspace*{-0.5em}
         \label{fig:problem of modifying wim arbitrary}
     \end{center}
-    for example, \regwim{} marks which window is 
-    invalid. If we change its value shown in 
+    If we change its value shown in 
     \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     to mark another window invalid, as shown in 
     \Fig{\ref{fig:problem of modifying wim arbitrary}}, 
