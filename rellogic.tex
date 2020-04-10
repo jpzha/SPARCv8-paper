@@ -1915,7 +1915,7 @@ is defined below formally:
     \end{array}
 \]
 The inference rules for verifying instructions are not 
-presented here, because they have no difference with 
+presented here, because they are no different from 
 the rules shown in \Fig{\ref{fig:Seleted Inference rules}}. 
 % The inference rules for verifying instructions, 
 % defined as well-formed instruction in 
@@ -2085,7 +2085,7 @@ We also require that
 if an abstract assembly primitive 
 can execute safely on a subset of program state, 
 it can also execute safely on the whole program state, 
-and additional program state keeps unchanged.  
+and additional program state remains unchanged.  
 % We require that the program counters 
 % $\pc$ and $\npc$ in high-level are equal to $\lab{}+8$ 
 % and $\lab{}+12$ after execution of the abstract 
@@ -2204,7 +2204,7 @@ in thread pool from the safe execution of primitive $\primsw$.
 % of the context switch routine. 
 % Otherwise, 
 % the execution of primtive $\primsw$ will not be safe. 
-And we can know that the memory location $\TaskNew$ 
+Then we can know that the memory location $\TaskNew$ 
 in low-level state also saves such pointer 
 according to the state relation 
 between low- and high-level program state. 
