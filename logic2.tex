@@ -516,8 +516,9 @@ To verify the function, we need to prove that it satisfies
 $(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$. 
 Here, $\lv[1]$ and $\lv[2]$ cannot be a memory address, 
 because a value plus a memory address is illegal. 
-$\lv[3]$ also should be a word, because it 
-records a word as a return code pointer. 
+$\lv[3]$ also should be a word, because it's a 
+return code pointer whose type is word. 
+% records a word as a return code pointer. 
 
 
 %In order to get connection between initial state and final state,
