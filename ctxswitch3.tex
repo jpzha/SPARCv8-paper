@@ -43,7 +43,8 @@ shows the structure of the code.
 
 The main complexity of the verification lies in
 the code manages the register windows.
-To save all the register windows, \texttt{Save\_UsedWindows}
+To save all the used 
+register windows, \texttt{Save\_UsedWindows}
 repetitively restores the next window into general registers
 (as the current window)
 and then saves them into memory, until all the windows are saved.
