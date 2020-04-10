@@ -26,8 +26,7 @@ Finally, logic soundness is shown in
 % \Sec{\ref{sec:modeling}} as the {\it low-level} 
 % program. And 
 
-The Pseudo-SPARCv8 language in this 
-contains two part: 
+The Pseudo-SPARCv8 language contains two part: 
 the SPARCv8 code as client code, 
 and the set of abstract assembly primitives. 
 Here, we require that the execution of client SPARCv8 code 
@@ -814,7 +813,7 @@ $\cprint$ and acts as an observable behavior.
 \subsection{Primitive Correctness}
 \label{subsec:correctness-primitive}
 
-We first establish a relation as an {\it invariant} 
+We first establish a state relation 
 between low- and high-level program state. 
 We define this relation below, shown as 
 ``$\stateRel{\state}{\hpstate}$". 
@@ -2064,17 +2063,18 @@ and we explain them in turn in the following.
 
 \textbf{First}, we should give some restrictions 
 for the execution of abstract assembly primitive. 
-The return code pointers should be equal to 
+The program counters should be equal to 
 $\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$ 
 is contained in $\reg{15}$ register after the execution 
 of abstract assembly primitive.  
 It ensures that the low-level implementation 
 and high-level abstract assembly primtive will return to 
-the same code pointers after executions, because
-the \textbf{RETL} rule in our logic also restricts 
-that the execution of low-level program will return to 
-code pointers according to $\reg{15}$ register 
-in low-level state when function returns. 
+the same code pointers after executions. 
+% because
+% the \textbf{RETL} rule also restricts 
+% that the low-level program will return to 
+% code pointers according to $\reg{15}$ register 
+% in low-level state when function returns. 
 We also require that 
 % the execution of 
 % abstract assembly primitive should satisfy {\it locality}, 
@@ -2186,7 +2186,7 @@ The invariant consists of the state relation between low- and
 high-level program state,  
 shown as $\stateRel{\state}{\hpstate}$, 
 and the safe execution of the primitive command
-($\primMultiTrans{}{*}{}$ means zero or one step). 
+($\primMultiTrans{}{*}{}$ denotes zero or one step). 
 Including the safe execution of 
 the primitive command is essential 
 because we can get some knowledges of high-level program 
@@ -2467,7 +2467,7 @@ abstract assembly primitive executes.
 \end{definition}
 
 Then we can define the semantics for well-formed instruction
-sequences and well-formed internal function. 
+sequences and well-formed code heap. 
 % The semantics of well-formed instruction sequences tells us that 
 % for any $\asmimp$, if the instruction sequence starting from label 
 % $\lab{}$ is $\cblk$, then the instruction sequence $\cblk$ can 
@@ -2479,7 +2479,7 @@ sequences and well-formed internal function.
 \begin{definition}[Judgment Semantics]
 	\em
 	\label{def:soundness of instruction sequence}
-	\mbox{}
+    \mbox{}
     \begin{itemize}
     \item $\semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$ if and only if, for all
     $\asmimp$, $\state$, $\hpstate$, $\primcom$ and $\word$ 
@@ -2500,7 +2500,7 @@ sequences and well-formed internal function.
     \end{itemize}
 \end{definition}
 
-Next We define the simulation for function in 
+Next we define the simulation for function in 
 \Def{\ref{def:simfunc}}. It means that if there 
 exists a relational state $(\state, \hpstate, \primcom, \word)$ 
 satisfies the precondition $\relastP$, then we have 
