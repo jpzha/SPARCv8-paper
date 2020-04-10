@@ -12,7 +12,7 @@ We first define the high- and low-level program in
 \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}} and 
 \Sec{\ref{subsec:low-level SPARCv8 Program}} respectively. 
 % and their state relation in \Sec{\ref{subsec:state-rel}}. 
-The refinement relation is represented in 
+The refinement relation is presented in 
 \Sec{\ref{subsec:correctness-primitive}}, 
 and program logic is shown in \Sec{\ref{subsec:rellogic}}
 Finally, logic soundness is shown in 
@@ -432,7 +432,7 @@ call a primitive labelled $\lab{}$ with arguments $\args{\val}$.
 The machine states of high-level Pseudo-SPARCv8 program 
 is defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}. 
 The high-level program $\HProg$ is a a pair of high-level code 
-$\HMd$ and high-level state $\hpstate$. High-level program 
+$\HMd$ and high-level state $\hpstate$. High-level 
 state is a tuple including: a thread pool $\thrdpool$, 
 % the identifier of the current thread $\thrdid$, 
 current thread id $\thrdid$, the thread local state 
@@ -1183,15 +1183,15 @@ is defined below formally :
 
 \subsection{Relational Program Logic for Refinement Verification}
 \label{subsec:rellogic}
-\vspace*{-1.2em}
+\vspace*{-1em}
 \begin{center}
     \[
         \begin{array}{rcl}
             \textit{(RelAsrt)} \quad \relastP, \relastQ & \ \define \ & 
-            \empAst \sepline
             \astP \sepline
             \hregsto{\hrn}{\val} \sepline 
-            \hmsto{\loc}{\val} \\
+            \hmsto{\loc}{\val} \sepline
+            \empAst \\
             & \ \ \ | &
             \astCurCont{\thrdid}{\hthrdlocalst} \sepline 
             \astRdyCont{\thrdid}{\hthrdlocalst} \sepline
@@ -1867,7 +1867,7 @@ means there is no sub-term in
 form of $(\astCurCont{\thrdid}{\hthrdlocalst})$, 
 $(\hregsto{\hrn}{\val})$ and $\safePrimAst{\primcom}$ 
 in frame $\relastP_r$, 
-because they are not separated by 
+because the state they described are not separated by 
 separation conjunction $\sepstar$. 
 % There is an omitted side condition in presentation that: 
 % the states about {\it current thread} 
@@ -1953,7 +1953,7 @@ and we explain them in turn in the following.
     \em
     $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$ holds, iff 
     \small
-    \begin{enumerate}[1]
+    \begin{enumerate}[1.]
         \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$. 
             if $\hprim(\args{\val})(\hpstate)(\hpstate')$, and 
             $\hpstate \perp \hpstate_r$, 
