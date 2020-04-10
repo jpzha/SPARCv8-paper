@@ -845,7 +845,7 @@ $\Mem_c$ used to save the context of the current thread $\thrdid$;
 $\Mem_T$ saving the contexts of the ready threads, 
 except the current thread $\tid$; a singleton memory 
 cell located $\TaskCur$ saving the current thread id; and shared 
-memory $\Mem'$. 
+memory $\Mem'$ that is same as the high-level memory. 
 The delayed buffer $\DBuf$ is $\nil$, because client 
 code is not permitted to modify special register by 
 $\cwr{}$ instruction. 
@@ -2205,9 +2205,9 @@ in thread pool from the safe execution of primitive $\primsw$.
 % Otherwise, 
 % the execution of primtive $\primsw$ will not be safe. 
 Then we can know that the memory location $\TaskNew$ 
-in low-level state also saves such pointer 
-according to the state relation 
-between low- and high-level program state. 
+in low-level state also saves the same memory address  
+from the state relation 
+between low- and high-level program. 
 \[
     \small
     \begin{array}{l}
@@ -2676,12 +2676,12 @@ Then we give the semantics of well-formed primitive in
         \end{array}
     \]
 \end{definition}
-It says that any high-level abstract assemly primitive
+It says that for any high-level abstract assemly primitive
 in primitive set $\hprimset$, 
 we can establish a simulation relation 
 defined in \Def{\ref{def:simfunc}} 
-between its low-level implementation in code heap $\asmimp$
-and the high-level abstract assemly primitive. 
+between its low-level implementation 
+in code heap $\asmimp$ and it. 
 Theorem~\ref{thm:logic soundness}, 
 whose correctness can be derived from Lemmas 
 \ref{lemma:Logic Ensures Simulation} 
