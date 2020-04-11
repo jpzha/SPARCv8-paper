@@ -14,7 +14,7 @@ We first define the high- and low-level program in
 % and their state relation in \Sec{\ref{subsec:state-rel}}. 
 The refinement relation is presented in 
 \Sec{\ref{subsec:correctness-primitive}}, 
-and program logic is shown in \Sec{\ref{subsec:rellogic}}
+and program logic is shown in \Sec{\ref{subsec:rellogic}}. 
 Finally, logic soundness is shown in 
 \Sec{\ref{subsec:semantics and soundness}}.
 
@@ -75,7 +75,7 @@ current one and save its contents into stack
 We require the execution of client code 
 preserving such restriction. Otherwise, some SPARCv8 
 functions like context switch routine whose 
-implementations will store the contexts saved in 
+executions will store the contexts saved in 
 register window into stack in memory cannot be 
 verified if it's unclear where to save the 
 contents of some windows. 
@@ -178,10 +178,10 @@ of client code preserves such restriction:
     \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     to mark another window invalid, as shown in 
     \Fig{\ref{fig:problem of modifying wim arbitrary}}, 
-    and call context switch routine, which will  
+    and call context switch routine to  
     save the contents of previous windows into memory
-    until the invalid one, at this moment. 
-    There will be a problem that we don't know 
+    until the invalid one at this moment,  
+    there will be a problem that we don't know 
     where to save the contents of window that 
     is marked invalid originally 
     (window in yellow in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
@@ -205,7 +205,7 @@ of client code preserves such restriction:
     As shown in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     we find that we can abstract the register window 
     and the memory in stack for storing contexts 
-    as a list (defined as 
+    into a list (defined as 
     HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}).  
     After this abstraction, We don't need to care about 
     whether the contexts are saved in register window or 
@@ -782,11 +782,11 @@ restoring the contexts of the previous procedure saved in $\hWstk$.
 \subsection{Low-level SPARCv8 Program}
 \label{subsec:low-level SPARCv8 Program}
 
-The low-level SPARCv8 program are very closed to the SPARCv8 program 
+The low-level \sparc{} program are very closed to the \sparc{} program 
 defined in \Fig{\ref{fig:Machine States and Language for SPARC Code}}. 
 The only difference here is that we use simple instructions and commands 
 defined in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. So, the global 
-program transition of the low-level SPARCv8 program is defined as 
+program transition of the low-level \sparc{} program is defined as 
 the following form : 
 \[
     \small
