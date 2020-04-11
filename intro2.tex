@@ -5,17 +5,22 @@ the most foundational layer of computer software systems.
 To interact directly with hardware,
 many important components in OS kernels are implemented
 in assembly, such as the context switch code or the code that
-manages interrupts. And some other codes that are not required to
-be written in assembly are also implemented in assembly
-(\eg \textsf{memcpy} in linux v2.6.17.10 \cite{linuxv2.6.17.10}), 
-in order to achieve high performance.   
-Their correctness is crucial to ensure
+manages interrupts. 
+In addition, there is also code written directly in assembly
+to achieve high performance (\eg{} \textsf{memcpy} in linux 
+v2.6.17.10 \cite{linuxv2.6.17.10}).
+%And some other codes that are not required to
+%be written in assembly are also implemented in assembly
+%(\eg \textsf{memcpy} in linux v2.6.17.10 \cite{linuxv2.6.17.10}),
+%in order to achieve high performance.
+Correctness of such assembly code is crucial to ensure
 the safety and security of the whole system.
 However, assembly code verification remains a challenging
 task in existing work on OS kernel verification
 (\eg~\cite{Xu16cav, sel4, deepspec}),
 where the assembly code is either unverified or verified based on
 operational semantics without a general program logic.
+
 SPARC (Scalable Processor ARChitecture)
 is a CPU instruction set architecture (ISA) with high-performance
 and great flexibility~\cite{sparc}.
@@ -51,7 +56,7 @@ program logic for assembly code.
     system parameter which usually ranges from 0 to 3.
 	\item \textit{Register windows}.
 	\sparc{} uses register windows
-	and the window rotation mechanism
+	and a window rotation mechanism
 	to avoid saving contexts in the stack directly
 	and achieves high performance in context management.
 	%and a significant reduction in context management.
@@ -60,37 +65,48 @@ program logic for assembly code.
 We use a simple example
 in Fig.~\ref{fig:An Example for SPARC Code}
 to show these three features.
-The function \texttt{CALLER}
+\sparc{} has 32 general registers, which are split into four
+logic groups
+as \textsf{global} ($\reg{0} \sim \reg{7}$),
+\outRN{} ($\reg{8} \sim \reg{15}$),
+\localRN{} ($\reg{16} \sim \reg{23}$) and
+\inRN{} ($\reg{24} \sim \reg{31}$) registers.
+Correspondingly, we give aliases ``$\greg{0} \sim \greg{7}$'',
+``$\oreg{0} \sim \oreg{7}$'', ``$\lreg{0} \sim \lreg{7}$''
+and ``$\ireg{0} \sim \ireg{7}$'' for these groups
+respectively.
+
+\texttt{CALLER} in Fig.~\ref{fig:An Example for SPARC Code}
 calls \texttt{ChangeY},
-which updates the special register \texttt{Y}
+which updates the {\em special register} \texttt{Y}
 and returns its original value.
 \vspace*{-1em}
 \begin{center}
     $
         \begin{array}{ll}
-            \texttt{CALLER}: & 
+            \texttt{CALLER}: &
             \quad\hspace*{2.5ex} \texttt{ChangeY} : \\[1ex]
             \begin{array}{ll}
                 \quad & \dots \\
                 \text{1} \ \ & \mov \quad 1, \; \oreg{0} \\
                 \text{2} & \call \quad \text{ChangeY} \\
-                \text{3} & 
+                \text{3} &
                     \csave \quad \spreg, \; -64, \; \spreg \\
-                \text{4} & 
+                \text{4} &
                     \mov \quad \oreg{0}, \; \lreg{0} \\
                 \quad & \dots \\
                 \quad
             \end{array} & \
             \begin{array}{ll}
-                \text{5} \ \ & 
+                \text{5} \ \ &
                     \rd \quad \regY, \; \lreg{0} \\
-                \text{6} & 
+                \text{6} &
                     \cwr \quad \ireg{0}, \; 0, \; \regY \\
                 \text{7} & \nop \\
                 \text{8} & \nop \\
                 \text{9} & \nop \\
                 \text{10} & \ret \\
-                \text{11} & 
+                \text{11} &
                     \crestore \quad \lreg{0}, 0, \oreg{0}
             \end{array}
         \end{array}
@@ -103,29 +119,29 @@ and returns its original value.
 % 	\vspace{-0.5em}
 % 	\[
 % 		\begin{array}{ll}
-%             \texttt{CALLER}: & 
+%             \texttt{CALLER}: &
 %             \quad\hspace*{2.5ex} \texttt{ChangeY} : \\[1ex]
 % 			\begin{array}{ll}
 % 				\quad & \dots \\
 % 				\text{1} \quad & \mov \quad 1, \; \oreg{0} \\
 % 				\text{2} \quad & \call \quad \text{ChangeY} \\
-%                 \text{3} \quad & 
+%                 \text{3} \quad &
 %                     \csave \quad \spreg, \; -64, \; \spreg \\
-%                 \text{4} \quad & 
+%                 \text{4} \quad &
 %                     \mov \quad \oreg{0}, \; \lreg{0} \\
 % 				\quad & \dots \\
 % 				\quad
 % 			\end{array} & \quad\quad
 % 			\begin{array}{ll}
-%                 \text{5} \quad & 
+%                 \text{5} \quad &
 %                     \rd \quad \regY, \; \lreg{0} \\
-%                 \text{6} \quad & 
+%                 \text{6} \quad &
 %                     \cwr \quad \ireg{0}, \; 0, \; \regY \\
 % 				\text{7} \quad & \nop \\
 % 				\text{8} \quad & \nop \\
 % 				\text{9} \quad & \nop \\
 % 				\text{10} \quad & \ret \\
-%                 \text{11} \quad & 
+%                 \text{11} \quad &
 %                     \crestore \quad \lreg{0}, 0, \oreg{0}
 % 			\end{array}
 % 		\end{array}
@@ -141,7 +157,7 @@ as the new value for the special register {\tt Y}.
 and \pc{} and \npc{} point to line 2 and 3 respectively at this
 moment.
 The call instruction changes the value of \pc{} to \npc{}
-and let \npc{} points to the entry of 
+and let \npc{} points to the entry of
 \texttt{ChangeY} at line 5,
 which means the control-flow will not transfer to \texttt{ChangeY}
 in the next cycle,
@@ -156,17 +172,8 @@ We call this feature ``delayed control transfers''.
 \sparc{} uses the $\csave$ instruction (at line 3 in the example)
 to save the current context
 and $\crestore$ (at line 10) to restore it.
-Its 32 general registers are split into four
-logic groups
-as \textsf{global} ($\reg{0} \sim \reg{7}$),
-\outRN{} ($\reg{8} \sim \reg{15}$),
-\localRN{} ($\reg{16} \sim \reg{23}$) and
-\inRN{} ($\reg{24} \sim \reg{31}$) registers.
-Correspondingly, we give aliases ``$\greg{0} \sim \greg{7}$'',
-``$\oreg{0} \sim \oreg{7}$'', ``$\lreg{0} \sim \lreg{7}$''
-and ``$\ireg{0} \sim \ireg{7}$'' for these groups
-respectively.
-The \outRN{}, \localRN{} and \inRN{} registers form the
+As explained above, among the 32 general registers,
+the \outRN{}, \localRN{} and \inRN{} registers form the
 {\em current register window}.
 The \localRN{} registers are for private use in the current context.
 The \inRN{} and \outRN{} registers are shared with adjacent register windows
@@ -179,40 +186,40 @@ in the current window.
 The $\crestore$ instruction does the inverse.
 The arguments taken by the $\csave$ and  $\crestore$ instructions
 are irrelevant here and can be ignored.
-% Note that the arguments taken by the $\csave{}$ 
-% in this example says, 
-% in addition to operate the register window,  
-% the execution of this instruction will also 
-% allocate a new stack frame size 64 bytes 
-% to \texttt{ChangY}. Here, $\spreg$ register, 
-% which is an alias of $\reg{14}$, usually 
-% acts as the stack pointer in SPARCv8. 
-% The $\crestore{}$ instruction does the inverse 
-% and the arguments it takes are irrelevant here 
-% and can be ignored.  
+% Note that the arguments taken by the $\csave{}$
+% in this example says,
+% in addition to operate the register window,
+% the execution of this instruction will also
+% allocate a new stack frame size 64 bytes
+% to \texttt{ChangY}. Here, $\spreg$ register,
+% which is an alias of $\reg{14}$, usually
+% acts as the stack pointer in SPARCv8.
+% The $\crestore{}$ instruction does the inverse
+% and the arguments it takes are irrelevant here
+% and can be ignored.
 
-% assign the value of ($\spreg\!-\!64$), where the value 
-% of the register $\spreg$ is taken 
-% from the original window, to the $\spreg$ register 
-% in the new register window. 
-% The $\spreg$ register, which is an alias of $\reg{14}$, 
-% acts as the stack pointer. 
-% So, `` $\csave{} \ \spreg, -64, \spreg$ " 
-% in this example allocates a new stack frame size 64 bytes 
-% to the callee (\texttt{ChangY}). 
-% % The arguments taken by the $\crestore{}$ 
-% % are irrelevant here and can be ignored here. 
-% Because the $\crestore{}$ instruction restores 
-% the stack pointer of the caller, the stack frame 
-% allocated for callee will be freed after executing 
-% $\crestore{}$. 
+% assign the value of ($\spreg\!-\!64$), where the value
+% of the register $\spreg$ is taken
+% from the original window, to the $\spreg$ register
+% in the new register window.
+% The $\spreg$ register, which is an alias of $\reg{14}$,
+% acts as the stack pointer.
+% So, `` $\csave{} \ \spreg, -64, \spreg$ "
+% in this example allocates a new stack frame size 64 bytes
+% to the callee (\texttt{ChangY}).
+% % The arguments taken by the $\crestore{}$
+% % are irrelevant here and can be ignored here.
+% Because the $\crestore{}$ instruction restores
+% the stack pointer of the caller, the stack frame
+% allocated for callee will be freed after executing
+% $\crestore{}$.
 
 At line 6, the $\cwr$ instruction tries to
 update the special register {\tt Y}
-with the value of $\ireg{0} \! \xorOP 0$ 
+with the value of $\ireg{0} \! \xorOP 0$
 (bitwise exclusive OR).
-However, the write is delayed for $X$ cycles, 
-where $X$ is some predefined system parameter 
+However, the write is delayed for $X$ cycles,
+where $X$ is some predefined system parameter
 that ranges from 0 to 3.
 For portability, programmers usually do not rely
 on the exact value of $X$ and assume it takes
@@ -244,64 +251,64 @@ crafts whose inline assembly is written in \sparc,
 we try to address these challenges and propose a practical
 program logic for realistically modelled \sparc{} code.
 We have applied our logic to verify the main body of
-the task context switch routine in the kernel. 
+the task context switch routine in the kernel.
 
-However, the OS kernel is implemented as 
-C language mainly and SPARCv8 as inline assembly. 
-Just having a traditional Hoare-style 
-program logic for SPARCv8, which can only make sure 
-the safe execution of SPARCv8 program if the initial 
+However, the OS kernel is implemented as
+C language mainly and SPARCv8 as inline assembly.
+Just having a traditional Hoare-style
+program logic for SPARCv8, which can only make sure
+the safe execution of SPARCv8 program if the initial
 state satisfies the precondition, is insufficient.
-\etal{Xu}~\cite{Xu16cav} propose a program logic for 
-verifying the correctness of OS kernel implementated in 
-C language with inline assembly, 
-but they use abstract assembly primitives to 
+\etal{Xu}~\cite{Xu16cav} propose a program logic for
+verifying the correctness of OS kernel implementated in
+C language with inline assembly,
+but they use abstract assembly primitives to
 substitute the inline assembly in their verification work.
-As a supplement to their work, we need to extend our 
-program logic so that it can make sure the  
+As a supplement to their work, we need to extend our
+program logic so that it can make sure the
 contextual refinement relation between the implementations
-and their corresponding abstract assembly primitives, 
-which can be presented as the following form. Here,  
-we use $\Clang$, $\AbsPrimC$, and $\asmimp$ to represent 
-the C language program, the set of abstract assembly 
-primitive and the implementations of 
-abstract assembly primtives respectively. 
-It means $\asmimp$ refines $\AbsPrimC$ under 
-\textit{any context} $\Clang$. 
+and their corresponding abstract assembly primitives,
+which can be presented as the following form. Here,
+we use $\Clang$, $\AbsPrimC$, and $\asmimp$ to represent
+the C language program, the set of abstract assembly
+primitive and the implementations of
+abstract assembly primtives respectively.
+It means $\asmimp$ refines $\AbsPrimC$ under
+\textit{any context} $\Clang$.
 \[
-    \forall \, \Clang. \, 
+    \forall \, \Clang. \,
     \Clang[\asmimp] \refine \Clang[\AbsPrimC]
 \]
-However, if we use C program as a client code to 
-call inline assembly code, we need to define the 
-semantics of C-assembly linking. 
+However, if we use C program as a client code to
+call inline assembly code, we need to define the
+semantics of C-assembly linking.
 It may be possible to use
 \textit{interaction semantics}~\cite{Stewart15popl}
-to implement multi-language linking. However, 
-there is a contraint in interaction semantics that 
-it requires that callee must return to caller when 
-finished. So, it can't handle calling context switch 
-routine, whose correctness we hope to prove in our work. 
+to implement multi-language linking. However,
+there is a contraint in interaction semantics that
+it requires that callee must return to caller when
+finished. So, it can't handle calling context switch
+routine, whose correctness we hope to prove in our work.
 \begin{center}
     $
         \begin{array}{l}
             \semantics{\Clang[\AbsPrimC]}^{\textsf{C}}
             \\
             \\[-5pt]
-            \ 
-            {\color{blue} \textcircled{1}} \ \ 
-            \rotatebox[origin=c]{90}{$\refine$} \ \  
-            \Longleftarrow \ \ 
+            \
+            {\color{blue} \textcircled{1}} \ \
+            \rotatebox[origin=c]{90}{$\refine$} \ \
+            \Longleftarrow \ \
             \boxed{C = \textit{Comp}(\Clang)}
             \\
             \\[-5pt]
             \semantics{\code[\hprimset]}^{\textsf{P-SPARCv8}}
             \\
             \\[-5pt]
-            \  
-            {\color{blue} \textcircled{2}} \ \ 
-            \rotatebox[origin=c]{90}{$\refine$} \ \ 
-            \Longleftarrow \ \ 
+            \
+            {\color{blue} \textcircled{2}} \ \
+            \rotatebox[origin=c]{90}{$\refine$} \ \
+            \Longleftarrow \ \
             \boxed{\vdash\asmimp:\hprimset}
             \\
             \\[-5pt]
@@ -311,118 +318,118 @@ routine, whose correctness we hope to prove in our work.
     \figurecaption{Idea to establish contextual refinement}
     \label{fig:idea to establish contextual refinement}
 \end{center}
-% some constraints in interaction semantics and 
-% features of SPARCv8 make it difficult to use 
-% interaction semantics in our work. 
-% \textbf{First}, interaction semantics requires that 
-% the callee must return to caller when finished. 
-% So, it can't handle calling context switch routine. 
-% \textbf{Second}, it's also difficult to instantiate 
-% the SPARCv8 language in interaction semantics. 
-% The features of SPARCv8 makes the semantics of 
-% SPARCv8 code context-dependent. For example, 
-% the caller of 
+% some constraints in interaction semantics and
+% features of SPARCv8 make it difficult to use
+% interaction semantics in our work.
+% \textbf{First}, interaction semantics requires that
+% the callee must return to caller when finished.
+% So, it can't handle calling context switch routine.
+% \textbf{Second}, it's also difficult to instantiate
+% the SPARCv8 language in interaction semantics.
+% The features of SPARCv8 makes the semantics of
+% SPARCv8 code context-dependent. For example,
+% the caller of
 
-We consider a method to establish the contextual 
-refinement between implementations and their 
-corresponding abstract assembly primitives and 
-avoid multi-language linking. 
-We use \Fig{\ref{fig:idea to establish contextual refinement}} 
-to illustrate our idea. 
-% We introduce this figure from top to down. 
-The source program of OS kernel  
+We consider a method to establish the contextual
+refinement between implementations and their
+corresponding abstract assembly primitives and
+avoid multi-language linking.
+We use \Fig{\ref{fig:idea to establish contextual refinement}}
+to illustrate our idea.
+% We introduce this figure from top to down.
+The source program of OS kernel
 shown as $\Clang[\AbsPrimC]$, which executes
-under C language semantics (shown as 
-$\semantics{\notCare}^{\textsf{C}}$),   
-is implementated as C language 
-with a set of abstract assembly primtives $\AbsPrimC$. 
-The compiler (\textit{Comp}) translates the 
-C program $\Clang$ to SPARCv8 code $\code$. 
-As {\color{blue} \textcircled{1}} shown, 
-we hope the compilation makes sure the 
-refinement relation between $\Clang[\AbsPrimC]$ and 
-$\code[\hprimset]$ that 
-executes under Pseudo-SPARCv8 semantics shown as 
-$\semantics{\notCare}^{\textsf{P-SPARCv8}}$. 
-Here, the $\hprimset$ represents the set of 
-abstract assembly primitives in the middle layer. 
-We use distinguished notations to represent 
-the set of abstract assembly primitives in source 
-and intermediate level, because they execute on 
-different program states and have different semantics. 
-The Pseudo-SPARCv8 language $\code[\hprimset]$,  
-which uses SPARCv8 as client code and is able to 
-call abstract assembly primtive in $\hprimset$, 
+under C language semantics (shown as
+$\semantics{\notCare}^{\textsf{C}}$),
+is implementated as C language
+with a set of abstract assembly primtives $\AbsPrimC$.
+The compiler (\textit{Comp}) translates the
+C program $\Clang$ to SPARCv8 code $\code$.
+As {\color{blue} \textcircled{1}} shown,
+we hope the compilation makes sure the
+refinement relation between $\Clang[\AbsPrimC]$ and
+$\code[\hprimset]$ that
+executes under Pseudo-SPARCv8 semantics shown as
+$\semantics{\notCare}^{\textsf{P-SPARCv8}}$.
+Here, the $\hprimset$ represents the set of
+abstract assembly primitives in the middle layer.
+We use distinguished notations to represent
+the set of abstract assembly primitives in source
+and intermediate level, because they execute on
+different program states and have different semantics.
+The Pseudo-SPARCv8 language $\code[\hprimset]$,
+which uses SPARCv8 as client code and is able to
+call abstract assembly primtive in $\hprimset$,
 will be defined in the following.
 In step {\color{blue} \textcircled{2}},
-we extend our program logic to support refinement 
-verification and get the totally SPARCv8 program 
+we extend our program logic to support refinement
+verification and get the totally SPARCv8 program
 $\code[\asmimp]$ executing under the realistically
-modelled SPARCv8 semantics, represented as 
-$\semantics{\notCare}^{\textsf{SPARCv8}}$, refines 
-the program $\code[\hprimset]$ executing 
-under Pseudo-SPARCv8 semantics.  
-Finally, we can get 
+modelled SPARCv8 semantics, represented as
+$\semantics{\notCare}^{\textsf{SPARCv8}}$, refines
+the program $\code[\hprimset]$ executing
+under Pseudo-SPARCv8 semantics.
+Finally, we can get
 $\semantics{\Clang[\hprimset]}^{\textsf{C}}
 \refine
-\semantics{\code[\asmimp]}^{\textsf{SPARCv8}}$. 
-In this work, we focus on 
-step {\color{blue} \textcircled{2}}, and 
-remain step {\color{blue} \textcircled{1}} 
-as a future work. 
+\semantics{\code[\asmimp]}^{\textsf{SPARCv8}}$.
+In this work, we focus on
+step {\color{blue} \textcircled{2}}, and
+remain step {\color{blue} \textcircled{1}}
+as a future work.
 
 % Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
-% define a set of abstract assembly primitives, 
-% which are atomic operations and act as the specifications of 
-% the assembly functions, 
-% to substitute their concrete implementations 
-% for some convenience of program verification. 
+% define a set of abstract assembly primitives,
+% which are atomic operations and act as the specifications of
+% the assembly functions,
+% to substitute their concrete implementations
+% for some convenience of program verification.
 % % Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
-% % define an abstract assembly  
-% % primitive $\primsw{}$ to substitute the concrete 
-% % implementation of context switch rontine,  
-% We extend our program logic to support refinement 
-% verification to bridge the gap.  
-% The extended program logic ensures the 
+% % define an abstract assembly
+% % primitive $\primsw{}$ to substitute the concrete
+% % implementation of context switch rontine,
+% We extend our program logic to support refinement
+% verification to bridge the gap.
+% The extended program logic ensures the
 % {\it contextual refinement} relation \cite{liang13pldi,Xu16cav}
-% between the implementation 
-% of SPARCv8 function and its corresponding abstract assembly 
-% primitive. The {\it contextual refinement} can be represented 
-% as the following form, which means that 
-% calling a SPARCv8 function $\asmimp$ 
-% will not produce more observable behaviors than calling 
+% between the implementation
+% of SPARCv8 function and its corresponding abstract assembly
+% primitive. The {\it contextual refinement} can be represented
+% as the following form, which means that
+% calling a SPARCv8 function $\asmimp$
+% will not produce more observable behaviors than calling
 % its corresponding abstract assembly primitive $\hprim$
 % under {\it any context} $\code$:
-% % the abstract assembly primitive $\hprim$ will not produce more 
+% % the abstract assembly primitive $\hprim$ will not produce more
 % % observable behaviors than calling their implementation $\asmimp$
-% % under {\it any context} $\code$:  
+% % under {\it any context} $\code$:
 % \[
-%     \forall \ \code. \, \code[\asmimp] \subseteq 
+%     \forall \ \code. \, \code[\asmimp] \subseteq
 %         \code[\hprim]
 % \]
 
 Our work is based on earlier work on assembly code
 verification but makes the following contributions
-\footnote{We list six contributions here. The 
-first four contributions have already presented 
-in the preliminary version~\cite{zha18aplas} 
-of this paper. And the 
-additional two contributions about refinement 
+\footnote{We list six contributions here. The
+first four contributions have already presented
+in the preliminary version~\cite{zha18aplas}
+of this paper. And the
+additional two contributions about refinement
 verification are our new contributions.}:
 
 %The logic, its soundness
 %proof, and the verification of the context switch module
 %are all mechanized in the Coq proof assistant.
 
-% we extend our program logic to support refinement 
-% verification. We formuate and verify the correctness of 
-% inline assembly SPARCv8 functions as {\it contextual refinement} 
-% their implementation and its corresponding abstract assembly 
-% primitive, like context switch primitive \textbf{switch} defined 
-% in \cite{Xu16cav}. Our extended program logic implies this 
-% {\it contextual refinement} relation, and can make sure that the program 
-% calling the abstract assembly primitives will not produce more 
-% observable behaviors than their implementations. 
+% we extend our program logic to support refinement
+% verification. We formuate and verify the correctness of
+% inline assembly SPARCv8 functions as {\it contextual refinement}
+% their implementation and its corresponding abstract assembly
+% primitive, like context switch primitive \textbf{switch} defined
+% in \cite{Xu16cav}. Our extended program logic implies this
+% {\it contextual refinement} relation, and can make sure that the program
+% calling the abstract assembly primitives will not produce more
+% observable behaviors than their implementations.
 % Our work is based on earlier work on assembly code
 % verification but makes the following contributions:
 
@@ -451,7 +458,7 @@ verification are our new contributions.}:
     %$\dlyregst{t}\sr\word$ means the special register $\sr$ will
     %hold the value $\word$ in up to $t$ cycles.
     We also give
-    logic rules for $\csave$ and $\crestore$ instructions 
+    logic rules for $\csave$ and $\crestore$ instructions
     that do register window rotation.
 %
 %
@@ -491,7 +498,7 @@ verification are our new contributions.}:
     soundness. This is different from previous
     work, which either does syntactic-based soundness proof
     (\eg{} SCAP~\cite{Feng06pldi}) or treats return code pointers
-    as first-class code pointers and gives CPS-style 
+    as first-class code pointers and gives CPS-style
     (continuation-passing style) semantics.
     Those approaches for soundness make it difficult to verify
     the interaction between the inline assembly and the C
@@ -537,44 +544,44 @@ verification are our new contributions.}:
 %	our logic is useful
 %	and can check realistic \sparc{} code easily and conveniently.
 
-    \item 
-    In order to support refinement verification, we define a 
-    Pseudo-SPARCv8 program as our high-level program, which 
-    is multi-threaded and can call abstract 
-    assembly primitives. It also simplifies 
-    the sophisticated register window mechanism in SPARCv8, 
-    and makes the program state of Pseudo-SPARCv8 program 
-    simpler than the physical SPARCv8 program 
-    (defined in \Sec{\ref{sec:modeling}}). 
-    So, it can provide some convenience 
-    to write the abstract assembly primitive 
-    and reason in high-level program. 
-    
     \item
-    We extend our program logic defined 
-    previously to support refinement verification. 
-    The extended logic can ensure 
+    In order to support refinement verification, we define a
+    Pseudo-SPARCv8 program as our high-level program, which
+    is multi-threaded and can call abstract
+    assembly primitives. It also simplifies
+    the sophisticated register window mechanism in SPARCv8,
+    and makes the program state of Pseudo-SPARCv8 program
+    simpler than the physical SPARCv8 program
+    (defined in \Sec{\ref{sec:modeling}}).
+    So, it can provide some convenience
+    to write the abstract assembly primitive
+    and reason in high-level program.
+
+    \item
+    We extend our program logic defined
+    previously to support refinement verification.
+    The extended logic can ensure
     the {\it contextual refinement} between
-    SPARCv8 functions and their corresponding 
-    abstract assembly primitives. In order to support 
-    this extension, we need to define a simulation 
-    relation, which is established 
-    between the execution of each SPARCv8 function 
-    and abstract assembly primitive. 
-    Thanks for our direct-style semantics interpretation 
-    for the logic judgments proposed before, 
-    which allows us to establish the correctness of 
-    each assembly function separatly. 
-    We can follow the same idea to define the  
-    simulation relation.  
+    SPARCv8 functions and their corresponding
+    abstract assembly primitives. In order to support
+    this extension, we need to define a simulation
+    relation, which is established
+    between the execution of each SPARCv8 function
+    and abstract assembly primitive.
+    Thanks for our direct-style semantics interpretation
+    for the logic judgments proposed before,
+    which allows us to establish the correctness of
+    each assembly function separatly.
+    We can follow the same idea to define the
+    simulation relation.
 
 \end{itemize}
-The program logic, its soundness proof, 
+The program logic, its soundness proof,
 the verification of the context switch module
-\footnote{Code of the context switch routine cannot 
-be published due to copyright issues}, 
-and the extended program logic for 
-refinememt verification have been mechanized in 
+\footnote{Code of the context switch routine cannot
+be published due to copyright issues},
+and the extended program logic for
+refinememt verification have been mechanized in
 Coq~\cite{coqimp}.
 %Coq\footnote{We
 %do not give the URL of the code for anonymity. The code
@@ -593,18 +600,18 @@ In the rest of paper,
 we present the program model
 and operational semantics of \sparc{} in Sec.~\ref{sec:modeling}.
 Then we propose the program logic in Sec.~\ref{sec:logic},
-including the inference rules and the soundness proof, 
+including the inference rules and the soundness proof,
 and show how our logic supprts the three main features of SPARCv8.
 We show the verification of the main body of the context switch routine
-in Sec.~\ref{sec:ctxswitch}. 
-The Pseudo-SPARCv8 program and extended 
-program logic to support refinement verification is 
-presented in \Sec{\ref{sec:refine-verification-sparc}}. 
-% The extended program logic to 
-% support refinement verification is presented in 
-% \Sec{\ref{sec:refine-verification-sparc}}, including 
-% the high-level Pseudo-SPARCv8 program introduced in 
-% \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}. 
+in Sec.~\ref{sec:ctxswitch}.
+The Pseudo-SPARCv8 program and extended
+program logic to support refinement verification is
+presented in \Sec{\ref{sec:refine-verification-sparc}}.
+% The extended program logic to
+% support refinement verification is presented in
+% \Sec{\ref{sec:refine-verification-sparc}}, including
+% the high-level Pseudo-SPARCv8 program introduced in
+% \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 Finally we discuss more on
 related work and conclude in Sec. \ref{sec:conclusion}.
 %Sec.~\ref{sec:ctxswitch} gives an actual application of our logic
