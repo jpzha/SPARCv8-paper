@@ -1833,7 +1833,7 @@ $\lgvl$.
     % }
     \caption{Selected Inference Rules for Refinement Verification}
     \label{fig:Selected Inference Rules for Refinement Verification}
-\end{figure*}
+\end{figure*} 
 \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}} 
 shows selected inference rules for refinement verification in our 
 logic. The top rule $\textbf{WfPrim}$ verifies the contextual refinement 
@@ -1856,12 +1856,12 @@ which we will discuss in more details following.
 % the form of the function specification,  
 % % of primitive's implementation function, 
 % and we will discuss it in more details following. 
-Most of the inference rules for verifying the instruction sequence 
-($\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$) are similar 
-with the rules shown in \Fig{\ref{fig:Seleted Inference rules}}. 
-Here, we require that verifying the instruction \jmp{} and \call{} 
-will consume a token, shown as $\metricAst{1}$, in order to avoid 
-infinite loops and recursive function calls. 
+The inference rules for \jmp{} and \call{} in 
+relational program logic will consume a token, 
+shown as $\metricAst{1}$, in order to avoid 
+infinite loops and recursive function calls, 
+because our refinement relation is 
+termination-preserving.
 The $\wfFrm(\relastP_r)$, whose definition is omitted here,  
 means there is no sub-term in 
 form of $(\astCurCont{\thrdid}{\hthrdlocalst})$, 
