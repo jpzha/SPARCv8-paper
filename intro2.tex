@@ -5,9 +5,10 @@ the most foundational layer of computer software systems.
 To interact directly with hardware,
 many important components in OS kernels are implemented
 in assembly, such as the context switch code or the code that
-manages interrupts. And some other codes that are not required to
+manages interrupts. 
+And some other codes that are not required to
 be written in assembly are also implemented in assembly
-(\eg \textsf{memcpy} in linux v2.6.17.10 \cite{linuxv2.6.17.10}), 
+(\eg \textsf{memcpy} in linux v2.6.17.10), 
 in order to achieve high performance.   
 Their correctness is crucial to ensure
 the safety and security of the whole system.
@@ -19,6 +20,9 @@ operational semantics without a general program logic.
 SPARC (Scalable Processor ARChitecture)
 is a CPU instruction set architecture (ISA) with high-performance
 and great flexibility~\cite{sparc}.
+% \footnote{The SPARC Architecture Manual 
+% (\textit{Version 8}). 
+% \url{https://gaisler.com/doc/sparcv8.pdf}}.
 It has been widely used in various processors
 for workstations and embedded systems. %, and space mission.
 The \sparc{} ISA has some interesting features, which
@@ -531,23 +535,30 @@ verification but makes the following contributions:
 
     \item 
     In order to support refinement verification, we define a 
-    Pseudo-SPARCv8 program as our high-level program, which 
-    is multi-threaded and can call abstract 
-    assembly primitives. It also simplifies 
+    Pseudo-SPARCv8 language as the language to implement
+    the high-level specification. 
+    % which 
+    % is multi-threaded and can call abstract 
+    % assembly primitives. 
+    It simplifies 
     the sophisticated register window mechanism 
     in \sparc{} by abstraction, 
     and makes the program state 
-    simpler than the physical SPARCv8 program 
+    simpler than the physical one  
     (defined in \Sec{\ref{sec:modeling}}). 
     So, it can provide some convenience 
     to write the abstract assembly primitive 
     and reason in high-level program. 
     
     \item
-    We extend our program logic 
-    to support refinement verification. 
+    We extend our program logic for verifying 
+    partial correctness of \sparc{} code and 
+    propose a new program logic to 
+    do relational reasoning for refinement verification. 
+    % to support refinement verification. 
     The extended program logic for \sparc{} can ensure 
-    the {\it contextual refinement} between
+    the {\it contextual refinement} between 
+    the implementation of 
     \sparc{} functions and their corresponding 
     abstract assembly primitives. 
     % In order to support 
@@ -580,7 +591,8 @@ verification but makes the following contributions:
     component in OS kernels. It is usually implemented
     as inline assembly because of the need to access
     registers and the stack. 
-    We verify that there is a contextual refinement 
+    We apply our new logic and 
+    verify that there is a contextual refinement 
     between a context switch routine implementated 
     in \sparc{} and $\primsw$ primitive for task 
     switching. 
@@ -592,26 +604,54 @@ verification but makes the following contributions:
 \end{itemize}
 The program logic, including the extended program logic 
 for refinement verification, and its soundness proof 
-have been mechanized in Coq~\cite{coqimp}. 
+have been mechanized in Coq
+\footnote{The implememntation of the program Logic for 
+\sparc{} in {Coq} (project code). 
+\url{https://github.com/jpzha/VeriSparc}.}. 
 
 This article extends the conference paper in 
-APLAS 2018~\cite{zha18aplas}. We extend 
-the program logic, which can only prove the partial 
-correctness of \sparc{} code in conference paper, 
-to support refinement verification and use it to  
-verify that there is a contextual refinement between 
-a context switch routine implemented 
-in \sparc{} and $\primsw$ primitive for task switching
-\footnote{In the conference paper, 
-    we introduce that we apply our program logic 
-    for partial correctness to 
-    verify the main body of the context switch routine
-	in a realistic embedded OS kernel for aerospace crafts,
-    which consists of around 250 lines of \sparc{} code, 
-    by 6690 lines of Coq proof scripts. 
-    We omit such introduction in this version.}. 
-And in order to support refinement verification, 
-we a define Pseudo-SPARCv8 language as the high-level.
+APLAS 2018~\cite{zha18aplas}. 
+We extend the program logic introduced in conference 
+paper, which can only prove the partial 
+correctness of \sparc{} code, and propose a new 
+program logic to do relational reasoning for 
+refinement verification. We also use the new logic 
+to verify the implementation of a context switch routine, 
+by showing that the implementation code contextually 
+refines an abstract switch primitive. 
+% \footnote{In the conference paper, 
+%     we introduce that we apply our program logic 
+%     for partial correctness to 
+%     verify the main body of the context switch routine
+% 	in a realistic embedded OS kernel for aerospace crafts,
+%     which consists of around 250 lines of \sparc{} code, 
+%     by 6690 lines of Coq proof scripts. 
+%     And this is replaced by applying our new logic 
+%     to verify that the implementation of a 
+%     context switch routine
+%     contextually refines an abstract switch primitive 
+%     in this paper.}. 
+In order to support refinement verification, 
+this article also presents a new Pseudo-SPARCv8 language 
+as the language to implement the high-level specification.
+
+% We extend 
+% the program logic, which can only prove the partial 
+% correctness of \sparc{} code in conference paper, 
+% to support refinement verification and use it to  
+% verify that there is a contextual refinement between 
+% a context switch routine implemented 
+% in \sparc{} and $\primsw$ primitive for task switching
+% \footnote{In the conference paper, 
+%     we introduce that we apply our program logic 
+%     for partial correctness to 
+%     verify the main body of the context switch routine
+% 	in a realistic embedded OS kernel for aerospace crafts,
+%     which consists of around 250 lines of \sparc{} code, 
+%     by 6690 lines of Coq proof scripts. 
+%     We omit such introduction in this version.}. 
+% And in order to support refinement verification, 
+% we a define Pseudo-SPARCv8 language as the high-level.
 
 % the verification of the context switch module
 % \footnote{Code of the context switch routine cannot 

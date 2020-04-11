@@ -5,8 +5,9 @@ system. In this paper, we propose a practical Hoare-style program
 logic for verifying SPARC assembly code. The logic supports
 modular reasoning about the main features of SPARCv8 ISA, including
 delayed control transfers, delayed writes to special registers,
-and register windows. We extend it to support contextual refinement 
-verification, and apply it to verify that there is a contextual 
+and register windows. We extend it and propose a new program logic 
+to support contextual refinement verification. 
+We apply the new logic to verify that there is a contextual 
 refinement between a context switch routine in \sparc{} and 
 $\primsw{}$ primitive. The program logic and its soundness proof 
 have been mechanized in Coq. 
