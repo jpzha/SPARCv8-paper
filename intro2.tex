@@ -250,8 +250,8 @@ crafts whose inline assembly is written in \sparc,
 we try to address these challenges and propose a practical
 program logic for realistically modelled \sparc{} code.
 We have applied our logic to verify the main body of
-the task context switch routine in the kernel.
-\mycomments{Xinyu: Cite the APLAS paper here}
+the task context switch routine in the kernel~\cite{zha18aplas}.
+% \mycomments{Xinyu: Cite the APLAS paper here}
 
 However, the OS kernel is implemented as
 C language mainly and SPARCv8 as inline assembly.
@@ -355,7 +355,7 @@ $\semantics{\notCare}^{\textsf{C}}$),
 is implementated as C language
 with a set of abstract assembly primtives $\AbsPrimC$.
 The compiler (\textit{Comp}) translates the
-C program $\Clang$ to SPARCv8 code $\code$.
+C program $\Clang$ to \sparc{} code $\code$.
 As {\color{blue} \textcircled{1}} shown,
 we assume the compilation ensures the
 refinement between $\Clang[\AbsPrimC]$ and
@@ -369,12 +369,12 @@ the set of abstract assembly primitives in source
 and intermediate level, because they execute on
 different program states and have different semantics.
 The Pseudo-SPARCv8 language $\code[\hprimset]$,
-which uses SPARCv8 as client code and is able to
+which uses \sparc{} as client code and is able to
 call abstract assembly primtive in $\hprimset$,
 will be defined in the following sections.
 In step {\color{blue} \textcircled{2}},
 we verify using our refinement logic that
-the whole SPARCv8 program
+the whole \sparc{} program
 $\code[\asmimp]$ executing under the realistically
 modelled SPARCv8 semantics, represented as
 $\semantics{\notCare}^{\textsf{SPARCv8}}$, refines
@@ -456,8 +456,8 @@ verification but makes the following contributions:
 
 \begin{itemize}
 	\item
-    We propose a program logic for verifying partial
-    correctness of \sparc{} code.
+    % We propose a program logic for verifying partial
+    % correctness of \sparc{} code.
     Our logic supports all the above features of \sparc.
     We redefine basic blocks to include the instruction
     following the jump or return as the tail of a
@@ -505,6 +505,23 @@ verification but makes the following contributions:
 %	can verify these three most common call conventions
 %	shown in Fig. \ref{fig:three call conventions in SPARC}
 %	in a uniform way.
+    \item     
+    Our logic support relational reasoning for 
+    refinement verification. 
+    It ensures that a verified \sparc{} function 
+    contextually refines its corresponding 
+    abstract assembly primitive.  
+
+    % We extend our program logic for verifying
+    % partial correctness of \sparc{} code and
+    % propose a new program logic to
+    % do relational reasoning for refinement verification.
+    % % to support refinement verification.
+    % The extended program logic for \sparc{} can ensure
+    % the {\it contextual refinement} between
+    % the implementation of
+    % \sparc{} functions and their corresponding
+    % abstract assembly primitives.
 	
 % <<<<<<< HEAD
 % 	\item
@@ -622,17 +639,6 @@ verification but makes the following contributions:
     to write the abstract assembly primitive
     and reason in high-level program.
 
-    \item
-    We extend our program logic for verifying
-    partial correctness of \sparc{} code and
-    propose a new program logic to
-    do relational reasoning for refinement verification.
-    % to support refinement verification.
-    The extended program logic for \sparc{} can ensure
-    the {\it contextual refinement} between
-    the implementation of
-    \sparc{} functions and their corresponding
-    abstract assembly primitives.
     % In order to support
     % this extension, we need to define a simulation
     % relation, which is established
@@ -765,15 +771,21 @@ and operational semantics of \sparc{} in Sec.~\ref{sec:modeling}.
 % % the high-level Pseudo-SPARCv8 program introduced in
 % % \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 % =======
-Then we propose the program logic for verifying
-partial correctness of \sparc{} code in Sec.~\ref{sec:logic} and show
-how our logic supports the three main features of SPARCv8.
+Then, in \Sec{\ref{sec:logic}}, we use a 
+simplified version of our program logic, which 
+doesn't support refinement verification, to 
+present how our logic supports the three main 
+features of \sparc{}. 
+How to support refinement verification in 
+program logic is orthogonal to our main idea 
+to support modular reasoning about 
+the features of \sparc{} in program logic. 
 % the program logic in Sec.~\ref{sec:logic},
 % including the inference rules and the soundness proof,
-% and show how our logic supprts the three main features of SPARCv8.
-The Pseudo-SPARCv8 program and extended
-program logic for refinement verification is
-presented in \Sec{\ref{sec:refine-verification-sparc}}.
+% and show how our logic supprts the three main features of SPARCv8. 
+we present the Pseudo-SPARCv8 program and how 
+our logic supports refinement verification
+In \Sec{\ref{sec:refine-verification-sparc}}.  
 We show the verification of a context switch routine
 in \sparc{} in Sec.~\ref{sec:ctxswitch}.
 % the main body of the context switch routine

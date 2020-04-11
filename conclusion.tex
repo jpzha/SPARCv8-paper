@@ -66,7 +66,7 @@ hardware, we remain it as a future work.
 \etal{Ni}~\cite{ctxm} verify a context switch module of 19 lines
 in x86 code to show case the support of embedded
 code pointers (ECP) in XCAP~\cite{xcap}. 
-We use our extended program logic to verify the contextual 
+We use our program logic to verify the contextual 
 refinement between a context switch routine in \sparc{} 
 and $\primsw{}$ primitive. The context switch routine 
 implemented in \sparc{} that we verified 
@@ -237,17 +237,24 @@ which we would like to study in the future work.
 % %function call/return verification.
 
 \paragraph{\textbf{Conclusion.}}
-We present a program logic for \sparc.
+We present a relational program logic for \sparc.
 Our logic is based on a realistic semantics
 model and supports main features of \sparc,
 including delayed control transfer, delayed writes,
 and register windows.
-And we also extend the program logic to support 
-refinement verification and apply the extended 
-program logic to verify 
+It also supports modular reasoning of 
+function call in a direct-style and 
+refinement verification. 
+We apply our logic to verify  
 that there is a contextual refinement between 
 a context switch routine implementated 
-in \sparc{} and $\primsw$ primitive for task switching. 
+in \sparc{} and $\primsw$ primitive for task switching.
+% And we also extend the program logic to support 
+% refinement verification and apply the extended 
+% program logic to verify 
+% that there is a contextual refinement between 
+% a context switch routine implementated 
+% in \sparc{} and $\primsw$ primitive for task switching. 
 % We have applied the program logic to verify
 % the main body of the context switch routine
 % in a realistic embedded OS kernel. 
