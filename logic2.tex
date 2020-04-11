@@ -457,11 +457,6 @@ proof techniques (such as Coq tactics) for standard
 Hoare-triples can be applied to simplify the verification
 process.
 
-We give a simple example in Fig.~\ref{fig:functionSpec}
-to show a specification for a function,
-which simply
-sums the values of the registers $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$
-and writes the result into the register $\lreg{7}$.
 \begin{center}
 	\vspace*{-2em}
 	$$
@@ -506,6 +501,10 @@ and writes the result into the register $\lreg{7}$.
 	\figurecaption{Example for Function Specification}
 	\label{fig:functionSpec}
 \end{center}
+We give a simple example in Fig.~\ref{fig:functionSpec}
+to show a specification for a function, which simply
+sums the values of the registers $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$
+and writes the result into the register $\lreg{7}$.
 The specification $(\specpre,\specpost)$ says that, when
 provided with the same $\lv$ as argument, the function
 preserves the value of $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$,
