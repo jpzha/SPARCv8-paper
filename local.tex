@@ -100,7 +100,7 @@
 \newcommand{\lab}[1]{\texttt{f}_{#1}}
 
 % model
-\newcommand{\asrtmodel}[2]{{#1} \models {#2}}
+\newcommand{\asrtmodel}[2]{{#1}\!\models\!{#2}}
 
 % operation macro
 \newcommand{\xor}{\textbf{xor}}
@@ -131,6 +131,7 @@
 
 % operational semantics
 \newcommand{\ptrans}[2]{C \vdash {#1} \longmapsto {#2}}
+\newcommand{\lptrans}[3]{{#1} \vdash {#2} \longmapsto {#3}}
 \newcommand{\cttrans}[2]{C \vdash {#1} \; \circrightarrow{\quad} {#2}}
 \newcommand\ccttrans[3]{{#1} \vdash {#2} \; \circrightarrow{\quad} {#3}}
 \newcommand{\swtrans}[3]{{#1} \ptrightarrow{{#2}} {#3}}
@@ -234,6 +235,7 @@
 \newcommand{\safetins}{\mathsf{safe\_insSeq}}
 \newcommand{\safe}[1]{\mathsf{safe}^{#1}}
 \newcommand{\multiptrans}[3]{C \vdash {#2} \longmapsto^{#1} {#3}}
+\newcommand{\multilptrans}[4]{{#1} \vdash {#3} \longmapsto^{#2} {#4}}
 \newcommand{\specpre}{\text{fp}}
 \newcommand{\specpost}{\text{fq}}
 
@@ -416,8 +418,8 @@
 \newcommand{\absExecImp}{\Rrightarrow}
 \newcommand{\INV}[1]{\textsf{INV}{#1}}
 \newcommand{\semWdPrim}[3]{{#1} \models {#2} : {#3}}
-\newcommand{\simFunction}[3]{{#1} \preccurlyeq^{#2} {#3}}
-\newcommand{\simFunctionSt}[5]{{#1} \models {#2} \preccurlyeq_{#3}^{#4} {#5}}
+\newcommand{\simFunction}[3]{{#1} \!\preccurlyeq^{#2}\! {#3}}
+\newcommand{\simFunctionSt}[5]{{#1} \models {#2} \!\preccurlyeq_{#3}^{#4}\! {#5}}
 \newcommand{\Index}{\textit{Index}}
 \newcommand{\AftExt}{\textsf{AftExt}}
 \newcommand{\primAdd}{\textsf{ADD}}
@@ -435,9 +437,9 @@
 \newcommand{\bne}{\texttt{bne}}
 
 \newcommand{\RelEnv}[1]{\textsf{RelEnv}({#1})}
-\newcommand{\RelCurTAux}[4]{\textsf{RelCurT'}({#1}, {#2}, {#3}, {#4})}
-\newcommand{\RelCurT}[4]{\textsf{RelCurT}({#1}, {#2}, {#3}, {#4})}
-\newcommand{\RelRdyT}[3]{\textsf{RelRdyT}({#1}, {#2}, {#3})}
+\newcommand{\RelCurTAux}[4]{\textsf{CurT'}({#1}, {#2}, {#3}, {#4})}
+\newcommand{\RelCurT}[4]{\textsf{CurT}({#1}, {#2}, {#3}, {#4})}
+\newcommand{\RelRdyT}[3]{\textsf{RdyT}({#1}, {#2}, {#3})}
 \newcommand{\relcontext}[3]{\textsf{context}({#1}, {#2}, {#3})}
 \newcommand{\RelStk}[3]{\textsf{RelStk}({#1}, {#2}, {#3})}
 \newcommand{\RelStkFm}[3]{\textsf{StkFrm}({#1}, {#2}, {#3})}
@@ -467,8 +469,8 @@
 \newcommand{\ofsC}{\texttt{C\_OFFSET}}
 \newcommand{\ofsV}{\texttt{V\_OFFSET}}
 
-\newcommand{\Apre}{\textit{A}_\textit{pre}}
-\newcommand{\Apost}{\textit{A}_\textit{post}}
+\newcommand{\Apre}{\textit{a}_\textit{pre}}
+\newcommand{\Apost}{\textit{a}_\textit{post}}
 \newcommand{\MemRAsrt}[1]{\textsf{Mem}({#1})}
 \newcommand{\RdyTsRAsrt}[1]{\textsf{RdyTs}({#1})}
 \newcommand{\rRegs}{\textsf{rRegs}}
@@ -479,3 +481,7 @@
 \newcommand{\semantics}[1]{\llbracket \ {#1} \ \rrbracket}
 \newcommand{\Clang}{\mathbb{C}}
 \newcommand{\AbsPrimC}{\text{A}}
+\newcommand{\simInsSeq}[5]{{#1};{#2}\!\models\!{#3} \!\preccurlyeq_{#4}\! {#5}}
+\newcommand{\wfFrm}{\textsf{wf}}
+\newcommand{\semwfseqrel}[4]{{#1} \models \{({#2}, {#3})\} \; \lab{} \!:\! {#4}}
+\newcommand{\relmsto}[2]{{#1}\Mapsto{#2}}
