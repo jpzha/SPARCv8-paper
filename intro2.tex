@@ -633,9 +633,9 @@ verification but makes the following contributions:
     the sophisticated register window mechanism
     in \sparc{} by abstraction,
     and makes the program state
-    simpler than the physical one
+    simpler than physical \sparc{} program 
     (defined in \Sec{\ref{sec:modeling}}).
-    So, it can provide some convenience
+    It can provide some convenience
     to write the abstract assembly primitive
     and reason in high-level program.
 
@@ -771,21 +771,20 @@ and operational semantics of \sparc{} in Sec.~\ref{sec:modeling}.
 % % the high-level Pseudo-SPARCv8 program introduced in
 % % \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 % =======
-Then, in \Sec{\ref{sec:logic}}, we use a 
-simplified version of our program logic, which 
-doesn't support refinement verification, to 
-present how our logic supports the three main 
-features of \sparc{}. 
-How to support refinement verification in 
-program logic is orthogonal to our main idea 
-to support modular reasoning about 
-the features of \sparc{} in program logic. 
+We use a 
+simplified version of our program logic that
+doesn't support refinement verification to better
+demonstrate how our logic supports the three main 
+features of \sparc{} in \Sec{\ref{sec:logic}}, 
+which is the main point 
+of our work and irrelevant with supporting 
+refinement verification in program logic.  
 % the program logic in Sec.~\ref{sec:logic},
 % including the inference rules and the soundness proof,
 % and show how our logic supprts the three main features of SPARCv8. 
-we present the Pseudo-SPARCv8 program and how 
+We present the Pseudo-SPARCv8 program and how 
 our logic supports refinement verification
-In \Sec{\ref{sec:refine-verification-sparc}}.  
+in \Sec{\ref{sec:refine-verification-sparc}}.  
 We show the verification of a context switch routine
 in \sparc{} in Sec.~\ref{sec:ctxswitch}.
 % the main body of the context switch routine
@@ -796,7 +795,7 @@ in \sparc{} in Sec.~\ref{sec:ctxswitch}.
 % the high-level Pseudo-SPARCv8 program introduced in
 % \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 % >>>>>>> New
-Finally we discuss more on
+Finally, we discuss more on
 related work and conclude in Sec. \ref{sec:conclusion}.
 %Sec.~\ref{sec:ctxswitch} gives an actual application of our logic
 %to verify a realistic context switch module in an embedded OS kernel.
