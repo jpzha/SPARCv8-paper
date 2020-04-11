@@ -489,8 +489,9 @@ verification but makes the following contributions:
 	\item
     Following SCAP~\cite{Feng06pldi}, our logic supports
     modular reasoning of function calls in a direct-style.
-    We use the standard pre- and post-conditions as function
-    specifications, instead of the binary assertion $g$ used
+    However,
+    we use the traditional pre- and post-conditions as function
+    specifications, instead of the assertion $g$ used
     in SCAP. This allows us to reuse existing techniques
     (\eg{} Coq tactics) to simplify the program
     verification process.
@@ -680,11 +681,13 @@ have been mechanized in Coq
 \sparc{} in {Coq} (project code).
 \url{https://github.com/jpzha/VeriSparc}.}.
 
-This article extends the conference paper in
+This paper extends the conference paper in
 APLAS 2018~\cite{zha18aplas}.
-We extend the program logic introduced in conference
-paper, which can only prove the partial
-correctness of \sparc{} code, and propose a new
+The program logic there can only verify the partial
+correctness of \sparc{} code. We propose a new 
+%We extend the program logic introduced in conference
+%paper, which can only prove the partial
+%correctness of \sparc{} code, and propose a new
 program logic to do relational reasoning for
 refinement verification. We also use the new logic
 to verify the implementation of a context switch routine,
@@ -703,7 +706,7 @@ refines an abstract switch primitive.
 %     contextually refines an abstract switch primitive
 %     in this paper.}.
 In order to support refinement verification,
-this article also presents a new Pseudo-SPARCv8 language
+this paper also presents a new Pseudo-SPARCv8 language
 as the language to implement the high-level specification.
 
 % We extend
