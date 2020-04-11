@@ -629,13 +629,14 @@ verification but makes the following contributions:
     % which
     % is multi-threaded and can call abstract
     % assembly primitives.
-    It also hides the details of 
+    It also abstract away the details of 
     sophisticated register window mechanism
-    in \sparc{} by abstraction,
+    in \sparc{}, and makes its programming model 
+    simpler than physical \sparc{} program. 
     % and makes the program state
     % simpler than physical \sparc{} program 
     % (defined in \Sec{\ref{sec:modeling}}).
-    and can provide some convenience
+    So, it can provide some convenience
     to write the abstract assembly primitive
     and reason in Pseudo-SPARCv8 level.
 
