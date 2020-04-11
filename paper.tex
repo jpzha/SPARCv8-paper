@@ -6,7 +6,7 @@
   multicol,graphics,indentfirst,color,bm,
   upgreek,booktabs,graphicx}
 
-% users add 
+% users add
 \usepackage{url}
 \usepackage[all]{xy}
 \usepackage{extarrows}
@@ -27,6 +27,7 @@
 
 \include{local}
 
+\newcommand\mycomments[1]{{\bf [[[ {#1} ]]]}}
 \newtheoremstyle{thmstyle}{3pt}{3pt}{\kaishu}{0cm}{\heiti2 }{}{1em}{}
 
 \newtheorem{theorem}{Theorem}
@@ -97,7 +98,7 @@
 \begin{CJK*}{GBK}{song}
 \thispagestyle{empty}
 \vspace*{-13mm}
-\noindent {\small Journal of computer science and technology: 
+\noindent {\small Journal of computer science and technology:
 Instruction for authors.
 JOURNAL OF COMPUTER SCIENCE AND TECHNOLOGY}
 %===========================================================
@@ -115,27 +116,27 @@ JOURNAL OF COMPUTER SCIENCE AND TECHNOLOGY}
 
 % \vspace{2mm}
 
-% \noindent E-mail: jpzha@smail.nju.edu.cn; xyfeng@nju.edu.cn; 
+% \noindent E-mail: jpzha@smail.nju.edu.cn; xyfeng@nju.edu.cn;
 % fly2moon@aliyun.com  \\[-1mm]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\let\thefootnote\relax\footnotetext{{}\\[-4mm]\indent\ 
+\let\thefootnote\relax\footnotetext{{}\\[-4mm]\indent\
   Regular Paper}
-% \let\thefootnote\relax\footnotetext{{}\\[-4mm]\indent\ 
-%   A preliminary version of this paper appeared in 
-%   the Proceedings of 2018 Asian Symposium on 
-%   Programming Languages and Systems (APLAS'18), 
+% \let\thefootnote\relax\footnotetext{{}\\[-4mm]\indent\
+%   A preliminary version of this paper appeared in
+%   the Proceedings of 2018 Asian Symposium on
+%   Programming Languages and Systems (APLAS'18),
 %   pp. 245-263.}
 
-\noindent {\small\bf Abstract} 
+\noindent {\small\bf Abstract}
   \baselineskip=18pt plus.2pt minus.2pt
   \quad \input{abstract2}
 
 \vspace*{3mm}
 
-\noindent{\small\bf Keywords} \quad 
-{\small SPARCv8, assembly code verification, context switch, 
+\noindent{\small\bf Keywords} \quad
+{\small SPARCv8, assembly code verification, context switch,
   Coq, refinement verification}
 
 \vspace*{4mm}

@@ -5,9 +5,9 @@ the most foundational layer of computer software systems.
 To interact directly with hardware,
 many important components in OS kernels are implemented
 in assembly, such as the context switch code or the code that
-manages interrupts. 
+manages interrupts.
 In addition, there is also code written directly in assembly
-to achieve high performance (\eg{} \textsf{memcpy} in linux 
+to achieve high performance (\eg{} \textsf{memcpy} in linux
 v2.6.17.10 \cite{linuxv2.6.17.10}).
 Correctness of such assembly code is crucial to ensure
 the safety and security of the whole system.
@@ -20,8 +20,8 @@ operational semantics without a general program logic.
 SPARC (Scalable Processor ARChitecture)
 is a CPU instruction set architecture (ISA) with high-performance
 and great flexibility~\cite{sparc}.
-% \footnote{The SPARC Architecture Manual 
-% (\textit{Version 8}). 
+% \footnote{The SPARC Architecture Manual
+% (\textit{Version 8}).
 % \url{https://gaisler.com/doc/sparcv8.pdf}}.
 It has been widely used in various processors
 for workstations and embedded systems. %, and space mission.
@@ -245,32 +245,34 @@ conventions. Together, they make it a challenging task
 to have a Hoare-style program logic for local and modular
 reasoning of \sparc{} assembly code.
 
-Working towards a fully certified OS kernel for aerospace
+Working towards a certified OS kernel for aerospace
 crafts whose inline assembly is written in \sparc,
 we try to address these challenges and propose a practical
 program logic for realistically modelled \sparc{} code.
-% We have applied our logic to verify the main body of
-% the task context switch routine in the kernel. 
-However, the OS kernel is implemented as 
-C language mainly and SPARCv8 as inline assembly. 
-A traditional Hoare-style program logic 
-for \sparc{}, which can only make sure the 
-partial correctness of \sparc{} program, is insufficient.
-\etal{Xu}~\cite{Xu16cav} propose a program logic for 
-verifying the correctness of OS kernel implementated in 
-C language with inline assembly, 
-but they use abstract assembly primitives, 
-like $\primsw$ primitive for task switching, to 
+We have applied our logic to verify the main body of
+the task context switch routine in the kernel.
+\mycomments{Xinyu: Cite the APLAS paper here}
+
+However, the OS kernel is implemented as
+C language mainly and SPARCv8 as inline assembly.
+Just having a traditional Hoare-style
+program logic for SPARCv8, which can only make sure
+the safe execution of SPARCv8 program if the initial
+state satisfies the precondition, is insufficient.
+\etal{Xu}~\cite{Xu16cav} propose a program logic for
+verifying the correctness of OS kernel implemented in
+C language with inline assembly,
+but they use {\em abstract assembly primitives} to
 substitute the inline assembly in their verification work.
-As a supplement to their work, we need to extend our
-program logic so that it can make sure the
+As a supplement to their work, we extend our
+program logic so that it can ensure the
 contextual refinement relation between the implementations
 and their corresponding abstract assembly primitives,
 which can be presented as the following form. Here,
 we use $\Clang$, $\AbsPrimC$, and $\asmimp$ to represent
 the C language program, the set of abstract assembly
 primitive and the implementations of
-abstract assembly primtives respectively.
+abstract assembly primitives respectively.
 It means $\asmimp$ refines $\AbsPrimC$ under
 \textit{any context} $\Clang$.
 \[
@@ -279,14 +281,15 @@ It means $\asmimp$ refines $\AbsPrimC$ under
 \]
 However, if we use C program as a client code to
 call inline assembly code, we need to define the
-semantics of C-assembly linking.
-It may be possible to use
-\textit{interaction semantics}~\cite{Stewart15popl}
-to implement multi-language linking. However,
-there is a contraint in interaction semantics that
-it requires that callee must return to caller when
-finished. So, it can't handle calling context switch
-routine, whose correctness we hope to prove in our work.
+semantics of C-assembly interaction.
+%It may be possible to use
+%\textit{interaction semantics}~\cite{Stewart15popl}
+%to implement multi-language linking, but
+%there is a contraint in interaction semantics
+%requiring that a callee must always return to its caller when
+%finished, and therefore it can't handle calling the context switch
+%routine, which uses the return address on a different stack and jumps
+%to a different caller.
 \begin{center}
     $
         \begin{array}{l}
@@ -328,24 +331,34 @@ routine, whose correctness we hope to prove in our work.
 % SPARCv8 code context-dependent. For example,
 % the caller of
 
-We consider a method to establish the contextual
-refinement between implementations and their
-corresponding abstract assembly primitives and
-avoid multi-language linking.
-We use \Fig{\ref{fig:idea to establish contextual refinement}}
-to illustrate our idea.
+Since the goal of this paper is to verify the correctness of the
+assembly code with respect to the abstract assembly primitives,
+we want to avoid the C-assembly interaction (and leave it as
+future work). We decompose the OS verification tasks into
+two steps, as shown in \Fig{\ref{fig:idea to establish contextual refinement}},
+and focus on step {\color{blue} \textcircled{2}} only in this paper.
+%We take the approach shown in
+%\Fig{\ref{fig:idea to establish contextual refinement}}.
+
+%We consider a method to establish the contextual
+%refinement between implementations and their
+%corresponding abstract assembly primitives without
+%cross-language interaction.
+%We use \Fig{\ref{fig:idea to establish contextual refinement}}
+%to illustrate our idea.
+
 % We introduce this figure from top to down.
 The source program of OS kernel
-shown as $\Clang[\AbsPrimC]$, which executes
-under C language semantics (shown as
+$\Clang[\AbsPrimC]$, which executes
+under the C language semantics (shown as
 $\semantics{\notCare}^{\textsf{C}}$),
 is implementated as C language
 with a set of abstract assembly primtives $\AbsPrimC$.
 The compiler (\textit{Comp}) translates the
 C program $\Clang$ to SPARCv8 code $\code$.
 As {\color{blue} \textcircled{1}} shown,
-we hope the compilation makes sure the
-refinement relation between $\Clang[\AbsPrimC]$ and
+we assume the compilation ensures the
+refinement between $\Clang[\AbsPrimC]$ and
 $\code[\hprimset]$ that
 executes under Pseudo-SPARCv8 semantics shown as
 $\semantics{\notCare}^{\textsf{P-SPARCv8}}$.
@@ -358,23 +371,23 @@ different program states and have different semantics.
 The Pseudo-SPARCv8 language $\code[\hprimset]$,
 which uses SPARCv8 as client code and is able to
 call abstract assembly primtive in $\hprimset$,
-will be defined in the following.
+will be defined in the following sections.
 In step {\color{blue} \textcircled{2}},
-we extend our program logic to support refinement
-verification and get the totally SPARCv8 program
+we verify using our refinement logic that
+the whole SPARCv8 program
 $\code[\asmimp]$ executing under the realistically
 modelled SPARCv8 semantics, represented as
 $\semantics{\notCare}^{\textsf{SPARCv8}}$, refines
 the program $\code[\hprimset]$ executing
-under Pseudo-SPARCv8 semantics.
+under the Pseudo-SPARCv8 semantics.
 Finally, we can get
 $\semantics{\Clang[\hprimset]}^{\textsf{C}}
 \refine
 \semantics{\code[\asmimp]}^{\textsf{SPARCv8}}$.
 In this work, we focus on
 step {\color{blue} \textcircled{2}}, and
-remain step {\color{blue} \textcircled{1}}
-as a future work.
+leave step {\color{blue} \textcircled{1}}
+as future work.
 
 % Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
 % define a set of abstract assembly primitives,
@@ -408,11 +421,11 @@ as a future work.
 
 Our work is based on earlier work on assembly code
 verification but makes the following contributions:
-% \footnote{We list six contributions here. The 
-% first four contributions have already presented 
-% in the preliminary version~\cite{zha18aplas} 
-% of this paper. And the 
-% additional two contributions about refinement 
+% \footnote{We list six contributions here. The
+% first four contributions have already presented
+% in the preliminary version~\cite{zha18aplas}
+% of this paper. And the
+% additional two contributions about refinement
 % verification are our new contributions.}:
 
 %The logic, its soundness
@@ -443,8 +456,8 @@ verification but makes the following contributions:
 
 \begin{itemize}
 	\item
-    We propose a program logic for verifying partial 
-    correctness of \sparc{} code.   
+    We propose a program logic for verifying partial
+    correctness of \sparc{} code.
     Our logic supports all the above features of \sparc.
     We redefine basic blocks to include the instruction
     following the jump or return as the tail of a
@@ -476,8 +489,9 @@ verification but makes the following contributions:
 	\item
     Following SCAP~\cite{Feng06pldi}, our logic supports
     modular reasoning of function calls in a direct-style.
-    We use the standard pre- and post-conditions as function
-    specifications, instead of the binary assertion $g$ used
+    However,
+    we use the traditional pre- and post-conditions as function
+    specifications, instead of the assertion $g$ used
     in SCAP. This allows us to reuse existing techniques
     (\eg{} Coq tactics) to simplify the program
     verification process.
@@ -512,7 +526,7 @@ verification but makes the following contributions:
     % soundness. This is different from previous
     % work, which either does syntactic-based soundness proof
     % (\eg{} SCAP~\cite{Feng06pldi}) or treats return code pointers
-    % as first-class code pointers and gives CPS-style 
+    % as first-class code pointers and gives CPS-style
     % (continuation-passing style) semantics.
     % Those approaches for soundness make it difficult to verify
     % the interaction between the inline assembly and the C
@@ -591,45 +605,45 @@ verification but makes the following contributions:
 % refinememt verification have been mechanized in
 % Coq~\cite{coqimp}.
 % =======
-    \item 
-    In order to support refinement verification, we define a 
-    Pseudo-SPARCv8 language as the language to implement
-    the high-level specification. 
-    % which 
-    % is multi-threaded and can call abstract 
-    % assembly primitives. 
-    It simplifies 
-    the sophisticated register window mechanism 
-    in \sparc{} by abstraction, 
-    and makes the program state 
-    simpler than the physical one  
-    (defined in \Sec{\ref{sec:modeling}}). 
-    So, it can provide some convenience 
-    to write the abstract assembly primitive 
-    and reason in high-level program. 
-    
     \item
-    We extend our program logic for verifying 
-    partial correctness of \sparc{} code and 
-    propose a new program logic to 
-    do relational reasoning for refinement verification. 
-    % to support refinement verification. 
-    The extended program logic for \sparc{} can ensure 
-    the {\it contextual refinement} between 
-    the implementation of 
-    \sparc{} functions and their corresponding 
-    abstract assembly primitives. 
-    % In order to support 
-    % this extension, we need to define a simulation 
-    % relation, which is established 
-    % between the execution of each SPARCv8 function 
-    % and abstract assembly primitive. 
-    % Thanks for our direct-style semantics interpretation 
-    % for the logic judgments proposed before, 
-    % which allows us to establish the correctness of 
-    % each assembly function separatly. 
-    % We can follow the same idea to define the  
-    % simulation relation.  
+    In order to support refinement verification, we define a
+    Pseudo-SPARCv8 language as the language to implement
+    the high-level specification.
+    % which
+    % is multi-threaded and can call abstract
+    % assembly primitives.
+    It simplifies
+    the sophisticated register window mechanism
+    in \sparc{} by abstraction,
+    and makes the program state
+    simpler than the physical one
+    (defined in \Sec{\ref{sec:modeling}}).
+    So, it can provide some convenience
+    to write the abstract assembly primitive
+    and reason in high-level program.
+
+    \item
+    We extend our program logic for verifying
+    partial correctness of \sparc{} code and
+    propose a new program logic to
+    do relational reasoning for refinement verification.
+    % to support refinement verification.
+    The extended program logic for \sparc{} can ensure
+    the {\it contextual refinement} between
+    the implementation of
+    \sparc{} functions and their corresponding
+    abstract assembly primitives.
+    % In order to support
+    % this extension, we need to define a simulation
+    % relation, which is established
+    % between the execution of each SPARCv8 function
+    % and abstract assembly primitive.
+    % Thanks for our direct-style semantics interpretation
+    % for the logic judgments proposed before,
+    % which allows us to establish the correctness of
+    % each assembly function separatly.
+    % We can follow the same idea to define the
+    % simulation relation.
 
     \item
     We give direct-style semantic interpretation for
@@ -637,7 +651,7 @@ verification but makes the following contributions:
     soundness. This is different from previous
     work, which either does syntactic-based soundness proof
     (\eg{} SCAP~\cite{Feng06pldi}) or treats return code pointers
-    as first-class code pointers and gives CPS-style 
+    as first-class code pointers and gives CPS-style
     (continuation-passing style) semantics.
     Those approaches for soundness make it difficult to verify
     the interaction between the inline assembly and the C
@@ -648,74 +662,76 @@ verification but makes the following contributions:
 	Context switch of concurrent tasks is an important
     component in OS kernels. It is usually implemented
     as inline assembly because of the need to access
-    registers and the stack. 
-    We apply our new logic and 
-    verify that there is a contextual refinement 
-    between a context switch routine implementated 
-    in \sparc{} and $\primsw$ primitive for task 
-    switching. 
+    registers and the stack.
+    We apply our new logic and
+    verify that there is a contextual refinement
+    between a context switch routine implementated
+    in \sparc{} and $\primsw$ primitive for task
+    switching.
 
 	% We verify the main body of the context switch routine
 	% in a realistic embedded OS kernel for aerospace crafts,
     % which consists of around 250 lines of \sparc{} code.
 
 \end{itemize}
-The program logic, including the extended program logic 
-for refinement verification, and its soundness proof 
+The program logic, including the extended program logic
+for refinement verification, and its soundness proof
 have been mechanized in Coq
-\footnote{The implememntation of the program Logic for 
-\sparc{} in {Coq} (project code). 
-\url{https://github.com/jpzha/VeriSparc}.}. 
+\footnote{The implememntation of the program Logic for
+\sparc{} in {Coq} (project code).
+\url{https://github.com/jpzha/VeriSparc}.}.
 
-This article extends the conference paper in 
-APLAS 2018~\cite{zha18aplas}. 
-We extend the program logic introduced in conference 
-paper, which can only prove the partial 
-correctness of \sparc{} code, and propose a new 
-program logic to do relational reasoning for 
-refinement verification. We also use the new logic 
-to verify the implementation of a context switch routine, 
-by showing that the implementation code contextually 
-refines an abstract switch primitive. 
-% \footnote{In the conference paper, 
-%     we introduce that we apply our program logic 
-%     for partial correctness to 
+This paper extends the conference paper in
+APLAS 2018~\cite{zha18aplas}.
+The program logic there can only verify the partial
+correctness of \sparc{} code. We propose a new 
+%We extend the program logic introduced in conference
+%paper, which can only prove the partial
+%correctness of \sparc{} code, and propose a new
+program logic to do relational reasoning for
+refinement verification. We also use the new logic
+to verify the implementation of a context switch routine,
+by showing that the implementation code contextually
+refines an abstract switch primitive.
+% \footnote{In the conference paper,
+%     we introduce that we apply our program logic
+%     for partial correctness to
 %     verify the main body of the context switch routine
 % 	in a realistic embedded OS kernel for aerospace crafts,
-%     which consists of around 250 lines of \sparc{} code, 
-%     by 6690 lines of Coq proof scripts. 
-%     And this is replaced by applying our new logic 
-%     to verify that the implementation of a 
+%     which consists of around 250 lines of \sparc{} code,
+%     by 6690 lines of Coq proof scripts.
+%     And this is replaced by applying our new logic
+%     to verify that the implementation of a
 %     context switch routine
-%     contextually refines an abstract switch primitive 
-%     in this paper.}. 
-In order to support refinement verification, 
-this article also presents a new Pseudo-SPARCv8 language 
+%     contextually refines an abstract switch primitive
+%     in this paper.}.
+In order to support refinement verification,
+this paper also presents a new Pseudo-SPARCv8 language
 as the language to implement the high-level specification.
 
-% We extend 
-% the program logic, which can only prove the partial 
-% correctness of \sparc{} code in conference paper, 
-% to support refinement verification and use it to  
-% verify that there is a contextual refinement between 
-% a context switch routine implemented 
+% We extend
+% the program logic, which can only prove the partial
+% correctness of \sparc{} code in conference paper,
+% to support refinement verification and use it to
+% verify that there is a contextual refinement between
+% a context switch routine implemented
 % in \sparc{} and $\primsw$ primitive for task switching
-% \footnote{In the conference paper, 
-%     we introduce that we apply our program logic 
-%     for partial correctness to 
+% \footnote{In the conference paper,
+%     we introduce that we apply our program logic
+%     for partial correctness to
 %     verify the main body of the context switch routine
 % 	in a realistic embedded OS kernel for aerospace crafts,
-%     which consists of around 250 lines of \sparc{} code, 
-%     by 6690 lines of Coq proof scripts. 
-%     We omit such introduction in this version.}. 
-% And in order to support refinement verification, 
+%     which consists of around 250 lines of \sparc{} code,
+%     by 6690 lines of Coq proof scripts.
+%     We omit such introduction in this version.}.
+% And in order to support refinement verification,
 % we a define Pseudo-SPARCv8 language as the high-level.
 
 % the verification of the context switch module
-% \footnote{Code of the context switch routine cannot 
-% be published due to copyright issues}, 
-% and the extended program logic for 
-% refinememt verification have been mechanized in 
+% \footnote{Code of the context switch routine cannot
+% be published due to copyright issues},
+% and the extended program logic for
+% refinememt verification have been mechanized in
 % Coq~\cite{coqimp}.
 % >>>>>>> New
 %Coq\footnote{We
@@ -749,24 +765,24 @@ and operational semantics of \sparc{} in Sec.~\ref{sec:modeling}.
 % % the high-level Pseudo-SPARCv8 program introduced in
 % % \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 % =======
-Then we propose the program logic for verifying 
-partial correctness of \sparc{} code in Sec.~\ref{sec:logic} and show 
+Then we propose the program logic for verifying
+partial correctness of \sparc{} code in Sec.~\ref{sec:logic} and show
 how our logic supports the three main features of SPARCv8.
 % the program logic in Sec.~\ref{sec:logic},
-% including the inference rules and the soundness proof, 
-% and show how our logic supprts the three main features of SPARCv8. 
-The Pseudo-SPARCv8 program and extended 
-program logic for refinement verification is 
-presented in \Sec{\ref{sec:refine-verification-sparc}}. 
-We show the verification of a context switch routine 
-in \sparc{} in Sec.~\ref{sec:ctxswitch}. 
+% including the inference rules and the soundness proof,
+% and show how our logic supprts the three main features of SPARCv8.
+The Pseudo-SPARCv8 program and extended
+program logic for refinement verification is
+presented in \Sec{\ref{sec:refine-verification-sparc}}.
+We show the verification of a context switch routine
+in \sparc{} in Sec.~\ref{sec:ctxswitch}.
 % the main body of the context switch routine
 % in Sec.~\ref{sec:ctxswitch}.
-% The extended program logic to 
-% support refinement verification is presented in 
-% \Sec{\ref{sec:refine-verification-sparc}}, including 
-% the high-level Pseudo-SPARCv8 program introduced in 
-% \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}. 
+% The extended program logic to
+% support refinement verification is presented in
+% \Sec{\ref{sec:refine-verification-sparc}}, including
+% the high-level Pseudo-SPARCv8 program introduced in
+% \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 % >>>>>>> New
 Finally we discuss more on
 related work and conclude in Sec. \ref{sec:conclusion}.
