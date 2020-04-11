@@ -629,8 +629,8 @@ verification but makes the following contributions:
     % which
     % is multi-threaded and can call abstract
     % assembly primitives.
-    It simplifies
-    the sophisticated register window mechanism
+    It also hides the details of 
+    sophisticated register window mechanism
     in \sparc{} by abstraction,
     % and makes the program state
     % simpler than physical \sparc{} program 
@@ -668,12 +668,10 @@ verification but makes the following contributions:
 	Context switch of concurrent tasks is an important
     component in OS kernels. It is usually implemented
     as inline assembly because of the need to access
-    registers and the stack.
-    We apply our new logic and
+    registers and the stack. We apply our logic and
     verify that there is a contextual refinement
     between a context switch routine implementated
-    in \sparc{} and $\primsw$ primitive for task
-    switching.
+    in \sparc{} and an abstract switch primitive. 
 
 	% We verify the main body of the context switch routine
 	% in a realistic embedded OS kernel for aerospace crafts,
