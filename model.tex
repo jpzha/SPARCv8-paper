@@ -507,8 +507,12 @@ from $\lab{}$ in $\code$ below.
 		\[
 			\infer
 			{
-				\ptrans{((M, (R, F), D), \pc, \npc)}
-					{((M', (R'', F'), D''), \pc', \npc')}
+				\LGlobTrans
+					{(\code, (\mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+					{ \ \ }
+					{(\code, (\mem', (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
+				% \ptrans{((M, (R, F), D), \pc, \npc)}
+				% 	{((M', (R'', F'), D''), \pc', \npc')}
 			}
 			{
 				\begin{array}{l}
@@ -899,7 +903,7 @@ and
 in Fig.~\ref{Selected Operational Semantics} (e). 
 Here, we define the sum of two values $\val_1$ 
 and $\val_2$ below. The result of $\val_1\!+\!\val_2$ 
-is legel, if both of the $\val_1$ and $\val_2$ 
+is legal, if both of the $\val_1$ and $\val_2$ 
 are words (Int32), or $\val_1$ is an address and 
 $\val_2$ is an offset. The offset is a word, 
 which acts as an immediate value in the 

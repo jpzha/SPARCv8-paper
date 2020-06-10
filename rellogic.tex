@@ -26,7 +26,7 @@ Finally, logic soundness is shown in
 % \Sec{\ref{sec:modeling}} as the {\it low-level} 
 % program. And 
 
-The Pseudo-SPARCv8 language contains two part: 
+The Pseudo-SPARCv8 language contains two parts: 
 the SPARCv8 code as client code, 
 and the set of abstract assembly primitives. 
 Here, we require that the execution of client SPARCv8 code 
@@ -47,7 +47,7 @@ During the SPARCv8 program's execution,
 part of previous procedures' contexts 
 (the green part in the left side of the 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) 
-are saving in register window, the others 
+are saved in register window, the others 
 (the pink part in the left side of the 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}})
 are stored in stack in memory, 
@@ -96,7 +96,7 @@ contents of some windows.
 % to save the contents of some windows. 
 We do the following when defining 
 Pseudo-SPARCv8 program to make the execution 
-of client code preserves such restriction:  
+of client code preserve such restriction:  
 \begin{itemize}
     \item
     In order to ensure that 
@@ -164,8 +164,8 @@ of client code preserves such restriction:
     \item 
     % The special registers can't be modified arbitrarily.
     The special registers in SPARCv8 usually act specific 
-    roles and modifying them should be carefully, 
-    for example, \regwim{} marks which window is invalid.
+    roles and modifying them should be done carefully. 
+    For example, \regwim{} marks which window is invalid.
     \begin{center}
         \vspace*{-0.5em}
         \input{picture/ProblemModwim.tex}
@@ -431,7 +431,7 @@ call a primitive labelled $\lab{}$ with arguments $\args{\val}$.
 
 The machine states of high-level Pseudo-SPARCv8 program 
 is defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}. 
-The high-level program $\HProg$ is a a pair of high-level code 
+The high-level program $\HProg$ is a pair of high-level code 
 $\HMd$ and high-level state $\hpstate$. High-level 
 state is a tuple including: a thread pool $\thrdpool$, 
 % the identifier of the current thread $\thrdid$, 
@@ -454,7 +454,7 @@ the high-level client code to modify them
 \footnote{There is no problem to reserve special 
 registers in high-level register file and permit
 the high-level client code to read them.}. 
-The high-level frame list $\hWstk$ is a list of pair 
+The high-level frame list $\hWstk$ is a list of pairs 
 $(\fm_1, \fm_2)$, which is used to save 
 % the block id $\block$ of the stack frame and  
 the contexts (\localRN{} and \inRN{} registers) 
@@ -782,19 +782,22 @@ restoring the contexts of the previous procedure saved in $\hWstk$.
 \subsection{Low-level SPARCv8 Program}
 \label{subsec:low-level SPARCv8 Program}
 
-The low-level \sparc{} program are very closed to the \sparc{} program 
-defined in \Fig{\ref{fig:Machine States and Language for SPARC Code}}. 
-The only difference here is that we use simple instructions and commands 
-defined in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. So, the global 
-program transition of the low-level \sparc{} program is defined as 
-the following form : 
+% The low-level \sparc{} program are very closed to the \sparc{} program 
+% defined in \Fig{\ref{fig:Machine States and Language for SPARC Code}}. 
+% The only difference here is that we use simple instructions and commands 
+% defined in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. So, the global 
+% program transition of the low-level \sparc{} program is defined as 
+% the following form : 
+
+The global program transition of the low-level \sparc{} program is defined 
+as the following form:
 \[
-    \small
+    \scriptsize
     \infer
     {
         \LGlobTrans{(\code, (\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
             { \empmsg / \outEvt{\val} }
-            {(\code, (\Mem, (\RFile'', \Wstack'), \DBuf''))}
+            {(\code, (\Mem, (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
     }
     {
         \begin{array}{l}
@@ -802,14 +805,42 @@ the following form :
             \llocalstep{\code}
                 {((\Mem, (\RFile', \Wstack), \DBuf'), \pc, \npc)}
                 { \empmsg / \outEvt{\val} }
-                {(\Mem', (\RFile'', \Wstack'), \DBuf'')}
+                {((\Mem', (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
         \end{array}
     }
 \]
-Each step of the program produces either an empty message $\empmsg$, or  
-an output $\outEvt{\val}$ that is produced by the instruction 
-$\cprint$ and acts as an observable behavior. 
-% More details of the low-level program can be found in Appendix 
+The low-level \sparc{} program has 
+some differences between the previous one defined in 
+\Sec{\ref{sec:modeling}}: 
+\begin{enumerate}
+    \item The low-level \sparc{} program use simple 
+        instructions and commands defined in 
+        \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. 
+        It means that we need to give semantics to the additional 
+        pseudo instructions $\Psave$, $\Prestore$ and 
+        $\cprint$. Since the $\Psave$ and $\Prestore$ 
+        are just specific forms of $\csave{}$ and 
+        $\crestore{}$, and $\cprint$ is a primitive 
+        responsible for generating observable event
+        like the high-level one, defining their 
+        semantics in low-level is not a challenge.
+    \item The program transition defined in 
+        \Sec{\ref{sec:modeling}} doesn't generate 
+        observable event. Here, in order to support 
+        refinement verification, each step of the 
+        program produces either an empty message $\tau$, 
+        or an output $\outEvt{\val}$ that is produced 
+        by $\cprint$. 
+\end{enumerate}
+
+% Each step of the program produces either an empty message $\empmsg$, or  
+% an output $\outEvt{\val}$ that is produced by the instruction 
+% $\cprint$ and acts as an observable behavior. 
+More details of the low-level program can be found in 
+our Coq code or TR~\cite{coqimp}. Note that the client 
+code and the implementation of abstract assembly primitives 
+in low-level are both \sparc{} code heap. So, we do not need 
+to define how they are linked in semantics like high-level. 
 % \ref{sec:more-llang}. 
 
 % \input{picture/StateRel}
@@ -892,7 +923,7 @@ state $\state$, high-level program state $\hpstate$, program counters
 $\pc$ and $\npc$, if the low- and high-level program states satisfy the 
 state relation $\stateRel{\state}{\hpstate}$ and the high-level program 
 will never get stuck (shown as $\progsafe(\HProg)$), 
-then there is an {\it event trace refinement}, 
+then there is an {\it event trace refinement}~\cite{liang14lics}, 
 which means that $\prog$ produces no more observable behaviors 
 than $\HProg$ and is denoted as $\prog \refine \HProg$,  
 between low- and high-level program. $\progsafe(\HProg)$ 
@@ -907,6 +938,18 @@ is defined below formally :
         \HGlobTrans{\HProg'}{}{\HProg''})
 \]
 
+The client code $\code$ is a \sparc{} code heap, so 
+the high-level code is a pair of $\code$ and $\hprimset$. 
+And their linking is defined in 
+\Fig{\ref{fig:selected-opsem-high-level-prog}}. 
+The low-level code is a union of $\code$ and $\asmimp$, 
+shown as $(\code\uplus\asmimp)$, because both of 
+$\code$ and $\asmimp$ are \sparc{} code heap.
+\[
+    \code \uplus \asmimp \,\define\,
+    \code \cup \asmimp \quad
+    \cif \ \dom(\code)\cap\dom(\asmimp) = \emptyset
+\] 
 
 
 % \subsection{State Relation between Low- and High-level Program}
@@ -2676,7 +2719,8 @@ Then we give the semantics of well-formed primitive in
         \end{array}
     \]
 \end{definition}
-It says that for any high-level abstract assemly primitive
+It says that for any high-level 
+abstract assembly primitive
 in primitive set $\hprimset$, 
 we can establish a simulation relation 
 defined in \Def{\ref{def:simfunc}} 

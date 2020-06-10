@@ -549,10 +549,10 @@ verification but makes the following contributions:
 
 \end{itemize}
 The program logic and its soundness proof
-have been mechanized in Coq
-\footnote{More details about our work are
-available at TR and the Coq code.
-\url{https://sites.google.com/site/jcstarticle1/}.}.
+have been mechanized in Coq~\cite{coqimp}.
+% \footnote{More details about our work are
+% available at TR and the Coq code.
+% \url{https://sites.google.com/site/jcstarticle1/}.}.
 % including the extended program logic
 % for refinement verification, and its soundness proof
 % have been mechanized in Coq
@@ -563,30 +563,50 @@ available at TR and the Coq code.
 This paper extends the conference paper in
 APLAS 2018~\cite{zha18aplas}.
 The program logic there can only verify the partial
-correctness of \sparc{} code. We propose a new
-%We extend the program logic introduced in conference
-%paper, which can only prove the partial
-%correctness of \sparc{} code, and propose a new
-program logic to do relational reasoning for
-refinement verification. We also use the new logic
-to verify the implementation of a context switch routine,
-by showing that the implementation code contextually
-refines an abstract switch primitive.
-% \footnote{In the conference paper,
-%     we introduce that we apply our program logic
-%     for partial correctness to
-%     verify the main body of the context switch routine
-% 	in a realistic embedded OS kernel for aerospace crafts,
-%     which consists of around 250 lines of \sparc{} code,
-%     by 6690 lines of Coq proof scripts.
-%     And this is replaced by applying our new logic
-%     to verify that the implementation of a
-%     context switch routine
-%     contextually refines an abstract switch primitive
-%     in this paper.}.
-In order to support refinement verification,
-this paper also presents a new Pseudo-SPARCv8 language
-as the language to implement the high-level specification.
+correctness of \sparc{} code and we make the following 
+expansions:
+\begin{enumerate}
+    \item We propose a new program logic to do 
+        relational reasoning for refinement verification 
+        (\Sec{\ref{subsec:rellogic}} for details).
+    \item In order to support refinement verification, 
+        this paper presents a new Pseudo-SPARCv8 language 
+        as language to implement the high-level 
+        specification 
+        (\Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}
+        for details).
+    \item We also use the new logic to verify the implememntation 
+        of a context switch routine, by showing that 
+        the implementation code contextually
+        refines an abstract switch primitive
+        (\Sec{\ref{sec:ctxswitch}} for details).
+\end{enumerate}
+
+
+% We propose a new
+% %We extend the program logic introduced in conference
+% %paper, which can only prove the partial
+% %correctness of \sparc{} code, and propose a new
+% program logic to do relational reasoning for
+% refinement verification. We also use the new logic
+% to verify the implementation of a context switch routine,
+% by showing that the implementation code contextually
+% refines an abstract switch primitive.
+% % \footnote{In the conference paper,
+% %     we introduce that we apply our program logic
+% %     for partial correctness to
+% %     verify the main body of the context switch routine
+% % 	in a realistic embedded OS kernel for aerospace crafts,
+% %     which consists of around 250 lines of \sparc{} code,
+% %     by 6690 lines of Coq proof scripts.
+% %     And this is replaced by applying our new logic
+% %     to verify that the implementation of a
+% %     context switch routine
+% %     contextually refines an abstract switch primitive
+% %     in this paper.}.
+% In order to support refinement verification,
+% this paper also presents a new Pseudo-SPARCv8 language
+% as the language to implement the high-level specification.
 
 % We extend
 % the program logic, which can only prove the partial
