@@ -507,10 +507,12 @@ from $\lab{}$ in $\code$ below.
 		\[
 			\infer
 			{
+				{\color{blue}
 				\LGlobTrans
 					{(\code, (\mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
 					{ \ \ }
 					{(\code, (\mem', (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
+				}
 				% \ptrans{((M, (R, F), D), \pc, \npc)}
 				% 	{((M', (R'', F'), D''), \pc', \npc')}
 			}
@@ -767,7 +769,10 @@ but we use block-based memory model and
 omit features like interrupts and traps.
 We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 The program transition relation 
-$\ptrans{(\state, \pc, \npc)}{(\state', \pc', \npc')}$
+{\color{blue} $\LGlobTrans{(\code, \state, \pc, \npc)}
+	{ \ \, }
+	{(\code, \state', \pc', \npc')}$}
+% $\ptrans{(\state, \pc, \npc)}{(\state', \pc', \npc')}$
 is defined 
 in Fig.~\ref{Selected Operational Semantics} (a).
 Before the execution of the instruction pointed by
