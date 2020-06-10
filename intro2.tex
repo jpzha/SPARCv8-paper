@@ -268,17 +268,18 @@ As a supplement to their work, we extend our
 program logic so that it can ensure the
 contextual refinement relation between the implementations
 and their corresponding abstract assembly primitives,
-which can be presented as the following form. Here,
-we use $\Clang$, $\AbsPrimC$, and $\asmimp$ to represent
+which can be presented as formula (\ref{eq:refinement}). 
+Here, we use $\Clang$, $\AbsPrimC$, and $\asmimp$ to represent
 the C language program, the set of abstract assembly
 primitive and the implementations of
 abstract assembly primitives respectively.
 It means $\asmimp$ refines $\AbsPrimC$ under
 \textit{any context} $\Clang$.
-\[
+\begin{equation}
     \forall \, \Clang. \,
     \Clang[\asmimp] \refine \Clang[\AbsPrimC]
-\]
+    \label{eq:refinement}
+\end{equation}
 However, if we use C program as a client code to
 call inline assembly code, we need to define the
 semantics of C-assembly interaction.
@@ -381,9 +382,9 @@ $\semantics{\notCare}^{\textsf{SPARCv8}}$, refines
 the program $\code[\hprimset]$ executing
 under the Pseudo-SPARCv8 semantics.
 Finally, we can get
-$\semantics{\Clang[\hprimset]}^{\textsf{C}}
+$\semantics{\code[\asmimp]}^{\textsf{SPARCv8}}
 \refine
-\semantics{\code[\asmimp]}^{\textsf{SPARCv8}}$.
+\semantics{\Clang[\AbsPrimC]}^{\textsf{C}}$.
 In this work, we focus on
 step {\color{blue} \textcircled{2}}, and
 leave step {\color{blue} \textcircled{1}}

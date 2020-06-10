@@ -1399,6 +1399,13 @@ $\code$ and $\asmimp$ are \sparc{} code heap.
             \\
             \multicolumn{3}{l}
             {
+                \thrdpool_1 \perp \thrdpool_2 \ \define \ 
+                (\dom(\thrdpool_1)\cap\dom(\thrdpool_2)) = \emptyset
+            }
+            \\
+            \\[-5pt]
+            \multicolumn{3}{l}
+            {
                 \begin{array}{l}
                     \hpstate_1 \uplus \hpstate_2 \ \define \ 
                     \left\{
@@ -1406,13 +1413,16 @@ $\code$ and $\asmimp$ are \sparc{} code heap.
                             (\thrdpool_1 \cup \thrdpool_2, \thrdid, 
                                 \hthrdlocalst, \Mem_1 \cup \Mem_2) & 
                             \quad \cif \ 
+                            % (\dom(\thrdpool_1)\cap\dom(\thrdpool_2) = \emptyset) \land
+                            % (\dom(\Mem_1)\cap\dom(\Mem_2) = \emptyset) \land
+
                             \thrdpool_1 \perp \thrdpool_2 \, \land \, 
                             \Mem_1 \perp \Mem_2 \, \land 
                             \\
                             & \qquad 
-                            \state_1 = (\thrdpool_1, \thrdid, \hthrdlocalst, 
+                            \hpstate_1 = (\thrdpool_1, \thrdid, \hthrdlocalst, 
                                 \Mem_1) \, \land \, 
-                            \state_2 = (\thrdpool_2, \thrdid, \hthrdlocalst, 
+                            \hpstate_2 = (\thrdpool_2, \thrdid, \hthrdlocalst, 
                                 \Mem_2) \\
                             \\[-8pt]
                             \undef & \quad \otherwise
@@ -2131,6 +2141,21 @@ if an abstract assembly primitive
 can execute safely on a subset of program state, 
 it can also execute safely on the whole program state, 
 and additional program state remains unchanged.  
+Here, $\hpstate\perp\hpstate_r$ is defined formally 
+below: 
+\[
+    \small
+    \begin{array}{l}
+        \hpstate\perp\hpstate_r \, \define \, 
+        \thrdpool\perp\thrdpool' \land 
+        \mem\perp\mem' \land \tid = \tid' 
+        \land \hthrdlocalst = \hthrdlocalst' \\
+        \qquad \ \  
+        \text{where} \ \
+        \hpstate = (\thrdpool, \tid, \hthrdlocalst, \Mem), \,
+        \hpstate_r = (\thrdpool', \tid', \hthrdlocalst', \Mem')
+    \end{array}
+\]
 % We require that the program counters 
 % $\pc$ and $\npc$ in high-level are equal to $\lab{}+8$ 
 % and $\lab{}+12$ after execution of the abstract 

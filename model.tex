@@ -177,9 +177,20 @@ and address expression $\aexp$,
 which is either a operand expression or a 
 sum of the value of register $\reg{}$ and an operation 
 expression, are auxiliary definitions used as paramters of commands. 
-Commands in \sparc{} can be classified into two categories,
-the simple instructions $\simplins$ and the
-control-transfer instructions like $\call$ and $\jmp$.
+Commands in \sparc{} can be classified into two categories:
+% the simple instructions $\simplins$ and the
+% control-transfer instructions like $\call$ and $\jmp$.
+{\color{blue}
+(1) simple instruction $\simplins{}$, which does sequential 
+operation, \eg{``\cadd{}", arithmetic operations, 
+or memory operations
+``\ld{}" (load) and ``\st{}" (store), or register window
+operations ``\csave{}" and ``\crestore{}", or special 
+register operations ``\rd{}" (read) and ``\cwr{}" (write)};
+(2) control-transfer instructions, like $\call{}$ for 
+function call, $\jmp{}$ for unconditional branch and 
+$\be{}$ for conditional branch. 
+}
 
 The machine state $\state$ consists of three parts:
 the memory $\mem$, the register state $\Rstate$
@@ -241,7 +252,7 @@ $\DBuf$ below.
 \begin{figure*}[!t]
 	\centering
 	%\includegraphics[width=63ex]{window}
-	\includegraphics[width=55ex]{window}
+	\includegraphics[width=53ex]{window}
 	\caption{Register Windows (figure taken from \cite{sparc})}
 	\label{fig:RegisterWindows}
 \end{figure*}
@@ -300,8 +311,11 @@ three groups (\outRN{}, \localRN{} and \inRN{}).
      %
      \Rupd{\reg{i}, \dots, \reg{i+7}}{\fm} \ \define \
 			R\{ \reg{i} \rightsquigarrow \val_0 \} 
-				\dots \{ \reg{i+7} \rightsquigarrow \val_7 \} \\
-            \hspace*{28ex}\text{where }\ \ \fm = [\val_0, \dots, \val_7]
+				\dots \{ \reg{i+7} \rightsquigarrow \val_7 \} 
+			\qquad
+			\text{where }\ \ \fm = [\val_0, \dots, \val_7]
+			% \\
+            % \hspace*{28ex}\text{where }\ \ \fm = [\val_0, \dots, \val_7]
      \\
      \\ %[-8pt]
      %
@@ -309,7 +323,8 @@ three groups (\outRN{}, \localRN{} and \inRN{}).
 
         \begin{array}{lcl}
             \winvalid(\cwp, \RFile) & \define & 2^{\cwp}
-                                            \,\bitAND\, \RFile(\regwim) = 0 \\
+											\,\bitAND\, \RFile(\regwim) = 0								
+			\\
              & & \ \ \ \mbox{where $\bitAND$ is the bitwise AND operation.}
             \\
             \\[-8pt]
@@ -417,7 +432,8 @@ $\regwim$ in $\RFile$.
 We use the frame list $\Wstack$ to model the circular stack consisting
 of register windows. As defined in Fig.~\ref{fig:Register File and Frame List},
 a frame is an array of 8 words, modeling a group of 8 registers.
-$\Wstack$ consists of a sequence of frames corresponding to all the
+$\Wstack$ consists of a sequence of frames 
+corresponding to all the
 register windows except the \outRN{}, \localRN{} and \inRN{}
 registers in the current window. Then $\csave$ saves the
 \localRN{} and \inRN{} registers onto the head of $\Wstack$
@@ -425,7 +441,10 @@ and loads the two groups of register at the {\em tail} of $\Wstack$
 to the \localRN{} and \outRN{} registers (and the original
 \outRN{} registers becomes the \inRN{} group). The $\crestore$
 instruction does the inverse. The operations are defined formally
-in Fig.~\ref{fig:save and restore}.
+in Fig.~\ref{fig:save and restore}. 
+{\color{blue} Here, we use `` $\stCons$ " to represent 
+adding an element at the head of a list, and use `` $\lstApp{}$ "
+to represent appending an element at the tail of a list.}
 
 \paragraph{\textbf{The delay buffer.}}
 The delay buffer $\DBuf$ is a sequence of delayed writes.
@@ -503,7 +522,8 @@ from $\lab{}$ in $\code$ below.
 	\subfigure[Program Transistion]
 	{
 		\begin{minipage}[b]{1\textwidth}
-		\small
+		% \small
+		\scriptsize
 		\[
 			\infer
 			{
@@ -532,7 +552,8 @@ from $\lab{}$ in $\code$ below.
 	\subfigure[Control Transfer Instruction Transition]
 	{	
 		\begin{minipage}[b]{1\textwidth}
-		\small
+		% \small
+		\scriptsize
         \[
             \infer
             {
@@ -576,12 +597,33 @@ from $\lab{}$ in $\code$ below.
 			{
 				\cttrans{((M, (R, F), D), \pc, \npc)}
 				{
-					((M, (R, F), D), \text{npc}, \lab{}\!+\!8)
+					((M, (R, F), D), \npc, \lab{}\!+\!8)
 				}
 			}
 			{
 				C(\pc) = \retl \quad R(\reg{15}) = \lab{}
 			}
+		\]
+
+		\[{\color{blue}
+			\infer
+			{
+				\cttrans{((\mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+					{((\mem, (\RFile, \Wstack), \DBuf), \npc, \lab{})}
+			}
+			{
+				\code(\pc) = \be \ \lab{} \quad 
+				\RFile(\regz) = \word \quad 
+				\word \neq 0
+			} \qquad \ \ 
+			\infer
+			{\cttrans{((\mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+				{((\mem, (\RFile, \Wstack), \DBuf), \npc, \npc\!+\!4)}}
+			{
+				\code(\pc) = \be \ \lab{} \quad
+				\RFile(\regz) = 0
+			}
+		}
 		\]
 		\vspace{0.05cm}
 		\end{minipage}
@@ -590,7 +632,8 @@ from $\lab{}$ in $\code$ below.
 	\subfigure[Save, Restore and Wr instruction Transition]
 	{
 		\begin{minipage}[b]{1\textwidth}
-			\small
+			% \small
+			\scriptsize
 			\begin{minipage}{0.48\textwidth}
 			\[
 				\infer
@@ -664,7 +707,8 @@ from $\lab{}$ in $\code$ below.
 	\subfigure[Simple Instruction Transition]
 	{
 		\begin{minipage}[b]{1\linewidth}
-			\small
+			% \small
+			\scriptsize
 			\begin{minipage}{0.5\linewidth}
 				\[
 					\infer
@@ -721,7 +765,8 @@ from $\lab{}$ in $\code$ below.
 	\subfigure[Expression Semantics]
 	{
 		\begin{minipage}[b]{1\linewidth}
-			\small
+			% \small
+			\scriptsize
             $$
             \begin{array}{ll}
                 \begin{array}{lcl}

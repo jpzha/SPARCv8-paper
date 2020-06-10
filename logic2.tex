@@ -142,13 +142,28 @@ features of \sparc{}.
 
 			\end{array} \\
 			
+			\\
+			{\color{blue}
+			\mem_1\!\perp\!\mem_2 \ \define \ 
+			(\dom(\mem_1)\cap\dom(\mem_2)) = \emptyset 
+			\qquad \ \ 
+			\RFile_1\!\perp\!\RFile_2 \ \define \ 
+			(\dom(\RFile_1)\cap\dom(\RFile_2)) = \emptyset
+			}
+			\\
 			\\[-5pt]
 			
 			\state_1 \!\uplus\! \state_2 \ \define \
 			\left\{
 				\begin{array}{ll}
 					(\mem_1 \!\cup\! \mem_2, (\RFile_1 \!\cup\! \RFile_2, \Wstack), \DBuf)
-                         &  \quad \textbf{if} \; \mem_1 \!\perp\! \mem_2
+						 &  \quad \textbf{if} \; 
+						 		% {\color{blue}
+								%  \dom(\mem_1) \cap \dom(\mem_2) = \emptyset \land
+								%  \dom(\RFile_1) \cap \dom(\RFile_2) = \emptyset}
+								%  \land  \\
+
+						 		\mem_1 \!\perp\! \mem_2
                                   \wedge  \RFile_1 \!\perp\! \RFile_2  \wedge   \\
 					& \quad \quad  \state_1 \!=\! (\mem_1, (\RFile_1, \Wstack), \DBuf)
                                   \wedge \state_2 \!=\! (\mem_2, (\RFile_2, \Wstack), \DBuf) \\
@@ -157,9 +172,10 @@ features of \sparc{}.
 					
 					\undef & \quad \text{otherwise}
 				\end{array}
-			\right. \\
-			
-			\\[-5pt]
+			\right. 
+
+			\\
+			\\
 %			\DtoS\DBuf \ \define \
 %			\left\{
 %			\begin{array}{ll}
@@ -189,7 +205,7 @@ features of \sparc{}.
 			\right.
             \\
 			
-			\\[-5pt]
+			\\[-8pt]
 %
 			\noDup\DBuf\sr \ \define \
 			\left\{
@@ -662,6 +678,33 @@ return code pointer whose type is word.
 					(\regst\RAreg{\lab{}'}) * \astP_2 \Rightarrow \astQ
 				}
 			\]
+
+			{\color{blue}
+			\[
+				\infer[\tinybftext{(BE)}]
+				{
+					\wfcblk{\astP}{\astQ}{\lab{}}
+						{\be \, \lab{}'; \simplins{}; \cblk}
+				}
+				{
+					\begin{array}{c}
+						\nxtAst{\astP} \Rightarrow
+						(\regst{\regz}{\word}) \sepstar \atrue
+						\quad 
+						\lab{}' \in \dom(\Cspec{})
+						\quad 
+						\Cspec(\lab{}') = (\specpre, \specpost) \\
+						\wfins{\nxtAst{\nxtAst{\astP}}}{\simplins{}}{\astP'} 
+						\quad
+						\wfcblk{\astP'\land\word=0}{\astQ}{\lab{}\!+\!8}{\cblk} \\
+						\exists \lgvl, \astP_r. \, 
+						((\astP' \land \word \neq 0) \Rightarrow 
+							\specpre \, \lgvl \sepstar \astP_r) \, \land \,
+						(\specpost \, \lgvl \sepstar \astP_r \Rightarrow \astQ)
+					\end{array}
+				}
+			\]
+			}
 %			\[
 %				\infer[\tinybftext{(RETL)}]
 %				{
@@ -1097,6 +1140,17 @@ the post-condition of the callee guarantees $\RAreg$
 contains the correct return address,
 we know $\RAreg$ contains the correct value
 before $\retl$.
+
+{\color{blue}
+The \myrule{BE} rule consider whether the control-transfer 
+occurrs according to the value of register $\regz$ after 
+executing the following instruction $\simplins{}$. If the 
+value of the register $\regz$ is zero and the control-transfer
+occurs, it does the same 
+things as the \myrule{JMP} rule; otherwise, the control-transfer 
+does not occur and we require that the remaining instruction 
+sequence $\cblk$ is well-formed. 
+}
 
 %We present the \callrule{} rule and \retlrule{} rule
 %for certifying function call/return.
