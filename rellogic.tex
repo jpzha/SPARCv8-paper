@@ -2883,6 +2883,14 @@ function.
                   \end{array}
                   \label{a:wdspec}
             \end{align} 
+            Since we have proved that 
+            $\wfcdhp{\asmimp}{\Cspec{}} \implies 
+            \models\asmimp:\Cspec{}$, we get that 
+            the following holds from (\ref{a:wdcdhp2}):
+            \begin{equation}
+                \models\asmimp:\Cspec{} 
+                \label{a:semwdcdhp2}    
+            \end{equation}
 
             Then, we unfold $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$, 
             and we need to prove that for all $\lab{} \in \dom(\hprimset), 
@@ -2906,7 +2914,12 @@ function.
             $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
             (defined in \Def{\ref{def:well-defined specification}}), 
             which requires that the abstract assembly primitive should 
-            be specified in the precondition. 
+            be specified in the precondition; as for the 
+            third, we can prove it by apply 
+            Lemma~\ref{lemma:function correctness}, which 
+            says that the simulation for instruction sequence 
+            can compose to simulation for function, on 
+            (\ref{a:semwdcdhp2}). 
     \end{itemize}
 \end{proof}
 
@@ -2919,6 +2932,112 @@ function.
         \asmimp \refine \hprimset
     \]
 \end{lemma}
+\begin{proof}
+    We unfold $\asmimp \refine \hprimset$ according to 
+    its definition (in \Def{\ref{def:prim-correctness}}) 
+    and get the following holds: 
+    \begin{align}
+        & \stateRel{\state}{\hpstate} \\
+        & \progsafe((\code, \hprimset), \hpstate) \\
+        & \hpstate.\hthrdlocalst = 
+            (\notCare, \pc, \npc) 
+    \end{align}
+    And we need to prove the following goal:
+    \begin{equation}
+        (\code\uplus\asmimp, \state, \pc, \npc)
+        \refine
+        ((\code, \hprimset), \hpstate)
+        \tag{g3} \label{g3}
+    \end{equation}
+    Here, the $\code$ is the client code, and 
+    $\state$ and $\hpstate$ represent the initial states 
+    of low- and high-level program respectively. 
+    We split the proof into two steps:
+    \begin{enumerate}[1.]
+        \item We introduce a whole program simulation
+            defined in \Def{\ref{def:wpsim}}. By unfolding 
+            $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$, 
+            we get that for all $\lab{} \in \dom(\hprimset), 
+            \lgvl$, there exisits $\hprim$, $\args{\val}$, 
+            $\relspecpre$, $\relspecpost$, such that: 
+            \begin{itemize}
+                \small
+                \item $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$, 
+                    $\hprimset(\lab{}) = \hprim$, 
+                    $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$;
+                \item $\relspecpre \, \lgvl \implies 
+                    \safePrimAst{\, \hprim(\args{\val}) \,} 
+                    \sepstar \atrue$; 
+                \item $\simFunction{(\asmimp, \lab{})}
+                    {(\relspecpre \ \lgvl, \,\relspecpost \ \lgvl)}
+                    {\hprim(\args{\val})}$; 
+            \end{itemize}
+
+            We can prove that if each \sparc{} function has 
+            a simulation relation defined in \Def{\ref{def:simfunc}}
+            with its corresponding abstract assembly primitive, 
+            then we can get that the whole program simulation holds.
+            It means that there exists $i \in \Index$, such that: 
+            \begin{equation}
+                (\code\uplus\asmimp, \state, \pc, \npc)
+                \wpsim^{i} 
+                ((\code, \hprimset), \hpstate)
+                \label{a:wpsim}
+            \end{equation}
+            The correctness proof is done in the following way. 
+            \textit{First}, if the low-level \sparc{} program 
+            executes the client code $\code$, we can know 
+            that the high-level executes the same instruction, 
+            because the client code in low- and high-level is 
+            the same. When executing the client code, the low- 
+            and high-level program state satisfies the state relation 
+            defined in \Sec{\ref{subsec:correctness-primitive}} 
+            and it will be preserved after low- and high-level
+            program executes the same code as shown below:
+            
+            \textit{Second}, if the low-level \sparc{} program 
+            executes the implementation of the abstract assembly 
+            primitive, the high-level executes the abstract assembly 
+            primitive and the simulation for function define in 
+            \Def{\ref{def:simfunc}} ensures that for each step 
+            of low-level execution, the high-level program will 
+            execute zero or one step as shown below:
+
+
+
+        \item The whole program simulation (\ref{a:wpsim}) can implies the 
+            refinement relation (\ref{g3}) between low- and high-level 
+            program, which is straightforward, because the 
+            whole program requires that when low-level generates 
+            an observable event, the high-level can generate 
+            the same event. 
+    \end{enumerate}
+\end{proof}
+
+\begin{definition}
+    \label{def:wpsim}
+    \em
+    Whenever $\prog \wpsim^{i} \HProg$ holds, 
+    the following are true:
+    \begin{enumerate}[1.]
+        \small
+        \item if $\LGlobTrans{\prog}{\tau}{\prog'}$, 
+            then one of the following holds:
+            \begin{itemize}
+                \item $\exists j < i. \, 
+                    \prog' \wpsim^{j} \HProg$; or 
+                \item $\exists j, \HProg'. \, 
+                    \HGlobMultiTrans{\HProg}{\tau}{+}{\HProg'}$, 
+                    and $\prog' \wpsim^{j} \HProg'$;
+            \end{itemize}
+        \item if $\LGlobTrans{\prog}{\event}{\prog'}$, 
+            then $\exists j, \HProg'. \, 
+            \HGlobMultiTrans{\HProg}{\event}{+}{\HProg'}$,
+            and $\prog \wpsim^{j} \HProg$; 
+        \item if $\LGlobTrans{\prog}{\tau}{\evtabort}$, 
+            then $\HGlobMultiTrans{\HProg}{\tau}{+}{\evtabort}$.
+    \end{enumerate}
+\end{definition}
 
 \begin{theorem}[Logic Soundness]
     \em
@@ -2928,6 +3047,11 @@ function.
         \asmimp \refine \hprimset
     \]
 \end{theorem}
+\begin{proof}
+    The soundness proof can be done by applying 
+    Lemma~\ref{lemma:Logic Ensures Simulation} and 
+    \ref{lemma:Simulation Implies Primitive Correctness}.
+\end{proof}
 
 
 % We give the semantics of \textbf{WfPrim} rule in 
