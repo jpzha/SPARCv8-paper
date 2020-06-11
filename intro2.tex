@@ -156,7 +156,7 @@ as the new value for the special register {\tt Y}.
 and \pc{} and \npc{} point to line 2 and 3 respectively at this
 moment.
 The call instruction changes the value of \pc{} to \npc{}
-and let \npc{} points to the entry of
+and lets \npc{} point to the entry of
 \texttt{ChangeY} at line 5,
 which means the control-flow will not transfer to \texttt{ChangeY}
 in the next cycle,
@@ -216,7 +216,9 @@ are irrelevant here and can be ignored.
 At line 6, the $\cwr$ instruction tries to
 update the special register {\tt Y}
 with the value of $\ireg{0} \! \xorOP 0$
-(bitwise exclusive OR).
+(bitwise exclusive OR). 
+{\color{blue} Note that the current $\ireg{0}$ 
+register is the $\oreg{0}$ at line 1.}
 However, the write is delayed for $X$ cycles,
 where $X$ is some predefined system parameter
 that ranges from 0 to 3.
@@ -274,12 +276,15 @@ the C language program, the set of abstract assembly
 primitive and the implementations of
 abstract assembly primitives respectively.
 It means $\asmimp$ refines $\AbsPrimC$ under
-\textit{any context} $\Clang$.
+\textit{any context} $\Clang$. 
 \begin{equation}
     \forall \, \Clang. \,
     \Clang[\asmimp] \refine \Clang[\AbsPrimC]
     \label{eq:refinement}
 \end{equation}
+{\color{blue} 
+The ($\Clang[\asmimp] \refine \Clang[\AbsPrimC]$) means 
+that $\Clang[\asmimp]$ refines $\Clang[\AbsPrimC]$.}
 However, if we use C program as a client code to
 call inline assembly code, we need to define the
 semantics of C-assembly interaction.
@@ -353,11 +358,11 @@ The source program of OS kernel
 $\Clang[\AbsPrimC]$, which executes
 under the C language semantics (shown as
 $\semantics{\notCare}^{\textsf{C}}$),
-is implementated as C language
-with a set of abstract assembly primtives $\AbsPrimC$.
+is implemented as C language
+with a set of abstract assembly primitive $\AbsPrimC$.
 The compiler (\textit{Comp}) translates the
 C program $\Clang$ to \sparc{} code $\code$.
-As {\color{blue} \textcircled{1}} shown,
+As {\color{blue} \textcircled{1}} shows,
 we assume the compilation ensures the
 refinement between $\Clang[\AbsPrimC]$ and
 $\code[\hprimset]$ that
@@ -371,7 +376,7 @@ and intermediate level, because they execute on
 different program states and have different semantics.
 The Pseudo-SPARCv8 language $\code[\hprimset]$,
 which uses \sparc{} as client code and is able to
-call abstract assembly primtive in $\hprimset$,
+call abstract assembly primitives in $\hprimset$,
 will be defined in the following sections.
 In step {\color{blue} \textcircled{2}},
 we verify using our refinement logic that
@@ -646,7 +651,7 @@ expansions:
 %    copyright issues.}.
 
 
-In the rest of paper,
+In the remainder of the paper,
 %we first introduce the background of our work
 %and give an overview of our approach.
 we present the program model

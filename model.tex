@@ -170,13 +170,13 @@ The code heap $\code$ is a partial function
 from labels $\lab{}$ to commands $c$.
 Labels are also 32-bit integers (called {\em words}),
 which can be viewed as addresses or locations 
-where the commands are saved in code heap. 
+where the commands are saved in the code heap. 
 The operand expression $\oexp$, which is either a general 
 register $\reg{}$ or a word $\word$, 
 and address expression $\aexp$, 
 which is either a operand expression or a 
 sum of the value of register $\reg{}$ and an operation 
-expression, are auxiliary definitions used as paramters of commands. 
+expression, are auxiliary definitions used as parameters of commands. 
 Commands in \sparc{} can be classified into two categories:
 % the simple instructions $\simplins$ and the
 % control-transfer instructions like $\call$ and $\jmp$.
@@ -188,7 +188,8 @@ or memory operations
 operations ``\csave{}" and ``\crestore{}", or special 
 register operations ``\rd{}" (read) and ``\cwr{}" (write)};
 (2) control-transfer instructions, like $\call{}$ for 
-function call, $\jmp{}$ for unconditional branch and 
+function call, $\retl{}$ for function return, 
+$\jmp{}$ for unconditional branch and 
 $\be{}$ for conditional branch. 
 }
 
@@ -252,7 +253,7 @@ $\DBuf$ below.
 \begin{figure*}[!t]
 	\centering
 	%\includegraphics[width=63ex]{window}
-	\includegraphics[width=53ex]{window}
+	\includegraphics[width=56ex]{window}
 	\caption{Register Windows (figure taken from \cite{sparc})}
 	\label{fig:RegisterWindows}
 \end{figure*}
@@ -399,7 +400,7 @@ three groups (\outRN{}, \localRN{} and \inRN{}).
 \end{figure*}
 
 To save the context, the $\csave$ instruction
-rotates the window by decrements the $\regcwp$ pointer
+rotates the window by decrementing the $\regcwp$ pointer
 (modulo $N$).
 So $\text{w}_7$ becomes the current window. The \outRN{}
 registers of $\text{w}_0$ becomes
@@ -519,7 +520,7 @@ from $\lab{}$ in $\code$ below.
 \begin{figure*}
 	\centering
 	\vspace{-0.5em}
-	\subfigure[Program Transistion]
+	\subfigure[Program Transition]
 	{
 		\begin{minipage}[b]{1\textwidth}
 		% \small
@@ -804,7 +805,8 @@ from $\lab{}$ in $\code$ below.
 			\vspace{0.3cm}
 		\end{minipage}	
 	}
-	\caption{Selected operational semantics rules}
+	\caption{Selected operational semantics rules 
+		(taken from~\cite{sparc-formalization})}
 	\label{Selected Operational Semantics}
 \end{figure*}
 

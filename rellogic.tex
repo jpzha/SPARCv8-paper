@@ -1681,7 +1681,7 @@ $\Cspec$ for refinement verification are defined below :
 % 	\label{fig:functionSpec-refinementVer}
 % \end{figure*} 
 Here, $\relspecpre$ and $\relspecpost$ are 
-relational assertions paramterized over a list of values 
+relational assertions parameterized over a list of values 
 $\lgvl$. 
 % We give a simple example in 
 % \Fig{\ref{fig:functionSpec-refinementVer}} to show a specification
@@ -2871,8 +2871,9 @@ function.
             \begin{align}
                 & \wfcdhp{\asmimp}{\Cspec{}} \label{a:wdcdhp2} \\
                 & \begin{array}{l}
-                      \text{for all } \lab{} \in \dom(\Cspec{}) \\
-                      \quad 
+                      \text{for all } \lab{} \in \dom(\Cspec{}), 
+                      \exists \hprim, \specpre, \specpost. \\
+                      \quad \ \
                       \left\{
                           \begin{array}{l}
                              \Cspec(\lab{}) = (\relspecpre, \relspecpost), \,
@@ -2923,6 +2924,108 @@ function.
     \end{itemize}
 \end{proof}
 
+Then, we present  
+Lemma~\ref{lemma:Simulation Implies Primitive Correctness}, 
+which says that our simulation for function can imply 
+primitive correctness. We divide the correctness proof of 
+Lemma~\ref{lemma:Simulation Implies Primitive Correctness}
+into two steps. We introduce a whole program simulation 
+defined in \Def{\ref{def:wpsim}}. \textit{First}, we prove 
+that the simulation for function implies the whole program 
+simulation as shown in 
+Lemma~\ref{lemma:function sim implies whole program sim}; 
+\textit{Second}, we prove that 
+the whole program simulation implies the refinement relation 
+between low- and high-level program as shown in
+Lemma~\ref{lemma:wpsim-implies-refinement}. 
+\begin{definition}[Whole program simulation]
+    \label{def:wpsim}
+    \em
+    Whenever $\prog \wpsim^{i} \HProg$ holds, 
+    the following are true:
+    \begin{enumerate}[1.]
+        \small
+        \item if $\LGlobTrans{\prog}{\tau}{\prog'}$, 
+            then one of the following holds:
+            \begin{itemize}
+                \item $\exists j < i. \, 
+                    \prog' \wpsim^{j} \HProg$; or 
+                \item $\exists j, \HProg'. \, 
+                    \HGlobMultiTrans{\HProg}{\tau}{+}{\HProg'}$, 
+                    and $\prog' \wpsim^{j} \HProg'$;
+            \end{itemize}
+        \item if $\LGlobTrans{\prog}{\event}{\prog'}$, 
+            then $\exists j, \HProg'. \, 
+            \HGlobMultiTrans{\HProg}{\event}{+}{\HProg'}$,
+            and $\prog \wpsim^{j} \HProg$; 
+        \item if $\LGlobTrans{\prog}{\tau}{\evtabort}$, 
+            then $\HGlobMultiTrans{\HProg}{\tau}{+}{\evtabort}$.
+    \end{enumerate}
+\end{definition}
+
+\begin{lemma}
+    \label{lemma:function sim implies whole program sim}
+    \em
+    If $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$, 
+    $\stateRel{\state}{\hpstate}$, 
+    $\progsafe((\code, \hprimset), \hpstate)$ and 
+    $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$
+    then 
+    $\exists i \in \Index. \, 
+    (\code\uplus\asmimp, \state, \pc, \npc)
+    \wpsim^{i} ((\code, \hprimset), \hpstate)$.  
+\end{lemma}
+\begin{proof}
+    Because the whole program simulation is defined 
+    co-inductively. We prove this lemma by co-induction. 
+    We discuss whether the low-level program executes 
+    the command $\comm$ in client code $\code$, or in 
+    the implementation of abstract assembly primitive 
+    $\asmimp$.
+    \begin{itemize}
+        \item If $\comm \in \dom(\code)$, we use the 
+            following figure to illustrate such case:
+            \begin{center}
+                \input{picture/client-code-exec}
+            \end{center} 
+            We can know 
+            that the high-level executes the same command 
+            $\comm$, because the client code of low- and 
+            high-level programs are the same.  
+            And the state relation, shown as $\stateRel{\state}{\hpstate}$
+            and defined in \Sec{\ref{subsec:correctness-primitive}}, 
+            can be preserved after the execution, shown 
+            as $\stateRel{\state}{\hpstate}$. So, we can 
+            establish the simulation relation between 
+            low- and high-level programs.  
+        
+        \item If $\comm \in \dom(\asmimp)$, we use the 
+            following figure to illustrate such case:
+            \begin{center}
+                \input{picture/asmimp-code-exec}
+            \end{center}
+            The assumption $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$ 
+            defined in \Def{\ref{def:wdprim-sem}} says that 
+            each \sparc{} function has a simulation relation 
+            with its corresponding abstract assembly primitive. 
+            Such simulation relation ensure that for each step 
+            of low-level execution, the high-level program will 
+            execute zero or one step.
+    \end{itemize} 
+
+    The assumption $\progsafe((\code, \hprimset), \hpstate)$ 
+    makes sure that the client code will not include instruction 
+    \csave{}, \crestore{} and \cwr{}, because we do not give 
+    semantics to them in high-level as explained in 
+    \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}. 
+\end{proof}
+
+\begin{lemma}
+    \label{lemma:wpsim-implies-refinement}
+    \em
+    $\prog \wpsim^{i} \HProg \implies \prog \refine \HProg$  
+\end{lemma}
+
 \begin{lemma}[Simulation Implies Primitive Correctness]
     \em
     \label{lemma:Simulation Implies Primitive Correctness}
@@ -2952,92 +3055,16 @@ function.
     Here, the $\code$ is the client code, and 
     $\state$ and $\hpstate$ represent the initial states 
     of low- and high-level program respectively. 
-    We split the proof into two steps:
-    \begin{enumerate}[1.]
-        \item We introduce a whole program simulation
-            defined in \Def{\ref{def:wpsim}}. By unfolding 
-            $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$, 
-            we get that for all $\lab{} \in \dom(\hprimset), 
-            \lgvl$, there exisits $\hprim$, $\args{\val}$, 
-            $\relspecpre$, $\relspecpost$, such that: 
-            \begin{itemize}
-                \small
-                \item $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$, 
-                    $\hprimset(\lab{}) = \hprim$, 
-                    $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$;
-                \item $\relspecpre \, \lgvl \implies 
-                    \safePrimAst{\, \hprim(\args{\val}) \,} 
-                    \sepstar \atrue$; 
-                \item $\simFunction{(\asmimp, \lab{})}
-                    {(\relspecpre \ \lgvl, \,\relspecpost \ \lgvl)}
-                    {\hprim(\args{\val})}$; 
-            \end{itemize}
-
-            We can prove that if each \sparc{} function has 
-            a simulation relation defined in \Def{\ref{def:simfunc}}
-            with its corresponding abstract assembly primitive, 
-            then we can get that the whole program simulation holds.
-            It means that there exists $i \in \Index$, such that: 
-            \begin{equation}
-                (\code\uplus\asmimp, \state, \pc, \npc)
-                \wpsim^{i} 
-                ((\code, \hprimset), \hpstate)
-                \label{a:wpsim}
-            \end{equation}
-            The correctness proof is done in the following way. 
-            \textit{First}, if the low-level \sparc{} program 
-            executes the client code $\code$, we can know 
-            that the high-level executes the same instruction, 
-            because the client code in low- and high-level is 
-            the same. When executing the client code, the low- 
-            and high-level program state satisfies the state relation 
-            defined in \Sec{\ref{subsec:correctness-primitive}} 
-            and it will be preserved after low- and high-level
-            program executes the same code as shown below:
-            
-            \textit{Second}, if the low-level \sparc{} program 
-            executes the implementation of the abstract assembly 
-            primitive, the high-level executes the abstract assembly 
-            primitive and the simulation for function define in 
-            \Def{\ref{def:simfunc}} ensures that for each step 
-            of low-level execution, the high-level program will 
-            execute zero or one step as shown below:
-
-
-
-        \item The whole program simulation (\ref{a:wpsim}) can implies the 
-            refinement relation (\ref{g3}) between low- and high-level 
-            program, which is straightforward, because the 
-            whole program requires that when low-level generates 
-            an observable event, the high-level can generate 
-            the same event. 
-    \end{enumerate}
+    From Lemma~\ref{lemma:function sim implies whole program sim}, 
+    we know there exisits $i \in \Index$, such that: 
+    \begin{equation}
+        (\code\uplus\asmimp, \state, \pc, \npc)
+        \wpsim^{i}
+        ((\code, \hprimset), \hpstate) \label{a:wpsim}
+    \end{equation}
+    Then, by applying Lemma~\ref{lemma:wpsim-implies-refinement}
+    on (\ref{a:wpsim}), it is done. 
 \end{proof}
-
-\begin{definition}
-    \label{def:wpsim}
-    \em
-    Whenever $\prog \wpsim^{i} \HProg$ holds, 
-    the following are true:
-    \begin{enumerate}[1.]
-        \small
-        \item if $\LGlobTrans{\prog}{\tau}{\prog'}$, 
-            then one of the following holds:
-            \begin{itemize}
-                \item $\exists j < i. \, 
-                    \prog' \wpsim^{j} \HProg$; or 
-                \item $\exists j, \HProg'. \, 
-                    \HGlobMultiTrans{\HProg}{\tau}{+}{\HProg'}$, 
-                    and $\prog' \wpsim^{j} \HProg'$;
-            \end{itemize}
-        \item if $\LGlobTrans{\prog}{\event}{\prog'}$, 
-            then $\exists j, \HProg'. \, 
-            \HGlobMultiTrans{\HProg}{\event}{+}{\HProg'}$,
-            and $\prog \wpsim^{j} \HProg$; 
-        \item if $\LGlobTrans{\prog}{\tau}{\evtabort}$, 
-            then $\HGlobMultiTrans{\HProg}{\tau}{+}{\evtabort}$.
-    \end{enumerate}
-\end{definition}
 
 \begin{theorem}[Logic Soundness]
     \em
