@@ -2762,16 +2762,153 @@ which means that the extended program logic can
 imply the contextual refinement between implementation 
 $\asmimp$ and abstract assembly primitives $\hprimset$.
 
+Below, we show the soundness proof of our logic. 
+We first give Lemma~\ref{lemma:function correctness} 
+to show that the simulation relation for instruction 
+sequence can compose to the simulation relation for 
+function.
+\begin{lemma}
+    \label{lemma:function correctness}
+    \em
+    If $\semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
+            {\pc}{\asmimp[\pc]}$ and 
+    $\models\asmimp:\Cspec{}$, then 
+    $\simFunction{(\asmimp, \lab{})}
+        {(\relastP, \, \relastQ)}{\primcom}$.
+\end{lemma}
+\begin{proof}
+    We unfold 
+    $\simFunction{(\asmimp, \lab{})}
+        {(\relastP, \, \relastQ)}{\primcom}$ according 
+    to its definition (in \Def{\ref{def:simfunc}}) 
+    and get the following assumptions:
+    \begin{align}
+        & \semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
+            {\pc}{\asmimp[\pc]} \\
+        & \models\asmimp:\Cspec{} \\
+        & \asrtmodel{(\state, \hpstate, \word, \primcom)}
+            {\relastP}
+    \end{align}
+    We need to prove that there exisits 
+    $i \in \Index$, such that: 
+    \[
+        \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
+                {i}{0}{(\primcom, \hpstate)}
+    \]
+    The index $i$ can be instantiated as a pair of 
+    $(\word, |\,\asmimp[\pc]\,|)$, where $|\,\cblk\,|$ means 
+    getting the length of instruction sequence $\cblk$. 
+    And $(\word, |\, \cblk \,|) < (\word', |\,\cblk'\,|)$ 
+    is defined as:
+    \[
+        \word < \word' \lor
+        (\word = \word' \land 
+        |\,\cblk\,| < |\,\cblk'\,|)
+    \]
+
+    The simulation relation $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
+    {i}{0}{(\primcom, \hpstate)}$ is defined co-inductively 
+    in \Def{\ref{def:sim-imp-prim-state}}. So, we can prove 
+    it by co-induction and discuss each case of the simulation
+    respectively. 
+\end{proof}
+
 \begin{lemma}[Logic Ensures Simulation]
     \em
     \label{lemma:Logic Ensures Simulation} \mbox{}
     \begin{itemize}
+        \item $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}
+            \implies 
+            \semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$
         \item $\wfcdhp{\asmimp}{\Cspec} \imp 
             \models\asmimp:\Cspec$ 
         \item $\wfprim{\Cspec}{\asmimp}{\hprimset} \imp
             \semWdPrim{\Cspec}{\asmimp}{\hprimset}$
     \end{itemize}
 \end{lemma}
+\begin{proof}
+    We prove each conclusion respectively. 
+    \begin{itemize}
+        \item The well-formed instruction sequence shown as 
+            $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$ 
+            is defined inductively in 
+            \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}. 
+            We can finish the proof by doing 
+            induction on $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$
+            and discussing each case respectively.
+
+        \item We unfold $\wfcdhp{\asmimp}{\Cspec}$ and get that 
+            for all $\lab{} \in \dom(\Cspec{})$, $\lgvl$ :
+            \begin{align}
+                & \Cspec(\lab{}) = (\relspecpre, \relspecpost)
+                    \label{a:wfcdhp-spec} \\
+                & \wfcblk{\relspecpre \, \lgvl}
+                    {\relspecpost \, \lgvl}{\lab{}}{\asmimp[\lab{}]}
+                    \label{a:wfcdblk}
+            \end{align} 
+            Then we unfold the proof goal $\models\asmimp:\Cspec{}$
+            according to its definition 
+            (\Def{\ref{def:soundness of instruction sequence}}).
+            And we need to prove that for all 
+            $\lab{} \in \dom(\Cspec{})$, $\lgvl$ : 
+            \begin{align}
+                & \Cspec{}(\lab{}) = (\relspecpre, \relspecpost)
+                    \tag{g1} \label{g1} \\
+                & \semwfseqrel{\Cspec{}}{\relspecpre \, \lgvl}
+                    {\relspecpost \, \lgvl}{\asmimp[\lab{}]}
+                    \tag{g2} \label{g2}
+            \end{align}
+            Because we have already proved that: 
+            $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}
+            \implies 
+            \semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$, 
+            we can finish the proof by applying this conclusion. 
+        
+        \item We unfold $\wfprim{\Cspec{}}{\asmimp}{\hprimset}$ 
+            according to its definition 
+            (defined in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}) 
+            and get:
+            \begin{align}
+                & \wfcdhp{\asmimp}{\Cspec{}} \label{a:wdcdhp2} \\
+                & \begin{array}{l}
+                      \text{for all } \lab{} \in \dom(\Cspec{}) \\
+                      \quad 
+                      \left\{
+                          \begin{array}{l}
+                             \Cspec(\lab{}) = (\relspecpre, \relspecpost), \,
+                             \hprimset(\lab{}) = \hprim \\
+                             \wdSpec{\relspecpre}{\relspecpre}{\hprim}
+                          \end{array}
+                      \right.  
+                  \end{array}
+                  \label{a:wdspec}
+            \end{align} 
+
+            Then, we unfold $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$, 
+            and we need to prove that for all $\lab{} \in \dom(\hprimset), 
+            \lgvl$, there exisits $\hprim$, $\args{\val}$, 
+            $\relspecpre$, $\relspecpost$, such that: 
+            \begin{itemize}
+                \small
+                \item $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$, 
+                    $\hprimset(\lab{}) = \hprim$, 
+                    $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$;
+                \item $\relspecpre \, \lgvl \implies 
+                    \safePrimAst{\, \hprim(\args{\val}) \,} 
+                    \sepstar \atrue$; 
+                \item $\simFunction{(\asmimp, \lab{})}
+                    {(\relspecpre \ \lgvl, \,\relspecpost \ \lgvl)}
+                    {\hprim(\args{\val})}$; 
+            \end{itemize}
+            The proof of the first subgoal can be done by 
+            assumption (\ref{a:wdspec}) directly; the second 
+            one can be done according to the definition of 
+            $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
+            (defined in \Def{\ref{def:well-defined specification}}), 
+            which requires that the abstract assembly primitive should 
+            be specified in the precondition. 
+    \end{itemize}
+\end{proof}
 
 \begin{lemma}[Simulation Implies Primitive Correctness]
     \em
