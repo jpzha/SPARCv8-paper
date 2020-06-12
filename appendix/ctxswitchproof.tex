@@ -19,11 +19,11 @@
             & 
             \multicolumn{2}{l}
             {
-                /* \text{save the \inRN{} and \localRN{}
+                /* \text{codes save the \inRN{} and \localRN{}
                 registers of current window into stack frame} */
             } \\
-            \llnum 
-            & \nop{} \\
+            % \llnum 
+            % & \nop{} \\
             \llnum 
             & \sett & \TaskCur, \lreg{1} \\
             \llnum 
@@ -35,7 +35,7 @@
             \llnum
             & \nop{} \\
             \llnum
-            & \get & \regcwp, \greg{4} \\
+            & \mov{} & \regcwp, \greg{4} \\
             \llnum
             & \rd{} & \regwim, \greg{7} \\
             \llnum
@@ -57,7 +57,7 @@
             \llnum & 
             \multicolumn{2}{l}
             {
-                /* \text{save the \inRN{} and \localRN{}
+                /* \text{codes save the \inRN{} and \localRN{}
                 registers of current window into stack frame} */
             } \\
             \\[-9pt]
@@ -82,7 +82,7 @@
             \llnum & 
             \multicolumn{2}{l}
             {
-                /* \text{restore the \inRN{} and \localRN{}
+                /* \text{codes restore the \inRN{} and \localRN{}
                 registers of current window from stack frame} */
             } \\
             \\[-9pt]
@@ -113,21 +113,21 @@ At the entry of the context switch rountine shown in
 save the \localRN{} and \inRN{} registers into the stack in memory, 
 and this part of code is shown in 
 \Fig{\ref{fig:code for saving and restoring local and in}}(a). 
-Then, as shown in line 3 to 7, we call the \texttt{reg}\_\texttt{save}  
+Then, as shown from line 2 to 6, we call the \texttt{reg}\_\texttt{save}  
 to store the \outRN{} and \globalRN{} registers into the TCB 
-of the current thread. As for the line 8 to 11, we get the identity of 
+of the current thread. As for the line 6 to 9, we get the identity of 
 the current register window and the value of the \regwim{}. 
-The block \SaveUsedWin (line 12 to 22) saves the register windows 
+The block \SaveUsedWin{} (from line 12 to 22) saves the register windows 
 (except the current one) into the stack of the current task in memory. 
 It checks whether the previous window is valid. If it's valid, it 
 uses the instruction $\crestore{}$ to set the previous window as the 
-current one, and calls function \texttt{window}\_\texttt{save} to 
-save its contents into stack (in memory), then check the previous 
-one continuously. 
-The block \texttt{switch}\_\texttt{new}\_\texttt{task} is responsible 
-for restoring the context of the new task. From line 23 to 26, it 
+current one, and save its contents (\localRN{} and \inRN{} registers)
+into stack in memory, then check the previous one continuously. 
+The block \SwitchNewTask{} is responsible 
+for restoring the context of the new task. From line 21 to 24, it 
 sets the new task as the current one. Then, it calls function 
-\texttt{reg}\_\texttt{restore} to restore the $\outRN$ and $\globalRN$ 
+\texttt{reg}\_\texttt{restore} (at line 25)
+to restore the $\outRN$ and $\globalRN$ 
 registers from the new task's TCB, and restores the  
 $\localRN$ and $\inRN$ registers from the new task's stack in memory. 
 The code about restoring the $\localRN$ and $\inRN$ registers of 
@@ -138,7 +138,7 @@ The implementations of internal functions
 are omitted here because these two functions are taken 
 from the OS kernal we verified and we can't show these part 
 of codes according to confidentiality agreement, but we show 
-their specifications in \Fig{\ref{fig:Specifications of Internal Functions}}
+their specifications in \Fig{\ref{fig:Specifications of Internal Functions}}.
 
 \subsection{Specification of the Simplified Context Switch Routine}
 
@@ -365,7 +365,7 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
 
 Note that the execution of context switch routine will 
 call function \texttt{reg\_save}, \texttt{reg\_restore}, and  
-\texttt{window\_restore} once, and call function \WinSave{} 
+\texttt{window\_restore} once, and call function  
 and jump to block \texttt{save\_usedwindow} no more than 8 times separately, 
 because the number of the register windows is 8. So, assigning 10 tokens 
 to the precondition of the context switch routine is enough. 
@@ -709,16 +709,15 @@ The specifications of the internal function can be found in
 function \texttt{reg\_save} is responsible for saving the 
 \localRN{}, \inRN{} and integer condition code fields $\regn$, 
 $\regz$, $\regc$ and $\regv$ registers into TCB in memory. 
-The \texttt{window\_save} stores the 
-$\localRN$ and $\inRN$ registers into current task's stack in memory. 
-Function \texttt{reg\_restore} does the reverse of 
-\texttt{reg\_save}, and function \texttt{window\_restore} does the 
-reverse of \texttt{window\_save}. The specification of code block 
-\texttt{save\_usedwindow} is a little complicated. 
+And the function \texttt{reg\_restore} does the reverse of 
+\texttt{reg\_save}, restoring \localRN{}, \inRN{} and integer 
+condition code fields registers from the TCB in memory. 
+The specification of code block 
+\SaveUsedWin{} is a little complicated. 
 We can find its implementation is a loop, which checks whether the 
 previous window is valid and saving the contents of the valid 
 previous window until the previous one is invalid. 
-We need to define the loop invariant $I$ here. 
+We need to define the loop invariant $I$ here.
 
 \begin{figure}[!t]
     \centering
@@ -822,7 +821,7 @@ We need to define the loop invariant $I$ here.
                 \outRN \rightsquigarrow \nst(\outRN), \regn \rightsquigarrow \nst(\regn), 
                 \dots, \regv \rightsquigarrow \nst(\regv) \} \\
             \\[-5pt]
-            \texttt{save\_usedwindow}: \ 
+            \SaveUsedWin{}: \ 
             (\lgvl = (\thrdid_c, \thrdid_n, \hthrdlocalst_c, \hthrdlocalst_n, 
                 \hthrdlocalst_c, \hthrdlocalst_n, \nst)) \\
             \\[-9pt]
@@ -845,7 +844,8 @@ We need to define the loop invariant $I$ here.
             \sepstar \safePrimAst{\, \primdone \,}
             \\
             \\[-5pt]
-            \texttt{switch\_newtask}: \ (\lgvl = (\thrdid_c, \thrdid_n, \hthrdlocalst_c, 
+            \SwitchNewTask{}
+            \ (\lgvl = (\thrdid_c, \thrdid_n, \hthrdlocalst_c, 
             \hthrdlocalst_n, \RFile, \nst)) \\
             \\[-9pt]
             \quad 
@@ -907,16 +907,35 @@ We need to define the loop invariant $I$ here.
     \label{fig:Specifications of Internal Functions}
 \end{figure}
 
-\begin{lemma}
-    \em
-    \label{lemma:codeproof}
-    There exists $\Cspec_i$, for any $\lgvl$,
-    where $\lgvl = (\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, 
-    \hthrdlocalst_n)$,
-    $\wfcdhp{\code_{\texttt{switch}}}{\Cspec_i}$ and 
-    $\wdcblk{\Cspec_i}{\Apre \, \lgvl}{\Apost \, \lgvl}{\lab{\texttt{switch}}}
-        {\code_{\texttt{switch}}[\lab{\texttt{switch}}]}$ hold. 
-\end{lemma}
+Codes about saving \localRN{} and \inRN{} registers 
+into stack in memory and restoring \localRN{} and 
+\inRN{} registers from stack in memory are not 
+implemented as functions. However, we still give 
+the specifications of this part of codes shown 
+as \texttt{window\_save} and \texttt{window\_restore}
+in \Fig{\ref{fig:Specifications of Internal Functions}}, 
+in order to allow readers to better understand 
+the functionalities of this part of codes. 
+
+We define the code heap specification $\Cspec{}$ 
+below, which is the collection of specifications of 
+code blocks in $\code_{\texttt{switch}}$.
+\begin{equation}
+    \begin{array}{lcl}
+        \Cspec & \define & 
+        \{
+            \texttt{SwitchEntry} \leadsto (\Apre, \Apost), \,
+            \texttt{reg}\_\texttt{save} \leadsto 
+            (\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}}), \,
+            \texttt{reg}\_\texttt{restore} \leadsto
+            (\relspecpre_{\textit{rr}}, \relspecpost_{\textit{rr}}), \\
+            & & \qquad\qquad
+            \SaveUsedWin{} \leadsto (\relspecpre_{\textit{su}}, \relspecpost_{\textit{su}}), \,
+            \SwitchNewTask{} \leadsto (\relspecpre_{\textit{sn}}, \relspecpost_{\textit{sn}})) 
+        \}
+    \end{array}
+    \label{a:ctxswitch-Cspec}
+\end{equation}
 
 \begin{figure}[!t]
     \[
@@ -1295,15 +1314,62 @@ We need to define the loop invariant $I$ here.
     \vspace*{-0.5em}
 \end{figure}
 
+\begin{lemma}
+    \em
+    \label{lemma:wfcdhp}
+    $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$
+\end{lemma}
 \begin{proof}
-    The code heap specification $\Cspec_i$ is the collection of 
-    the specifications of each code block shown in 
-    \Fig{\ref{fig:Specifications of Internal Functions}}, and 
-    the verification of internal functions has no differences with 
-    the original proof of context switch routine introduced in 
-    \Sec{\ref{sec:ctxswitch}}. So, here we just give a proof sketch 
+    The code heap specification $\Cspec{}$ have been 
+    defined in (\ref{a:ctxswitch-Cspec}). We unfold 
+    $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$ 
+    according to its definition 
+    (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}). 
+    And we need to prove that, for any $\lgvl_1$, 
+    $\lgvl_2$, $\lgvl_3$, 
+    $\lgvl_4$ and $\lgvl_5$, the following hold: 
+    \begin{align}
+        & \wfcblk{\Apre \ \lgvl_1}{\Apost \ \lgvl_1}
+            {\texttt{SwitchEntry}}
+            {\code_{\texttt{switch}}[\texttt{SwitchEntry}]}
+            \label{a:ctxswitch-wfse} \\
+        & \wfcblk{\relspecpre_{\textit{rs}} \ \lgvl_2}
+            {\relspecpost_{\textit{rs}} \ \lgvl_2}
+            {\texttt{reg}\_\texttt{save}}
+            {\code_{\texttt{switch}}[\texttt{reg}\_\texttt{save}]} 
+            \label{a:ctxswitch-wfrs} \\
+        & \wfcblk{\relspecpre_{\textit{rr}} \ \lgvl_3}
+            {\relspecpost_{\textit{rr}}\ \lgvl_3}
+            {\texttt{reg}\_\texttt{restore}}
+            {\code_{\texttt{switch}}[\texttt{reg}\_\texttt{restore}]} 
+            \label{a:ctxswitch-wfrr} \\
+        & \wfcblk{\relspecpre_{\textit{su}} \ \lgvl_4}
+            {\relspecpost_{\textit{su}} \ \lgvl_4}
+            {\SaveUsedWin}{\code_{\texttt{switch}}[\SaveUsedWin]} 
+            \label{a:ctxswitch-wfsu} \\
+        & \wfcblk{\relspecpre_{\textit{sn}} \ \lgvl_5}
+            {\relspecpost_{\textit{sn}} \ \lgvl_5}
+            {\SwitchNewTask}
+            {\code_{\texttt{switch}}[\SwitchNewTask]}
+            \label{a:ctxswitch-wfsn}
+    \end{align} 
+
+    We need to prove that each code block 
+    is well-defined ((\ref{a:ctxswitch-wfse}) - 
+    (\ref{a:ctxswitch-wfsn})). Here, we do not 
+    show the details about verifying each code block 
+    respectively. We just give a proof sketch 
     of the verifying of the main function, which can be found in 
-    \Fig{\ref{fig:Proof Sketch of the Context Switch Routine}}. 
+    \Fig{\ref{fig:Proof Sketch of the Context Switch Routine}}.
+
+    % The code heap specification $\Cspec_i$ is the collection of 
+    % the specifications of each code block shown in 
+    % \Fig{\ref{fig:Specifications of Internal Functions}}, and 
+    % the verification of internal functions has no differences with 
+    % the original proof of context switch routine introduced in 
+    % \Sec{\ref{sec:ctxswitch}}. So, here we just give a proof sketch 
+    % of the verifying of the main function, which can be found in 
+    % \Fig{\ref{fig:Proof Sketch of the Context Switch Routine}}. 
 
     Supposing in the inital state (described as assertion marked 
     {\color{red} \textcircled{1}}), 
@@ -1337,14 +1403,24 @@ We need to define the loop invariant $I$ here.
 
 \begin{theorem}
     \em
-    $\wfprim{\{ \lab{\texttt{switch}} \rightsquigarrow 
-        (\Apre, \Apost) \}}{\code_{\texttt{switch}}}
-        {\{\lab{\texttt{switch}}\rightsquigarrow \primsw\}}$. 
+    $\wfprim{\Cspec}{\code_{\texttt{switch}}}
+        {\{\texttt{SwitchEntry}\rightsquigarrow \primsw\}}$. 
 \end{theorem}
 \begin{proof}
-    The proof can be finished by applying 
-    \textbf{Lemma} \ref{lemma:wdspec} and 
-    \textbf{Lemma} \ref{lemma:codeproof}.
+    We unfold 
+    $\wfprim{\Cspec}{\code_{\texttt{switch}}}
+        {\{ \texttt{SwitchEntry}\leadsto \primsw \}}$ 
+    according to its definition 
+    (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}) 
+    and we need to prove the following hold:
+    \begin{itemize}
+        \item $\wfcdhp{\asmimp}{\Cspec{}}$. \quad 
+            The correctness proof of this subgoal can be done by 
+            apply Lemma~\ref{lemma:wfcdhp}. 
+        \item $\wdSpec{\Apre}{\apost}{\primsw}$. \quad
+            The correctness proof of this subgoal can be done by 
+            apply Lemma~\ref{lemma:wdspec}.
+    \end{itemize}
 \end{proof}
 
 \begin{figure*}[!t]
