@@ -158,6 +158,7 @@ already introduced in the \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
             \text{where } \, 
             \hpstate = 
                 (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), \, 
+            \tid \in \dom(\thrdpool), \,
             \hpstate' = 
             (\thrdpool', \thrdid', 
             	(\hRstate', \lab{} + 8, \lab{} + 12), \Mem), \lab{} = \hRstate'.\hRfile(\reg{15}). 
@@ -389,7 +390,45 @@ is well-defined.
             \end{itemize}
         \vspace*{0.3em}
         The correctness proof of this property can be achieved directly from the definition 
-        of the $\primsw$. 
+        of the $\primsw$. The definition of the $\primsw$ requires that 
+        the program counters $\pc$ and $\npc$ are equal to 
+        $\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$ is 
+        contained in $\reg{15}$ register after the execution of 
+        $\primsw$. The execution of $\primsw$ only accesses 
+        the current thread $\tid$ and new $\tid'$ (stored in $\TaskNew$ in memory) 
+        in thread pool and the location $\TaskNew$ in memory. 
+        So the threads and memory described in $\hpstate_r$ 
+        remains unchanged.
+
+        We prove the correctness of this property formally 
+        below. We unfold $\primsw(\args{\val})(\hpstate)(\hpstate')$ 
+        and $\hpstate\perp\hpstate_r$ according to their definitions 
+        and get the following hold: 
+        (let $\hpstate = (\thrdpool, \tid, (\hRstate, \pc, \npc), \mem)$ and 
+        $\hpstate_r = (\thrdpool_r, \tid_r, \hthrdlocalst_r, \mem_r)$)
+        \begin{align}
+            & \mem(\TaskNew) = (\tid', 0) \\
+            & \thrdpool(\tid') = (\hRstate', \pc', \npc') \\
+            & \thrdpool' = \thrdpool\{ \tid \leadsto \{ \hRstate, \pc, \npc \} \}, \,
+                \tid \in \dom(\thrdpool) \\
+            & \tid \neq \tid', \, \args{\val} = \nil \\
+            & \hpstate' = (\thrdpool', \tid', (\hRstate', \lab{}\!+\!8, \lab{}\!+\!12), 
+                \mem{}), \lab{} = \hRstate'.\hRfile(\reg{15}) \\
+            & \notag \\
+            & \thrdpool \perp \thrdpool_r, \, \mem \perp \mem_r \\
+            & \tid_r = \tid, \, \hthrdlocalst_r = (\hRstate, \pc, \npc)
+        \end{align}
+        We can prove that there exists 
+        $\hpstate'' = (\thrdpool'\uplus\thrdpool_r, \tid', 
+            (\hRstate', \lab{}\!+\!8, \lab{}\!+\!12), \mem\uplus\mem_r)$, 
+        and 
+        $\hpstate_r' = (\thrdpool_r, \tid', 
+            (\hRstate', \lab{}\!+\!8, \lab{}\!+\!12), \mem_r)$, 
+        such that 
+        $\primsw(\args{\val})(\hpstate \uplus \hpstate_r)(\hpstate'')$,
+        $\hpstate'' = \hpstate' \uplus \hpstate_r'$, 
+        and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$, 
+        $\hpstate_r.\Mem = \hpstate_r'.\Mem$.
         \vspace*{0.5em}
         
         \item for any $\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n$,
@@ -496,6 +535,23 @@ is well-defined.
             \]
             \caption{Auxiliary Definitions About Frame Assertion}
         \end{figure}
+
+        We prove the correctness of this property formally
+        below. We first unfold 
+        $(\state, \hpstate, \notCare, \notCare) \in \INV{(\primsw(\args{\val}), \val)}$
+        and get the following holds:
+        \begin{align}
+            & \stateRel{\state}{\hpstate} \label{a:ctxswitch-staterel} \\
+            & \exists \, \hpstate'. \, 
+                \primMultiTrans{(\primsw(\args{\val}), \hpstate)}
+                    {*}{(\primdone, \hpstate')} \label{a:ctxswitch-swtrans} \\
+            & \arguments(\hpstate.\hthrdlocalst.\hRstate, \hpstate.\Mem, \args{\val})
+        \end{align}
+
+        Let $\hpstate = (\thrdpool, \tid, (\hRstate, \pc, \npc), \Mem')$, 
+        $\state = (\Mem, \Rstate, \DBuf)$. We first unfold 
+        $\stateRel{\state}{\hpstate}$ (\ref{a:ctxswitch-staterel})
+        according to its definition. 
     \end{enumerate} 
 \end{proof}
 
@@ -602,22 +658,6 @@ We need to define the loop invariant $I$ here.
                 \regn \rightsquigarrow \RFile(\regn), \dots, 
                 \regv \rightsquigarrow \RFile(\regv) \}  \\
             \\[-5pt]
-            \texttt{window\_save}: \ (\lgvl = (\thrdid, \hthrdlocalst, \RFile, 
-                \Wstack, \primcom, \block)) \\
-            \\[-9pt]
-            \quad
-            \relspecpre_{\textit{ws}} \ \lgvl \define 
-            (\Env{\RFile, \Wstack} \sepstar \RelStkFm{\block}{\notCare}{\notCare}
-            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
-            \safePrimAst{\primcom}) \, \land \, \RFile(\spreg) = (\block, 0) \\
-            \\[-9pt]
-            \quad
-            \relspecpost_{\textit{ws}} \ \lgvl \define 
-            (\Env{\RFile, \Wstack} \sepstar 
-            \RelStkFm{\block}{\RFile(\localRN)}{\RFile(\inRN)}
-            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
-            \safePrimAst{\primcom}) \, \land \, \RFile(\spreg) = (\block, 0) \\
-            \\[-5pt]
             \texttt{reg\_restore}: \ (\lgvl = (\thrdid, \hthrdlocalst, \RFile, \Wstack, 
                 \block, \nst)) \\
             \\[-9pt]
@@ -636,24 +676,6 @@ We need to define the loop invariant $I$ here.
             \RFile' = \RFile\{ \globalRN \rightsquigarrow \nst(\globalRN), 
                 \outRN \rightsquigarrow \nst(\outRN), \regn \rightsquigarrow \nst(\regn), 
                 \dots, \regv \rightsquigarrow \nst(\regv) \} \\
-            \\[-5pt]
-            \texttt{window\_restore}: \ (\lgvl = (\thrdid, \hthrdlocalst, \RFile, \Wstack, 
-            \primcom, \block, \fm_1, \fm_2)) \\
-            \\[-9pt]
-            \quad
-            \relspecpre_{\textit{wr}} \ \lgvl \define 
-            (\Env{\RFile, \Wstack} \sepstar \RelStkFm{\block}{\fm_1}{\fm_2} 
-            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
-            \safePrimAst{\primcom}) \, \land \, \RFile(\spreg) = (\block, 0) \\
-            \\[-9pt]
-            \quad
-            \relspecpost_{\textit{wr}} \ \lgvl \define 
-            (\Env{\RFile\{ \localRN \rightsquigarrow \fm_1, \inRN \rightsquigarrow \fm_2 \}, \Wstack} \
-            \sepstar \RelStkFm{\block}{\fm_1}{\fm_2} 
-            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
-            \safePrimAst{\primcom}) \\
-            \hspace*{5em}
-            \, \land \, \RFile(\spreg) = (\block, 0) \\
             \\[-5pt]
             \texttt{save\_usedwindow}: \ 
             (\lgvl = (\thrdid_c, \thrdid_n, \hthrdlocalst_c, \hthrdlocalst_n, 
@@ -700,6 +722,40 @@ We need to define the loop invariant $I$ here.
             \RelCurT{\thrdid_n}{\nst}{(\nst, \nil)}{\hthrdlocalst'} 
             \sepstar \RelRdyT{\thrdid_c}{\RFile}{\hthrdlocalst_c}
             \sepstar \safePrimAst{\, \primdone \,}
+            \\
+            \\
+            \texttt{window\_save}: \ (\lgvl = (\thrdid, \hthrdlocalst, \RFile, 
+                \Wstack, \primcom, \block)) \\
+            \\[-9pt]
+            \quad
+            \relspecpre_{\textit{ws}} \ \lgvl \define 
+            (\Env{\RFile, \Wstack} \sepstar \RelStkFm{\block}{\notCare}{\notCare}
+            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
+            \safePrimAst{\primcom}) \, \land \, \RFile(\spreg) = (\block, 0) \\
+            \\[-9pt]
+            \quad
+            \relspecpost_{\textit{ws}} \ \lgvl \define 
+            (\Env{\RFile, \Wstack} \sepstar 
+            \RelStkFm{\block}{\RFile(\localRN)}{\RFile(\inRN)}
+            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
+            \safePrimAst{\primcom}) \, \land \, \RFile(\spreg) = (\block, 0) \\
+            \\[-5pt]
+            \texttt{window\_restore}: \ (\lgvl = (\thrdid, \hthrdlocalst, \RFile, \Wstack, 
+            \primcom, \block, \fm_1, \fm_2)) \\
+            \\[-9pt]
+            \quad
+            \relspecpre_{\textit{wr}} \ \lgvl \define 
+            (\Env{\RFile, \Wstack} \sepstar \RelStkFm{\block}{\fm_1}{\fm_2} 
+            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
+            \safePrimAst{\primcom}) \, \land \, \RFile(\spreg) = (\block, 0) \\
+            \\[-9pt]
+            \quad
+            \relspecpost_{\textit{wr}} \ \lgvl \define 
+            (\Env{\RFile\{ \localRN \rightsquigarrow \fm_1, \inRN \rightsquigarrow \fm_2 \}, \Wstack} \
+            \sepstar \RelStkFm{\block}{\fm_1}{\fm_2} 
+            \sepstar (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar 
+            \safePrimAst{\primcom}) 
+            \, \land \, \RFile(\spreg) = (\block, 0) 
         \end{array}
     \]
     \caption{Specifications of Internal Functions}

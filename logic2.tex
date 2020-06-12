@@ -286,7 +286,7 @@ features of \sparc{}.
 \end{figure*}
 
 %\indent
-We define syntax of assertions in Fig.~\ref{fig:Syntax of Assertions},
+We define the syntax of assertions in Fig.~\ref{fig:Syntax of Assertions},
 and their semantics in Fig.~\ref{fig:Semantics of Assertions}.
 We extend separation logic assertions with specifications of
 delay buffers and register windows. Registers are like
@@ -331,7 +331,7 @@ to represent $k$-step execution of the delayed writes in $\DBuf$.
 It also requires that there be
 at most one delayed write for a specific special register $\sr$
 in $\DBuf$ (\ie{} $\noDup{\sr}{\DBuf}$).
-This prevents more than one delayed writes to
+This prevents more than one delayed write to
 the same register within 4 instruction cycles, which practically
 have no restrictions on programming.
 By the semantics we have

@@ -73,7 +73,7 @@ current one and save its contents into stack
 (in memory) until the previous one is invalid 
 (marked in blue in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}). 
 We require the execution of client code 
-preserving such restriction. Otherwise, some SPARCv8 
+preserves such restriction. Otherwise, some SPARCv8 
 functions like context switch routine whose 
 executions will store the contexts saved in 
 register window into stack in memory cannot be 
@@ -492,7 +492,8 @@ an instantiation of $\hprim$ following:
         \\[-9pt]
         \quad \text{where} \ 
         \hpstate = 
-            (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), \\
+            (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), 
+        \tid \in \dom(\thrdpool) \\
         \qquad\qquad
         \hpstate' = 
             (\thrdpool', \thrdid', 
