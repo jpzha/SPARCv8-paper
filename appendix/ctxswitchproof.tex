@@ -50,7 +50,7 @@
             \llnum & \srl & \greg{4}, (\OSWINDOWs - 1), \greg{4} \\
             \llnum & \cor{} & \greg{4}, \greg{5}, \greg{4} \\
             \llnum & \andcc{} & \greg{4}, \greg{7}, \greg{0} \\
-            \llnum & \bne & \SwitchNewTask \\
+            \llnum & \bne & \texttt{Switch}\_\texttt{NewContext} \\
             \llnum & \nop{} \\
             \llnum & \crestore{} & \greg{0}, \greg{0}, \greg{0} \\
             \\[-9pt]
@@ -111,7 +111,8 @@ At the entry of the context switch rountine shown in
 \Fig{\ref{fig:Main function of context switch routine}}, we first 
 % call an internal function \texttt{window}\_\texttt{save} to 
 save the \localRN{} and \inRN{} registers into the stack in memory, 
-and we omit this part of code in presentation. 
+and this part of code is shown in 
+\Fig{\ref{fig:code for saving and restoring local and in}}(a). 
 Then, as shown in line 3 to 7, we call the \texttt{reg}\_\texttt{save}  
 to store the \outRN{} and \globalRN{} registers into the TCB 
 of the current thread. As for the line 8 to 11, we get the identity of 
@@ -127,10 +128,17 @@ The block \texttt{switch}\_\texttt{new}\_\texttt{task} is responsible
 for restoring the context of the new task. From line 23 to 26, it 
 sets the new task as the current one. Then, it calls function 
 \texttt{reg}\_\texttt{restore} to restore the $\outRN$ and $\globalRN$ 
-registers from the new task's TCB, and calls 
-function \texttt{window}\_\texttt{restore} restore the 
+registers from the new task's TCB, and restores the  
 $\localRN$ and $\inRN$ registers from the new task's stack in memory. 
-The implementations of the internal functions are omitted here. 
+The code about restoring the $\localRN$ and $\inRN$ registers of 
+the new task from memory is shown in 
+\Fig{\ref{fig:code for saving and restoring local and in}}(b). 
+The implementations of internal functions
+\texttt{reg}\_\texttt{save} and \texttt{reg}\_\texttt{restore} 
+are omitted here because these two functions are taken 
+from the OS kernal we verified and we can't show these part 
+of codes according to confidentiality agreement, but we show 
+their specifications in \Fig{\ref{fig:Specifications of Internal Functions}}
 
 \subsection{Specification of the Simplified Context Switch Routine}
 
@@ -202,6 +210,7 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
 
 \begin{figure}[!t]
     \centering
+    \vspace*{-0.5em}
     \small
     \[
         \begin{array}{l}
@@ -240,12 +249,15 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
                 \right. 
             \end{array} \\
             \\[-5pt]
+            \rRegs \ \define \ \regst{\asr_0}{\notCare} \sepstar \dots 
+                        \regst{\asr_{31}}{\notCare} \sepstar \regst{\regY}{\notCare} \\
+            \\[-5pt]
             \LRegs{\RFile} \ \define \ \regst{\globalRN}{\RFile(\globalRN)} \sepstar 
             \regst{\outRN}{\RFile(\outRN)} \sepstar \regst{\localRN}{\RFile(\localRN)} 
             \sepstar \regst{\inRN}{\RFile(\inRN)} \sepstar \\
             \hspace*{7em} \regst{\regn}{\RFile(\regn)} \sepstar 
             \regst{\regz}{\RFile(\regz)} \sepstar \regst{\regc}{\RFile(\regz)} 
-            \sepstar \regst{\regv}{\RFile(\regv)} \sepstar \dots
+            \sepstar \regst{\regv}{\RFile(\regv)} \sepstar \rRegs
             \\
             \\[-5pt]
             % \HRegs{\hRfile} \ \define \ \hregsto{\globalRN}{\hRfile(\globalRN)} \sepstar
@@ -472,7 +484,7 @@ is well-defined.
         And we require $\thrdid_c = \hpstate.\thrdid$, $\thrdid_n = \thrdid'$, 
         $\env = (\state.\Rstate.\RFile, \Wstack')$, $\nst = \Rstate'.\RFile$, $\word = 10$, 
         and $\relastP_r = \exists \, \Mem, \thrdpool. \, \MemRAsrt{\Mem}
-        \sepstar \RdyTsRAsrt{\thrdpool} \sepstar \rRegs$. Then, we can finish 
+        \sepstar \RdyTsRAsrt{\thrdpool}$. Then, we can finish 
         the proof. 
 
         \begin{figure}[!t]
@@ -527,10 +539,7 @@ is well-defined.
                     \RFile(\spreg) = (\block, 0) \\
                     & & \, \land \, 
                     (\exists \, \cwp, n. \, \RFile(\regcwp) = \cwp \, \land \, 
-                    \RFile(\regwim) = 2^n \, \land \, \prevcwp{(\cwp)} = n) \\
-                    \\[-5pt]
-                    \rRegs & \define & \regst{\asr_0}{\notCare} \sepstar \dots 
-                        \regst{\asr_{31}}{\notCare} \sepstar \regst{\regY}{\notCare} 
+                    \RFile(\regwim) = 2^n \, \land \, \prevcwp{(\cwp)} = n)  
                 \end{array}
             \]
             \caption{Auxiliary Definitions About Frame Assertion}
@@ -552,7 +561,144 @@ is well-defined.
         $\state = (\Mem, \Rstate, \DBuf)$. We first unfold 
         $\stateRel{\state}{\hpstate}$ (\ref{a:ctxswitch-staterel})
         according to its definition. 
+        \begin{align}
+            & \mem = \mem_c \uplus \mem_T
+                \uplus \{ \TaskCur \leadsto (\tid, 0) \}
+                \uplus \mem' \\
+            & \curStRel{(\mem_c, \Rstate)}
+                {(\tid, (\hRstate, \pc, \npc))} \\
+            & \rdyStRel{\mem_T}{\thrdpool\backslash\{\tid\}}
+                \label{a:ctxswitch-rdyrel} \\
+            & \DBuf = \nil
+        \end{align}
+
+        We unfold the execution of $\primsw{}$ (\ref{a:ctxswitch-swtrans})
+        and get that there exists $\tid'$, such that: 
+        \begin{align}
+            & \mem'(\TaskNew) = (\tid', 0) \\
+            & \thrdpool(\tid') = (\hRstate', \pc', \npc') \label{a:ctxswitch-newtsk} \\
+            & \thrdpool' = \thrdpool\{ \tid \leadsto \{ \hRstate, \pc, \npc \} \}, \,
+                \tid \in \dom(\thrdpool) \\
+            & \tid \neq \tid', \, \args{\val} = \nil \label{a:ctxswitch-newtsk-not-curt} \\
+            & \hpstate' = (\thrdpool', \tid', (\hRstate', \lab{}\!+\!8, \lab{}\!+\!12), 
+                \mem{}), \lab{} = \hRstate'.\hRfile(\reg{15}) 
+        \end{align} 
     \end{enumerate} 
+
+    From (\ref{a:ctxswitch-newtsk-not-curt}) and 
+    (\ref{a:ctxswitch-rdyrel}), we know that $\tid' \in \dom(\thrdpool\backslash\{\tid\})$ 
+    and we can split $\mem_T$ as two parts: 
+    $\mem_{\tid'}$ storing the contexts of the new task $\tid'$, 
+    and $\mem_T'$ storing the contexts of the rest of the ready threads. 
+    \begin{align}
+        & \mem_T = \mem_{\tid'}\uplus\mem_{T}' \\
+        & \restoreCtx{\mem_{\tid'}}{\tid'}{\Rstate'} \\
+        & \curStRel{(\mem_{\tid'}, \Rstate')}
+            {(\tid', (\hRstate', \pc', \npc'))} \\
+        & \rdyStRel{\mem_T'}{\thrdpool\backslash\{\tid, \tid'\}}
+    \end{align}
+
+    Then, we can prove that there exists 
+    $\tid_c = \tid$, $\tid_n = \tid'$, 
+    $\env = (\Rstate.\RFile, \Wstack')$ \, 
+    (where \ $\Wstack' = \ctxfm(\Rstate)$), 
+    $\nst = \hRstate'.\RFile$, $\word = 10$, 
+    $\hthrdlocalst_c = (\hRstate, \pc, \npc)$, 
+    $\hthrdlocalst_n = (\hRstate', \pc', \npc')$ 
+    and $\relastP_r = \exists \, \Mem, \thrdpool. \, \MemRAsrt{\Mem}
+    \sepstar \RdyTsRAsrt{\thrdpool} \sepstar \rRegs$, 
+    such that
+    \begin{itemize}
+        \item $\asrtmodel{(\state, \hpstate, \primsw(\nil), \word)}
+            {\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, 
+            \hthrdlocalst_n) \sepstar \relastP_r}$ holds, because 
+            we can prove that there exists $\state_1$, $\state_2$, 
+            $\hpstate_1$ and $\hpstate_2$, such that: 
+            \begin{align}
+                & \state = \state_1 \uplus \state_2 \\
+                & \hpstate = \hpstate_1 \uplus \hpstate_2 \\
+                & \state_1 = (\mem_c\uplus\mem_{\tid'}\uplus
+                    \{ \TaskCur \leadsto (\tid, 0), 
+                       \TaskNew \leadsto (\tid', 0) \}, 
+                    \Rstate, \nil) \\
+                & \state_2 = (\mem_T'\uplus(\mem'\backslash\{\TaskNew\}), 
+                    (\emptyset, \Rstate.\Wstack), \nil) \\
+                & \hpstate_1 = (\{ \tid \leadsto \thrdpool(\tid), 
+                    \tid' \leadsto (\hRstate', \pc', \npc') \}, 
+                    \tid, (\hRstate, \pc, \npc), 
+                    \{ \TaskNew \leadsto (\tid', 0) \}) \\
+                & \hpstate_2 = (\thrdpool\backslash\{ \tid, \tid' \}, 
+                    \tid, (\hRstate, \pc, \npc), \mem'\backslash\{\TaskNew\}) \\
+                & \asrtmodel{(\state_1, \hpstate_1, \primsw(\nil), \word)}
+                    {\Apre(\tid_c, \tid_n, \env, \nst, \hthrdlocalst_c, 
+                        \hthrdlocalst_n)} \\
+                & \asrtmodel{(\state_2, \hpstate_2, \primsw(\nil), \word)}
+                    {\relastP_r} 
+            \end{align}
+
+        \item $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, 
+            \hthrdlocalst_n) \sepstar \relastP_r \Longrightarrow 
+            \INV{(\primdone, \notCare)}$. \\
+            Supposing 
+            $\asrtmodel{(\state', \hpstate', \primcom, \word)}
+                {\Apost(\tid_c, \tid_n, \env, \nst, \hthrdlocalst_c, 
+                    \hthrdlocalst_n) \sepstar \relastP_r}$, we 
+            get there exists $\state_1'$, $\state_2'$, $\hpstate_1'$ 
+            and $\hpstate_2'$, such that: 
+            \begin{align}
+                & \state' = \state_1' \uplus \state_2' \\
+                & \hpstate' = \hpstate_1' \uplus \hpstate_2' \\
+                & \asrtmodel{(\state_1', \hpstate_1', \primcom, \word)}
+                    {\Apost(\tid_c, \tid_n, \env, \nst, \hthrdlocalst_c, 
+                        \hthrdlocalst_n)} \\
+                & \asrtmodel{(\state_2', \hpstate_2', \primcom, \word)}
+                    {\relastP_r}
+            \end{align}
+
+            Then, according to the definition of $\apost$, 
+            we get there exists $\mem_n'$, $\mem_c'$, 
+            $\Rstate_c'$, $\Rstate'$, $\hthrdlocalst_n'$ 
+            and $\hthrdlocalst'$, such that:
+            \begin{align}
+                & \state_1' = 
+                (\mem_n'\uplus\mem_{\tid}'\uplus
+                    \{ \TaskCur \leadsto (\tid_n, 0), 
+                    \TaskNew \leadsto (\tid_n, 0) \}, 
+                \Rstate', \nil) \\
+                & \hpstate_1' = 
+                (\{ \tid_n \leadsto \hthrdlocalst_n', 
+                    \tid_c \leadsto \hthrdlocalst_c \}, \tid_n, 
+                \hthrdlocalst', \{ \TaskNew \leadsto (\tid_n, 0) \}) 
+                \\
+                & \curStRel{(\mem_n', \Rstate_n')}{(\tid_n, \hthrdlocalst')}
+                \\
+                & \restoreCtx{\mem_c'}{\tid_c}{\Rstate_c'}, \, 
+                \curStRel{(\mem_c', \Rstate_c')}{(\tid_c, \hthrdlocalst_c)} \\
+                & \primcom = \primdone
+            \end{align}
+            And according to the definition of $\relastP_r$, we get 
+            there exists $\mem_{\thrdpool_r}'$, $\mem_r'$ and 
+            $\thrdpool_r'$ such that:
+            \begin{align}
+                & \state_2' = (\mem_{\thrdpool_r}' \uplus \mem_r', 
+                    (\nil, \Rstate'.\Wstack), \nil) \\
+                & \hpstate_2' = (\thrdpool_r', \tid_n, \hthrdlocalst', \mem_r') \\
+                & \rdyStRel{\mem_{\thrdpool_r}'}{\thrdpool_r'}
+            \end{align}  
+            Then, we get the following hold:
+            \begin{align}
+                & \state.\mem = 
+                \mem_n'\uplus(\mem_c'\uplus\mem_{\thrdpool_r}')\uplus
+                \{ \TaskCur \leadsto (\tid_n, 0), 
+                \TaskNew \leadsto (\tid_n, 0) \} \uplus
+                \mem_r' \\
+                & \curStRel{(\mem_n', \Rstate_n')}{(\tid_n, \hthrdlocalst')} \\
+                & \rdyStRel{\mem_c'\uplus\mem_{\thrdpool_r}'}
+                    {\{ \tid_c \leadsto \hthrdlocalst_c \}\uplus\thrdpool_r'}
+            \end{align}
+            Thus, we get $\stateRel{\state'}{\hpstate'}$, and 
+            $\INV{(\primdone, \notCare)}$ holds. 
+    \end{itemize}
 \end{proof}
 
 We use $\code_{\texttt{switch}}$ to represent the 
@@ -650,7 +796,7 @@ We need to define the loop invariant $I$ here.
             \relspecpost_{\textit{rs}} \ \lgvl \define 
             (\exists \, \nst'. \, \Env{\RFile, \Wstack} \sepstar
             \relcontext{\thrdid}{\block}{\nst'}) \sepstar 
-            (\astCurCont{\thrdid}{\hthrdlocalst} \sepstar \safePrimAst{\primcom}) \\
+            (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar \safePrimAst{\primcom} \\
             \hspace*{5em}
             \, \land \, 
             \nst' = \nst\{ \globalRN \rightsquigarrow \RFile(\globalRN), 
@@ -669,8 +815,7 @@ We need to define the loop invariant $I$ here.
             \quad
             \relspecpost_{\textit{rr}} \ \lgvl \define \exists \, \RFile'. \,  (\Env{\RFile', \Wstack}
             \sepstar \relcontext{\thrdid}{\block}{\nst} \sepstar 
-            (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar \safePrimAst{\primcom}
-            )  \\
+            (\astCurCont{\thrdid}{\hthrdlocalst}) \sepstar \safePrimAst{\primcom} \\
             \hspace*{5em}
             \, \land \, 
             \RFile' = \RFile\{ \globalRN \rightsquigarrow \nst(\globalRN), 
@@ -1253,4 +1398,5 @@ We need to define the loop invariant $I$ here.
         \end{minipage}
     }
     \caption{Code for saving and restoring \localRN{} and \inRN{} registers}
+    \label{fig:code for saving and restoring local and in}
 \end{figure*}
