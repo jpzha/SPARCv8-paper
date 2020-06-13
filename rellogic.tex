@@ -239,7 +239,7 @@ of client code preserve such restriction:
     and the memory in stack for storing contexts 
     into a list (defined as 
     HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}).  
-    After this abstraction, We don't need to care about 
+    After this abstraction, we don't need to care about 
     whether the contexts are saved in register window or 
     memory, and don't need to describe the contents of windows unused 
     (the windows in white color in 
@@ -430,10 +430,10 @@ to another.
 % Comparing the simple instruction with the one shown in 
 % \Fig{\ref{fig:Machine States and Language for SPARC Code}}, 
 % we add three pseudo instructions. 
-We add three pseudo instruction in simple instruction. 
+We add three pseudo instructions in simple instruction. 
 The $\Psave \ \word$ 
 and $\Prestore$ restrict the \csave{} and \crestore{}
-instructions can only be used in specific form as 
+instructions such that they can only be used in specific form as 
 mentioned before.  
 % saves the contents of the current window and 
 % allocate a new stack frame of size $\word$ bytes for new procedure. 
@@ -461,7 +461,7 @@ $\hmsg$ can be either an empty message $\empmsg$, or an output
 $\outEvt{\val}$, or a $\callEvt{\lab{}, \args{\val}}$ meaning to 
 call a primitive labelled $\lab{}$ with arguments $\args{\val}$. 
 
-The machine states of high-level Pseudo-SPARCv8 program 
+The machine states of a high-level Pseudo-SPARCv8 program 
 is defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}. 
 The high-level program $\HProg$ is a pair of high-level code 
 $\HMd$ and high-level state $\hpstate$. High-level 
@@ -505,7 +505,7 @@ $\fm_1$ and $\fm_2$ of the previous procedure.
 % returns to caller. 
 After introducing the state of high-level program, 
 We define the primitive $\primsw$ as 
-an instantiation of $\hprim$ following: 
+an instantiation of $\hprim$ as following: 
 \[
     \small
     \begin{array}{l}

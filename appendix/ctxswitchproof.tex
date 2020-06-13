@@ -47,7 +47,7 @@
                     \quad \texttt{Save}\_\texttt{Usedwindow}: 
                 } \\
             \llnum & \sll & \greg{4}, 1, \greg{5} \\
-            \llnum & \srl & \greg{4}, (\OSWINDOWs - 1), \greg{4} \\
+            \llnum & \srl & \greg{5}, (\OSWINDOWs - 1), \greg{4} \\
             \llnum & \cor{} & \greg{4}, \greg{5}, \greg{4} \\
             \llnum & \andcc{} & \greg{4}, \greg{7}, \greg{0} \\
             \llnum & \bne & \texttt{Switch}\_\texttt{NewContext} \\
@@ -111,13 +111,13 @@ At the entrance of the context switch rountine shown in
 \Fig{\ref{fig:Main function of context switch routine}}, we first 
 % call an internal function \texttt{window}\_\texttt{save} to 
 save the \localRN{} and \inRN{} registers into the stack in memory, 
-and this part of code is shown in 
+and this part of the code is shown in 
 \Fig{\ref{fig:code for saving and restoring local and in}}(a). 
-Then, as shown from line 2 to 6, we call the \texttt{reg}\_\texttt{save}  
+Then, as shown from line 2 to 6, we call the \regsave{}  
 to store the \outRN{} and \globalRN{} registers into the TCB 
 of the current thread. As for the line 6 to 9, we get the identity of 
 the current register window and the value of the \regwim{}. 
-The block \SaveUsedWin{} (from line 12 to 22) saves the register windows 
+The block \SaveUsedWin{} (from line 10 to 20) saves the register windows 
 (except the current one) into the stack of the current task in memory. 
 It checks whether the previous window is valid. If it's valid, it 
 uses the instruction $\crestore{}$ to set the previous window as the 
@@ -319,12 +319,10 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
                 \RelCurTAux{\thrdid_c}{\nst}{\env}{\hthrdlocalst} & \define &
                 (\relcontext{\thrdid_c}{\block}{\nst} \sepstar 
                 \RelStk{\block'}{\Wstack}{\hWstk} \sepstar (\astCurCont{\thrdid_c}{\hthrdlocalst})) \\
-                & & \, \land \,  \RFile(\spreg) = (\block, 0) \, \land \, 
+                & & \, \land \, 
                 \Rinj{\RFile}{\hRfile}
-                % ((\relmsto{\TaskCur}{\thrdid_c}) \sepstar 
-                % (\relcontext{\thrdid_n}{\block}{\nst} \, \land \, \RFile(\spreg) = (\block, 0)) \sepstar \\
-                % & & \RelStk{\block'}{\Wstack}{\hWstk} \sepstar (\astCurCont{\thrdid_c}{\hthrdlocalst}))
-                % \, \land \, (\Rinj{\RFile}{\hRfile}) 
+                \, \land \,  
+                \RFile(\spreg) = (\block, 0)
             \end{array}
             \\
             \\[-9pt]
@@ -334,7 +332,7 @@ definitions used in specification can be found in \Fig{\ref{def:aux-def-spec}}:
             \, \RFile(\fpreg) = (\block', 0), \nst \in \text{RegFile} \\
             \\[-5pt]
             \RelCurT{\thrdid_c}{\nst}{\env}{\hthrdlocalst} \define 
-            (\relmsto{\TaskCur}{(\thrdid_c, 0)}) \sepstar 
+            (\msto{\TaskCur}{(\thrdid_c, 0)}) \sepstar 
             \RelCurTAux{\thrdid_c}{\nst}{\env}{\hthrdlocalst} \\
             \\[-5pt]
             \hspace*{-0.15em}
@@ -729,8 +727,8 @@ We need to define the loop invariant $I$ here.
             \wptr(\RFile_0) \define 
             (\RFile_0(\greg{7}) = \RFile_0(\regwim)) \, \land \, \\
             \hspace*{6em} 
-            ((\RFile_0(\greg{4}) = (1 <\!\!< \RFile_0(\regcwp))) \, \lor \, 
-                (\RFile_0(\greg{4}) = ((1 <\!\!< \RFile_0(\regcwp)) <\!\!< 8))) \\
+            ((\RFile_0(\greg{4}) = (1 >\!\!> \RFile_0(\regcwp))) \, \lor \, 
+                (\RFile_0(\greg{4}) = ((1 >\!\!> \RFile_0(\regcwp)) | (1 >\!\!> (\RFile_0(\regcwp)\!+\!8))))) \\
             \\[-5pt] \ \ 
             \linkF((\block_1, \hWstk_1), (\block_2, \hWstk_2), \hWstk) \define 
             \hWstk_1 \lstApp \hWstk_2 = \hWstk \, \land \, 
@@ -752,9 +750,9 @@ We need to define the loop invariant $I$ here.
                 \sepstar
                 (
                 (
-                    \relmsto{\TaskCur}{(\thrdid_c, 0)} \sepstar 
+                    \msto{\TaskCur}{(\thrdid_c, 0)} \sepstar 
                     \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
-                    \astCurCont{\thrdid_c}{\hthrdlocalst_c}
+                    (\astCurCont{\thrdid_c}{\hthrdlocalst_c})
                 ) 
                 \, \land \, \Rinj{\RFile}{\hRfile}) \\
                 % \, \land \, 
@@ -937,7 +935,7 @@ code blocks in $\code_{\texttt{switch}}$.
     \label{a:ctxswitch-Cspec}
 \end{equation}
 
-\begin{figure}[!t]
+\begin{figure}
     \[
         \small
         \begin{array}{lll}
@@ -979,11 +977,11 @@ code blocks in $\code_{\texttt{switch}}$.
             } \\
             % \call{} \qquad \quad & \WinSave \\
             2 
-            & \nop{} \\
+            & \sett & \TaskCur, \lreg{1} \\
             & \dots \\
-            5
+            4
             & \call{} & \texttt{reg}\_\texttt{save} \\
-            6
+            5
             & \nop{} \\
             \\[-9pt]
             \multicolumn{3}{l}
@@ -1008,13 +1006,13 @@ code blocks in $\code_{\texttt{switch}}$.
                 \right\}^{\color{red} \textcircled{2}} 
             } \\
             \\[-9pt]
-            7
+            6
             & \get & \regcwp, \greg{4} \\
-            8
+            7
             & \rd{} & \regwim, \greg{7} \\
-            9
+            8
             & \sett & 1, \greg{6} \\
-            10 & \sll & \greg{6}, \greg{4}, \greg{4} \\
+            9 & \sll & \greg{6}, \greg{4}, \greg{4} \\
             \\[-9pt]
             \multicolumn{3}{l}
             {
@@ -1051,10 +1049,10 @@ code blocks in $\code_{\texttt{switch}}$.
                 {
                     \quad \texttt{Save}\_\texttt{Usedwindow}: 
                 } \\
-            11 & \sll & \greg{4}, 1, \greg{5} \\
+            10 & \sll & \greg{4}, 1, \greg{5} \\
             & \dots \\
-            20 & \jmp{} & \texttt{Save}\_\texttt{UsedWindow} \\
-            21 & \nop{} \\
+            19 & \jmp{} & \texttt{Save}\_\texttt{UsedWindow} \\
+            20 & \nop{} \\
             \\[-5pt]
             \multicolumn{3}{l}
             {
@@ -1095,40 +1093,13 @@ code blocks in $\code_{\texttt{switch}}$.
                             \colorbox{yellow!80}
                             {
                                 $
-                                \relmsto{\TaskCur}{(\thrdid_c, 0)} \sepstar
+                                \msto{\TaskCur}{(\thrdid_c, 0)} \sepstar
                                 \RelCurTAux{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c}
                                 $
                             }
                         }
                         \sepstar 
                         \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n}
-                        % (
-                        %     \exists \, \block_0. \, 
-                        %     (\relmsto{\TaskCur}{(\thrdid_c, 0)} \sepstar 
-                        %     \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
-                        %     \RelStk{\block_0}{\nil}{\hWstk} \sepstar
-                        %     (\astCurCont{\thrdid_c}{((\hRfile, \block, \hWstk), \pc, \npc)})) \\
-                        %     \quad \ \ \, \land \, 
-                        %     \RFile(\spreg) = (\block, 0) \, \land \, 
-                        %     \RFile(\fpreg) = (\block_0, 0) \, \land \, 
-                        %     \Rinj{\RFile}{\hRfile} \, \land \, 
-                        %     \hthrdlocalst_c = 
-                        %     ((\hRfile, \block, \hWstk), \pc, \npc)
-                        % ) \\
-                        % \\[-9pt] \sepstar
-                        % (
-                        %     \exists \, \block_1. \, 
-                        %     (\relcontext{\thrdid_n}{\block'}{\nst} \sepstar 
-                        %     \RelStk{\block_1}{\nil}{\hWstk'} \sepstar 
-                        %     (\astRdyCont{\thrdid_n}{((\hRfile', \block', \hWstk'), \pc', \npc')})
-                        %     ) \\
-                        %     \quad \ \ \, \land \, 
-                        %     \nst(\spreg) = (\block', 0) \, \land \, 
-                        %     \nst(\fpreg) = (\block_1, 0) \, \land \, 
-                        %     \Rinj{\nst}{\hRfile'} \, \land \, 
-                        %     \hthrdlocalst_n = 
-                        %     ((\hRfile', \block', \hWstk'), \pc', \npc')
-                        % )
                     \end{array}
                 \right\}
             } \\
@@ -1137,8 +1108,8 @@ code blocks in $\code_{\texttt{switch}}$.
                 {
                     \quad \texttt{Switch}\_\texttt{NewContext}: 
                 } \\
-            22 & \sett & \TaskCur, \lreg{0} \\
-            23 & \sett & \TaskNew, \lreg{1} \\
+            21 & \sett & \TaskCur, \lreg{0} \\
+            22 & \sett & \TaskNew, \lreg{1} \\
             & \dots \\ 
             \multicolumn{3}{l}
             {
@@ -1153,7 +1124,7 @@ code blocks in $\code_{\texttt{switch}}$.
                         \thrdid_c \neq \thrdid_n) \sepstar 
                         \safePrimAst{\, \primsw(\nil) \,} \\
                         \\[-9pt] \quad \sepstar
-                        \relmsto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
+                        \msto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
                         \colorbox{gray!60}
                         {
                             $\RelCurTAux{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c}$
@@ -1164,56 +1135,20 @@ code blocks in $\code_{\texttt{switch}}$.
                         {
                             $\RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n}$
                         }  
-                        % \colorbox{yellow!80}
-                        % {
-                        %     $\Env{\nst, \nil}$
-                        % } \sepstar 
-                        % (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
-                        % \thrdid_c \neq \thrdid_n) \sepstar 
-                        % \safePrimAst{\, \primsw(\nil) \,} \\
-                        % \\[-9pt] \sepstar
-                        % (
-                        %     \exists \, \block_0. \, 
-                        %     (
-                        %         \colorbox{yellow!80}
-                        %         {
-                        %             $\relmsto{\TaskCur}{(\thrdid_n, 0)}$
-                        %         } 
-                        %         \sepstar 
-                        %     \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
-                        %     \RelStk{\block_0}{\nil}{\hWstk} \sepstar
-                        %     (\astCurCont{\thrdid_c}{((\hRfile, \block, \hWstk), \pc, \npc)})) \\
-                        %     \quad \ \ \, \land \, 
-                        %     \RFile(\spreg) = (\block, 0) \, \land \, 
-                        %     \RFile(\fpreg) = (\block_0, 0) \, \land \, 
-                        %     \Rinj{\RFile}{\hRfile} \, \land \, 
-                        %     \hthrdlocalst_c = 
-                        %     ((\hRfile, \block, \hWstk), \pc, \npc)
-                        % ) \\
-                        % \\[-9pt] \sepstar
-                        % (
-                        %     \exists \, \block_1. \, 
-                        %     (\relcontext{\thrdid_n}{\block'}{\nst} \sepstar 
-                        %     \RelStk{\block_1}{\nil}{\hWstk'} \sepstar 
-                        %     (\astCurCont{\thrdid_n}{((\hRfile', \block', \hWstk'), \pc', \npc')})
-                        %     ) \\
-                        %     \quad \ \ \, \land \, 
-                        %     \nst(\spreg) = (\block', 0) \, \land \, 
-                        %     \nst(\fpreg) = (\block_1, 0) \, \land \, 
-                        %     \Rinj{\nst}{\hRfile'} \, \land \, 
-                        %     \hthrdlocalst_n = 
-                        %     ((\hRfile', \block', \hWstk'), \pc', \npc')
-                        % )
                     \end{array}
                 \right\}^{\color{red} \textcircled{4}}
             } \\
-            \\[-9pt]
+            \\[-5pt]
             &
                 \begin{rotate}{90}
                     \color{red}
-                    $\Lleftarrow$
+                    \Large
+                    $\!\!\Lleftarrow$ 
                 \end{rotate}
-            & \\[-5pt]
+                \quad
+                \text{{\color{orange} (apply \myrule{ABSCSQ} rule)}}
+            & \\ 
+            \\[-5pt]
             \multicolumn{3}{l}
             {
                 \color{blue}
@@ -1224,80 +1159,50 @@ code blocks in $\code_{\texttt{switch}}$.
                         \thrdid_c \neq \thrdid_n) \sepstar 
                         \safePrimAst{\, \primdone \,} \\
                         \\[-9pt] \quad \sepstar
-                        \relmsto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
-                        \colorbox{green!60}
+                        \msto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
+                        \colorbox{gray!60}
                         {
                             $\RelRdyT{\thrdid_c}{\RFile}{\hthrdlocalst_c}$
                         } 
                         \sepstar
                         % \RelCur{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c} \sepstar
-                        \colorbox{gray!60}
+                        \colorbox{green!60}
                         {
                             $(\exists \, \hthrdlocalst'. \, 
                                 \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst'})$
-                        }  
-                        % \Env{\nst, \nil}\sepstar 
-                        % (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
-                        % \thrdid_c \neq \thrdid_n) \sepstar 
-                        % \safePrimAst{\, \primsw(\nil) \,} \\
-                        % \\[-9pt] \sepstar
-                        % (
-                        %     \exists \, \block_0. \, 
-                        %     (
-                        %         \colorbox{green!60}
-                        %         {
-                        %             $\relmsto{\TaskCur}{(\thrdid_n, 0)}$
-                        %         } 
-                        %         \sepstar 
-                        %     \colorbox{yellow!80}
-                        %     {
-                        %         $
-                        %         \relcontext{\thrdid_c}{\block}{\RFile} \sepstar 
-                        %         \RelStk{\block_0}{\nil}{\hWstk} \sepstar    
-                        %         (\astCurCont{\thrdid_n}{((\hRfile', \block', \hWstk'), 
-                        %         \lab{}', \lab{}'\!+\!4))})
-                        %         $
-                        %     } \\
-                        %     \quad \ \ \, 
-                        %     \colorbox{yellow!80}
-                        %     {
-                        %         $
-                        %         \land \, 
-                        %         \RFile(\spreg) = (\block, 0) \, \land \, 
-                        %         \RFile(\fpreg) = (\block_0, 0) \, \land \, 
-                        %         \Rinj{\RFile}{\hRfile} \, \land \, 
-                        %         \hthrdlocalst_c = 
-                        %         ((\hRfile, \block, \hWstk), \pc, \npc)
-                        %         $
-                        %     }
-                        % ) \\
-                        % \\[-9pt] \sepstar
-                        % (
-                        %     \colorbox{green!60}
-                        %     {
-                        %         $\exists \, \block_1. \, 
-                        %         (\relcontext{\thrdid_n}{\block'}{\nst} \sepstar 
-                        %         \RelStk{\block_1}{\nil}{\hWstk'} \sepstar 
-                        %         (\astCurCont{\thrdid_n}{((\hRfile', \block', \hWstk'), \pc', \npc')}))$
-                        %     }
-                        %     \\
-                        %     \quad \ \ \, 
-                        %     \colorbox{green!60}
-                        %     {
-                        %         $\land \, 
-                        %         \nst(\spreg) = (\block', 0) \, \land \, 
-                        %         \nst(\fpreg) = (\block_1, 0) \, \land \, 
-                        %         \Rinj{\nst}{\hRfile'} \, \land \, 
-                        %         \hthrdlocalst_n = 
-                        %         ((\hRfile', \block', \hWstk'), \pc', \npc')$
-                        %     }
-                        % )
+                        } 
                     \end{array}
                 \right\}^{\color{red} \textcircled{5}}
             } \\
             \\[-9pt]
-            30 & \retl{} \\
-            31 & \nop{} \\
+            \multicolumn{3}{l}
+            {
+                \color{blue}
+                \left\{
+                    \begin{array}{l}
+                        \Env{\nst, \nil} \sepstar 
+                        (\relmsto{\TaskNew}{(\thrdid_n, 0)} \, \land \, 
+                        \thrdid_c \neq \thrdid_n) \sepstar 
+                        \safePrimAst{\, \primdone \,} \\
+                        \\[-9pt] \quad \sepstar
+                        \msto{\TaskCur}{(\thrdid_n, 0)} \sepstar 
+                        \colorbox{green!60}
+                        {
+                            $(\exists \, \hthrdlocalst'. \, 
+                                \RelCurTAux{\tid_n}{\nst}{(\nst, \nil)}{\hthrdlocalst'})$
+                        } 
+                        \sepstar
+                        % \RelCur{\thrdid_c}{\RFile}{(\RFile, \nil)}{\hthrdlocalst_c} \sepstar
+                        \colorbox{gray!60}
+                        {
+                            $\RelRdyT{\tid_c}{\RFile}{\hthrdlocalst_c}$
+                        } 
+                    \end{array}
+                \right\}^{\color{red} \textcircled{6}}
+            } \\
+            \\[-9pt]
+            29 & \retl{} \\
+            30 & \nop{} \\
             \\[-9pt]
             \multicolumn{3}{l}
             {
