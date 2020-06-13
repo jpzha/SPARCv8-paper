@@ -106,9 +106,9 @@ current one and save its contents into stack
 (marked in blue in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}). 
 We require the execution of client code 
 preserves such restriction. Otherwise, some SPARCv8 
-functions like context switch routine whose 
+functions like context switch routine, whose 
 executions will store the contexts saved in 
-register window into stack in memory cannot be 
+register window into stack in memory, cannot be 
 verified if it's unclear where to save the 
 contents of some windows. 
 % We require the execution of client code 
@@ -453,7 +453,7 @@ mentioned before.
 % and restore the contexts of the previous procedure. 
 We also introduce $\cprint \ \reg{}$, 
 whose execution will output the value $\val$ in $\reg{}$ and 
-occur an message $\outEvt{\val}$, 
+generate an message $\outEvt{\val}$, 
 % whose execution will occur an output $\outEvt{\val}$, 
 to generate observable event. 
 The high-level message 
@@ -642,20 +642,9 @@ and after execution of $\primsw{}$ respectively.
                 }
                 {
                     \code(\pc) = \simplins{} \quad \ \ 
-                    \hexeci{(\simplins{}, (\hRstate, \Mem))}{(\hRstate', \Mem')}
+                    \hexeci{\simplins{}}{(\hRstate, \Mem)}{(\hRstate', \Mem')}
                 } \\
                 \\
-                % \infer
-                % {
-                %     \hlocalstep{\code}{(((\hRfile, \block, \hWstk), \pc, \npc), \Mem)}
-                %         { \ \empmsg \ }
-                %         {(((\hRfile, \block, \hWstk), \npc, \lab{}), \Mem)}
-                % }
-                % {
-                %     \code(\pc) = \jmp{} \ \aexp \quad \ \ 
-                %     \evalR{\aexp}{\hRfile} = \lab{}
-                % } \\
-                % \\
                 \infer
                 {
                     \hlocalstep{\code}{(((\hRfile, \hWstk), \pc, \npc), \Mem)}
@@ -712,7 +701,7 @@ and after execution of $\primsw{}$ respectively.
             \begin{array}{c}
                 \infer
                 {
-                    \hexeci{(\Psave \ \word, (\hRstate, \Mem))}{(\hRstate', \Mem')}
+                    \hexeci{\Psave \ \word}{(\hRstate, \Mem)}{(\hRstate', \Mem')}
                 }
                 {
                     \begin{array}{c}
@@ -731,7 +720,7 @@ and after execution of $\primsw{}$ respectively.
                 \\
                 \infer
                 {
-                    \hexeci{(\Prestore, (\hRstate, \Mem))}{(\hRstate', \Mem')}
+                    \hexeci{\Prestore}{(\hRstate, \Mem)}{(\hRstate', \Mem')}
                 }
                 {
                     \begin{array}{c}
@@ -764,12 +753,12 @@ The high-level program transition relation
 $\HGlobTrans{(\HMd, \hpstate)}{\hmsg}{(\HMd, \hpstate')}$ is defined 
 in \Fig{\ref{fig:selected-opsem-high-level-prog}} (a). In each step, 
 the program may either execute the instruction pointed by $\pc$   
-and occur empty message $\empmsg$ or an output $\outEvt{\val}$, 
-or call  an abtract assembly primitive in primitive set.
+and generate empty message $\empmsg$ or an output $\outEvt{\val}$, 
+or call  an abtract assembly primitive in the primitive set.
 When calling an abstract assembly primitive, 
 the execution of current thread (defined as 
 $(\hlocalstep{\notCare}{\notCare}{\ \notCare \ }{\notCare})$ in 
-\Fig{\ref{fig:selected-opsem-high-level-prog}} (b)) will occur 
+\Fig{\ref{fig:selected-opsem-high-level-prog}} (b)) will generate 
 a message $\callEvt{\lab{}, \args{\val}}$, which means that it 
 hopes to call the abstract assembly primitive $\hprim$ labelled 
 $\lab{}$, which is {\it not} in the domain of code heap $\code$, 
@@ -785,7 +774,7 @@ from high-level state, and its definition is omitted here).
 The thread local step is defined in  
 \Fig{\ref{fig:selected-opsem-high-level-prog}} (b). 
 Here, the step for simple instruction $\simplins{}$ is 
-represented as ``$\hexeci{(\simplins{}, \notCare)}{\notCare}$". 
+represented as ``$\hexeci{\simplins{}}{\notCare}{\notCare}$". 
 We show the state transition relation for pseudo instructions 
 $\Psave \ \word$ and $\Prestore$ in 
 \Fig{\ref{fig:selected-opsem-high-level-prog}} (c). 
@@ -794,14 +783,14 @@ $(\hRfile, \hWstk)$, executing instruction
 $\Psave \ \word$ will save the \localRN{} and \inRN{} registers 
 % and the block id  $\block_0$ of the current stack frame 
 into high-level frame list $\hWstk$. It also allocates 
-a new block $\block$, size from 64 byte to $\word$ byte, 
+a new block $\block$ of size 64 byte to $\word$ byte  
 as a new stack frame in memory 
 (represented as $\malloc(\Mem, \block, 64, \word) = \Mem'$). 
 % The size of the block $\block$ is from 64 byte to $\word$ byte. 
 The reason why it starts from 64 byte is that the 0 to 64 bytes 
 (16 words) in a stack frame are usually reserved to save 
 the contexts in window (\localRN{} and \inRN{} registers)
-in convention \cite{sparc},   
+by convention \cite{sparc},   
 and this part of memory is abstracted away in 
 Pseudo-SPARCv8 program as we have explained and shown in 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}.
@@ -906,16 +895,15 @@ We define this relation below, shown as
         \end{array}
     }
 \]
-The low-level memory $\Mem$ is splitted into four parts: 
+The low-level memory $\Mem$ is split into four parts: 
 $\Mem_c$ used to save the context of the current thread $\thrdid$; 
 $\Mem_T$ saving the contexts of the ready threads, 
 except the current thread $\tid$; a singleton memory 
 cell located $\TaskCur$ saving the current thread id; and shared 
 memory $\Mem'$ that is same as the high-level memory. 
 The delayed buffer $\DBuf$ is $\nil$, because client 
-code is not permitted to modify special register by 
-$\cwr{}$ instruction. 
-The memory $\Mem_T$ used to 
+code is not permitted to modify any special register 
+through $\cwr{}$ instructions. The memory $\Mem_T$ used to 
 save the contexts of the ready threads is {\it abstracted} as a thread pool 
 in high-level program. Their relation is represented as 
 ``$\rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}$".  
@@ -1502,7 +1490,7 @@ defined in \Fig{\ref{fig:Semantics of Relation Assertion}},
 and a word $\word$ recording the number of the tokens. 
 The high-level primitive command $\primcom$ is 
 either an abstract assembly primitive $\hprim$ 
-parametered with its arguments $\args{\val}$, or a 
+parameterized with its arguments $\args{\val}$, or a 
 $\primdone$ meaning the primitive has already been 
 executed. The relational assertion $\relastP$ reserves
 original assertion $\astP$ describing the low-level 
@@ -2031,7 +2019,7 @@ the rules shown in \Fig{\ref{fig:Seleted Inference rules}}.
 The $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$ 
 defined  formally in 
 \Def{\ref{def:well-defined specification}}.  
-It contains three properities that 
+It contains three properties that 
 the specifications need to satisfy, 
 and we explain them in turn in the following. 
 
@@ -2300,7 +2288,7 @@ because we can get some knowledge of high-level program
 state from the safe execution of 
 primitive command $\primcom$. 
 For example, if $\INV{(\primsw(\nil), \nil)}$
-holds, we can know that the location $\TaskNew$ 
+holds, we know that the location $\TaskNew$ 
 must save a pointer pointing to a ready thread
 in thread pool from the safe execution of primitive $\primsw$. 
 % and we 
@@ -2308,7 +2296,7 @@ in thread pool from the safe execution of primitive $\primsw$.
 % of the context switch routine. 
 % Otherwise, 
 % the execution of primtive $\primsw$ will not be safe. 
-Then we can know that the memory location $\TaskNew$ 
+Then we in turn know that the memory location $\TaskNew$ 
 in low-level state also saves the same memory address  
 from the state relation 
 between low- and high-level program. 
@@ -2456,7 +2444,7 @@ abstract assembly primitive executes.
 		\item if $\asmimp(\pc) = \simplins$ then:
 		\begin{itemize}
 			\item
-			there exist $\state', \pc, \npc'$, such that \\
+			there exist $\state', \pc', \npc'$, such that \\
 			$\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
 			
 			\item
@@ -2670,9 +2658,8 @@ and the corresponding high-level abstract assembly primitive.
 \begin{definition}
     \em
     \label{def:sim-imp-prim-state}
-    Whenever
     $\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}{i}{k}{(\primcom, \hpstate)}$
-    holds, we have the following holds : 
+    holds if and only if the following are true: 
     \small
     \begin{enumerate}[1.]
         \item if $\asmimp(\pc) = \simplins$, then: 

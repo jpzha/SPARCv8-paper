@@ -18,7 +18,7 @@ verify inline assembly and link the verified code
 with the verified C programs, we give a direct-style
 semantic model of the logic judgments. And it allows us 
 to extend our program logic to support verifying 
-contextual refinement without meet much challenges. 
+contextual refinement without much challenges. 
 Also SCAP
 is based on a simplified subset of assembly instructions,
 while our work is focused on a realistically modeled
@@ -36,8 +36,9 @@ As part of the Foundational Proof-Carrying Code (FPCC)
 project~\cite{FPCC},
 Tan and Appel present a program logic $\mathcal{L}_c$
 for reasoning about control flow in assembly code~\cite{cflogic}.
-Although $\mathcal{L}_c$ is implemented on top of SPARC machine
-language, the underlying logic is a type system instead
+Although $\mathcal{L}_c$ is implemented 
+on top of the SPARC machine language, 
+the underlying logic is a type system instead
 of a full-blown program logic for functional correctness.
 It reasons about functions in the continuation-passing
 style. Also 
@@ -60,11 +61,15 @@ Our operational semantics of SPARCv8 follows \etal{Wang}~\cite{sparc-formalizati
 %formalize the SPARCv8 ISA in Coq but give
 %no program logic. Our operational
 %semantics of SPARCv8 follows their work. 
-But \etal{Wang} do not validate their formalization against actual 
-hardware, we remain it as a future work. 
+Since neither \etal{Wang} nor we validate the 
+formalization against actual hardware, this remains 
+as future work. 
+
+% But \etal{Wang} do not validate their formalization against actual 
+% hardware, we remain it as a future work. 
 
 \etal{Ni}~\cite{ctxm} verify a context switch module of 19 lines
-in x86 code to show case the support of embedded
+in x86 code to showcase the support of embedded
 code pointers (ECP) in XCAP~\cite{xcap}. 
 We use our program logic to verify the contextual 
 refinement between a context switch routine in \sparc{} 
@@ -239,7 +244,7 @@ which we would like to study in the future work.
 \paragraph{\textbf{Conclusion.}}
 We present a relational program logic for \sparc.
 Our logic is based on a realistic semantics
-model and supports main features of \sparc,
+model and supports the main features of \sparc,
 including delayed control transfer, delayed writes,
 and register windows.
 It also supports modular reasoning of 

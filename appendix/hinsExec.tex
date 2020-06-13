@@ -14,7 +14,7 @@ $\ld{}$ and $\cadd{}$, have no much difference with the rules in pyhical SPARCv8
         \begin{array}{c}
             \infer
             {
-                \hexeci{(\ld \ \aexp \ \reg{d}, ((\hRfile, \hWstk), \Mem))}
+                \hexeci{\ld \ \aexp \ \reg{d}}{((\hRfile, \hWstk), \Mem)}
                     {((\hRfile', \hWstk), \Mem)}
             }
             {
@@ -25,7 +25,7 @@ $\ld{}$ and $\cadd{}$, have no much difference with the rules in pyhical SPARCv8
             \\[-5pt]
             \infer
             {
-                \hexeci{(\cadd \ \reg{s}, \oexp, \reg{d}, ((\hRfile, \hWstk), \Mem))}
+                \hexeci{(\cadd \ \reg{s}, \oexp, \reg{d}}{((\hRfile, \hWstk), \Mem))}
                     {((\hRfile', \hWstk), \Mem)}
             }
             {

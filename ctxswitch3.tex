@@ -42,7 +42,7 @@ shows the structure of the code.
 \end{itemize}
 
 The main complexity of the verification lies in
-the code manages the register windows.
+the code that manages the register windows.
 To save all the used 
 register windows, \texttt{Save\_UsedWindows}
 repetitively restores the next window into general registers
@@ -109,7 +109,7 @@ and high-level of the current thread $\ctid$.
 Similarly, $\RelRdyT{\ntid}{\nst}{\hthrdlocalst_n}$  
 describes states of new task $\ntid$ in low- and high-level 
 program and their relation. 
-Here, we use $\nst$ to present the saved context 
+Here, we use $\nst$ to represent the saved context 
 of task $\ntid$. The memory location 
 $\TaskNew$ records the identifier of the new task $\ntid$.  
 And we use $\relmsto{\TaskNew}{(\ntid, 0)}$ to denote 
@@ -141,14 +141,15 @@ $\Env{\env'}$, are loaded from the saved context
 $\nst$ (\ie{} $\pEnv{\env'}\!=\!\nst$).
 Here $\pEnv{\env'}$ refers to the part of the environment
 that we want to save or restore as context.
-Correspondingly, $\ctid$ becomes non-current-thread,
+Correspondingly, $\ctid$ becomes a non-current-thread,
 and part of its environment $\env$ at the entry of
-the context switch is saved, as specified
+the context switch is saved, as specified by
 $\RelRdyT{\ctid}{\pEnv{\env}}{\hthrdlocalst_c}$. 
 The execution of $\primsw$ should be done in the final state. 
 We use $\hthrdlocalst'$ to represent the thread local 
-state of $\ntid$ instead of $\hthrdlocalst_n$ in final state, 
-because the execution of $\primsw$ will modify the program counters 
+state of $\ntid$ instead of $\hthrdlocalst_n$ 
+in the final state, because the execution of 
+$\primsw$ will modify the program counters 
 in $\hthrdlocalst_n$. 
 
 \paragraph{\textbf{Proof outline}} We show how to use 

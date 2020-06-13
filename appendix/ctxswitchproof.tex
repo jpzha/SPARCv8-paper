@@ -379,7 +379,7 @@ is well-defined.
 \end{lemma}
 \begin{proof}
     We unfold $\wdSpec{\Apre}{\Apost}{\primsw}$ by \Def{\ref{def:well-defined specification}}, 
-    and we need to prove three properities about the specification and 
+    and we need to prove three properties about the specification and 
     abstract assembly primitive $\primsw$. 
     \begin{enumerate}
         \item 
@@ -472,7 +472,7 @@ is well-defined.
         The key to prove this case is to find $\thrdid_c$, $\thrdid_n$, $\env$, 
         $\nst$, $\hthrdlocalst_c$, $\hthrdlocalst_n$, $\relastP_r$ and $\word$. 
         Because we have $(\state, \hpstate, \notCare, \notCare) \in 
-            \INV{(\primsw(\args{\val}), \args{\val})}$, we can know that there exists 
+            \INV{(\primsw(\args{\val}), \args{\val})}$, we know that there exists 
         a ready thread $\thrdid'$, a prefix of the frame list $\Wstack'$ 
         and a register state $\Rstate'$, where 
         $\hpstate.\thrdpool(\thrdid') = \hthrdlocalst'$, 
@@ -1077,7 +1077,7 @@ code blocks in $\code_{\texttt{switch}}$.
                     \end{array}
                 \right\}^{\color{red} \textcircled{3}}
             } \\
-            \\[-9pt]
+            \\[-5pt]
             \multicolumn{3}{l}
             {
                 \color{blue}
@@ -1281,11 +1281,11 @@ code blocks in $\code_{\texttt{switch}}$.
     the register file is $\RFile$, 
     and the part of the frame list, which is waitting for saving into 
     the stack in memory, is $\Wstack$. The code segment 
-    from line 1 to line 6 is responsible for saving the register file  
+    from line 1 to line 5 is responsible for saving the register file  
     $\RFile$ into current task's TCB, and we achieve assertion 
     marked {\color{red} \textcircled{2}}. 
 
-    The codes from line 7 to 21 saves the prefix $\Wstack$ of the 
+    The codes from line 6 to 20 saves the prefix $\Wstack$ of the 
     frame list into current task's stack in memory. After execution 
     of this segment. The part of the frame list, waitting for storing 
     into memory, becomes empty (\nil). And the assertion marked
@@ -1293,7 +1293,7 @@ code blocks in $\code_{\texttt{switch}}$.
 
     Then, we prove the code block \texttt{switch\_new\_task}, which 
     restores the context $\nst$ of the new task $\thrdid_n$. After 
-    executing the codes from line 22 to line 29, the context $\nst$ of 
+    executing the codes from line 21 to line 28, the context $\nst$ of 
     the new task $\thrdid_n$ is restored (shown as $\Env{(\nst, \nil)}$), 
     and the assertion marked {\color{red} \textcircled{4}} holds. 
 
