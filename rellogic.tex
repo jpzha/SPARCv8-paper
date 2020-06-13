@@ -3,20 +3,52 @@
 
 In this section, we present our \textit{relational} 
 program logic for refinement verification of 
-SPARCv8 code. 
+SPARCv8 code, which is the expansion of conference paper. 
+{\color{blue}
+In order to support such expansion, we do the following:
+\begin{itemize}
+    \item We introduce a new Pseudo-\sparc{} language 
+        as the language to implement the high-level 
+        specification in 
+        \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}; 
+    \item We make some modifications to the \sparc{} 
+        language defined in \Sec{\ref{sec:modeling}} and 
+        let it act as the low-level in our refinement 
+        verification. We present our low-level \sparc{} 
+        language and the modifications in 
+        \Sec{\ref{subsec:low-level SPARCv8 Program}};
+    \item We define the correctness of the abstract 
+        assembly primitives in 
+        \Sec{\ref{subsec:correctness-primitive}}, 
+        which is formulated as \textit{contextual refinement}
+        between the implementations and their 
+        corresponding abstract assembly primitive; 
+    \item We present a new program logic to do 
+        refinement verification in 
+        \Sec{\ref{subsec:rellogic}}; 
+    \item We show that our new program logic is 
+        sound in \Sec{\ref{subsec:semantics and soundness}}.
+        The semantics of judgements,
+        unlike the previous work presented in our 
+        conference paper, are defined as 
+        simulation relations between low- and high-level 
+        program. And the soundness proof needs to 
+        be reestablished. 
+\end{itemize}
+} 
 % Inspired by the {\it relational} program logic for 
 % refinement verification, \eg{\cite{liang13pldi,Xu16cav}}, 
 % we extend our program logic for SPARCv8 to support
 % refinement verification in this section. 
-We first define the high- and low-level program in 
-\Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}} and 
-\Sec{\ref{subsec:low-level SPARCv8 Program}} respectively. 
-% and their state relation in \Sec{\ref{subsec:state-rel}}. 
-The refinement relation is presented in 
-\Sec{\ref{subsec:correctness-primitive}}, 
-and program logic is shown in \Sec{\ref{subsec:rellogic}}. 
-Finally, logic soundness is shown in 
-\Sec{\ref{subsec:semantics and soundness}}.
+% We first define the high- and low-level program in 
+% \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}} and 
+% \Sec{\ref{subsec:low-level SPARCv8 Program}} respectively. 
+% % and their state relation in \Sec{\ref{subsec:state-rel}}. 
+% The refinement relation is presented in 
+% \Sec{\ref{subsec:correctness-primitive}}, 
+% and program logic is shown in \Sec{\ref{subsec:rellogic}}. 
+% Finally, logic soundness is shown in 
+% \Sec{\ref{subsec:semantics and soundness}}.
 
 \subsection{High-level Pseudo-SPARCv8 Language}
 \label{subsec:High-level Pseudo-SPARCv8 Language}
