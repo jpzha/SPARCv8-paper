@@ -2071,6 +2071,7 @@ and we explain them in turn in the following.
             % $, 
             and 
             $
+                % \wfFrm(\relastP_r)
             	\Sta(\hprim(\args{\val}), \relastP_r)
             $ hold.
             % and one 
@@ -2283,12 +2284,12 @@ between low- and high-level program.
     \small
     \begin{array}{l}
         \INV{(\primsw(\nil), \nil)} 
-        \Longrightarrow \\ 
+        \implies
         \exists \, \thrdid, \hthrdlocalst. \, 
+        (\astRdyCont{\thrdid}{\hthrdlocalst}) \sepstar \\
+        \qquad\quad
         (\hmsto{\TaskNew}{(\thrdid, 0)}) 
         \sepstar 
-        (\astRdyCont{\thrdid}{\hthrdlocalst})
-        \sepstar
         (\msto{\TaskNew}{(\thrdid, 0)})
         \sepstar \atrue
     \end{array}
@@ -2306,23 +2307,37 @@ between low- and high-level program.
 % } 
 We introduce frame $\relastP_r$ for local reasoning, 
 and it should be stable under the execution 
-of the abstract assembly primitive 
+of the abstract assembly primitive.  
 (shown as $\Sta(\hprim(\args{\val}), \relastP_r)$)
 defined below). 
 \[
     \small
     \begin{array}{l}
-        \Sta(\hprim(\args{\val}), \relastP_r) 
+        \Sta(\primcom, \relastP_r) 
         \define 
-        \forall \, \state, \hpstate, \hpstate', \word. \\   
+        \forall \, \state_r, \hpstate_r, \hpstate, 
+        \hpstate', \word. \\
         \qquad
-        ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-            {\relastP_r\sepstar\atrue}) 
-        \land
-        \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
-        \qquad    
-        \asrtmodel{(\state, \hpstate', \primdone, \word)}
-        {\relastP_r\sepstar\atrue}
+        (\primTransMulti{(\primcom, \hpstate)}{*}{(\primdone, \hpstate')}
+        \land \asrtmodel{(\state_r, \hpstate_r, \primcom, \word)}{\relastP_r}
+        \land \hpstate\perp\hpstate_r) \\
+        \qquad\qquad 
+        \implies
+        \exists\, \hpstate_r'. \, 
+        \hpstate'\perp\hpstate_r' \land 
+        \asrtmodel{(\state_r, \hpstate_r', \primdone, \word)}
+            {\relastP_r}
+        % \Sta(\hprim(\args{\val}), \relastP_r) 
+        % \define 
+        % \forall \, \state, \hpstate, \hpstate', \word. \\   
+        % \qquad
+        % ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
+        %     {\relastP_r\sepstar\atrue}) 
+        % \land
+        % \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
+        % \qquad    
+        % \asrtmodel{(\state, \hpstate', \primdone, \word)}
+        % {\relastP_r\sepstar\atrue}
     \end{array}
 \]
 
