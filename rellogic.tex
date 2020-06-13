@@ -3002,7 +3002,9 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
         \item If $\comm \in \dom(\code)$, we use the 
             following figure to illustrate such case:
             \begin{center}
+                \vspace*{-0.5em}
                 \input{picture/client-code-exec}
+                \vspace*{-0.5em}
             \end{center} 
             We can know 
             that the high-level executes the same command 
@@ -3018,13 +3020,17 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
         \item If $\comm \in \dom(\asmimp)$, we use the 
             following figure to illustrate such case:
             \begin{center}
+                \vspace*{-0.5em}
                 \input{picture/asmimp-code-exec}
+                \vspace*{-0.5em}
             \end{center}
             The assumption $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$ 
             defined in \Def{\ref{def:wdprim-sem}} says that 
             each \sparc{} function has a simulation relation 
             with its corresponding abstract assembly primitive. 
-            Such simulation relation ensure that for each step 
+            Such simulation relation 
+            (shown as $\preccurlyeq$ in the above figure)
+            ensure that for each step 
             of low-level execution, the high-level program will 
             execute zero or one step.
     \end{itemize} 

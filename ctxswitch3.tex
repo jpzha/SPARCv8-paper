@@ -352,7 +352,10 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}. 
     We can choose any place to apply 
     \myrule{ABSCSQ} rule to execute primitive $\primsw$. 
-    Here, we apply \myrule{ABSCSQ} rule in verifying 
+    Here, we apply \myrule{ABSCSQ} rule 
+    and proving that the state 
+    relation between low- and high-level program 
+    can be reestablished in verifying 
     (\ref{a:ctxswitch-wfsn}), when context switch routine 
     returns.  
 \end{proof}
