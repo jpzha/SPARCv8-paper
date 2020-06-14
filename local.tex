@@ -361,7 +361,7 @@
 \newcommand{\event}{e}
 \newcommand{\args}[1]{\overline{#1}}
 \newcommand{\hexeci}[3]{\textbf{exec}({#1}, {#2}, {#3})}
-\newcommand{\lexeci}[2]{\textbf{exec}_\texttt{L}({#1}, {#2})}
+\newcommand{\lexeci}[3]{\textbf{exec}_\texttt{L}({#1}, {#2}, {#3})}
 \newcommand{\arguments}{\textbf{args}}
 \newcommand{\malloc}{\textbf{\textit{alloc}}}
 \newcommand{\mfree}{\textbf{\textit{free}}}
@@ -374,7 +374,7 @@
 \newcommand{\progsafe}{\textsf{ProgSafe}}
 \newcommand{\evttr}{\mathcal{B}}
 \newcommand{\Etr}[1]{\textit{Etr}{#1}}
-\newcommand{\refine}{\sqsubseteq}
+\newcommand{\refine}{\subseteq}
 \newcommand{\gdom}{\textit{g}}
 \newcommand{\stateRel}[2]{{#1} \sim {#2}}
 \newcommand{\stkRel}[2]{{#1} \Downarrow {#2}}
@@ -489,4 +489,4 @@
 \newcommand{\SwitchEntry}{\texttt{SwitchEntry}}
 \newcommand{\regsave}{\texttt{reg}\_\texttt{save}}
 \newcommand{\regrestore}{\texttt{reg}\_\texttt{restore}}
-\newcommand{\ctxrefine}{\subseteq}
+\newcommand{\ctxrefine}{\sqsubseteq}

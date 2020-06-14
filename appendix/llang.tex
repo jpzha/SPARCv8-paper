@@ -84,7 +84,7 @@ is a function.
                 }
                 {
                     \code(\pc) = \simplins{} \quad \ \ 
-                    \lexeci{(\simplins{}, (\Mem, \Rstate, \DBuf))}
+                    \lexeci{\simplins{}}{(\Mem, \Rstate, \DBuf))}
                         {(\Mem', \Rstate', \DBuf')}
                 } \\
                 \\
@@ -175,7 +175,7 @@ is a function.
             \begin{array}{c}
                 \infer
                 {
-                    \lexeci{(\Psave \ \word, (\Mem, (\RFile, \Wstack), \DBuf))}
+                    \lexeci{\Psave \ \word}{(\Mem, (\RFile, \Wstack), \DBuf))}
                         {(\Mem', (\RFile', \Wstack'), \DBuf)}
                 }
                 {
@@ -186,7 +186,7 @@ is a function.
                 \\
                 \infer
                 {
-                    \lexeci{(\Prestore, (\Mem, (\RFile, \Wstack), \DBuf))}
+                    \lexeci{\Prestore}{(\Mem, (\RFile, \Wstack), \DBuf))}
                         {(\Mem', (\RFile'', \Wstack'), \DBuf)}
                 }
                 {
@@ -196,8 +196,8 @@ is a function.
                 \\
                 \infer
                 {
-                    \lexeci{(\csave{} \ \reg{s} \ \oexp \ \reg{d}, 
-                        (\Mem, (\RFile, \Wstack), \DBuf))}
+                    \lexeci{(\csave{} \ \reg{s} \ \oexp \ \reg{d}} 
+                        {(\Mem, (\RFile, \Wstack), \DBuf))}
                         {(\Mem', (\RFile', \Wstack'), \DBuf)}
                 }
                 {
@@ -209,8 +209,8 @@ is a function.
                 \\
                 \infer
                 {
-                    \lexeci{(\crestore{} \ \reg{s} \ \oexp \ \reg{d}, 
-                        (\Mem, (\RFile, \Wstack), \DBuf))}
+                    \lexeci{(\crestore{} \ \reg{s} \ \oexp \ \reg{d}} 
+                        {(\Mem, (\RFile, \Wstack), \DBuf))}
                         {(\Mem, (\RFile'', \Wstack'), \DBuf')}
                 }
                 {
@@ -370,7 +370,7 @@ The operational semantics for low-level program is defined in
 \Fig{\ref{fig:selected-opsem-low-level-program}}. Most of the 
 state transition rules are taken from 
 \Fig{\ref{Selected Operational Semantics}}. Here, we use 
-``$\lexeci{(\simplins{}, \notCare)}{\notCare}$" to represent 
+``$\lexeci{\simplins{}}{\notCare}{\notCare}$" to represent 
 the step for simple instruction $\simplins{}$.
 
 The execution of instruction $\Psave$ is discussed in divided 
