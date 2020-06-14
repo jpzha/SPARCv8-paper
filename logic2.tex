@@ -526,7 +526,9 @@ and writes the result into the register $\lreg{7}$.
 The specification $(\specpre,\specpost)$ says that, when
 provided with the same $\lv$ as argument, the function
 preserves the value of $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$,
-$\lreg{7}$ at the end contains the sum of $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$, and the function also preserves the value of $\RAreg$,
+$\lreg{7}$ in the beginning contains any value and 
+at the end contains the sum of $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$, 
+and the function also preserves the value of $\RAreg$,
 which it uses as the return address.
 To verify the function, we need to prove that it satisfies
 $(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$. 
