@@ -1582,6 +1582,7 @@ The code specification $\RelBspec$ and code heap specification
 $\Cspec$ for refinement verification are defined below : 
 \[
     \small
+    \!\!\!\!
     \begin{array}{lccl}
         \TYPE{(valList)} & 
         \lgvl & \in & \TYPE{list} \ \TYPE{value}
@@ -2586,7 +2587,7 @@ abstract assembly primitive executes.
     \end{enumerate}
 \end{definition}
 
-Then we can define the semantics for well-formed instruction
+Then we define the semantics for well-formed instruction
 sequences and well-formed code heap. 
 % The semantics of well-formed instruction sequences tells us that 
 % for any $\asmimp$, if the instruction sequence starting from label 
@@ -2854,7 +2855,7 @@ function.
 
     The simulation relation $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
     {i}{0}{(\primcom, \hpstate)}$ is defined co-inductively 
-    in \Def{\ref{def:sim-imp-prim-state}}. So, we can prove 
+    in \Def{\ref{def:sim-imp-prim-state}}. So, we prove 
     it by co-induction and discuss each case of the simulation
     respectively. 
 \end{proof}
@@ -2879,9 +2880,8 @@ function.
             $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$ 
             is defined inductively in 
             \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}. 
-            We can finish the proof by doing 
-            induction on $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$
-            and discussing each case respectively.
+            We proof it by induction over the derivation of 
+            $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$.
 
         \item We unfold $\wfcdhp{\asmimp}{\Cspec}$ and get that 
             for all $\lab{} \in \dom(\Cspec{})$, $\lgvl$ :
@@ -2908,7 +2908,7 @@ function.
             $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}
             \implies 
             \semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$, 
-            we can finish the proof by applying this conclusion. 
+            we can finish the proof by applying this lemma. 
         
         \item We unfold $\wfprim{\Cspec{}}{\asmimp}{\hprimset}$ 
             according to its definition 
@@ -2955,14 +2955,14 @@ function.
                     {(\relspecpre \ \lgvl, \,\relspecpost \ \lgvl)}
                     {\hprim(\args{\val})}$; 
             \end{itemize}
-            The proof of the first subgoal can be done by 
+            The proof of the first subgoal can be done from 
             assumption (\ref{a:wdspec}) directly; the second 
             one can be done according to the definition of 
             $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
             (defined in \Def{\ref{def:well-defined specification}}), 
             which requires that the abstract assembly primitive should 
             be specified in the precondition; as for the 
-            third, we can prove it by apply 
+            third, we prove it by applying 
             Lemma~\ref{lemma:function correctness}, which 
             says that the simulation for instruction sequence 
             can compose to simulation for function, on 
@@ -3037,8 +3037,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
                 \input{picture/client-code-exec}
                 \vspace*{-0.5em}
             \end{center} 
-            We can know 
-            that the high-level executes the same command 
+            We know that the high-level executes the same command 
             $\comm$, because the client code of low- and 
             high-level programs are the same.  
             And the state relation, shown as $\stateRel{\state}{\hpstate}$
@@ -3098,7 +3097,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
         & \hpstate.\hthrdlocalst = 
             (\notCare, \pc, \npc) 
     \end{align}
-    And we need to prove the following goal:
+    And we need to prove that the following goal holds:
     \begin{equation}
         (\code\uplus\asmimp, \state, \pc, \npc)
         \refine
@@ -3115,8 +3114,8 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
         \wpsim^{i}
         ((\code, \hprimset), \hpstate) \label{a:wpsim}
     \end{equation}
-    Then, by applying Lemma~\ref{lemma:wpsim-implies-refinement}
-    on (\ref{a:wpsim}), it is done. 
+    By applying Lemma~\ref{lemma:wpsim-implies-refinement}
+    on (\ref{a:wpsim}), the proof is done. 
 \end{proof}
 
 \begin{theorem}[Logic Soundness]

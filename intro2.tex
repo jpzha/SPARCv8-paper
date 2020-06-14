@@ -181,7 +181,19 @@ The $\csave$ instruction rotates the register window from the
 current one to the next. Then the \localRN{} and \inRN{}
 registers in the original window are no longer accessible,
 and the original \outRN{} registers becomes the \inRN{} registers
-in the current window.
+in the current window. 
+{\color{blue}
+In the example shown in 
+\Fig{\ref{fig:An Example for SPARC Code}}, 
+the \texttt{CALLER} uses instruction \csave{} 
+(at line 3) to save its context 
+(\localRN{} and \inRN{} registers) and 
+let the \outRN{} registers become the \inRN{} registers  
+by window rotation. So, the $\ireg{0}$ register 
+that is assessed in \texttt{ChangY} at line 6 is 
+the same register as the $\oreg{0}$ modified by 
+\texttt{CALLER} at line 1. 
+}
 The $\crestore$ instruction does the inverse.
 The arguments taken by the $\csave$ and  $\crestore$ instructions
 are irrelevant here and can be ignored.
@@ -325,6 +337,13 @@ semantics of C-assembly interaction.
     \figurecaption{Idea to establish contextual refinement}
     \label{fig:idea to establish contextual refinement}
 \end{center}
+
+Since the goal of this paper is to verify the correctness of the
+assembly code with respect to the abstract assembly primitives,
+we want to avoid the C-assembly interaction (and leave it as
+future work). We decompose the OS verification tasks into
+two steps, as shown in \Fig{\ref{fig:idea to establish contextual refinement}},
+and focus on step {\color{blue} \textcircled{2}} only in this paper.
 % some constraints in interaction semantics and
 % features of SPARCv8 make it difficult to use
 % interaction semantics in our work.
@@ -337,12 +356,6 @@ semantics of C-assembly interaction.
 % SPARCv8 code context-dependent. For example,
 % the caller of
 
-Since the goal of this paper is to verify the correctness of the
-assembly code with respect to the abstract assembly primitives,
-we want to avoid the C-assembly interaction (and leave it as
-future work). We decompose the OS verification tasks into
-two steps, as shown in \Fig{\ref{fig:idea to establish contextual refinement}},
-and focus on step {\color{blue} \textcircled{2}} only in this paper.
 %We take the approach shown in
 %\Fig{\ref{fig:idea to establish contextual refinement}}.
 
