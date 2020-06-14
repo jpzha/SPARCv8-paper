@@ -77,10 +77,10 @@ of adjacent windows are omitted in the figure).
 \end{center}
 During the SPARCv8 program's execution, 
 part of previous procedures' contexts 
-(the green part in the left side of the 
+(the light gray part in the left side of the 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) 
 are saved in register window, the others 
-(the pink part in the left side of the 
+(the dark gray part in the left side of the 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}})
 are stored in stack in memory, 
 % (shown as the red arrow in 
@@ -91,7 +91,7 @@ The restriction is that the stack pointer
 including the current one and the previous one, 
 whose contexts are saved in register 
 window currently, should point to the top of its stack frame 
-(shown as the red arrow in 
+(shown as the thick arrow in 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
 so that the contexts 
 in these windows can be stored correctly 
@@ -216,7 +216,7 @@ of client code preserve such restriction:
     there will be a problem that we don't know 
     where to save the contents of window that 
     is marked invalid originally 
-    (window in yellow in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
+    (window filled with dots in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
     % Supposing the register window and  
     So, we don't allow client code 
     to modify special registers and do \textit{not} 
@@ -923,7 +923,7 @@ proposed by \etal{Liang} \cite{liang14lics}.
 \begin{definition}[Primitive Correctness]
     \em
     \label{def:prim-correctness}
-    $\asmimp \refine \hprimset$ iff  \\
+    $\asmimp \ctxrefine \hprimset$ iff  \\
     for any $\code, \, \state, \, \hpstate, \, \pc$ and $\npc$, if 
     $\stateRel{\state}{\hpstate}$, and $\progsafe(\HProg)$, 
     then $\prog \refine \HProg$ holds. 
@@ -939,7 +939,7 @@ We use a code heap $\asmimp$
 to represent the implementations
  and $\hprimset$ to represent the set of corresponding 
 abstract assembly primitives. The contextual refinement between 
-$\asmimp$ and $\hprimset$, denoted as $\asmimp \refine \hprimset$, 
+$\asmimp$ and $\hprimset$, denoted as $\asmimp \ctxrefine \hprimset$, 
 says that if and only if for any client code 
 (or context) $\code$, low-level program 
 state $\state$, high-level program state $\hpstate$, program counters 
@@ -1482,7 +1482,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap.
 the {\it relational} assertion language, and its semantics 
 is given in \Fig{\ref{fig:Semantics of Relation Assertion}}. 
 The relational assertions are interpreted over relational 
-states $(\state, \hpstate, \primcom, \word)$, which 
+state $(\state, \hpstate, \primcom, \word)$, which 
 contains the low-level state $\state$, 
 the high-level state $\hpstate$, 
 the abstract assembly primitive command $\primcom$ 
@@ -1563,6 +1563,17 @@ introduction of the inference rules following, we use tokens
 to avoid infinite loops and recursive calls to make sure 
 the termination preserving refinement. 
 % The idea is taken from RGSim-T \cite{liang14lics}. 
+
+{\color{blue}
+We define $\nxtAst{\relastP}$ to describe the 
+state after executing one step of the delayed writes.  
+Supposing a relational state 
+$(\state', \hpstate, \primcom, \word)$ satisfies the 
+assertion $\relastP$, where $\state' = (\mem, (\RFile', \Wstack), \DBuf')$, 
+the $\nxtAst{\relastP}$ holds after executing a step 
+of delayed writes ($\Dstep{(\RFile', \Wstack')}{(\RFile, \Wstack)}$) 
+from $\state'$.
+}
 
 % \subsection{Inference Rules for Refinement Verification}
 % \label{subsec:logic-rule-refinemet}
@@ -2957,6 +2968,7 @@ function.
             can compose to simulation for function, on 
             (\ref{a:semwdcdhp2}). 
     \end{itemize}
+    Thus, we are done.
 \end{proof}
 
 Then, we present  
@@ -3004,7 +3016,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     If $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$, 
     $\stateRel{\state}{\hpstate}$, 
     $\progsafe((\code, \hprimset), \hpstate)$ and 
-    $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$
+    $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$, 
     then 
     $\exists i \in \Index. \, 
     (\code\uplus\asmimp, \state, \pc, \npc)
@@ -3073,7 +3085,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \[
         \semWdPrim{\Cspec}{\asmimp}{\hprimset} 
         \Longrightarrow
-        \asmimp \refine \hprimset
+        \asmimp \ctxrefine \hprimset
     \]
 \end{lemma}
 \begin{proof}
@@ -3112,7 +3124,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \label{thm:logic soundness}
     \[
         \wfprim{\Cspec}{\asmimp}{\hprimset} \Longrightarrow
-        \asmimp \refine \hprimset
+        \asmimp \ctxrefine \hprimset
     \]
 \end{theorem}
 \begin{proof}
