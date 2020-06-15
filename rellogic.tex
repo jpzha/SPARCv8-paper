@@ -128,7 +128,8 @@ contents of some windows.
 % to save the contents of some windows. 
 We do the following when defining 
 Pseudo-SPARCv8 program to make the execution 
-of client code preserve such restriction:  
+of client code preserve such restriction: 
+
 \begin{itemize}
     \item
     In order to ensure that 
@@ -158,41 +159,6 @@ of client code preserve such restriction:
     The original \csave{} and \crestore{} instructions 
     have \textit{no} semantics in high-level client code.   
     
-    % The \csave{} and \crestore{} instructions that operate  
-    % register window can't be used arbitrarily. 
-    % When we use \csave{} to rotate to next window
-    % (counterclockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),  
-    % a new stack pointer \spreg{} should 
-    % be generated to point to the stack frame 
-    % in memory allocated newly. 
-    % And when we use \crestore{} to rotate to previous window 
-    % (in clockwise direction in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}), 
-    % its execution shouldn't modify x
-    % the value of \spreg{} in the previous window.
-    % % So as to preserve the requirement that each 
-    % % stack pointer (\spreg) points 
-    % % to its corresponding stack frame
-    % % during the execution of client code,  
-    % % the execution of \csave{} should generate a new 
-    % % \spreg{} pointing to the stack frame in 
-    % % memory allocated newly, and the execution of 
-    % % \crestore{} shouldn't modify the value of 
-    % % \spreg{} in the window restored.  
-    % So, we introduce ``$\Psave \ \word$" as a macro of 
-    % ``$\csave{} \ \spreg, -\word, \spreg$", 
-    % whose execution makes sure that a new \spreg{} 
-    % will be generated and point to the stack frame 
-    % size $w$ allocated newly. 
-    % We also introduce ``$\Prestore$" 
-    % as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
-    % \footnote{In SPARCv8, $\greg{0}$ is always equal to 0, 
-    % and usually used as parameters when instructions do not 
-    % require specific parameters.},  
-    % whose execution just restores the previous window 
-    % and doesn't modify any register value. 
-    % The original \csave{} and \crestore{} instructions 
-    % have \textit{no} semantics in high-level client code. 
-
     \item 
     % The special registers can't be modified arbitrarily.
     The special registers in SPARCv8 usually act specific 
@@ -333,75 +299,62 @@ of client code preserve such restriction:
     \[
         \begin{array}{rcclrcclrccl}
             \TYPE{(HProg)} & \ \HProg \ & \define & 
-            (\HMd, \hpstate) &
-            \TYPE{(HState)} & \hpstate & \define & 
-            \multicolumn{3}{l}
-            {
-                (\thrdpool, \thrdid, \hthrdlocalst, \Mem)
-            }
-            % \multicolumn{7}{l}
-            % {
-            %     \TYPE{(HState)} \ \ \hpstate \ \ 
-            %     \define \ \ 
-            %     (\thrdpool, \thrdid, \hthrdlocalst, \Mem)
-            % } 
+            (\HMd, \hpstate) & 
+            \qquad
+            \TYPE{(HState)} & \ \hpstate \ & \define & 
+            (\thrdpool, \thrdid, \hthrdlocalst, \Mem) & 
+            \qquad
+            \TYPE{(ThrdPool)} & \thrdpool & \define & 
+            \{ \thrdid \rightsquigarrow \hthrdlocalst \}^{*} 
             \\
             \\[-8pt]
-            \TYPE{(ThrdPool)} & \thrdpool & \define & 
-            \{ \thrdid \rightsquigarrow \hthrdlocalst \}^{*}
-            & \ \ 
+            \TYPE{(Tid)} & \thrdid & \in & \Ztype & 
             \TYPE{(ThrdLcSt)} & \ \hthrdlocalst \ & \define & 
-            (\hRstate, \pc, \npc) 
-            & \qquad
-            \TYPE{(Tid)} & \thrdid & \in & \Ztype \\
-            \\
+            (\hRstate, \pc, \npc) & 
             \TYPE{(HRstate)} & \hRstate & \define & 
             (\hRfile, \hWstk) \\
-            \\[-8pt]
-            \TYPE{(HRegFile)} & \hRfile & \in & 
-            \TYPE{HRegName} \rightarrow \TYPE{Val} 
-            & \quad
-            \TYPE{(HRegName)} & \hrn & \define & 
-            \multicolumn{5}{l}
+            \\
+
+            % \TYPE{(HProg)} & \ \HProg \ & \define & 
+            % (\HMd, \hpstate) &
+            % \TYPE{(HState)} & \hpstate & \define & 
+            % \multicolumn{3}{l}
+            % {
+            %     (\thrdpool, \thrdid, \hthrdlocalst, \Mem)
+            % }
+            % \\
+            % \\[-8pt]
+            % \TYPE{(ThrdPool)} & \thrdpool & \define & 
+            % \{ \thrdid \rightsquigarrow \hthrdlocalst \}^{*}
+            % & \ \ 
+            % \TYPE{(ThrdLcSt)} & \ \hthrdlocalst \ & \define & 
+            % (\hRstate, \pc, \npc) 
+            % & \qquad
+            % \TYPE{(Tid)} & \thrdid & \in & \Ztype \\
+            % \\
+            % \TYPE{(HRstate)} & \hRstate & \define & 
+            % (\hRfile, \hWstk) \\
+            % \\[-8pt]
+            \TYPE{(HRegFile)} & \hRfile & \in &   
+            \multicolumn{9}{l}
             {
+                \TYPE{HRegName} \rightarrow \TYPE{Val}
+                \qquad\quad
+                \TYPE{(HRegName)} \ \ \hrn \ \ \define \ \
                 \reg{0} \sepline \dots \sepline \reg{31} \sepline 
-                \regn \sepline \regz \sepline \regc \sepline \regv 
-            } \\
+                \regn \sepline \regz \sepline \regc \sepline \regv    
+            }
+            \\
             \\[-8pt]
             \TYPE{(HFrmList)} & \hWstk & \define & 
-            \nil \sepline (\fm_1, \fm_2) \stCons \hWstk
-            & \qquad
-            \TYPE{(HFrame)} & \fm & \define & 
-            [\val_0, \dots, \val_7]
+            \multicolumn{9}{l}
+            {
+                \nil \sepline (\fm_1, \fm_2) \stCons \hWstk
+                \qquad\qquad \ \
+                \TYPE{(HFrame)} \ \ \fm \ \ \define \ \  
+                [\val_0, \dots, \val_7]
+            }
         \end{array}
-        % \begin{array}{rcclcrccl}
-        %     \TYPE{(HProg)} & \ \HProg \ & \define & 
-        %     (\HMd, \hpstate, \pc, \npc) 
-        %     & \ \ &
-        %     \TYPE{(HState)} & \hpstate & \define & (\thrdpool, \thrdid, \hthrdlocalst, \Mem) \\
-        %     \TYPE{(ThrdPool)} & \ \thrdpool \ & \define & 
-        %     \{ \thrdid \rightsquigarrow \hthrdlocalst \}^{*} & & 
-        %     \TYPE{(ThrdLcSt)} & \hthrdlocalst & \define & (\hRstate, \pc, \npc) \\ 
-        %     \TYPE{(HRstate)} & \hRstate & \define & (\hRfile, \block, \hWstk) & & 
-        %     \TYPE{(ProgCount)} & 
-        %     \multicolumn{3}{l}
-        %     {
-        %         \, \pc, \npc \ \in \ \TYPE{Word}
-        %     }
-        %     \\
-        %     \TYPE{(Tid)} & \thrdid & \in & \Ztype & & 
-        %     \TYPE{(HRegFile)} & \hRfile & \in & 
-        %         \TYPE{HRegName} \rightharpoonup \TYPE{Val} \\ 
-        %     \TYPE{(HRegName)} & \hrn & \define & 
-        %     \multicolumn{6}{l}
-        %     {
-        %         \reg{0} \sepline \dots \sepline \reg{31} \sepline 
-        %         \regn \sepline \regz \sepline \regc \sepline \regv
-        %     } \\
-        %     \TYPE{(HFrmList)} & \hWstk & \define & 
-        %     \nil \sepline (\block, \fm_1, \fm_2) \stCons \hWstk & & 
-        %     \TYPE{(HFrame)} & \fm & \define & [\val_0, \dots, \val_7]  
-        % \end{array}
     \]
     \vspace{-1em}
     \caption{Machine States for Pseudo-SPARCv8 Code}
@@ -435,22 +388,6 @@ The $\Psave \ \word$
 and $\Prestore$ restrict the \csave{} and \crestore{}
 instructions such that they can only be used in specific form as 
 mentioned before.  
-% saves the contents of the current window and 
-% allocate a new stack frame of size $\word$ bytes for new procedure. 
-% The $\Prestore$ is responsible for 
-% freeing the current stack frame and 
-% restore the contents of the previous window. 
-% we add two pseudo instructions $\Psave \ \word$ and $\Prestore$ 
-% in simple instruction. 
-% In the introduction of the example shown in 
-% \Fig{\ref{fig:An Example for SPARC Code}}, we say that the instruction 
-% ``$\csave{} \ \spreg, -64, \spreg$" in this example allocate a new register 
-% window and a new 64-byte stack frame for callee. Here, we define 
-% ``$\Psave \ \word$" as a marco of ``$\csave{} \ \spreg, -\word, \spreg$".  
-% % to replace ``$\csave{} \ \spreg, -\word, \spreg$" to do the 
-% % same thing. 
-% The $\Prestore$ will free the cuurent stack frame 
-% and restore the contexts of the previous procedure. 
 We also introduce $\cprint \ \reg{}$, 
 whose execution will output the value $\val$ in $\reg{}$ and 
 generate an message $\outEvt{\val}$, 
@@ -469,110 +406,6 @@ state is a tuple including: a thread pool $\thrdpool$,
 % the identifier of the current thread $\thrdid$, 
 current thread id $\thrdid$, the thread local state 
 $\hthrdlocalst$ of the current thread, and the memory $\Mem$.
-
-\paragraph{\textbf{Thread Local State.}} 
-The thread local state $\hthrdlocalst$ 
-is a triple of high-level register state $\hRstate$, 
-and program counters $\pc$ and $\npc$. The high-level 
-register state $\hRstate$ consists: 
-the high-level register file $\hRfile$, 
-% the block of the current stack frame $\block$, 
-and the high-level frame list $\hWstk$. 
-$\hrn$ is the high-level register names, where 
-the $\regcwp$ is omitted as introduced before,  and 
-we also omit special register for simplicity, 
-because we don't allow 
-the high-level client code to modify them
-\footnote{There is no problem to reserve special 
-registers in high-level register file and permit
-the high-level client code to read them.}. 
-The high-level frame list $\hWstk$ is a list of pairs 
-$(\fm_1, \fm_2)$, which is used to save 
-% the block id $\block$ of the stack frame and  
-the contexts (\localRN{} and \inRN{} registers) 
-$\fm_1$ and $\fm_2$ of the previous procedure.
-% Here, $\block$ is the block 
-% id of the stack frame of this procedure, and $\fm_1$ and $\fm_2$ 
-% are contexts (\localRN{} and \inRN{} registers) of this procedure saved. 
-% The meaning of this triple can 
-% be better understand through the semantics of the instructions $\Psave$ and 
-% $\Prestore$ defined in \Fig{\ref{fig:selected-opsem-high-level-prog}}. 
-% When the program call a function, it will use the instruction $\Psave$ 
-% to allocate a new stack frame to callee, and save the contents of 
-% $\localRN$ and $\inRN$ registers ($\fm_1$ and $\fm_2$) and the block $\block$ 
-% of the stack frame of the caller into the head of high-level frame list $\hWstk$. 
-% And use the instruction $\Prestore$ to restore them from $\hWstk$, when callee 
-% returns to caller. 
-After introducing the state of high-level program, 
-We define the primitive $\primsw$ as 
-an instantiation of $\hprim$ as following: 
-\[
-    \small
-    \begin{array}{l}
-        \primsw \ \define \\
-        \quad 
-        \lambda \, \args{\val}, \hpstate, \hpstate'. \ 
-        \exists \, \thrdid'. \ 
-        \Mem(\TaskNew) = (\thrdid', 0) \land 
-        \thrdpool(\thrdid') = 
-            (\hRstate', \pc', \npc') \\
-        \qquad
-        \land \,
-        \thrdpool' = \thrdpool\{ \thrdid \rightsquigarrow 
-            (\hRstate, \pc, \npc) \} 
-            \land \tid \neq \tid' \land \args{\val} = \nil \\
-        \\[-9pt]
-        \quad \text{where} \ 
-        \hpstate = 
-            (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), 
-        \tid \in \dom(\thrdpool) \\
-        \qquad\qquad
-        \hpstate' = 
-            (\thrdpool', \thrdid', 
-                (\hRstate', \lab{}\!+\!8, \lab{}\!+\!12), \Mem), 
-                \lab{} = \hRstate'.\hRfile(\reg{15}). 
-    \end{array}
-\]
-% {
-%     \small
-%     $$
-%     \begin{array}{lcl}
-%         \primsw & \define & 
-%         \lambda \, \args{\val}, \hpstate, \hpstate'. \ 
-%         \exists \, \thrdid'. \ 
-%         \Mem(\TaskNew) = (\thrdid', 0) \, \land \, 
-%         \thrdpool(\thrdid') = 
-%             (\hRstate', \pc', \npc') \\ 
-%         & & \hspace*{8em} \land \, 
-%         \thrdpool' = \thrdpool\{ \thrdid \rightsquigarrow 
-%         (\hRstate, \pc, \npc) \}
-%         \, \land \, \thrdid \neq \thrdid'
-%         \, \land \, \args{\val} = \nil \\
-%         \\[-8pt] 
-%         \multicolumn{3}{l}
-%         {
-%         	\hspace*{1.8em}
-%             \TYPE{where } \, 
-%             \hpstate = 
-%                 (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), \, 
-%             \hpstate' = 
-%             (\thrdpool', \thrdid', 
-%             	(\hRstate', \lab{} + 8, \lab{} + 12), \Mem), \lab{} = \hRstate'.\hRfile(\reg{15}). 
-% %            \lab{} = \hRstate'.\hRfile(\reg{15}). 
-%             % \,
-%             % \AftExt(\hRstate, \pc, \npc) \define 
-%             % (\hRstate, \hRstate.\hRfile(\reg{15}) + 8, 
-%             %     \hRstate.\hRfile(\reg{15}) + 12)
-%         }
-%     \end{array}
-%     $$
-% }
-The execution of $\primsw{}$ primitive takes no arguments 
-($\args{\val} = \nil$), and change the identifier 
-of current thread according to the pointer saved 
-in location $\TaskNew$. We use parameters $\hpstate$ 
-and $\hpstate'$ to represent the machine state before 
-and after execution of $\primsw{}$ respectively. 
 
 \begin{figure*}[!t]
     \centering
@@ -745,6 +578,98 @@ and after execution of $\primsw{}$ respectively.
     \caption{Selected operational semantics rules for high-level program}
     \label{fig:selected-opsem-high-level-prog}
 \end{figure*}
+
+\paragraph{\textbf{Thread Local State.}} 
+The thread local state $\hthrdlocalst$ 
+is a triple of high-level register state $\hRstate$, 
+and program counters $\pc$ and $\npc$. The high-level 
+register state $\hRstate$ consists: 
+the high-level register file $\hRfile$, 
+% the block of the current stack frame $\block$, 
+and the high-level frame list $\hWstk$. 
+$\hrn$ is the high-level register names, where 
+the $\regcwp$ is omitted as introduced before,  and 
+we also omit special register for simplicity, 
+because we don't allow 
+the high-level client code to modify them
+\footnote{There is no problem to reserve special 
+registers in high-level register file and permit
+the high-level client code to read them.}. 
+The high-level frame list $\hWstk$ is a list of pairs 
+$(\fm_1, \fm_2)$, which is used to save 
+% the block id $\block$ of the stack frame and  
+the contexts (\localRN{} and \inRN{} registers) 
+$\fm_1$ and $\fm_2$ of the previous procedure. 
+After introducing the state of high-level program, 
+We define the primitive $\primsw$ as 
+an instantiation of $\hprim$ as following: 
+\[
+    \small
+    \begin{array}{l}
+        \primsw \ \define \\
+        \quad 
+        \lambda \, \args{\val}, \hpstate, \hpstate'. \ 
+        \exists \, \thrdid'. \ 
+        \Mem(\TaskNew) = (\thrdid', 0) \land 
+        \thrdpool(\thrdid') = 
+            (\hRstate', \pc', \npc') \\
+        \qquad
+        \land \,
+        \thrdpool' = \thrdpool\{ \thrdid \rightsquigarrow 
+            (\hRstate, \pc, \npc) \} 
+            \land \tid \neq \tid' \land \args{\val} = \nil \\
+        \\[-9pt]
+        \quad \text{where} \ 
+        \hpstate = 
+            (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), 
+        \tid \in \dom(\thrdpool) \\
+        \qquad\qquad
+        \hpstate' = 
+            (\thrdpool', \thrdid', 
+                (\hRstate', \lab{}\!+\!8, \lab{}\!+\!12), \Mem), 
+                \lab{} = \hRstate'.\hRfile(\reg{15}). 
+    \end{array}
+\]
+% {
+%     \small
+%     $$
+%     \begin{array}{lcl}
+%         \primsw & \define & 
+%         \lambda \, \args{\val}, \hpstate, \hpstate'. \ 
+%         \exists \, \thrdid'. \ 
+%         \Mem(\TaskNew) = (\thrdid', 0) \, \land \, 
+%         \thrdpool(\thrdid') = 
+%             (\hRstate', \pc', \npc') \\ 
+%         & & \hspace*{8em} \land \, 
+%         \thrdpool' = \thrdpool\{ \thrdid \rightsquigarrow 
+%         (\hRstate, \pc, \npc) \}
+%         \, \land \, \thrdid \neq \thrdid'
+%         \, \land \, \args{\val} = \nil \\
+%         \\[-8pt] 
+%         \multicolumn{3}{l}
+%         {
+%         	\hspace*{1.8em}
+%             \TYPE{where } \, 
+%             \hpstate = 
+%                 (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), \, 
+%             \hpstate' = 
+%             (\thrdpool', \thrdid', 
+%             	(\hRstate', \lab{} + 8, \lab{} + 12), \Mem), \lab{} = \hRstate'.\hRfile(\reg{15}). 
+% %            \lab{} = \hRstate'.\hRfile(\reg{15}). 
+%             % \,
+%             % \AftExt(\hRstate, \pc, \npc) \define 
+%             % (\hRstate, \hRstate.\hRfile(\reg{15}) + 8, 
+%             %     \hRstate.\hRfile(\reg{15}) + 12)
+%         }
+%     \end{array}
+%     $$
+% }
+The execution of $\primsw{}$ primitive takes no arguments 
+($\args{\val} = \nil$), and change the identifier 
+of current thread according to the pointer saved 
+in location $\TaskNew$. We use parameters $\hpstate$ 
+and $\hpstate'$ to represent the machine state before 
+and after execution of $\primsw{}$ respectively. 
 
 \paragraph{\textbf{Operational Semantics in High-level.}} 
 The operational semantics for high-level Pseudo-SPARCv8 program 
@@ -953,6 +878,7 @@ between low- and high-level program. $\progsafe(\HProg)$
 % which means that the high-level program will never get stuck,  
 is defined below formally : 
 \[
+    \small
     \progsafe(\HProg) \ \define \ 
     \forall \, \HProg'. \, 
     (\HGlobMultiTrans{\HProg}{}{*}{\HProg'}) 
@@ -969,6 +895,7 @@ The low-level code is a union of $\code$ and $\asmimp$,
 shown as $(\code\uplus\asmimp)$, because both of 
 $\code$ and $\asmimp$ are \sparc{} code heap.
 \[
+    \small
     \code \uplus \asmimp \,\define\,
     \code \cup \asmimp \quad
     \cif \ \dom(\code)\cap\dom(\asmimp) = \emptyset

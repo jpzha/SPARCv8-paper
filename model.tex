@@ -252,7 +252,7 @@ $\DBuf$ below.
 \begin{figure*}[!t]
 	\centering
 	%\includegraphics[width=63ex]{window}
-	\includegraphics[width=58ex]{window}
+	\includegraphics[width=54ex]{window}
 	\caption{Register Windows (figure taken from \cite{sparc})}
 	\label{fig:RegisterWindows}
 \end{figure*}
@@ -364,7 +364,6 @@ three groups (\outRN{}, \localRN{} and \inRN{}).
             \right. \\
 %            & & \where \ \ Q = (R, F)
             \\
-            \\[-8pt]
 
             \incwin(\RFile, \Wstack) & \define &
             \left\{
@@ -518,12 +517,11 @@ from $\lab{}$ in $\code$ below.
 
 \begin{figure*}
 	\centering
-	\vspace{-0.5em}
 	\subfigure[Program Transition]
 	{
 		\begin{minipage}[b]{1\textwidth}
-		% \small
-		\scriptsize
+		\small
+		% \scriptsize
 		\[
 			\infer
 			{
@@ -552,8 +550,8 @@ from $\lab{}$ in $\code$ below.
 	\subfigure[Control Transfer Instruction Transition]
 	{	
 		\begin{minipage}[b]{1\textwidth}
-		% \small
-		\scriptsize
+		\small
+		% \scriptsize
         \[
             \infer
             {
@@ -606,6 +604,7 @@ from $\lab{}$ in $\code$ below.
 		\]
 
 		\[{\color{blue}
+			\!\!\!
 			\infer
 			{
 				\cttrans{((\mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
@@ -615,7 +614,7 @@ from $\lab{}$ in $\code$ below.
 				\code(\pc) = \be \ \lab{} \quad 
 				\RFile(\regz) = \word \quad 
 				\word \neq 0
-			} \qquad \ \ 
+			} \qquad
 			\infer
 			{\cttrans{((\mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
 				{((\mem, (\RFile, \Wstack), \DBuf), \npc, \npc\!+\!4)}}
@@ -632,8 +631,8 @@ from $\lab{}$ in $\code$ below.
 	\subfigure[Save, Restore and Wr instruction Transition]
 	{
 		\begin{minipage}[b]{1\textwidth}
-			% \small
-			\scriptsize
+			\small
+			% \scriptsize
 			\begin{minipage}{0.48\textwidth}
 			\[
 				\infer

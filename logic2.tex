@@ -1006,7 +1006,19 @@ return code pointer whose type is word.
 \end{figure*}
 
 \Fig{\ref{fig:Seleted Inference rules}} shows
-selected inference rules in our logic.
+selected inference rules defined inductively in our logic. 
+{\color{blue}
+Our logic divides the proof work into three layers.
+We define the well-formed code heap in the form of 
+($\wfcdhp{\code}{\Cspec{}}$) to verify the code heap, 
+the well-formed instruction sequence in the form of 
+($\wfcblk{\astP}{\astQ}{\lab{}}{\cblk}$) to verify each 
+instruction sequence in code heap, and well-formed 
+instruction in the form of 
+($\wfins{\astP}{\simplins{}}{\astQ}$) to verify the 
+single simple instruction. 
+}
+
 The top rule \cdhp{} verifies the code
 heap $\code$. It requires that every basic block
 specified in $\Cspec$ can be verified with

@@ -44,15 +44,27 @@ program logic for assembly code.
     than the execution of the control transfer instructions.
 	
 	\item \textit{Delayed writes}.
-	The $\cwr$ instruction that writes a special class
-    of registers
-    does not take effect immediately.
-    % in the current cycle when
-    %pointed to \pc.
-    Instead the write operation is buffered
-    and then executed $X$ cycles later, where $X$ is a
-    predefined
-    system parameter which usually ranges from 0 to 3.
+	{\color{blue}
+    The $\cwr$ instruction that writes a special class 
+    of registers such as $\regwim$ used to justify 
+    whether a register window is valid does not take 
+    effect immediately. That is, ``they may take until 
+    completion of the third instruction following the write 
+    instruction to consummate their write operation. 
+    The number of delay instructions (0 to 3) 
+    is implementation-dependent"~\cite{sparc}.
+    }
+    
+	% The $\cwr$ instruction that writes a special class
+    % of registers
+    % does not take effect immediately.
+    % % in the current cycle when
+    % %pointed to \pc.
+    % Instead the write operation is buffered
+    % and then executed $X$ cycles later, where $X$ is a
+    % predefined
+    % system parameter which usually ranges from 0 to 3.
+
 	\item \textit{Register windows}.
 	\sparc{} uses register windows
 	and a window rotation mechanism
