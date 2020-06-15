@@ -22,7 +22,7 @@ In order to support such expansion, we do the following:
         \Sec{\ref{subsec:correctness-primitive}}, 
         which is formulated as \textit{contextual refinement}
         between the implementations and their 
-        corresponding abstract assembly primitive; 
+        corresponding abstract assembly primitives; 
     \item We present a new program logic to do 
         refinement verification in 
         \Sec{\ref{subsec:rellogic}}; 
@@ -64,7 +64,8 @@ and the set of abstract assembly primitives.
 Here, we require that the execution of client SPARCv8 code 
 preserves a restriction between register 
 window and stack in memory, shown
-as the left side in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}
+as the left side of 
+\Fig{\ref{fig:Abstraction of Register Windows and Memory}}
 (\regcwp{} points to the current window and \regwim{} marks 
 the invalid window, the details of overlapping 
 of adjacent windows are omitted in the figure).
@@ -77,10 +78,10 @@ of adjacent windows are omitted in the figure).
 \end{center}
 During the SPARCv8 program's execution, 
 part of previous procedures' contexts 
-(the light gray part in the left side of the 
+(the light gray part in the left side of
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) 
 are saved in register window, the others 
-(the dark gray part in the left side of the 
+(the dark gray part in the left side of 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}})
 are stored in stack in memory, 
 % (shown as the red arrow in 
@@ -88,8 +89,8 @@ are stored in stack in memory,
 because the number of windows is limited. 
 The restriction is that the stack pointer 
 (\spreg{}) of each procedure, 
-including the current one and the previous one, 
-whose contexts are saved in register 
+including the current and previous ones, 
+whose context is saved in register 
 window currently, should point to the top of its stack frame 
 (shown as the thick arrow in 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
@@ -103,12 +104,13 @@ whether the previous window is valid
 and use instruction $\crestore{}$ to set it as the 
 current one and save its contents into stack 
 (in memory) until the previous one is invalid 
-(marked in blue in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}). 
-We require the execution of client code 
+(filled with east north lines  
+in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}). 
+We require that the execution of client code 
 preserves such restriction. Otherwise, some SPARCv8 
 functions like context switch routine, whose 
 executions will store the contexts saved in 
-register window into stack in memory, cannot be 
+register windows into stack in memory, cannot be 
 verified if it's unclear where to save the 
 contents of some windows. 
 % We require the execution of client code 
