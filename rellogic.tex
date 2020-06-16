@@ -35,7 +35,7 @@ In order to support such expansion, we do the following:
         program. And the soundness proof needs to 
         be reestablished. 
 \end{itemize}
-We introduce each part of work in detail in the following.
+We show each part of work in detail in the following.
 } 
 % Inspired by the {\it relational} program logic for 
 % refinement verification, \eg{\cite{liang13pldi,Xu16cav}}, 
@@ -616,7 +616,7 @@ an instantiation of $\hprim$ as following:
         \Mem(\TaskNew) = (\thrdid', 0) \land 
         \thrdpool(\thrdid') = 
             (\hRstate', \pc', \npc') \\
-        \qquad
+        \qquad\qquad
         \land \,
         \thrdpool' = \thrdpool\{ \thrdid \rightsquigarrow 
             (\hRstate, \pc, \npc) \} 
@@ -624,8 +624,8 @@ an instantiation of $\hprim$ as following:
         \\[-9pt]
         \quad \text{where} \ 
         \hpstate = 
-            (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), 
-        \tid \in \dom(\thrdpool) \\
+            (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), \\ 
+        % \tid \in \dom(\thrdpool) 
         \qquad\qquad
         \hpstate' = 
             (\thrdpool', \thrdid', 

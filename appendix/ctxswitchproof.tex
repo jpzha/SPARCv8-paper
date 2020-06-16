@@ -166,7 +166,7 @@ already introduced in the \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
             \text{where } \, 
             \hpstate = 
                 (\thrdpool, \thrdid, (\hRstate, \pc, \npc), \Mem), \, 
-            \tid \in \dom(\thrdpool), \,
+            % \tid \in \dom(\thrdpool), \,
             \hpstate' = 
             (\thrdpool', \thrdid', 
             	(\hRstate', \lab{} + 8, \lab{} + 12), \Mem), \lab{} = \hRstate'.\hRfile(\reg{15}). 
@@ -419,12 +419,12 @@ is well-defined.
         \begin{align}
             & \mem(\TaskNew) = (\tid', 0) \\
             & \thrdpool(\tid') = (\hRstate', \pc', \npc') \\
-            & \thrdpool' = \thrdpool\{ \tid \leadsto \{ \hRstate, \pc, \npc \} \}, \,
-                \tid \in \dom(\thrdpool) \\
+            & \thrdpool' = \thrdpool\{ \tid \leadsto \{ \hRstate, \pc, \npc \} \} \\
+                % \tid \in \dom(\thrdpool) \\
             & \tid \neq \tid', \, \args{\val} = \nil \\
             & \hpstate' = (\thrdpool', \tid', (\hRstate', \lab{}\!+\!8, \lab{}\!+\!12), 
                 \mem{}), \lab{} = \hRstate'.\hRfile(\reg{15}) \\
-            & \notag \\
+            & \notag \\[-5pt]
             & \thrdpool \perp \thrdpool_r, \, \mem \perp \mem_r \\
             & \tid_r = \tid, \, \hthrdlocalst_r = (\hRstate, \pc, \npc)
         \end{align}
@@ -575,8 +575,9 @@ is well-defined.
         \begin{align}
             & \mem'(\TaskNew) = (\tid', 0) \\
             & \thrdpool(\tid') = (\hRstate', \pc', \npc') \label{a:ctxswitch-newtsk} \\
-            & \thrdpool' = \thrdpool\{ \tid \leadsto \{ \hRstate, \pc, \npc \} \}, \,
-                \tid \in \dom(\thrdpool) \\
+            & \thrdpool' = \thrdpool\{ \tid \leadsto \{ \hRstate, \pc, \npc \} \}
+                % \tid \in \dom(\thrdpool) 
+                \\
             & \tid \neq \tid', \, \args{\val} = \nil \label{a:ctxswitch-newtsk-not-curt} \\
             & \hpstate' = (\thrdpool', \tid', (\hRstate', \lab{}\!+\!8, \lab{}\!+\!12), 
                 \mem{}), \lab{} = \hRstate'.\hRfile(\reg{15}) 
