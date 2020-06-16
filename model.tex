@@ -173,24 +173,23 @@ where the commands are saved in the code heap.
 The operand expression $\oexp$, which is either a general 
 register $\reg{}$ or a word $\word$, 
 and address expression $\aexp$, 
-which is either a operand expression or a 
-sum of the value of register $\reg{}$ and an operation 
+which is either an operand expression or a 
+sum of the values of register $\reg{}$ and an operation 
 expression, are auxiliary definitions used as parameters of commands. 
 Commands in \sparc{} can be classified into two categories:
 % the simple instructions $\simplins$ and the
 % control-transfer instructions like $\call$ and $\jmp$.
 {\color{blue}
 (1) simple instruction $\simplins{}$, which does sequential 
-operation, \eg{``\cadd{}", arithmetic operations, 
+operation, \eg{} arithmetic operation ``\cadd{}", 
 or memory operations
 ``\ld{}" (load) and ``\st{}" (store), or register window
 operations ``\csave{}" and ``\crestore{}", or special 
 register operations ``\rd{}" (read) and ``\cwr{}" (write)};
-(2) control-transfer instructions, like $\call{}$ for 
-function call, $\retl{}$ for function return, 
-$\jmp{}$ for unconditional branch and 
-$\be{}$ for conditional branch. 
-}
+(2) control-transfer instructions, 
+{\color{blue} like \call{} and \retl{} for 
+function call and return, and \jmp{} and \be{} for 
+unconditional and conditional branch}. 
 
 The machine state $\state$ consists of three parts:
 the memory $\mem$, the register state $\Rstate$
@@ -252,7 +251,7 @@ $\DBuf$ below.
 \begin{figure*}[!t]
 	\centering
 	%\includegraphics[width=63ex]{window}
-	\includegraphics[width=54ex]{window}
+	\includegraphics[width=55ex]{window}
 	\caption{Register Windows (figure taken from \cite{sparc})}
 	\label{fig:RegisterWindows}
 \end{figure*}
@@ -604,7 +603,7 @@ from $\lab{}$ in $\code$ below.
 		\]
 
 		\[{\color{blue}
-			\!\!\!
+			\!\!\!\!\!\!\!
 			\infer
 			{
 				\cttrans{((\mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}

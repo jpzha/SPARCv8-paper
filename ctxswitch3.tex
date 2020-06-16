@@ -359,6 +359,12 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
             \label{ctxswitch-wfsn}
     \end{align} 
 
+    \begin{center}
+        \input{picture/point-refine-ctxswitch}
+        \figurecaption{Point doing refinement reasoning}
+        \label{fig:refinement reasoning}
+    \end{center}
+
     The correctness proof of
     (\ref{ctxswitch-wfse}) to (\ref{ctxswitch-wfsn}) 
     can be done by applying the inference rules for 
@@ -368,10 +374,14 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     \myrule{ABSCSQ} rule to execute primitive $\primsw$. 
     Here, we apply \myrule{ABSCSQ} rule 
     and proving that the state 
-    relation between low- and high-level program 
+    relation between low- and high-level programs 
     can be reestablished in verifying 
     (\ref{ctxswitch-wfsn}), when context switch routine 
-    returns.  
+    returns, as shonw in \Fig{\ref{fig:refinement reasoning}}.
+    In \Fig{\ref{fig:refinement reasoning}}, we use block 
+    circle to represent the point applying \myrule{ABSCSQ} rule, 
+    and use the solid line to repesent the state relation 
+    between low- and high-level holding. 
 \end{proof}
 
 \begin{theorem}[Context Switch Routine Correctness]

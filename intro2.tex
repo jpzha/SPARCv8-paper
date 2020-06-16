@@ -192,17 +192,17 @@ for parameters passing.
 The $\csave$ instruction rotates the register window from the
 current one to the next. Then the \localRN{} and \inRN{}
 registers in the original window are no longer accessible,
-and the original \outRN{} registers becomes the \inRN{} registers
+and the original \outRN{} registers become the \inRN{} registers
 in the current window. 
 {\color{blue}
-In the example shown in 
+In the example in 
 \Fig{\ref{fig:An Example for SPARC Code}}, 
 the \texttt{CALLER} uses instruction \csave{} 
 (at line 3) to save its context 
 (\localRN{} and \inRN{} registers) and 
 let the \outRN{} registers become the \inRN{} registers  
 by window rotation. So, the $\ireg{0}$ register 
-that is assessed in \texttt{ChangY} at line 6 is 
+assessed in \texttt{ChangY} at line 6 is 
 the same register as the $\oreg{0}$ modified in 
 \texttt{CALLER} at line 1. 
 }
@@ -242,7 +242,7 @@ update the special register {\tt Y}
 with the value of $\ireg{0} \! \xorOP 0$
 (bitwise exclusive OR). 
 {\color{blue} Note that the current $\ireg{0}$ 
-register is the $\oreg{0}$ at line 1.}
+register is the same register as $\oreg{0}$ at line 1.}
 However, the write is delayed for $X$ cycles,
 where $X$ is some predefined system parameter
 that ranges from 0 to 3.
@@ -709,8 +709,10 @@ refinement verification.
 % the program logic in Sec.~\ref{sec:logic},
 % including the inference rules and the soundness proof,
 % and show how our logic supprts the three main features of SPARCv8.
-We present the Pseudo-SPARCv8 program and how
-our logic supports refinement verification
+We present the Pseudo-SPARCv8 program and 
+the relational program logic for refinement reasoning
+% how
+% our logic supports refinement verification
 in \Sec{\ref{sec:refine-verification-sparc}}.
 We show the verification of a context switch routine
 in \sparc{} in Sec.~\ref{sec:ctxswitch}.
