@@ -362,6 +362,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     \begin{center}
         \input{picture/point-refine-ctxswitch}
         \figurecaption{Point doing refinement reasoning}
+        \vspace*{-0.5em}
         \label{fig:refinement reasoning}
     \end{center}
 
@@ -391,11 +392,11 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
 \begin{proof}
     We unfold 
     $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$ 
-    according to its definition 
+    by its definition 
     (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}), 
     where $\hprimset$ and $\Cspec{}$ are defined in 
     (\ref{ctxswitch-hprimset}) and (\ref{ctxswitch-Cspec}) 
-    respectively, and we need to prove the following hold:
+    respectively, and we prove the following hold:
     \begin{itemize}
         \item $\wfcdhp{\asmimp}{\Cspec{}}$. 
             Prove by applying Lemma~\ref{lemma:ctxswitch-wfcdhp}.
