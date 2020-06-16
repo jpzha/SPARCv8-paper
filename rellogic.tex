@@ -760,26 +760,29 @@ as the following form:
     }
 \]
 {\color{blue}
-The low-level \sparc{} program has 
-some differences between the \sparc{} program defined in 
-\Sec{\ref{sec:modeling}}: 
+The low-level \sparc{} program is a bit different 
+from the \sparc{} program defined in 
+\Sec{\ref{sec:modeling}}:
 \begin{enumerate}
     \item The low-level \sparc{} program use simple 
         instructions and commands defined in 
         \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. 
         It means that we need to give semantics to the additional 
         pseudo instructions $\Psave$, $\Prestore$ and 
-        $\cprint$. Since the $\Psave$ and $\Prestore$ 
+        $\cprint$ in low-level \sparc{} program. 
+        Since the $\Psave$ and $\Prestore$ 
         are specific forms of $\csave{}$ and 
         $\crestore{}$, and $\cprint$ is a primitive 
         responsible for generating observable event
-        like the high-level one, defining their 
-        semantics in low-level is not a challenge.
+        the same as the high-level one, defining their 
+        semantics is not a challenge.
     \item The program transition defined in 
         \Sec{\ref{sec:modeling}} doesn't generate 
         observable event. Here, in order to support 
-        refinement verification, each step of the 
-        program produces either an empty message $\tau$, 
+        refinement verification, 
+        since we use the event trace refinement, 
+        each step of the program 
+        produces either an empty message $\tau$, 
         or an output $\outEvt{\val}$ that is produced 
         by $\cprint$. 
 \end{enumerate}
