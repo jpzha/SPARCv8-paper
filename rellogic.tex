@@ -795,7 +795,7 @@ our Coq code or TR~\cite{coqimp}.
 {\color{blue} Note that the client 
 code and the implementations of abstract assembly primitives 
 in low-level are both \sparc{} code heap. So, we do not need 
-to define how they are linked in semantics like high-level.} 
+to define their linking in semantics.} 
 % \ref{sec:more-llang}. 
 
 % \input{picture/StateRel}
@@ -840,13 +840,13 @@ in high-level program. Their relation is represented as
 ``$\rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}$".  
 We use ``$\curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}$" 
 to represent the state relation of current thread $\thrdid$ 
-in low- and high-level program. 
+in low- and high-level programs. 
 % Full definitions of the state relation 
 % can be found in Appendix \ref{sec:more-staterel}.
 
-The correctness of abstract assembly primitive 
+The correctness of abstract assembly primitives 
 is defined in terms of {\it contextual refinement}.  
-Below we give its formal definition in 
+We give its formal definition in 
 \Def{\ref{def:prim-correctness}}.  
 And we use {\it event trace refinement} 
 proposed by \etal{Liang} \cite{liang14lics}.
@@ -880,9 +880,9 @@ will never get stuck (shown as $\progsafe(\HProg)$),
 then there is an {\it event trace refinement}~\cite{liang14lics}, 
 which means that $\prog$ produces no more observable behaviors 
 than $\HProg$ and is denoted as $\prog \refine \HProg$,  
-between low- and high-level program. $\progsafe(\HProg)$ 
+between low- and high-level programs. $\progsafe(\HProg)$ 
 % which means that the high-level program will never get stuck,  
-is defined below formally : 
+is defined formally below: 
 \[
     \small
     \progsafe(\HProg) \ \define \ 
