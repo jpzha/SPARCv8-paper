@@ -1860,7 +1860,7 @@ shows selected inference rules for refinement verification in our
 logic. The top rule $\textbf{WfPrim}$ verifies the contextual refinement 
 between the code heap $\asmimp$ and the corresponding abstract assembly 
 primitive set $\hprimset$. It requires that each code block specified 
-in $\Cspec$ can be verified with respect to the specification, 
+in $\Cspec$ can be verified with respect to its specification, 
 shown as ($\wfcdhp{\asmimp}{\Cspec}$), and the specification 
 of the implementation of the abstract assembly primitive needs 
 to meet some restrictions, shown as $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$, 
@@ -1888,7 +1888,7 @@ means there is no sub-term in
 form of $(\astCurCont{\thrdid}{\hthrdlocalst})$, 
 $(\hregsto{\hrn}{\val})$ and $\safePrimAst{\primcom}$ 
 in frame $\relastP_r$, 
-because the state they described are not separated by 
+because the state they described is not separated by 
 separation conjunction $\sepstar$. 
 % There is an omitted side condition in presentation that: 
 % the states about {\it current thread} 
@@ -1904,7 +1904,7 @@ separation conjunction $\sepstar$.
 % which are not separated by separation 
 % conjunction $\sepstar$. 
 The \textbf{ABSCSQ} rule allows us to execute the high-level 
-primitive command described in precondition. 
+primitive command specified in precondition. 
 The implication $\absExec{\relastP}{\relastP'}$ 
 is defined below formally: 
 \[
@@ -1917,11 +1917,11 @@ is defined below formally:
             (\asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\relastP}) \Longrightarrow \\
             \quad
-            ((\exists \, \hpstate', \primcom', \word'. \, 
-        (\primTrans{(\primcom, \hpstate)}
+            (\exists \, \hpstate', \primcom', \word'. \, 
+            (\primTrans{(\primcom, \hpstate)}
         	{(\primcom', \hpstate')})
-        \, \land \, 
-        (\asrtmodel{(\state, \hpstate', \primcom', \word')}{\relastP'})))
+            \, \land \, 
+            (\asrtmodel{(\state, \hpstate', \primcom', \word')}{\relastP'}))
         % \forall \, \state, \hpstate, \primcom, \word. \, 
         % (\asrtmodel{(\state, \hpstate, \primcom, \word)}{\relastP})
         % \imp \\ \\[-9.5pt]
@@ -2203,17 +2203,18 @@ We define \INV{} to represent this invariant below formally:
         % \hpstate.\Mem, \args{\val})
         % \} \\
         % \\[-8pt]
-        \INV{(\primcom, \args{\val})} \ \define \ 
+        \!\!
+        \INV{(\primcom, \args{\val})} \, \define \, 
         \{
             (\state, \hpstate, \primcom, \word) \sepline
             \colorbox{yellow!80}{\!$\stateRel{\state}{\hpstate}$\!}
             \land 
             \colorbox{yellow!80}
             {\!\!\!
-                $\exists \, \hpstate'. \,
+                $(\exists \, \hpstate'. \,
                 \primMultiTrans
                     {(\primcom, \hpstate)}
-                    {*}{(\primdone, \hpstate')}$ 
+                    {*}{(\primdone, \hpstate')})$ 
             \!\!\!} \\
             \hspace*{15.8em} 
             \land \
