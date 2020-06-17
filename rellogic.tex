@@ -766,7 +766,7 @@ from the \sparc{} program defined in
 \Sec{\ref{sec:modeling}}:
 \begin{enumerate}
     \item The low-level \sparc{} program use simple 
-        instructions and commands defined in 
+        instructions defined in 
         \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. 
         It means that we need to give semantics to the additional 
         pseudo instructions $\Psave$, $\Prestore$ and 
@@ -774,16 +774,16 @@ from the \sparc{} program defined in
         Since the $\Psave$ and $\Prestore$ 
         are specific forms of $\csave{}$ and 
         $\crestore{}$, and $\cprint$ is a primitive 
-        responsible for generating observable event
-        the same as the high-level one, defining their 
-        semantics is not a challenge.
+        responsible for generating observable event, 
+        which does the same thing as the high-level one, 
+        defining their semantics is not a challenge.
     \item The program transition defined in 
         \Sec{\ref{sec:modeling}} doesn't generate 
         observable event. Here, in order to support 
         refinement verification, 
         since we use the event trace refinement, 
         each step of the program 
-        produces either an empty message $\tau$, 
+        generates either an empty message $\tau$, 
         or an output $\outEvt{\val}$ that is produced 
         by $\cprint$. 
 \end{enumerate}
@@ -792,7 +792,7 @@ from the \sparc{} program defined in
 % an output $\outEvt{\val}$ that is produced by the instruction 
 % $\cprint$ and acts as an observable behavior. 
 More details of the low-level program can be found in 
-our Coq code or TR~\cite{coqimp}. 
+our Coq code and TR~\cite{coqimp}. 
 {\color{blue} Note that the client 
 code and the implementations of abstract assembly primitives 
 in low-level are both \sparc{} code heap. So, we do not need 
@@ -804,7 +804,7 @@ to define their linking in semantics.}
 \label{subsec:correctness-primitive}
 
 We first establish a state relation 
-between low- and high-level program state. 
+between low- and high-level program states. 
 We define this relation below, shown as 
 ``$\stateRel{\state}{\hpstate}$". 
 \[
@@ -870,8 +870,9 @@ We use a code heap $\asmimp$
 % , which is a code heap, 
 to represent the implementations
  and $\hprimset$ to represent the set of corresponding 
-abstract assembly primitives. The contextual refinement between 
-$\asmimp$ and $\hprimset$, denoted as $\asmimp \ctxrefine \hprimset$, 
+abstract assembly primitives. 
+The contextual refinement, 
+denoted as $\asmimp \ctxrefine \hprimset$, 
 says that if and only if for any client code 
 (or context) $\code$, low-level program 
 state $\state$, high-level program state $\hpstate$, program counters 
@@ -1183,7 +1184,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap.
 
 \subsection{Relational Program Logic for Refinement Verification}
 \label{subsec:rellogic}
-\vspace*{-1em}
+\vspace*{-1.5em}
 \begin{center}
     \[
         \begin{array}{rcl}
@@ -1326,7 +1327,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap.
             \exists \, \state'. \, 
             (\asrtmodel{(\state', \hpstate, \primcom, \word)}{\relastP}) 
             \, \land \, \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \\ 
-            & & \quad
+            & & \qquad\quad
             \TYPE{where } \ \state = (\Mem, (\RFile, \Wstack), \DBuf), \, 
                     \state' = (\Mem, (\RFile', \Wstack), \DBuf')
             % \multicolumn{2}{l}
@@ -2556,7 +2557,7 @@ sequences and well-formed code heap.
     \end{itemize}
 \end{definition}
 
-Next we define the simulation for function in 
+Next, we define the simulation for function in 
 \Def{\ref{def:simfunc}}. It means that if there 
 exists a relational state $(\state, \hpstate, \primcom, \word)$ 
 satisfying the precondition $\relastP$, then we have 
@@ -2571,7 +2572,7 @@ which is used to ensure the termination preserving,
 and the depth $k$ of function call, which  
 increases by the \call{} instruction
 and decreases by \retl{} (unless $k=0$). 
-The simulation relation make sure 
+The simulation relation ensures 
 the safe execution of low-level SPARCv8 function  
 and the corresponding high-level abstract assembly primitive.
 
@@ -2760,11 +2761,15 @@ function.
         {(\relastP, \, \relastQ)}{\primcom}$.
 \end{lemma}
 \begin{proof}
-    We unfold 
+    By the definition of 
     $\simFunction{(\asmimp, \lab{})}
-        {(\relastP, \, \relastQ)}{\primcom}$ according 
-    to its definition (in \Def{\ref{def:simfunc}}) 
-    and get the following assumptions:
+        {(\relastP, \, \relastQ)}{\primcom}$
+    (in \Def{\ref{def:simfunc}}), the following hold:
+    % We unfold 
+    % $\simFunction{(\asmimp, \lab{})}
+    %     {(\relastP, \, \relastQ)}{\primcom}$ according 
+    % to its definition (in \Def{\ref{def:simfunc}}) 
+    % and get the following assumptions:
     \begin{align}
         & \semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
             {\pc}{\asmimp[\pc]} \\
@@ -2772,9 +2777,11 @@ function.
         & \asrtmodel{(\state, \hpstate, \word, \primcom)}
             {\relastP}
     \end{align}
-    We need to prove that there exisits 
-    $i \in \Index$, such that: 
+    And we need to prove: 
+    % that there exisits 
+    % $i \in \Index$, such that: 
     \[
+        \exists \, i \in \Index. \
         \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
                 {i}{0}{(\primcom, \hpstate)}
     \]
@@ -2819,8 +2826,11 @@ function.
             We proof it by induction over the derivation of 
             $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$.
 
-        \item We unfold $\wfcdhp{\asmimp}{\Cspec}$ and get that 
-            for all $\lab{} \in \dom(\Cspec{})$, $\lgvl$ :
+        \item By the definition of 
+            $\wfcdhp{\asmimp}{\Cspec}$
+            (defined in 
+            \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}), 
+            we get that for all $\lab{} \in \dom(\Cspec{})$, $\lgvl$:
             \begin{align}
                 & \Cspec(\lab{}) = (\relspecpre, \relspecpost)
                     \label{a:wfcdhp-spec} \\
@@ -2846,10 +2856,12 @@ function.
             \semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$, 
             we can finish the proof by applying this lemma. 
         
-        \item We unfold $\wfprim{\Cspec{}}{\asmimp}{\hprimset}$ 
-            according to its definition 
-            (defined in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}) 
-            and get:
+        \item By the definition of 
+            $\wfprim{\Cspec{}}{\asmimp}{\hprimset}$ 
+            % according to its definition 
+            (defined in 
+            \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}), 
+            the following hold:
             \begin{align}
                 & \wfcdhp{\asmimp}{\Cspec{}} \label{a:wdcdhp2} \\
                 & \begin{array}{l}
@@ -2898,7 +2910,7 @@ function.
             (defined in \Def{\ref{def:well-defined specification}}), 
             which requires that the abstract assembly primitive should 
             be specified in the precondition; as for the 
-            third, we prove it by applying 
+            third one, we prove it by applying 
             Lemma~\ref{lemma:function correctness}, which 
             says that the simulation for instruction sequence 
             can compose to simulation for function, on 
@@ -2907,19 +2919,25 @@ function.
     Thus, we are done.
 \end{proof}
 
-Then, we present  
+Then, we give  
 Lemma~\ref{lemma:Simulation Implies Primitive Correctness}, 
-which says that our simulation for function can imply 
-primitive correctness. We divide the correctness proof of 
+which says that our simulation for function implies 
+primitive correctness. We introduce a whole program 
+simulation defined in \Def{\ref{def:wpsim}} and divide 
+the correctness proof of 
 Lemma~\ref{lemma:Simulation Implies Primitive Correctness}
-into two steps. We introduce a whole program simulation 
-defined in \Def{\ref{def:wpsim}}. \textit{First}, we prove 
-that the simulation for function implies the whole program 
-simulation as shown in 
+into two steps.
+% We divide the correctness proof of 
+% Lemma~\ref{lemma:Simulation Implies Primitive Correctness}
+% into two steps. We introduce a whole program simulation 
+% defined in \Def{\ref{def:wpsim}}. 
+\textit{First}, we prove 
+that the simulation for function implies 
+the whole program simulation in 
 Lemma~\ref{lemma:function sim implies whole program sim}; 
 \textit{Second}, we prove that 
 the whole program simulation implies the refinement relation 
-between low- and high-level programs as shown in
+between low- and high-level programs in
 Lemma~\ref{lemma:wpsim-implies-refinement}. 
 \begin{definition}[Whole program simulation]
     \label{def:wpsim}
@@ -2960,11 +2978,11 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
 \end{lemma}
 \begin{proof}
     Because the whole program simulation is defined 
-    co-inductively. We prove this lemma by co-induction. 
-    We discuss whether the low-level program executes 
-    the command $\comm$ in client code $\code$, or in 
-    the implementation of abstract assembly primitive 
-    $\asmimp$.
+    co-inductively, we prove this lemma by co-induction. 
+    We discuss whether the low-level program 
+    is executing the command $\comm$ in client code 
+    $\code$ or the implementation of 
+    abstract assembly primitive $\asmimp$. 
     \begin{itemize}
         \item If $\comm \in \dom(\code)$, we use the 
             following figure to illustrate such case:
@@ -2996,7 +3014,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
             with its corresponding abstract assembly primitive. 
             Such simulation relation 
             (shown as $\preccurlyeq$ in the above figure)
-            ensure that for each step 
+            ensures that for each step 
             of low-level execution, the high-level program will 
             execute zero or one step.
     \end{itemize} 
