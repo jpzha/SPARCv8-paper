@@ -1159,8 +1159,8 @@ before $\retl$.
 The \myrule{BE} rule considers whether the control-transfer 
 occurrs after executing the following instruction $\simplins{}$, 
 according to the value of register $\regz$. If the 
-value of the register $\regz$ is zero and the control-transfer
-occurs, it does the same 
+value of the register $\regz$ is not zero 
+and the control-transfer occurs, it does the same 
 things as the \myrule{JMP} rule; otherwise, the control-transfer 
 does not occur and the remaining instruction 
 sequence $\cblk$ should be well-formed. 

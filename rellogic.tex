@@ -32,7 +32,7 @@ In order to support such expansion, we do the following:
         unlike the previous work presented in our 
         conference paper, are defined as 
         simulation relations between low- and high-level 
-        program. And the soundness proof needs to 
+        programs. And the soundness proof needs to 
         be reestablished. 
 \end{itemize}
 We show each part of work in detail in the following.
@@ -191,9 +191,9 @@ of client code preserve such restriction:
     to modify special registers and do \textit{not} 
     give semantics to \cwr{} instruction in high-level 
     client code. Modifying them is hidden in the 
-    implementation of the abstract assembly primitives
+    implementations of the abstract assembly primitives
     in low-level. 
-    And the delay buffer can be omitted in high-level
+    And the delay buffer is omitted in high-level
     program state. 
     % omit them 
     % in the Pseudo-SPARCv8 program state. Operating them 
@@ -205,7 +205,7 @@ of client code preserve such restriction:
     \item 
     As shown in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     we find that we can abstract the register window 
-    and the memory in stack for storing contexts 
+    and memory in stack used to store contexts 
     into a list (defined as 
     HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}).  
     After this abstraction, we don't need to care about 
@@ -373,7 +373,7 @@ and a set of abstract primitives $\hprimset$,
 which is a partial mapping from labels to 
 abstract assembly primitive. The code heap $\code$ in $\HMd$ 
 acts as the client code to 
-call abstract assembly primitive. 
+call abstract assembly primitives. 
 The abstract assembly primitive $\hprim$ 
 is defined as a relation that takes a list of values 
 as arguments and maps a high-level program state 
@@ -389,19 +389,19 @@ to another.
 We add three pseudo instructions in simple instruction. 
 The $\Psave \ \word$ 
 and $\Prestore$ restrict the \csave{} and \crestore{}
-instructions such that they can only be used in specific form as 
+instructions to be used in specific form as 
 mentioned before.  
 We also introduce $\cprint \ \reg{}$, 
 whose execution will output the value $\val$ in $\reg{}$ and 
 generate an message $\outEvt{\val}$, 
 % whose execution will occur an output $\outEvt{\val}$, 
-to generate observable event. 
+to generate observable events. 
 The high-level message 
 $\hmsg$ can be either an empty message $\empmsg$, or an output 
 $\outEvt{\val}$, or a $\callEvt{\lab{}, \args{\val}}$ meaning to 
 call a primitive labelled $\lab{}$ with arguments $\args{\val}$. 
 
-The machine states of a high-level Pseudo-SPARCv8 program 
+The machine states of the high-level Pseudo-SPARCv8 program 
 is defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}. 
 The high-level program $\HProg$ is a pair of high-level code 
 $\HMd$ and high-level state $\hpstate$. High-level 
@@ -591,7 +591,7 @@ the high-level register file $\hRfile$,
 % the block of the current stack frame $\block$, 
 and the high-level frame list $\hWstk$. 
 $\hrn$ is the high-level register names, where 
-the $\regcwp$ is omitted as introduced before,  and 
+the $\regcwp$ is omitted as introduced before and 
 we also omit special register for simplicity, 
 because we don't allow 
 the high-level client code to modify them
@@ -725,7 +725,8 @@ Pseudo-SPARCv8 program as we have explained and shown in
 The instruction $\Prestore$ does the reverse, 
 freeing the block of current stack frame
 (represented as $\mfree(\block, \Mem) = \Mem'$), and 
-restoring the contexts of the previous procedure saved in $\hWstk$. 
+restoring the context of the previous procedure 
+saved in $\hWstk$. 
 % More details of the high-level Pseudo 
 % SPARCv8 program can be seen in Appendix \ref{appendix:more-about-high-level-insExec}.
 
@@ -760,7 +761,7 @@ as the following form:
     }
 \]
 {\color{blue}
-The low-level \sparc{} program is a bit different 
+The low-level \sparc{} program is somewhat different 
 from the \sparc{} program defined in 
 \Sec{\ref{sec:modeling}}:
 \begin{enumerate}

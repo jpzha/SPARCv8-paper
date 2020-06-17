@@ -46,9 +46,12 @@ program logic for assembly code.
 	\item \textit{Delayed writes}.
 	{\color{blue}
     The $\cwr$ instruction that writes a special class 
-    of registers such as $\regwim$ used to justify 
-    whether a register window is valid does not take 
-    effect immediately. That is, ``they may take until 
+    of registers such as window invalid mask register 
+    \regwim{} does not take effect immediately. 
+    % $\regwim$ used to justify 
+    % whether a register window is valid does not take 
+    % effect immediately. 
+    That is, ``they may take until 
     completion of the third instruction following the write 
     instruction to consummate their write operation. 
     The number of delay instructions (0 to 3) 
@@ -204,8 +207,8 @@ registers in the original window are no longer accessible,
 and the original \outRN{} registers become the \inRN{} registers
 in the current window. 
 {\color{blue}
-In the example in 
-\Fig{\ref{fig:An Example for SPARC Code}}, 
+% In the example in 
+In \Fig{\ref{fig:An Example for SPARC Code}}, 
 the \texttt{CALLER} uses instruction \csave{} 
 (at line 3) to save its context 
 (\localRN{} and \inRN{} registers) and 
