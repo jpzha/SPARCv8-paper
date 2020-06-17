@@ -157,6 +157,7 @@ in the final state, because the execution of
 $\primsw$ will modify the program counters 
 in $\hthrdlocalst_n$. 
 
+{\color{blue}
 \paragraph{\textbf{Proof outline}} We show how to use 
 our relational program logic presented in 
 \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}} 
@@ -240,7 +241,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
             \item $\hpstate'.\hthrdlocalst.\pc = \lab{} + 8$, 
                 $\hpstate'.\hthrdlocalst.\npc = \lab{} + 12$
                 (where $\hpstate'.\hthrdlocalst.\hRstate.\hRfile
-                    ({\color{red} \reg{15}}) = \lab{}$);
+                    ({\reg{15}}) = \lab{}$);
             \item there exists $\hpstate'', \hpstate_r'$, 
                 $\primsw(\args{\val})(\hpstate \uplus \hpstate_r) 
                     (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$, 
@@ -408,8 +409,8 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     can be reestablished in verifying 
     (\ref{ctxswitch-wfsn}), when context switch routine 
     returns, as shown in \Fig{\ref{fig:refinement reasoning}}.
-    In \Fig{\ref{fig:refinement reasoning}}, we use block 
-    circle to represent the point applying \myrule{ABSCSQ} rule, 
+    In \Fig{\ref{fig:refinement reasoning}}, we use 
+    solid circle to represent the point applying \myrule{ABSCSQ} rule, 
     and use the solid line to repesent that the state relation 
     between low- and high-level holds. 
 \end{proof}
@@ -474,3 +475,4 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}).
 
 We present more details of this part of proof 
 work in TR~\cite{coqimp}.
+}

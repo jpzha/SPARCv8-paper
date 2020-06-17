@@ -69,7 +69,16 @@ program logic for assembly code.
 	\sparc{} uses register windows
 	and a window rotation mechanism
 	to avoid saving contexts in the stack directly
-	and achieves high performance in context management.
+    and achieves high performance in context management.
+    % {\color{blue}
+    % As the example shown in 
+    % \Fig{\ref{fig:An Example for SPARC Code}}, 
+    % the \texttt{CALLER} doesn't save its context in 
+    % stack in memory when calling function 
+    % \texttt{ChangeY},
+    % but use an instruction \csave{} to save 
+    % context by window rotation. 
+    % }
 	%and a significant reduction in context management.
 \end{itemize}
 
