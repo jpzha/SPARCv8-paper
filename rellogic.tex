@@ -2764,27 +2764,38 @@ function.
     By the definition of 
     $\simFunction{(\asmimp, \lab{})}
         {(\relastP, \, \relastQ)}{\primcom}$
-    (in \Def{\ref{def:simfunc}}), the following hold:
-    % We unfold 
-    % $\simFunction{(\asmimp, \lab{})}
-    %     {(\relastP, \, \relastQ)}{\primcom}$ according 
-    % to its definition (in \Def{\ref{def:simfunc}}) 
-    % and get the following assumptions:
-    \begin{align}
-        & \semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
-            {\pc}{\asmimp[\pc]} \\
-        & \models\asmimp:\Cspec{} \\
-        & \asrtmodel{(\state, \hpstate, \word, \primcom)}
-            {\relastP}
-    \end{align}
-    And we need to prove: 
-    % that there exisits 
-    % $i \in \Index$, such that: 
-    \[
-        \exists \, i \in \Index. \
-        \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
-                {i}{0}{(\primcom, \hpstate)}
-    \]
+    (in \Def{\ref{def:simfunc}}), 
+    we need to prove that, for all $\state$, $\hpstate$, 
+    $\word$ and $\primcom$: 
+    \begin{multline}
+        \asrtmodel{(\state, \hpstate, \word, \primcom)}
+            {\relastP} \implies \\
+            \exists \, i \in \Index. \
+            \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
+                {i}{0}{(\primcom, \hpstate)}  
+    \end{multline}
+    
+    % the following hold:
+    % % We unfold 
+    % % $\simFunction{(\asmimp, \lab{})}
+    % %     {(\relastP, \, \relastQ)}{\primcom}$ according 
+    % % to its definition (in \Def{\ref{def:simfunc}}) 
+    % % and get the following assumptions:
+    % \begin{align}
+    %     & \semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
+    %         {\pc}{\asmimp[\pc]} \\
+    %     & \models\asmimp:\Cspec{} \\
+    %     & \asrtmodel{(\state, \hpstate, \word, \primcom)}
+    %         {\relastP}
+    % \end{align}
+    % And we need to prove: 
+    % % that there exisits 
+    % % $i \in \Index$, such that: 
+    % \[
+    %     \exists \, i \in \Index. \
+    %     \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
+    %             {i}{0}{(\primcom, \hpstate)}
+    % \]
     The index $i$ can be instantiated as a pair of 
     $(\word, |\,\asmimp[\pc]\,|)$, where $|\,\cblk\,|$ means 
     getting the length of instruction sequence $\cblk$. 
