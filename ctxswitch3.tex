@@ -296,9 +296,9 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
             \item $\Sta(\primsw(\args{\val}), \relastP_r)$. 
         \end{itemize}
 
-        Prove the definitions of $\Apre$ and $\Apost$. 
-        They describe the state task $\tid_c$ and $\tid_n$
-        and memory location $\TaskNew$
+        Prove by the definitions of $\Apre$ and $\Apost$. 
+        They specify the states of task $\tid_c$ and 
+        $\tid_n$ and memory location $\TaskNew$
         % of original current task $\tid_c$,  
         % new task $\tid_n$ and memory location $\TaskNew$ 
         in low- and high-level. And we define the frame 
@@ -308,17 +308,16 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
         % in low- and high-level. 
         % We define the frame 
         $\relastP_r$ to describe the state of the 
-        remainder tasks and memory 
+        remaining tasks and memory 
         (excluding tasks $\tid_c$, $\tid_n$, and 
         memory location $\TaskNew$) in low- and high-level.
         Then, we can prove that the 
         state relation between low- and high-level 
-        holds at the entrance and 
+        holds at the entry and 
         exit of context switch routine. 
-        And as we have explained, the execution of 
-        $\primsw$ only accesses 
+        Since the execution of $\primsw$ only accesses 
         the current and new tasks in thread pool, and the 
-        memory location $\TaskNew$. So, 
+        memory location $\TaskNew$, 
         the threads and memory specified in assertion 
         $\relastP_r$ remain unchanged 
         in the final state and $\relastP_r$ keeps 
