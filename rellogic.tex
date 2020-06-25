@@ -784,19 +784,19 @@ from the \sparc{} program defined in
         since we use the event trace refinement, 
         each step of the program 
         generates either an empty message $\tau$, 
-        or an output $\outEvt{\val}$ that is produced 
+        or an output $\outEvt{\val}$ produced 
         by $\cprint$. 
 \end{enumerate}
 }
 % Each step of the program produces either an empty message $\empmsg$, or  
 % an output $\outEvt{\val}$ that is produced by the instruction 
 % $\cprint$ and acts as an observable behavior. 
-More details of the low-level program can be found in 
-our Coq code and TR~\cite{coqimp}. 
 {\color{blue} Note that the client 
 code and the implementations of abstract assembly primitives 
 in low-level are both \sparc{} code heap. So, we do not need 
 to define their linking in semantics.} 
+More details of the low-level program can be found in 
+our Coq code and TR~\cite{coqimp}. 
 % \ref{sec:more-llang}. 
 
 % \input{picture/StateRel}
