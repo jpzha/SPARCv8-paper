@@ -189,8 +189,8 @@ or memory operations
 operations ``\csave{}" and ``\crestore{}", or special 
 register operations ``\rd{}" (read) and ``\cwr{}" (write)};
 (2) control-transfer instructions, 
-{\color{blue} like \call{} and \retl{} for 
-function call and return, and \jmp{} and \be{} for 
+{\color{blue} \eg{} \call{} and \retl{} for 
+function call and return, or \jmp{} and \be{} for 
 unconditional and conditional branch}. 
 
 The machine state $\state$ consists of three parts:
@@ -252,8 +252,8 @@ $\DBuf$ below.
 
 \begin{figure*}[!t]
 	\centering
-	%\includegraphics[width=63ex]{window}
-	\includegraphics[width=60ex]{window}
+	\includegraphics[width=63ex]{window}
+	% \includegraphics[width=58ex]{window}
 	\caption{Register Windows (figure taken from \cite{sparc})}
 	\label{fig:RegisterWindows}
 \end{figure*}
@@ -516,13 +516,18 @@ from $\lab{}$ in $\code$ below.
 \subsection{Operational Semantics}
 \label{subsec : Operational Semantics}
 
+The operational semantics is taken from 
+\etal{Wang}~\cite{sparc-formalization},
+but we use block-based memory model and 
+omit features like interrupts and traps.
+We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 \begin{figure*}
 	\centering
 	\subfigure[Program Transition]
 	{
 		\begin{minipage}[b]{1\textwidth}
-		\small
-		% \scriptsize
+		% \small
+		\scriptsize
 		\[
 			\infer
 			{
@@ -551,8 +556,8 @@ from $\lab{}$ in $\code$ below.
 	\subfigure[Control Transfer Instruction Transition]
 	{	
 		\begin{minipage}[b]{1\textwidth}
-		\small
-		% \scriptsize
+		% \small
+		\scriptsize
         \[
             \infer
             {
@@ -632,8 +637,8 @@ from $\lab{}$ in $\code$ below.
 	\subfigure[Save, Restore and Wr instruction Transition]
 	{
 		\begin{minipage}[b]{1\textwidth}
-			\small
-			% \scriptsize
+			% \small
+			\scriptsize
 			\begin{minipage}{0.48\textwidth}
 			\[
 				\infer
@@ -808,12 +813,6 @@ from $\lab{}$ in $\code$ below.
 		(taken from~\cite{sparc-formalization})}
 	\label{Selected Operational Semantics}
 \end{figure*}
-
-The operational semantics is taken from 
-\etal{Wang}~\cite{sparc-formalization},
-but we use block-based memory model and 
-omit features like interrupts and traps.
-We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 The program transition relation 
 {\color{blue} $\LGlobTrans{(\code, \state, \pc, \npc)}
 	{ \ \, }
@@ -945,9 +944,11 @@ the one cycle delay for the control transfer.
 The $\call$ instruction saves $\pc$ into the register $\RAreg$,
 while $\retl$ uses $\RAreg \!+\! 8$ as the
 return address (which is the address for the second instruction
-following the $\call$). Evaluation of
-expressions $\aexp$ and $\oexp$ is defined
-as 
+following the $\call$). 
+{\color{blue} The $\be{} \ \lab{}$ justifies whether 
+the branch is taken according to the value of $\regz$.}
+Evaluation of
+expressions $\aexp$ and $\oexp$ is defined as 
 % $\evalR\aexp\RFile$ 
 and 
 % $\evalR\oexp\RFile$
@@ -982,28 +983,6 @@ calculation of address.
 		\end{array}
 	\right.
 \]
-%%addresses properly aligned on a 4-byte boundary
-%
-%The second layer Control Transfer Instruction Transition
-%describes the change of pc and npc for each \sparc{} instruction execution.
-%Transition rules for control-transfer instructions
-%(e.g., \jmp, \call, \retl) are defined in this layer.
-%We can see that delayed control-transfer instructions like $\call$
-%will change $\npc$ instead of $\pc$ to target,
-%set original $\npc$ to $\pc$
-%and cause the control transfer delayed one cycle.
-%The instruction $\retl$ and $\ret$ are two common instructions in \sparc{},
-%which are used for function return.
-%The instruction $\retl$ returns to the address of $\lab{}+8$
-%(where $R(\reg{15}) = \lab{}$).
-%However, the address used for return for instruction $\ret$ is
-%saved in $\reg{31}$.
-%The instruction $\ret$ is used for the situation that
-%the procedure will execute an instruction $\csave$ and allocate a new window for itself.
-%The instruction $\call$ stores its label in register $\reg{15}$,
-%and instruction $\csave$ will let the original $\reg{15}$ become $\reg{31}$
-%of the new window by window rotation.
-
 
 The $\cwr$ wants to save the bitwise exclusive OR of
 the operands into the special register $\sr$, but
