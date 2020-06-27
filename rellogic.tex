@@ -2899,20 +2899,26 @@ function.
                     {(\relspecpre \ \lgvl, \,\relspecpost \ \lgvl)}
                     {\hprim(\args{\val})}$; 
             \end{itemize}
-            The proof of the first subgoal can be done from 
+            The proof of the first subgoal can be done by 
             assumption (\ref{a:wdspec}) directly; the second 
             one can be done according to the definition of 
             $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
             (defined in \Def{\ref{def:well-defined specification}}), 
             which requires that the abstract assembly primitive should 
             be specified in the precondition; as for the 
-            third one, we prove it by applying 
-            Lemma~\ref{lemma:function correctness}, which 
-            says that the simulation for instruction sequence 
-            can compose to simulation for function, on 
-            (\ref{a:semwdcdhp2}). 
+            third one, we first prove that the following 
+            holds by (\ref{a:semwdcdhp2}):
+            \begin{equation}
+                \semwfseqrel{\Cspec}{\relspecpre \ \lgvl}
+                    {\relspecpost \ \lgvl}{\asmimp[\lab{}]}
+                \label{a:startingblk-welldefined}
+            \end{equation}
+            Then, we finish the proof by 
+            (\ref{a:startingblk-welldefined}) 
+            (\ref{a:semwdcdhp2}) and 
+            Lemma~\ref{lemma:function correctness}. 
     \end{itemize}
-    Thus, we are done.
+    Thus we are done.
 \end{proof}
 
 Then, we give  
@@ -2973,12 +2979,12 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \wpsim^{i} ((\code, \hprimset), \hpstate)$.  
 \end{lemma}
 \begin{proof}
-    Because the whole program simulation is defined 
+    Since the whole program simulation is defined 
     co-inductively, we prove this lemma by co-induction. 
     We discuss whether the low-level program 
     is executing the command $\comm$ in client code 
-    $\code$ or the implementation of 
-    abstract assembly primitive $\asmimp$. 
+    $\code$ or the implementations of 
+    abstract assembly primitives $\asmimp$. 
     \begin{itemize}
         \item If $\comm \in \dom(\code)$, we use the 
             following figure to illustrate such case:
@@ -2993,7 +2999,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
             And the state relation, shown as $\stateRel{\state}{\hpstate}$
             and defined in \Sec{\ref{subsec:correctness-primitive}}, 
             can be preserved after the execution, shown 
-            as $\stateRel{\state}{\hpstate}$. So, we can 
+            as $\stateRel{\state'}{\hpstate'}$. So, we 
             establish the simulation relation between 
             low- and high-level programs.  
         
@@ -3016,7 +3022,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \end{itemize} 
 
     The assumption $\progsafe((\code, \hprimset), \hpstate)$ 
-    makes sure that the client code will not include instruction 
+    makes sure that the client code doesn't include instruction 
     \csave{}, \crestore{} and \cwr{}, because we do not give 
     semantics to them in high-level as explained in 
     \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}. 
@@ -3038,9 +3044,12 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \]
 \end{lemma}
 \begin{proof}
-    We unfold $\asmimp \refine \hprimset$ according to 
-    its definition (in \Def{\ref{def:prim-correctness}}) 
-    and get the following holds: 
+    By the definition of $\asmimp \ctxrefine \hprimset$
+    (in \Def{\ref{def:prim-correctness}}), we get the 
+    following assumptions:
+    % We unfold $\asmimp \crefine \hprimset$ according to 
+    % its definition (in \Def{\ref{def:prim-correctness}}) 
+    % and get the following holds: 
     \begin{align}
         & \stateRel{\state}{\hpstate} \\
         & \progsafe((\code, \hprimset), \hpstate) \\
