@@ -62,7 +62,7 @@ We show each part of work in detail in the following.
 % program. And 
 
 The Pseudo-SPARCv8 language contains two parts: 
-the SPARCv8 code as client code, 
+the SPARCv8 code as client 
 and the set of abstract assembly primitives. 
 Here, we require that the execution of client SPARCv8 code 
 preserves a restriction between register 
@@ -79,7 +79,7 @@ of adjacent windows are omitted in the figure).
     \label{fig:Abstraction of Register Windows and Memory}
     \vspace{-0.5em}
 \end{center}
-During the SPARCv8 program's execution, 
+During the execution of SPARCv8 program, 
 part of previous procedures' contexts 
 (the light gray part in the left side of
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) 
@@ -141,18 +141,17 @@ of client code preserve such restriction:
     the stack pointer (\spreg{}) always 
     points to the top of its stack frame, we require that   
     each instruction, like \cadd{} and \ld{}, whose 
-    execution will not rotate register window, 
-    is not allowed to update the value of \spreg{}; 
+    execution doesn't operate register window, 
+    is prohibited to update the value of \spreg{}; 
     and as for the \csave{} and \crestore{}, 
     % whose executions 
     % will rotate register window, 
     we require them 
     to be used in specific forms. 
     We introduce ``$\Psave \ \word$" as a macro of 
-    ``$\csave{} \ \spreg, -\word, \spreg$", 
-    whose execution makes sure that a new \spreg{} 
-    will be generated for the next window
-    and point to the stack frame size $w$ allocated newly. 
+    ``$\csave{} \ \spreg, -\word, \spreg$", whose execution 
+    generates a new \spreg{} pointing to the stack frame 
+    size $w$ allocated newly for the next window. 
     We also introduce ``$\Prestore$" 
     as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
     \footnote{In SPARCv8, $\greg{0}$ is always equal to 0, 
@@ -166,7 +165,7 @@ of client code preserve such restriction:
     
     \item 
     % The special registers can't be modified arbitrarily.
-    The special registers in SPARCv8 usually act specific 
+    The special registers in SPARCv8 usually play specific 
     roles and modifying them should be done carefully. 
     For example, \regwim{} marks which window is invalid.
     \begin{center}
@@ -178,24 +177,25 @@ of client code preserve such restriction:
         \label{fig:problem of modifying wim arbitrary}
     \end{center}
     If we change its value shown in 
-    \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
+    \Fig{\ref{fig:Abstraction of Register Windows and Memory}} 
     to mark another window invalid, as shown in 
     \Fig{\ref{fig:problem of modifying wim arbitrary}}, 
     and call context switch routine to  
     save the contents of previous windows into memory
     until the invalid one at this moment,  
-    there will be a problem that we don't know 
-    where to save the contents of window that 
-    is marked invalid originally 
-    (window filled with dots in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
+    a problem will arise since we don't know 
+    where to save the contents of window marked 
+    invalid originally 
+    (filled with dots 
+    in \Fig{\ref{fig:problem of modifying wim arbitrary}}). 
     % Supposing the register window and  
-    So, we don't allow client code 
-    to modify special registers and do \textit{not} 
-    give semantics to \cwr{} instruction in high-level 
+    So, we forbid the client 
+    to modify special registers and give \textit{no}
+    semantics to instruction \cwr{} in high-level 
     client code. Modifying them is hidden in the 
     implementations of the abstract assembly primitives
     in low-level. 
-    And the delay buffer is omitted in high-level
+    And the delay buffer can be omitted in high-level
     program state. 
     % omit them 
     % in the Pseudo-SPARCv8 program state. Operating them 
@@ -207,11 +207,11 @@ of client code preserve such restriction:
     \item 
     As shown in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
     we find that we can abstract the register window 
-    and memory in stack used to store contexts 
+    and memory in stack storing contexts 
     into a list (defined as 
     HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}).  
     After this abstraction, we don't need to care about 
-    whether the contexts are saved in register window or 
+    whether the contexts are saved in register windows or 
     memory, and don't need to describe the contents of windows unused 
     (the windows in white color in 
     \Fig{\ref{fig:Abstraction of Register Windows and Memory}}, 
@@ -224,7 +224,7 @@ of client code preserve such restriction:
     abstraction, because the low-level program 
     should be realistically modelled, 
     and the implementations of some primitives 
-    need to know the existance of register window,  
+    need to know the existance of register windows, 
     for instance, the context switch routine 
     needs to save the contents 
     of the register window into stack (in memory).
@@ -232,7 +232,6 @@ of client code preserve such restriction:
 
 \begin{figure*}[!t]
     \centering
-    \vspace{-2em}
     \small
     \[
         \begin{array}{rcclcrccl}
@@ -301,6 +300,7 @@ of client code preserve such restriction:
 \begin{figure*}[!t]
     \centering
     \small
+    \vspace{-1em}
     \[
         \begin{array}{rcclrcclrccl}
             \TYPE{(HProg)} & \ \HProg \ & \define & 
@@ -320,26 +320,6 @@ of client code preserve such restriction:
             (\hRfile, \hWstk) \\
             \\
 
-            % \TYPE{(HProg)} & \ \HProg \ & \define & 
-            % (\HMd, \hpstate) &
-            % \TYPE{(HState)} & \hpstate & \define & 
-            % \multicolumn{3}{l}
-            % {
-            %     (\thrdpool, \thrdid, \hthrdlocalst, \Mem)
-            % }
-            % \\
-            % \\[-8pt]
-            % \TYPE{(ThrdPool)} & \thrdpool & \define & 
-            % \{ \thrdid \rightsquigarrow \hthrdlocalst \}^{*}
-            % & \ \ 
-            % \TYPE{(ThrdLcSt)} & \ \hthrdlocalst \ & \define & 
-            % (\hRstate, \pc, \npc) 
-            % & \qquad
-            % \TYPE{(Tid)} & \thrdid & \in & \Ztype \\
-            % \\
-            % \TYPE{(HRstate)} & \hRstate & \define & 
-            % (\hRfile, \hWstk) \\
-            % \\[-8pt]
             \TYPE{(HRegFile)} & \hRfile & \in &   
             \multicolumn{9}{l}
             {
@@ -361,20 +341,20 @@ of client code preserve such restriction:
             }
         \end{array}
     \]
-    \vspace{-1em}
+    % \vspace{-0.5em}
     \caption{Machine States for Pseudo-SPARCv8 Code}
     \label{fig:machine-state-concur-pseudo-sparc}
-    \vspace{-0.5em}
+    % \vspace{-0.5em}
 \end{figure*}
 
 We define the syntax of the high-level Pseudo-SPARCv8 language 
 in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}. 
 The code $\HMd$ has two parts : 
 the code heap $\code$ 
-and a set of abstract primitives $\hprimset$, 
+and the set of abstract primitives $\hprimset$, 
 which is a partial mapping from labels to 
 abstract assembly primitive. The code heap $\code$ in $\HMd$ 
-acts as the client code to 
+acts as the client to 
 call abstract assembly primitives. 
 The abstract assembly primitive $\hprim$ 
 is defined as a relation that takes a list of values 
@@ -390,14 +370,16 @@ to another.
 % we add three pseudo instructions. 
 We add three pseudo instructions in simple instruction. 
 The $\Psave \ \word$ 
-and $\Prestore$ restrict the \csave{} and \crestore{}
-instructions to be used in specific form as 
+and $\Prestore$ restrict the instruction \csave{} 
+and \crestore{} to be used in specific form as 
 mentioned before.  
 We also introduce $\cprint \ \reg{}$, 
-whose execution will output the value $\val$ in $\reg{}$ and 
-generate an message $\outEvt{\val}$, 
+whose execution outputs the value $\val$ in 
+general register $\reg{}$ and 
+generates an message $\outEvt{\val}$
+as an observable event.  
 % whose execution will occur an output $\outEvt{\val}$, 
-to generate observable events. 
+% to generate observable events. 
 The high-level message 
 $\hmsg$ can be either an empty message $\empmsg$, or an output 
 $\outEvt{\val}$, or a $\callEvt{\lab{}, \args{\val}}$ meaning to 
@@ -595,7 +577,7 @@ and the high-level frame list $\hWstk$.
 $\hrn$ is the high-level register names, where 
 the $\regcwp$ is omitted as introduced before and 
 we also omit special register for simplicity, 
-because we don't allow 
+because we forbid 
 the high-level client code to modify them
 \footnote{There is no problem to reserve special 
 registers in high-level register file and permit
@@ -604,12 +586,12 @@ The high-level frame list $\hWstk$ is a list of pairs
 $(\fm_1, \fm_2)$, which is used to save 
 % the block id $\block$ of the stack frame and  
 the contexts (\localRN{} and \inRN{} registers) 
-$\fm_1$ and $\fm_2$ of the previous procedure. 
+$\fm_1$ and $\fm_2$ of previous procedures. 
 After introducing the state of high-level program, 
 We define the primitive $\primsw$ as 
-an instantiation of $\hprim$ as following: 
+an instantiation of $\hprim$ below: 
 \[
-    \small
+    \small\!\!
     \begin{array}{l}
         \primsw \ \define \\
         \quad 
@@ -670,10 +652,10 @@ an instantiation of $\hprim$ as following:
 %     $$
 % }
 The execution of $\primsw{}$ primitive takes no arguments 
-($\args{\val} = \nil$), and change the identifier 
-of current thread according to the pointer saved 
+($\args{\val} = \nil$), and changes the identifier 
+of current thread according to the value 
 in location $\TaskNew$. We use parameters $\hpstate$ 
-and $\hpstate'$ to represent the machine state before 
+and $\hpstate'$ to represent the machine states before 
 and after execution of $\primsw{}$ respectively. 
 
 \paragraph{\textbf{Operational Semantics in High-level.}} 
@@ -719,7 +701,7 @@ as a new stack frame in memory
 % The size of the block $\block$ is from 64 byte to $\word$ byte. 
 The reason why it starts from 64 byte is that the 0 to 64 bytes 
 (16 words) in a stack frame are usually reserved to save 
-the contexts in window (\localRN{} and \inRN{} registers)
+the context in window (\localRN{} and \inRN{} registers)
 by convention \cite{sparc},   
 and this part of memory is abstracted away in 
 Pseudo-SPARCv8 program as we have explained and shown in 
@@ -836,8 +818,8 @@ except the current thread $\tid$; a singleton memory
 cell located $\TaskCur$ saving the current thread id; and shared 
 memory $\Mem'$ that is same as the high-level memory. 
 The delayed buffer $\DBuf$ is $\nil$, because client 
-code is not permitted to modify any special register 
-through $\cwr{}$ instructions. The memory $\Mem_T$ used to 
+is not permitted to modify any special register 
+through instructions $\cwr{}$. The memory $\Mem_T$ used to 
 save the contexts of the ready threads is {\it abstracted} as a thread pool 
 in high-level program. Their relation is represented as 
 ``$\rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}$".  
@@ -899,10 +881,11 @@ is defined formally below:
 {\color{blue}
 The client code $\code$ is a \sparc{} code heap, so 
 the high-level code is a pair of $\code$ and $\hprimset$. 
-And their linking is defined in 
-\Fig{\ref{fig:selected-opsem-high-level-prog}}. 
-The low-level code is a union of $\code$ and $\asmimp$, 
-shown as $(\code\uplus\asmimp)$, because both of 
+% And their linking is defined in 
+% \Fig{\ref{fig:selected-opsem-high-level-prog}}. 
+and the low-level code is a just union of 
+$\code$ and $\asmimp$, shown as 
+$(\code\uplus\asmimp)$, because both of 
 $\code$ and $\asmimp$ are \sparc{} code heap.
 \[
     \small
@@ -1237,7 +1220,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap.
 % \end{figure}
 \begin{figure*}[!t]
     \centering
-    \vspace{-0.5em}
+    \vspace{-0.8em}
     \[
         \begin{array}{lcl}
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
