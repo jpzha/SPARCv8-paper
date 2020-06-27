@@ -1010,13 +1010,13 @@ selected inference rules in our logic.
 {\color{blue}
 Our logic divides the proof work into three layers.
 We define the well-formed code heap in the form of 
-($\wfcdhp{\code}{\Cspec{}}$) to verify the code heap, 
+($\wfcdhp{\code}{\Cspec{}}$) to verify the code heap $\code$, 
 the well-formed instruction sequence in the form of 
-($\wfcblk{\astP}{\astQ}{\lab{}}{\cblk}$) to verify each 
-instruction sequence in code heap, and well-formed 
-instruction in the form of 
+($\wfcblk{\astP}{\astQ}{\lab{}}{\cblk}$) to verify the
+instruction sequence $\cblk$ starting from $\lab{}$
+in code heap, and well-formed instruction in the form of 
 ($\wfins{\astP}{\simplins{}}{\astQ}$) to verify the 
-single simple instruction. 
+single simple instruction $\simplins{}$.  
 }
 
 The top rule \cdhp{} verifies the code
@@ -1156,13 +1156,12 @@ we know $\RAreg$ contains the correct value
 before $\retl$.
 
 {\color{blue}
-The \myrule{BE} rule considers whether the control-transfer 
-occurrs after executing the following instruction $\simplins{}$, 
+The \myrule{BE} rule considers whether the branch is taken 
+after executing the following instruction $\simplins{}$, 
 according to the value of register $\regz$. If the 
-value of the register $\regz$ is not zero 
-and the control-transfer occurs, it does the same 
-things as the \myrule{JMP} rule; otherwise, the control-transfer 
-does not occur and the remaining instruction 
+value of the register $\regz$ is not zero, it does the same 
+things as the \myrule{JMP} rule; otherwise,  
+the branch is not taken and the remaining instruction 
 sequence $\cblk$ should be well-formed. 
 }
 
