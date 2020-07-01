@@ -2752,13 +2752,13 @@ function.
     (in \Def{\ref{def:simfunc}}), 
     we need to prove that, for all $\state$, $\hpstate$, 
     $\word$ and $\primcom$: 
-    \begin{multline}
+    \begin{multline*}
         \asrtmodel{(\state, \hpstate, \word, \primcom)}
             {\relastP} \implies \\
             \exists \, i \in \Index. \
             \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
                 {i}{0}{(\primcom, \hpstate)}  
-    \end{multline}
+    \end{multline*}
     
     % the following hold:
     % % We unfold 
@@ -3045,28 +3045,41 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
 \end{lemma}
 \begin{proof}
     By the definition of $\asmimp \ctxrefine \hprimset$
-    (in \Def{\ref{def:prim-correctness}}), we get the 
-    following assumptions:
-    % We unfold $\asmimp \crefine \hprimset$ according to 
-    % its definition (in \Def{\ref{def:prim-correctness}}) 
-    % and get the following holds: 
-    \begin{align}
-        & \stateRel{\state}{\hpstate} \\
-        & \progsafe((\code, \hprimset), \hpstate) \\
-        & \hpstate.\hthrdlocalst = 
-            (\notCare, \pc, \npc) 
-    \end{align}
-    And we need to prove that the following goal holds:
-    \begin{equation}
+    (in \Def{\ref{def:prim-correctness}}), we need to prove 
+    that for any $\state$, $\hpstate$, $\code$, $\pc$ and 
+    $\npc$:
+    \begin{multline*}
+        (\stateRel{\state}{\hpstate} \land 
+        \progsafe((\code, \hprimset), \hpstate) \land 
+        \hpstate.\hthrdlocalst = (\notCare, \pc, \npc)) \\
+        \implies
         (\code\uplus\asmimp, \state, \pc, \npc)
         \refine
         ((\code, \hprimset), \hpstate)
-        \tag{g3} \label{g3}
-    \end{equation}
+    \end{multline*}
+    
+    % we get the 
+    % following assumptions:
+    % % We unfold $\asmimp \crefine \hprimset$ according to 
+    % % its definition (in \Def{\ref{def:prim-correctness}}) 
+    % % and get the following holds: 
+    % \begin{align}
+    %     & \stateRel{\state}{\hpstate} \\
+    %     & \progsafe((\code, \hprimset), \hpstate) \\
+    %     & \hpstate.\hthrdlocalst = 
+    %         (\notCare, \pc, \npc) 
+    % \end{align}
+    % And we need to prove that the following goal holds:
+    % \begin{equation}
+    %     (\code\uplus\asmimp, \state, \pc, \npc)
+    %     \refine
+    %     ((\code, \hprimset), \hpstate)
+    %     \tag{g3} \label{g3}
+    % \end{equation}
     Here, the $\code$ is the client code, and 
     $\state$ and $\hpstate$ represent the initial states 
     of low- and high-level program respectively. 
-    From Lemma~\ref{lemma:function sim implies whole program sim}, 
+    By Lemma~\ref{lemma:function sim implies whole program sim}, 
     we know there exisits $i \in \Index$, such that: 
     \begin{equation}
         (\code\uplus\asmimp, \state, \pc, \npc)
