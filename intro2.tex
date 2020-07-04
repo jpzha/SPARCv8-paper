@@ -45,19 +45,19 @@ program logic for assembly code.
 	
 	\item \textit{Delayed writes}.
 	{\color{blue}
-    The $\cwr$ instruction that writes a special class 
-    of registers such as window invalid mask register 
-    \regwim{} does not take effect immediately. 
-    % $\regwim$ used to justify 
-    % whether a register window is valid does not take 
-    % effect immediately. 
-    That is, ``they may take until 
-    completion of the third instruction following the write 
-    instruction to consummate their write operation. 
-    The number of delay instructions (0 to 3) 
+    The $\cwr$ instruction that writes a special class
+    of registers such as the window invalid mask register
+    \regwim{} does not take effect immediately.
+    % $\regwim$ used to justify
+    % whether a register window is valid does not take
+    % effect immediately.
+    That is, ``they may take until
+    completion of the third instruction following the write
+    instruction to consummate their write operation.
+    The number of delay instructions (0 to 3)
     is implementation-dependent"~\cite{sparc}.
     }
-    
+
 	% The $\cwr$ instruction that writes a special class
     % of registers
     % does not take effect immediately.
@@ -74,13 +74,13 @@ program logic for assembly code.
 	to avoid saving contexts in the stack directly
     and achieves high performance in context management.
     % {\color{blue}
-    % As the example shown in 
-    % \Fig{\ref{fig:An Example for SPARC Code}}, 
-    % the \texttt{CALLER} doesn't save its context in 
-    % stack in memory when calling function 
+    % As the example shown in
+    % \Fig{\ref{fig:An Example for SPARC Code}},
+    % the \texttt{CALLER} doesn't save its context in
+    % stack in memory when calling function
     % \texttt{ChangeY},
-    % but use an instruction \csave{} to save 
-    % context by window rotation. 
+    % but use an instruction \csave{} to save
+    % context by window rotation.
     % }
 	%and a significant reduction in context management.
 \end{itemize}
@@ -205,18 +205,18 @@ The $\csave$ instruction rotates the register window from the
 current one to the next. Then the \localRN{} and \inRN{}
 registers in the original window are no longer accessible,
 and the original \outRN{} registers become the \inRN{} registers
-in the current window. 
+in the current window.
 {\color{blue}
-% In the example in 
-In \Fig{\ref{fig:An Example for SPARC Code}}, 
-the \texttt{CALLER} uses instruction \csave{} 
-(at line 3) to save its context 
-(\localRN{} and \inRN{} registers) and 
-let the \outRN{} registers become the \inRN{} registers  
-by window rotation. So, the $\ireg{0}$ register 
-assessed in \texttt{ChangY} at line 6 is 
-the same register as the $\oreg{0}$ modified in 
-\texttt{CALLER} at line 1. 
+% In the example in
+In \Fig{\ref{fig:An Example for SPARC Code}},
+the \texttt{CALLER} uses instruction \csave{}
+(at line 3) to save its context
+(\localRN{} and \inRN{} registers) and
+let the \outRN{} registers become the \inRN{} registers
+by window rotation. So, the $\ireg{0}$ register
+assessed in \texttt{ChangY} at line 6 is
+the same register as the $\oreg{0}$ modified in
+\texttt{CALLER} at line 1.
 }
 The $\crestore$ instruction does the inverse.
 The arguments taken by the $\csave$ and  $\crestore$ instructions
@@ -252,8 +252,8 @@ are irrelevant here and can be ignored.
 At line 6, the $\cwr$ instruction tries to
 update the special register {\tt Y}
 with the value of $\ireg{0} \! \xorOP 0$
-(bitwise exclusive OR). 
-{\color{blue} Note that the $\ireg{0}$ 
+(bitwise exclusive OR).
+{\color{blue} Note that the $\ireg{0}$
 register here is the same register as $\oreg{0}$ at line 1.}
 However, the write is delayed for $X$ cycles,
 where $X$ is some predefined system parameter
@@ -304,24 +304,24 @@ but they use {\em abstract assembly primitives} to
 substitute the inline assembly in their verification work.
 As a supplement to their work, we extend our
 program logic so that it can ensure the
-contextual refinement relation, 
-shown in (\ref{eq:refinement}),  
-between the implementations and 
+contextual refinement relation,
+shown in (\ref{eq:refinement}),
+between the implementations and
 their corresponding abstract assembly primitives.
-Here, we use $\Clang$, $\AbsPrimC$, 
-and $\asmimp$ to represent the C language program, 
+Here, we use $\Clang$, $\AbsPrimC$,
+and $\asmimp$ to represent the C language program,
 the set of abstract assembly
 primitive and the implementations of
 abstract assembly primitives respectively.
 It means $\asmimp$ refines $\AbsPrimC$ under
-\textit{any context} $\Clang$. 
+\textit{any context} $\Clang$.
 \begin{equation}
     \forall \, \Clang. \,
     \Clang[\asmimp] \refine \Clang[\AbsPrimC]
     \label{eq:refinement}
 \end{equation}
-{\color{blue} 
-The $\Clang[\asmimp] \refine \Clang[\AbsPrimC]$ represents 
+{\color{blue}
+The $\Clang[\asmimp] \refine \Clang[\AbsPrimC]$ represents
 that $\Clang[\asmimp]$ refines $\Clang[\AbsPrimC]$.}
 However, if we use C program as a client code to
 call inline assembly code, we need to define the
@@ -608,21 +608,21 @@ have been mechanized in Coq~\cite{coqimp}.
 This paper extends the conference paper in
 APLAS 2018~\cite{zha18aplas}.
 The program logic there can only verify the partial
-correctness of \sparc{} code and we make the following 
+correctness of \sparc{} code and we make the following
 expansions:
 {\color{blue}
 \begin{itemize}
-    \item We propose a new program logic to do 
-        relational reasoning for refinement verification 
+    \item We propose a new program logic to do
+        relational reasoning for refinement verification
         (\Sec{\ref{subsec:rellogic}} for details).
-    \item In order to support refinement verification, 
-        this paper presents a new Pseudo-SPARCv8 language 
-        as language to implement the high-level 
-        specification 
+    \item In order to support refinement verification,
+        this paper presents a new Pseudo-SPARCv8 language
+        as language to implement the high-level
+        specification
         (\Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}
         for details).
-    \item We also use the new logic to verify the implememntation 
-        of a context switch routine, by showing that 
+    \item We also use the new logic to verify the implememntation
+        of a context switch routine, by showing that
         the implementation code contextually
         refines an abstract switch primitive
         (\Sec{\ref{sec:ctxswitch}} for details).
@@ -723,7 +723,7 @@ refinement verification.
 % the program logic in Sec.~\ref{sec:logic},
 % including the inference rules and the soundness proof,
 % and show how our logic supprts the three main features of SPARCv8.
-We present the Pseudo-SPARCv8 program and 
+We present the Pseudo-SPARCv8 program and
 the relational program logic for refinement reasoning
 % how
 % our logic supports refinement verification
