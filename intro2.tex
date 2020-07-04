@@ -209,11 +209,14 @@ in the current window.
 {\color{blue}
 % In the example in
 In \Fig{\ref{fig:An Example for SPARC Code}},
-the \texttt{CALLER} uses instruction \csave{}
+the \texttt{CALLER} uses the \csave{} instruction 
 (at line 3) to save its context
-(\localRN{} and \inRN{} registers) and
-let the \outRN{} registers become the \inRN{} registers
-by window rotation. So, the $\ireg{0}$ register
+(\localRN{} and \inRN{} registers) and rotate the
+register window (so that the 
+\outRN{} registers become the \inRN{} registers).
+%let the \outRN{} registers become the \inRN{} registers
+%by window rotation. 
+So, the $\ireg{0}$ register
 assessed in \texttt{ChangY} at line 6 is
 the same register as the $\oreg{0}$ modified in
 \texttt{CALLER} at line 1.
@@ -320,9 +323,14 @@ It means $\asmimp$ refines $\AbsPrimC$ under
     \Clang[\asmimp] \refine \Clang[\AbsPrimC]
     \label{eq:refinement}
 \end{equation}
+%
 {\color{blue}
-The $\Clang[\asmimp] \refine \Clang[\AbsPrimC]$ represents
-that $\Clang[\asmimp]$ refines $\Clang[\AbsPrimC]$.}
+Here we use ``$\refine$'' to represent the refinement
+relation.
+}
+%The $\Clang[\asmimp] \refine \Clang[\AbsPrimC]$ represents
+%that $\Clang[\asmimp]$ refines $\Clang[\AbsPrimC]$.}
+%
 However, if we use C program as a client code to
 call inline assembly code, we need to define the
 semantics of C-assembly interaction.
@@ -617,13 +625,13 @@ expansions:
         (\Sec{\ref{subsec:rellogic}} for details).
     \item In order to support refinement verification,
         this paper presents a new Pseudo-SPARCv8 language
-        as language to implement the high-level
-        specification
+        as the high-level
+        specification language
         (\Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}
         for details).
-    \item We also use the new logic to verify the implememntation
+    \item We also use the new logic to verify the implementation
         of a context switch routine, by showing that
-        the implementation code contextually
+        the implementation contextually
         refines an abstract switch primitive
         (\Sec{\ref{sec:ctxswitch}} for details).
 \end{itemize}

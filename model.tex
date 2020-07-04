@@ -6,13 +6,13 @@
 	\small
 	\[
 		\begin{array}{rcclcrccl}
-			\TYPE{(Word)} & \word, \lab{} & \in & 
+			\TYPE{(Word)} & \word, \lab{} & \in &
 			\multicolumn{6}{l}
-			{ 
+			{
 				\TYPE{Int32} \qquad
-				\TYPE{(Block)} \ \block \, \in \, \Ztype 
+				\TYPE{(Block)} \ \block \, \in \, \Ztype
 				\qquad
-				\TYPE{(Addr)} \ \loc \, \in \,  
+				\TYPE{(Addr)} \ \loc \, \in \,
 					\TYPE{Block} \times \TYPE{Word}
 				\qquad
 				\TYPE{(Val)} \ \val \,
@@ -20,62 +20,62 @@
 			}
 			\\
 			\\
-			\TYPE{(Prog)} & \prog & \define & 
-				(\code, \state, \pc, \npc) & \qquad & 
-			\TYPE{(CodeHeap)} & \ \code \ & \in &  
+			\TYPE{(Prog)} & \prog & \define &
+				(\code, \state, \pc, \npc) & \qquad &
+			\TYPE{(CodeHeap)} & \ \code \ & \in &
 				\TYPE{Word} \rightharpoonup \TYPE{Comm}
 			\\
 			\\[-8pt]
-			\TYPE{(State)} & \state & \define & 
-				(\mem, \Rstate, \DBuf) & & 
-			\TYPE{(RState)} & \Rstate & \define & 
-				(\RFile, \Wstack) 
+			\TYPE{(State)} & \state & \define &
+				(\mem, \Rstate, \DBuf) & &
+			\TYPE{(RState)} & \Rstate & \define &
+				(\RFile, \Wstack)
 			\\
 			\\[-8pt]
-			\TYPE{(Memory)} & \mem & \in & 
-				\TYPE{Addr} \rightharpoonup \TYPE{Val} 
-			& & 
+			\TYPE{(Memory)} & \mem & \in &
+				\TYPE{Addr} \rightharpoonup \TYPE{Val}
+			& &
 			\TYPE{(ProgCount)} & \pc, \npc & \in & \TYPE{Word}
 			\\
 			\\[-8pt]
-			\TYPE{(OpExp)} & \oexp & \define & 
-				\reg{} \sepline \word & & 
-			\TYPE{(AddrExp)} & \aexp & \define & 
+			\TYPE{(OpExp)} & \oexp & \define &
+				\reg{} \sepline \word & &
+			\TYPE{(AddrExp)} & \aexp & \define &
 				\oexp \sepline \reg{} + \oexp \\
 			\\
-			\TYPE{(Comm)} & \comm & \define & 
+			\TYPE{(Comm)} & \comm & \define &
 			\multicolumn{6}{l}
 			{
 				\simplins{} \sepline \call{} \ \lab{}
 				\sepline \jmp{} \ \aexp \sepline \retl{} \sepline
-				\be \ \lab{} 
+				\be \ \lab{}
 			} \\
 			\\[-8pt]
-			\TYPE{(SimpIns)} & \simplins{} & \define & 
+			\TYPE{(SimpIns)} & \simplins{} & \define &
 			\multicolumn{6}{l}
 			{
-				\ld{} \ \aexp \ \reg{d} \sepline 
+				\ld{} \ \aexp \ \reg{d} \sepline
 				\st{} \ \reg{s} \ \aexp \sepline
-				\nop{} \sepline  
+				\nop{} \sepline
 				\cadd{} \ \reg{s} \ \oexp \ \reg{d} \sepline
-				\csave{} \ \reg{s} \ \oexp \ \reg{d} \sepline 
+				\csave{} \ \reg{s} \ \oexp \ \reg{d} \sepline
 				\crestore{} \ \reg{s} \ \oexp \ \reg{d}
 			} \\
-			& & \ \ \ \ | & 
+			& & \ \ \ \ | &
 			\multicolumn{6}{l}
 			{
-				\rd{} \ \sr \ \reg{d} \sepline 
+				\rd{} \ \sr \ \reg{d} \sepline
 				\cwr{} \ \reg{s} \ \oexp \ \sr \sepline
 				\dots
-			} \\ 
+			} \\
 			\\[-8pt]
-			\TYPE{(InstrSeq)} & \cblk & \define & 
+			\TYPE{(InstrSeq)} & \cblk & \define &
 			\multicolumn{6}{l}
 			{
-				\simplins{}; \, \cblk \sepline 
-				\jmp{} \ \aexp; \, \simplins{} \sepline 
-				\call{} \ \lab{}; \simplins{}; \cblk \sepline 
-				\retl{} \ \simplins{} \sepline 
+				\simplins{}; \, \cblk \sepline
+				\jmp{} \ \aexp; \, \simplins{} \sepline
+				\call{} \ \lab{}; \simplins{}; \cblk \sepline
+				\retl{} \ \simplins{} \sepline
 				\be{} \ \lab{}; \, \simplins{}; \, \cblk
 			}
 		\end{array}
@@ -94,10 +94,10 @@ states, and the operational semantics in this section.
 
 % \begin{figure*}[!t]
 % 	\begin{tabular}{rcclcrccl}
-% 		(Word) & $\, \word$, $\lab{} \, $ & $\in$ & Int32 & & 
+% 		(Word) & $\, \word$, $\lab{} \, $ & $\in$ & Int32 & &
 % 		(Block) & $\block$ & $\in$ & $\Ztype$ \\
-% 		(Addr) & $\loc$ & $\in$ & $\text{Block} \times \text{Word}$ 
-% 		& & 
+% 		(Addr) & $\loc$ & $\in$ & $\text{Block} \times \text{Word}$
+% 		& &
 % 		(Val) & $\val$ & $\define$ & $\word \sepline \loc$
 % 		\\[1.2ex]
 		
@@ -152,16 +152,16 @@ states, and the operational semantics in this section.
 % \end{figure*}
 
 The machine model and syntax of \sparc{} assembly language
-are defined in Fig.~\ref{fig:Machine States and Language for SPARC Code}. 
-Here, we follow the block-based memory \cite{CompCertMM} introduced 
-in CompCert to define the memory in our work.   
-% so that each procedure can have a block of its own 
-% stack frame. 
-The memory address $\loc$ is defined as a pair of 
-its block id and the offset. The type of block is the integer 
-in mathemantics presented as $\Ztype$, and the type of offset 
-is a 32-bit integer, which we called {\it words} in our work. 
-So, the value here is either a word $\word$ or address $\loc$.  
+are defined in Fig.~\ref{fig:Machine States and Language for SPARC Code}.
+Here, we follow the block-based memory \cite{CompCertMM} introduced
+in CompCert to define the memory in our work.
+% so that each procedure can have a block of its own
+% stack frame.
+The memory address $\loc$ is defined as a pair of
+its block id and the offset. The type of block is the integer
+in mathemantics presented as $\Ztype$, and the type of offset
+is a 32-bit integer, which we called {\it words} in our work.
+So, the value here is either a word $\word$ or address $\loc$.
 The whole program configuration $\prog$ consists of the code heap
 $\code$, the machine state $\state$, and the program counters $\pc$
 and $\npc$.
@@ -170,28 +170,28 @@ and $\npc$.
 The code heap $\code$ is a partial function
 from labels $\lab{}$ to commands $c$.
 Labels are also 32-bit integers (called {\em words}),
-which can be viewed as addresses or locations 
-where the commands are saved in the code heap. 
-The operand expression $\oexp$, which is either a general 
-register $\reg{}$ or a word $\word$, 
-and address expression $\aexp$, 
-which is either an operand expression or a 
-sum of the values of register $\reg{}$ and an operation 
-expression, are auxiliary definitions used as parameters of commands. 
+which can be viewed as addresses or locations
+where the commands are saved in the code heap.
+The operand expression $\oexp$, which is either a general
+register $\reg{}$ or a word $\word$,
+and address expression $\aexp$,
+which is either an operand expression or a
+sum of the values of register $\reg{}$ and an operation
+expression, are auxiliary definitions used as parameters of commands.
 Commands in \sparc{} can be classified into two categories:
 % the simple instructions $\simplins$ and the
 % control-transfer instructions like $\call$ and $\jmp$.
 {\color{blue}
-(1) simple instruction $\simplins{}$, which does sequential 
-operation, \eg{} arithmetic operation ``\cadd{}", 
+(1) simple instruction $\simplins{}$, which does sequential
+operation, \eg{} arithmetic operation ``\cadd{}",
 or memory operations
 ``\ld{}" (load) and ``\st{}" (store), or register window
-operations ``\csave{}" and ``\crestore{}", or special 
+operations ``\csave{}" and ``\crestore{}", or special
 register operations ``\rd{}" (read) and ``\cwr{}" (write)};
-(2) control-transfer instructions, 
-{\color{blue} \eg{} \call{} and \retl{} for 
-function call and return, or \jmp{} and \be{} for 
-unconditional and conditional branch}. 
+(2) control-transfer instructions,
+{\color{blue} \eg{} \call{} and \retl{} for
+function call and return, or \jmp{} and \be{} for
+unconditional and conditional branch}.
 
 The machine state $\state$ consists of three parts:
 the memory $\mem$, the register state $\Rstate$
@@ -215,7 +215,7 @@ $\DBuf$ below.
 \begin{figure*}[!t]
 	\small
 	\begin{tabular}{rcclcrccl}
-		(RegFile) & $\RFile$ & $\in$ & $\text{RegName} \rightharpoonup 
+		(RegFile) & $\RFile$ & $\in$ & $\text{RegName} \rightharpoonup
 			\text{Val}$
 
          & $\quad$ &
@@ -311,8 +311,8 @@ three groups (\outRN{}, \localRN{} and \inRN{}).
      \\[-8pt]
      %
      \Rupd{\reg{i}, \dots, \reg{i+7}}{\fm} \ \define \
-			R\{ \reg{i} \rightsquigarrow \val_0 \} 
-				\dots \{ \reg{i+7} \rightsquigarrow \val_7 \} 
+			R\{ \reg{i} \rightsquigarrow \val_0 \}
+				\dots \{ \reg{i+7} \rightsquigarrow \val_7 \}
 			\qquad
 			\text{where }\ \ \fm = [\val_0, \dots, \val_7]
 			% \\
@@ -418,8 +418,8 @@ window is set to 1, which means {\em invalid}. All other bits
 are 0 ({\em i.e. valid}).
 %Given a window pointer $\cwp$ in $\regcwp$,
 When executing $\csave$ (and $\crestore$), we need to ensure
-the next window is valid, in order to avoid the overflow 
-of register window because of the limitation of the number 
+the next window is valid, in order to avoid the overflow
+of register window because of the limitation of the number
 of windows. We use the assertion $\winvalid(\cwp, \RFile)$ defined
 in Fig.~\ref{fig:save and restore} to say the
 window pointed to by $\cwp$ is valid, given the value of
@@ -432,7 +432,7 @@ $\regwim$ in $\RFile$.
 We use the frame list $\Wstack$ to model the circular stack consisting
 of register windows. As defined in Fig.~\ref{fig:Register File and Frame List},
 a frame is an array of 8 words, modeling a group of 8 registers.
-$\Wstack$ consists of a sequence of frames 
+$\Wstack$ consists of a sequence of frames
 corresponding to all the
 register windows except the \outRN{}, \localRN{} and \inRN{}
 registers in the current window. Then $\csave$ saves the
@@ -441,8 +441,8 @@ and loads the two groups of register at the {\em tail} of $\Wstack$
 to the \localRN{} and \outRN{} registers (and the original
 \outRN{} registers becomes the \inRN{} group). The $\crestore$
 instruction does the inverse. The operations are defined formally
-in Fig.~\ref{fig:save and restore}. 
-{\color{blue} Here, we use `` $\stCons$ " for 
+in Fig.~\ref{fig:save and restore}.
+{\color{blue} Here, we use `` $\stCons$ " for
 adding an element at the head of a list, and use `` $\lstApp{}$ "
 for appending an element at the tail of a list.}
 
@@ -453,12 +453,12 @@ does not update the target register immediately,
 we put the write operation onto the delay buffer.
 A delayed write is recorded as a triple consisting of
 the remaining cycles $\tick$ to be delayed,
-the target special register $\sr$ and the value 
-$\word$ to be written. Note that we restrict that 
-the value of a special register can only be a word, 
-because the special registers are used to record the 
-state of processor, and there is impossible to 
-store memory addresses in them.  
+the target special register $\sr$ and the value
+$\word$ to be written. Note that we restrict that
+the value of a special register can only be a word,
+because the special registers are used to record the
+state of processor, and there is impossible to
+store memory addresses in them.
 
 \paragraph{\textbf{Instruction sequences.}}
 %\indent \indent
@@ -477,8 +477,8 @@ Note that we do not view the $\call$ instruction
 as the end of a basic block, since the callee is
 expected to return, following our direct-style
 semantics for function calls.
-We define $\code[\lab{}]$ to extract 
-an instruction sequence starting 
+We define $\code[\lab{}]$ to extract
+an instruction sequence starting
 from $\lab{}$ in $\code$ below.
 \[
 	\small
@@ -486,23 +486,23 @@ from $\lab{}$ in $\code$ below.
 	\left\{
 		\begin{array}{ll}
 			\simplins; \cblk &
-			\quad \ \ \code(\lab{}) = \simplins \; 
+			\quad \ \ \code(\lab{}) = \simplins \;
 				\text{and} \; \code[\lab{}+4] = \cblk \\
 			
 			\\[-8pt]
 			
 			\comm; \simplins &
-			\quad \ \ 
-				\comm = \code(\lab{}) \; \text{and} \; 
+			\quad \ \
+				\comm = \code(\lab{}) \; \text{and} \;
 				\comm = \jmp \; \aexp \; \text{or} \; \retl
 			\\ & \quad \ \ \text{and} \; C(\lab{}+4) = \simplins \\
 			
 			\\[-8pt]
 			
 			\comm; \simplins; \cblk &
-			\quad \ \ \comm = \code(\lab{}) \; 
+			\quad \ \ \comm = \code(\lab{}) \;
 			\text{and} \; c = \call \; \lab{} \; \text{or} \; \be \; \lab{} \\
-			& \quad \ \ \text{and} \; 
+			& \quad \ \ \text{and} \;
 				\code(\lab{}+4) = \simplins \; \text{and} \;
 				\code[\lab{}+8] = \cblk \\
 			
@@ -516,9 +516,9 @@ from $\lab{}$ in $\code$ below.
 \subsection{Operational Semantics}
 \label{subsec : Operational Semantics}
 
-The operational semantics is taken from 
+The operational semantics is taken from
 \etal{Wang}~\cite{sparc-formalization},
-but we use block-based memory model and 
+but we use block-based memory model and
 omit features like interrupts and traps.
 We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 \begin{figure*}
@@ -617,9 +617,10 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 					{((\mem, (\RFile, \Wstack), \DBuf), \npc, \lab{})}
 			}
 			{
-				\code(\pc) = \be \ \lab{} \quad 
-				\RFile(\regz) = \word \quad 
-				\word \neq 0
+				\code(\pc) = \be \ \lab{} \quad
+				\RFile(\regz) \neq 0 \quad      
+				%\RFile(\regz) = \word \quad
+				%\word \neq 0
 			} \qquad
 			\infer
 			{\cttrans{((\mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
@@ -679,7 +680,7 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
                     {(\Mem, (\RFile\{ \reg{d} \rightsquigarrow \val' \}, \Wstack'), \DBuf)}
                 }
                 {
-					\decwin{(\RFile, \Wstack)} = 
+					\decwin{(\RFile, \Wstack)} =
 						(\RFile', \Wstack') \quad
                     \eval{\oexp} = \val
 					\quad
@@ -809,16 +810,16 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 			\vspace{0.3cm}
 		\end{minipage}	
 	}
-	\caption{Selected operational semantics rules 
+	\caption{Selected operational semantics rules
 		(taken from~\cite{sparc-formalization})}
 	\label{Selected Operational Semantics}
 \end{figure*}
-The program transition relation 
+The program transition relation
 {\color{blue} $\LGlobTrans{(\code, \state, \pc, \npc)}
 	{ \ \, }
 	{(\code, \state', \pc', \npc')}$}
 % $\ptrans{(\state, \pc, \npc)}{(\state', \pc', \npc')}$
-is defined 
+is defined
 in Fig.~\ref{Selected Operational Semantics} (a).
 Before the execution of the instruction pointed by
 $\pc$, the delayed writes
@@ -926,15 +927,15 @@ Sec.~\ref{sec:logic}.
 %\]
 
 The transition steps for individual instructions are classified into
-three categories: the control transfer steps 
-($\ccttrans{\notCare}{\notCare}{\notCare}$), 
+three categories: the control transfer steps
+($\ccttrans{\notCare}{\notCare}{\notCare}$),
 the steps for
-$\csave$, $\crestore$ and $\cwr$ instructions 
+$\csave$, $\crestore$ and $\cwr$ instructions
 ($\swtrans{\notCare}{\ \notCare\ }{\notCare}$),
 and the steps
 for other simple instructions
 ($\itrans{\notCare}{\ \notCare\ }{\notCare}$). The
-corresponding step transition relations are defined inductively 
+corresponding step transition relations are defined inductively
 in Fig.~\ref{Selected Operational Semantics} (b), (c) and (d)
 respectively.
 
@@ -944,39 +945,42 @@ the one cycle delay for the control transfer.
 The $\call$ instruction saves $\pc$ into the register $\RAreg$,
 while $\retl$ uses $\RAreg \!+\! 8$ as the
 return address (which is the address for the second instruction
-following the $\call$). 
-{\color{blue} The $\be{} \ \lab{}$ justifies whether 
-the branch is taken according to the value of $\regz$.}
+following the $\call$).
+{\color{blue} The conditional branch $\be{} \ \lab{}$ jumps to $\lab{}$ 
+(after one-cycle delay) if 
+the value in the register $\regz$ is {\em not} 0}
+%justifies whether
+%the branch is taken according to the value of $\regz$.}
 Evaluation of
-expressions $\aexp$ and $\oexp$ is defined as 
-% $\evalR\aexp\RFile$ 
-and 
+expressions $\aexp$ and $\oexp$ is defined as
+% $\evalR\aexp\RFile$
+and
 % $\evalR\oexp\RFile$
-in Fig.~\ref{Selected Operational Semantics} (e). 
-Here, we define the sum of two values $\val_1$ 
-and $\val_2$ below. The result of $\val_1\!+\!\val_2$ 
-is legal, if both of the $\val_1$ and $\val_2$ 
-are words (Int32), or $\val_1$ is an address and 
-$\val_2$ is an offset. The offset is a word, 
-which acts as an immediate value in the 
+in Fig.~\ref{Selected Operational Semantics} (e).
+Here, we define the sum of two values $\val_1$
+and $\val_2$ below. The result of $\val_1\!+\!\val_2$
+is legal, if both of the $\val_1$ and $\val_2$
+are words (Int32), or $\val_1$ is an address and
+$\val_2$ is an offset. The offset is a word,
+which acts as an immediate value in the
 calculation of address.
-% This is explain why the 
-% immediate value in our work is a word, because 
-% immediate value usually acts as an offset, which 
-% is a word, in the calculation of address. 
+% This is explain why the
+% immediate value in our work is a word, because
+% immediate value usually acts as an offset, which
+% is a word, in the calculation of address.
 \[
 	\small
-	\val_1 + \val_2 \ \define \ 
+	\val_1 + \val_2 \ \define \
 	\left\{
 		\begin{array}{ll}
-			\word_1 + \word_2 & \quad \cif \  
-				\val_1 = \word_1, \text{ and } 
+			\word_1 + \word_2 & \quad \cif \
+				\val_1 = \word_1, \text{ and }
 				\val_2 = \word_2 \\
 			\\[-8pt]
-			(\block, \word_1 + \word_2) & \quad 
-				\cif \ 
-				\val_1 = (\block, \word_1), 
-				\text{ and } 
+			(\block, \word_1 + \word_2) & \quad
+				\cif \
+				\val_1 = (\block, \word_1),
+				\text{ and }
 				\val_2 = \word_2 \\
 			\\[-8pt]
 			\perp & \quad \otherwise
@@ -993,16 +997,16 @@ is defined below:
 \[
 	\small
 	\begin{array}{l}
-		\setdelay(\sr, \word, D) \define (X, \sr, \word) 
+		\setdelay(\sr, \word, D) \define (X, \sr, \word)
 		\dbCons \DBuf \\
 	\end{array}
 \]
 where $X$ ($0 \leq X \leq 3$) is a
-predefined system parameter for the delay cycle. 
-% Note that 
-% as we have explained before, special register is used 
-% to record the state of processors, so we do not permit saving 
-% memory address in it. 
+predefined system parameter for the delay cycle.
+% Note that
+% as we have explained before, special register is used
+% to record the state of processors, so we do not permit saving
+% memory address in it.
 %whose specific value is implementation dependently.
 
 The $\csave$ and $\crestore$ instruction rotate

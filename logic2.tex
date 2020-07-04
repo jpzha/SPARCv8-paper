@@ -1,16 +1,16 @@
 \section{Program Logic}
 \label{sec:logic}
 
-%\indent 
-% We first design a program logic for \sparc{} program, 
-% which doesn't consider refinement verification. 
-% In this section, we use such program logic to present 
-% how our logic handles the features of \sparc{}. 
-In this section, 
-we use a simplified version of our program logic 
-that doesn't support refinement verification to 
-present how our logic handles the  
-features of \sparc{}. 
+%\indent
+% We first design a program logic for \sparc{} program,
+% which doesn't consider refinement verification.
+% In this section, we use such program logic to present
+% how our logic handles the features of \sparc{}.
+In this section,
+we use a simplified version of our program logic
+that doesn't support refinement verification to
+present how our logic handles the
+features of \sparc{}.
 
 % In this section,
 % we introduce the assertion language
@@ -24,11 +24,11 @@ features of \sparc{}.
 \begin{center}
 	$
 		\begin{array}{rrcl}
-			\textit{(Asrt)} & \astP, \astQ & \define & 
+			\textit{(Asrt)} & \astP, \astQ & \define &
 			\aemp \sepline
 			\msto{l}{\val} \sepline
 			\regst{\regN}{\val} \sepline
-			\dlyregst{t}{\sr}{\word} \sepline 
+			\dlyregst{t}{\sr}{\word} \sepline
 			\asrttm{p} \\
 			& & \ \ \ | &
 			\frmst{\cwp}{F} \sepline
@@ -40,7 +40,7 @@ features of \sparc{}.
 			\oexp = \val \sepline
 			\forall x. \, \astP \sepline
 			\exists x. \, \astQ \sepline
-            \dots 
+            \dots
 		\end{array}
 	$
 	\figurecaption{Syntax of Assertions}
@@ -88,7 +88,7 @@ features of \sparc{}.
 			\begin{array}{lcl}
 				\asrtmodel{\state}{\aemp} & \define & S.M = \emptyset \, \wedge \, S.Q.R = \emptyset \\
 				
-				\asrtmodel{\state}{l \mapsto \val} & \define & 
+				\asrtmodel{\state}{l \mapsto \val} & \define &
 					S.M = \{l \rightsquigarrow \val\} \, \wedge \,
                 S.Q.R = \emptyset \\
 				
@@ -144,10 +144,10 @@ features of \sparc{}.
 			
 			\\
 			{\color{blue}
-			\mem_1\!\perp\!\mem_2 \ \define \ 
-			(\dom(\mem_1)\cap\dom(\mem_2)) = \emptyset 
-			\qquad \ \ 
-			\RFile_1\!\perp\!\RFile_2 \ \define \ 
+			\mem_1\!\perp\!\mem_2 \ \define \
+			(\dom(\mem_1)\cap\dom(\mem_2)) = \emptyset
+			\qquad \ \
+			\RFile_1\!\perp\!\RFile_2 \ \define \
 			(\dom(\RFile_1)\cap\dom(\RFile_2)) = \emptyset
 			}
 			\\
@@ -157,7 +157,7 @@ features of \sparc{}.
 			\left\{
 				\begin{array}{ll}
 					(\mem_1 \!\cup\! \mem_2, (\RFile_1 \!\cup\! \RFile_2, \Wstack), \DBuf)
-						 &  \quad \textbf{if} \; 
+						 &  \quad \textbf{if} \;
 						 		% {\color{blue}
 								%  \dom(\mem_1) \cap \dom(\mem_2) = \emptyset \land
 								%  \dom(\RFile_1) \cap \dom(\RFile_2) = \emptyset}
@@ -172,7 +172,7 @@ features of \sparc{}.
 					
 					\undef & \quad \text{otherwise}
 				\end{array}
-			\right. 
+			\right.
 
 			\\
 			\\
@@ -348,7 +348,7 @@ It specifies states reachable after executing
 one step of delayed writes from those states satisfying $\astP$.
 Therefore we know:
 $$
-\nxtAst{(\dlyregst{0}{\sr}{\word})} \Longrightarrow 
+\nxtAst{(\dlyregst{0}{\sr}{\word})} \Longrightarrow
 \regst{\sr}{\word}
 \quad \
 \nxtAst{(\dlyregst{\tick\!+\!1}{\sr}{\word})} \Longrightarrow
@@ -387,19 +387,19 @@ $\,.
 The assertions $\aexpeq{\aexp}{\val}$ and $\oexpeq{\oexp}{\val}$
 describe the value of $\aexp$ and $\oexp$ respectively. They are
 intuitionistic assertions. Since $\aexp$ is used as an address,
-we also require it to be properly aligned on a 4-byte boundary. 
-We define $\wordaligned{}$ to represent this restriction below. 
-The result of the address expression $\aexp$ may be a word, if 
-it's a pointer in code heap, or a memory address, if it's a location 
-of memory. 
+we also require it to be properly aligned on a 4-byte boundary.
+We define $\wordaligned{}$ to represent this restriction below.
+The result of the address expression $\aexp$ may be a word, if
+it's a pointer in code heap, or a memory address, if it's a location
+of memory.
 \[
 	\wordaligned{(\val)} \define
-	\exists \, \word. \, 
+	\exists \, \word. \,
 	(\val = \word \, \lor \, \val = (\notCare, \word))
-	\, \land \, \word\modOP{4} = 0 
-	% \exists \, \word. \, 
+	\, \land \, \word\modOP{4} = 0
+	% \exists \, \word. \,
 	% (\val = \word \, \lor \, (\exists \, \block. \, \val = (\block, \word)))
-	% \, \land \, \word\modOP{4} = 0 
+	% \, \land \, \word\modOP{4} = 0
 \]
 
 \subsection{Inference Rules}
@@ -431,20 +431,20 @@ are defined below:
 \[
 	\small
 	\begin{array}{lccllccl}
-		\text{(valList)} & \lgvl & \in & \text{list value} 
-			& 
+		\text{(valList)} & \lgvl & \in & \text{list value}
+			&
 		\multicolumn{4}{l}
 		{
 			\quad
 			\text{(pAsrt)} \ \
-			\specpre,\specpost \in 
+			\specpre,\specpost \in
 			\text{valList} \rightarrow Asrt
 		}
 		% \specpre,\specpost &
-		% 			\in & \text{valList} \rightarrow Asrt 
+		% 			\in & \text{valList} \rightarrow Asrt
 		\\
 		
-		\text{(CdSpec)} & \Bspec & ::= & (\specpre, \specpost) 
+		\text{(CdSpec)} & \Bspec & ::= & (\specpre, \specpost)
 			& \quad
 		
 		\text{(CdHpSpec)} & \Cspec & ::= & \{\lab{} \rightsquigarrow \Bspec\}^{*}
@@ -488,16 +488,16 @@ process.
 		\\
 		\begin{array}{lcl}
 			\text{fp} & \define &
-			\lambda \, \lv.\, 
+			\lambda \, \lv.\,
 			((\regst{\ireg{0}}{\lv[0]})
 			* (\regst{\ireg{1}}{\lv[1]})
 			* (\regst{\ireg{2}}{\lv[2]}) \\
 			& &
 			\hspace*{6ex} * \regst{\lreg{7}}{\notCare}
-						  * (\regst{\reg{15}}{\lv[3]})) 
+						  * (\regst{\reg{15}}{\lv[3]}))
 			\\
-			& & 
-			\qquad \ \ 
+			& &
+			\qquad \ \
 			\land
 			(\lv[1], \lv[2], \lv[3] \in \TYPE{Word}) \\
 			
@@ -526,17 +526,17 @@ and writes the result into the register $\lreg{7}$.
 The specification $(\specpre,\specpost)$ says that, when
 provided with the same $\lv$ as argument, the function
 preserves the value of $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$,
-$\lreg{7}$ in the beginning contains any value and 
-at the end contains the sum of $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$, 
+$\lreg{7}$ in the beginning contains any value and
+at the end contains the sum of $\ireg{0}$, $\ireg{1}$ and $\ireg{2}$,
 and the function also preserves the value of $\RAreg$,
 which it uses as the return address.
 To verify the function, we need to prove that it satisfies
-$(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$. 
-Here, $\lv[1]$ and $\lv[2]$ cannot be a memory address, 
-because a value plus a memory address is illegal. 
-$\lv[3]$ also should be a word, because it's a 
-return code pointer whose type is word. 
-% records a word as a return code pointer. 
+$(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$.
+Here, $\lv[1]$ and $\lv[2]$ cannot be a memory address,
+because a value plus a memory address is illegal.
+$\lv[3]$ also should be a word, because it's a
+return code pointer whose type is word.
+% records a word as a return code pointer.
 
 
 %In order to get connection between initial state and final state,
@@ -692,15 +692,15 @@ return code pointer whose type is word.
 					\begin{array}{c}
 						\nxtAst{\astP} \Rightarrow
 						(\regst{\regz}{\word}) \sepstar \atrue
-						\quad 
+						\quad
 						\lab{}' \in \dom(\Cspec{})
-						\quad 
+						\quad
 						\Cspec(\lab{}') = (\specpre, \specpost) \\
-						\wfins{\nxtAst{\nxtAst{\astP}}}{\simplins{}}{\astP'} 
+						\wfins{\nxtAst{\nxtAst{\astP}}}{\simplins{}}{\astP'}
 						\quad
 						\wfcblk{\astP'\land\word=0}{\astQ}{\lab{}\!+\!8}{\cblk} \\
-						\exists \lgvl, \astP_r. \, 
-						((\astP' \land \word \neq 0) \Rightarrow 
+						\exists \lgvl, \astP_r. \,
+						((\astP' \land \word \neq 0) \Rightarrow
 							\specpre \, \lgvl \sepstar \astP_r) \, \land \,
 						(\specpost \, \lgvl \sepstar \astP_r \Rightarrow \astQ)
 					\end{array}
@@ -921,7 +921,7 @@ return code pointer whose type is word.
 				{
 					\wfins{(\regst{\regwim}{\word}) * p}
 					{\csave \; \reg{s} \; \oexp \; \reg{d}}
-					{(\regst{\regwim}{\word}) * 
+					{(\regst{\regwim}{\word}) *
 					% (\regst{\reg{d}}{\val_1 \!+\! \val_2}) * p_2}
 					(\regst{\reg{d}}{\val}) * p_2}
 				}
@@ -1006,17 +1006,17 @@ return code pointer whose type is word.
 \end{figure*}
 
 \Fig{\ref{fig:Seleted Inference rules}} shows
-selected inference rules in our logic. 
+selected inference rules in our logic.
 {\color{blue}
 Our logic divides the proof work into three layers.
-We define the well-formed code heap in the form of 
-($\wfcdhp{\code}{\Cspec{}}$) to verify the code heap $\code$, 
-the well-formed instruction sequence in the form of 
+We define the well-formed code heap in the form of
+($\wfcdhp{\code}{\Cspec{}}$) to verify the code heap $\code$,
+the well-formed instruction sequence in the form of
 ($\wfcblk{\astP}{\astQ}{\lab{}}{\cblk}$) to verify the
 instruction sequence $\cblk$ starting from $\lab{}$
-in code heap, and well-formed instruction in the form of 
-($\wfins{\astP}{\simplins{}}{\astQ}$) to verify the 
-single simple instruction $\simplins{}$.  
+in code heap, and well-formed instruction in the form of
+($\wfins{\astP}{\simplins{}}{\astQ}$) to verify the
+single simple instruction $\simplins{}$.
 }
 
 The top rule \cdhp{} verifies the code
@@ -1156,13 +1156,13 @@ we know $\RAreg$ contains the correct value
 before $\retl$.
 
 {\color{blue}
-The \myrule{BE} rule considers whether the branch is taken 
-after executing the following instruction $\simplins{}$, 
-according to the value of register $\regz$. If the 
-value of the register $\regz$ is not zero, it does the same 
-things as the \myrule{JMP} rule; otherwise,  
-the branch is not taken and the remaining instruction 
-sequence $\cblk$ should be well-formed. 
+The \myrule{BE} rule considers whether the branch will be taken
+after executing the following instruction $\simplins{}$,
+according to the current value of the register $\regz$. If the
+value of $\regz$ is not zero, this rule does the same
+things as the \myrule{JMP} rule; otherwise,
+the branch is {\em not} taken and the remaining instruction
+sequence $\cblk$ should be well-formed.
 }
 
 %We present the \callrule{} rule and \retlrule{} rule
@@ -1278,15 +1278,15 @@ and \ref{Selected Operational Semantics}.
 % instruction $\retl{}$.
 % It is formally defined in Def.~\ref{def:Safety Instruction Sequence Judgment}.
 % Here we use ``$\notCare \longmapsto^{n} \notCare$'' to
-% represent $n$-step execution. The defintion can ensure 
-% the {\it progress} and {\it preservations} of the execution 
-% of the instruction sequence. {\it Progress} property means 
-% the program can execute a step, when meeting simple instructions, 
-% or two steps, when meeting the delayed control transfer instructions, 
-% \eg{\call{} and \jmp{}}. 
-% {\it Preservations} property means that if the program can execute 
-% one or two steps, the remaining part of instruction sequence can 
-% still execute safely. 
+% represent $n$-step execution. The defintion can ensure
+% the {\it progress} and {\it preservations} of the execution
+% of the instruction sequence. {\it Progress} property means
+% the program can execute a step, when meeting simple instructions,
+% or two steps, when meeting the delayed control transfer instructions,
+% \eg{\call{} and \jmp{}}.
+% {\it Preservations} property means that if the program can execute
+% one or two steps, the remaining part of instruction sequence can
+% still execute safely.
 % %the first control transfer instruction (excluding \call{}) it meets,
 % %and is formally
 % %defined in Def. \ref{def:Safety Instruction Sequence Judgment}.
@@ -1311,7 +1311,7 @@ and \ref{Selected Operational Semantics}.
 % 			\item
 % 			for any $\state', \pc', \npc'$, \\ if
 % 			$\ptrans{(\state, \pc, \npc)}{(\state', \pc', \npc')}$, then \\
-% 			$\safetins \; (\code, \state', \pc', \npc', \astQ, \Psi)$. 
+% 			$\safetins \; (\code, \state', \pc', \npc', \astQ, \Psi)$.
 % 		\end{itemize}
 		
 % 		\item if $\code(\pc) = \jmp \; \aexp$ then:
@@ -1335,7 +1335,7 @@ and \ref{Selected Operational Semantics}.
 %             \end{enumerate}
 % 		\end{itemize}
 
-% 		\item if $\code(\pc) = \be \; \lab{}$ then $\dots$ 
+% 		\item if $\code(\pc) = \be \; \lab{}$ then $\dots$
 		
 %         \item if $\code (\pc) = \call \; \lab{}$ then:
 % 		\begin{itemize}
@@ -1344,7 +1344,7 @@ and \ref{Selected Operational Semantics}.
 % 			$\multiptrans{2}{(\state, \pc, \npc)}
 % 				{(\state', \pc', \npc')}$,
 			
-% 			\item for any $\state', \pc'$ and $\npc'$, \\ 
+% 			\item for any $\state', \pc'$ and $\npc'$, \\
 % 			if
 % 			$\multiptrans{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
 % 			then there exist $\specpre, \specpost, \lgvl$ and $\pr$,
@@ -1360,12 +1360,12 @@ and \ref{Selected Operational Semantics}.
 				
 % 				\item
 % 				for any $\state'$, if $\asrtmodel{\state'}{(\specpost \; \lgvl) * \pr}$,
-% 				then \\ 
+% 				then \\
 % 				$\safetins \; (\code, \state', \pc+8, \pc+12, \astQ, \Psi)$,
 				
 % 				\item
 % 				for any $\state'$, if $\asrtmodel{\state'}{(\specpost \; \lgvl)}$,
-% 				then \\ 
+% 				then \\
 % 				$\state'.\Rstate.\RFile(\reg{15}) = \pc$.
 %             \end{enumerate}
 % 		\end{itemize}
@@ -1377,7 +1377,7 @@ and \ref{Selected Operational Semantics}.
 % 			$\multiptrans{2}{(\state, \pc, \npc)}
 % 				{(\state', \pc', \npc')}$,
 			
-% 			\item for any $\state', \pc'$ and $\npc'$, \\ 
+% 			\item for any $\state', \pc'$ and $\npc'$, \\
 % 			if
 % 			$\multiptrans{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
 % 			then $\state' \models \astQ$,
@@ -1403,14 +1403,14 @@ and \ref{Selected Operational Semantics}.
 % %then we get
 % %$\safetins \, (\code, \state, \lab{}, \lab{}+4, q, \Psi)$ holds.
 % Then we can define the semantics for well-formed instruction
-% sequences and well-formed code heap. 
-% The semantics of well-formed instruction sequences tells us that 
-% for any $\code$, if the instruction sequence starting from label 
-% $\lab{}$ is $\cblk$, then the instruction sequence $\cblk$ can 
-% execute safely if the initial state $\state$ satisfies the precondition 
-% $\astP$. And the semantics of well-formed code heap says that 
-% all the instruction sequences in code heap $\code$ given specifications 
-% can execute safely. 
+% sequences and well-formed code heap.
+% The semantics of well-formed instruction sequences tells us that
+% for any $\code$, if the instruction sequence starting from label
+% $\lab{}$ is $\cblk$, then the instruction sequence $\cblk$ can
+% execute safely if the initial state $\state$ satisfies the precondition
+% $\astP$. And the semantics of well-formed code heap says that
+% all the instruction sequences in code heap $\code$ given specifications
+% can execute safely.
 % %The semantics of well-formed instruction sequences
 % %tells us that for any code heap $\code$,
 % %if we can extract instruction sequence $\cblk$ from $\code$
@@ -1480,7 +1480,7 @@ and \ref{Selected Operational Semantics}.
 % 			$\ptrans{(\state, \pc, \npc)}{(\state', \pc', \npc')}$\,;
 			
 % 			\item
-% 			for any $\state', \pc', \npc'$, \\ if 
+% 			for any $\state', \pc', \npc'$, \\ if
 % 			$\ptrans{(\state, \pc, \npc)}{(\state', \pc', \npc')}$, then
 % 			$\safe{n} \, (\code, \state', \pc', \npc', \astQ, k)$\,;
 % 		\end{itemize}
@@ -1493,7 +1493,7 @@ and \ref{Selected Operational Semantics}.
 			
 % 			\item
 % 			for any $S', \pc', \npc'$, \\ if
-% 			$\multiptrans{2}{(S, \pc, \npc)}{(S', \pc', \npc')}$, 
+% 			$\multiptrans{2}{(S, \pc, \npc)}{(S', \pc', \npc')}$,
 % 			then $\safe{n}(C, S', \pc', \npc', q, k+1)$\,;
 % 		\end{itemize}
 		
@@ -1518,10 +1518,10 @@ and \ref{Selected Operational Semantics}.
 % \end{definition}
 
 % Then the following theorem and corollary show the soundness
-% of our logic. The correctness of corollary \ref{col:well-formed function} 
-% guarantees that we can get the correctness of the whole program, if 
-% each basic code block or internal function composing it 
-% is verified by our program logic. 
+% of our logic. The correctness of corollary \ref{col:well-formed function}
+% guarantees that we can get the correctness of the whole program, if
+% each basic code block or internal function composing it
+% is verified by our program logic.
 
 % \begin{theorem}[Soundness]
 % 	\label{thm:code heap soundness}
@@ -1539,13 +1539,13 @@ and \ref{Selected Operational Semantics}.
 %     then $\forall n. \; \safe{n} (\code, S, \pc, \pc\!+\!4, \astQ, 0)$.
 % \end{corollary}
 
-% Corollary \ref{col:well-formed function} shows what we 
-% want to achieve by defining the program logic. A function 
-% in SPARCv8 assembly may be composed by some basic code 
-% blocks and internal functions. Corollary \ref{col:well-formed function} 
-% tells us that we can verify these basic code blocks and 
-% internal functions separately, and compose these verification 
-% work together to achieve the correctness of the whole program. 
+% Corollary \ref{col:well-formed function} shows what we
+% want to achieve by defining the program logic. A function
+% in SPARCv8 assembly may be composed by some basic code
+% blocks and internal functions. Corollary \ref{col:well-formed function}
+% tells us that we can verify these basic code blocks and
+% internal functions separately, and compose these verification
+% work together to achieve the correctness of the whole program.
 
 %
 %	$\safe{n}(\code, \state, \pc, \npc, \astQ, k)$ says
