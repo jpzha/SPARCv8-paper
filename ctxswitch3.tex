@@ -160,7 +160,7 @@ in $\hthrdlocalst_n$.
 
 {\color{blue}
 \paragraph{\textbf{Proof outline}} We show how to use 
-our relational program logic presented in 
+our relational program logic defined in 
 \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}} 
 to verify the correctness of context switch routine. 
 We first instantiate the set of 
@@ -308,7 +308,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
         % new task $\tid_n$ and memory location $\TaskNew$ 
         % in low- and high-level. 
         % We define the frame 
-        $\relastP_r$ to describe the state of the 
+        $\relastP_r$ to depict the state of the 
         remaining tasks and memory 
         (excluding tasks $\tid_c$, $\tid_n$, and 
         memory location $\TaskNew$) in low- and high-level.
@@ -322,7 +322,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
         the threads and memory specified in assertion 
         $\relastP_r$ remain unchanged 
         in the final state and $\relastP_r$ keeps 
-        stable ($\Sta(\primsw)$).
+        stable ($\Sta(\primsw, \relastP_r)$).
     \end{itemize}
     Thus we are done. 
 \end{proof}
@@ -396,7 +396,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
         \label{fig:refinement reasoning}
     \end{center}
 
-    The correctness proof of
+    The correctness proof from
     (\ref{ctxswitch-wfse}) to (\ref{ctxswitch-wfsn}) 
     can be done by applying the inference rules for 
     code block shown in 
@@ -404,16 +404,26 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     We can choose any place to apply 
     \myrule{ABSCSQ} rule to execute primitive $\primsw$. 
     Here, we apply \myrule{ABSCSQ} rule 
-    and prove that the state 
-    relation between low- and high-level programs 
-    can be reestablished in verifying 
-    (\ref{ctxswitch-wfsn}), when context switch routine 
-    returns, as shown in \Fig{\ref{fig:refinement reasoning}}.
+    in verifying (\ref{ctxswitch-wfsn}), 
+    when context switch routine returns, 
+    as shown in \Fig{\ref{fig:refinement reasoning}}. 
     In \Fig{\ref{fig:refinement reasoning}}, we use the
-    solid circle to represent the point applying \myrule{ABSCSQ} rule, 
-    and use the solid line to repesent that 
-    the state relation
-    between low- and high-level holds. 
+    solid circle to represent the point applying \myrule{ABSCSQ} rule,
+    and after the execution of $\primsw$, the 
+    state relation between low- and high-level can 
+    be reestablished and we use solid line to represent 
+    that such relation holds in \Fig{\ref{fig:refinement reasoning}}.
+
+    % and prove that the state 
+    % relation between low- and high-level programs 
+    % can be reestablished in verifying 
+    % (\ref{ctxswitch-wfsn}), when context switch routine 
+    % returns, as shown in \Fig{\ref{fig:refinement reasoning}}.
+    % In \Fig{\ref{fig:refinement reasoning}}, we use the
+    % solid circle to represent the point applying \myrule{ABSCSQ} rule, 
+    % and use the solid line to repesent that 
+    % the state relation
+    % between low- and high-level holds. 
 \end{proof}
 
 \begin{theorem}[Context Switch Routine Correctness]
@@ -461,7 +471,7 @@ which omits some details like judging whether the
 current thread is a valid thread. 
 Verifying that each code block is well-defined 
 by applying the inference rules in our new logic is 
-not much different from the previous proof work. 
+no different from the previous proof work. 
 The additional proof effect includes: 
 (1) proving that the specification of context 
 switch routine is well-defined (presented in 
