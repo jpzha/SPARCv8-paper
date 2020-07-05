@@ -2076,8 +2076,9 @@ and we explain them in turn in the following.
     \end{enumerate}
 \end{definition}
 
-\textbf{First}, we should give some restrictions
-for the execution of abstract assembly primitive.
+\textbf{First}, 
+% we should give some restrictions
+% for the execution of abstract assembly primitive.
 The program counters should be equal to
 $\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$
 is contained in $\reg{15}$ register after the execution
@@ -2095,7 +2096,7 @@ We also require that
 % abstract assembly primitive should satisfy {\it locality},
 % which means that
 if an abstract assembly primitive
-can execute safely on a subset of program state,
+can execute safely on a part of program state,
 it can also execute safely on the whole program state,
 and additional program state remains unchanged.
 Here, $\hpstate\perp\hpstate_r$ is defined formally
@@ -2233,7 +2234,7 @@ in thread pool from the safe execution of primitive $\primsw$.
 % Otherwise,
 % the execution of primtive $\primsw$ will not be safe.
 Then we in turn know that the memory location $\TaskNew$
-in low-level state also saves the same memory address
+in low-level state also saves the same pointer
 from the state relation
 between low- and high-level program.
 \[
@@ -2263,8 +2264,8 @@ between low- and high-level program.
 % }
 We introduce frame $\relastP_r$ for local reasoning,
 and it should be stable under the execution
-of the abstract assembly primitive.
-(shown as $\Sta(\hprim(\args{\val}), \relastP_r)$)
+of the abstract assembly primitive
+(shown as $\Sta(\hprim(\args{\val}), \relastP_r)$
 defined below).
 \[
     \small
