@@ -751,7 +751,7 @@ The low-level \sparc{} program is somewhat different
 from the \sparc{} program defined in
 \Sec{\ref{sec:modeling}}:
 \begin{enumerate}
-    \item The low-level \sparc{} program use simple
+    \item The low-level \sparc{} program uses simple
         instructions defined in
         \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}.
         It means that we need to give semantics to the additional
@@ -759,15 +759,16 @@ from the \sparc{} program defined in
         $\cprint$ in low-level \sparc{} program.
         Since the $\Psave$ and $\Prestore$
         are specific forms of $\csave{}$ and
-        $\crestore{}$, and $\cprint$ is a primitive
+        $\crestore{}$ as explained, 
+        and $\cprint$ is a primitive
         responsible for generating observable event,
         which does the same thing as the high-level one,
         defining their semantics is not a challenge.
     \item The program transition defined in
         \Sec{\ref{sec:modeling}} doesn't generate
         observable event. Here, in order to support
-        refinement verification,
-        since we use the event trace refinement,
+        refinement verification, since 
+        we use the event trace refinement~\cite{liang14lics},
         each step of the program
         generates either an empty message $\tau$,
         or an output $\outEvt{\val}$ produced
