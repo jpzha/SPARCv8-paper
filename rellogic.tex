@@ -2363,7 +2363,8 @@ represent $n$-step execution.
 The $\word$ in simulation records the number of tokens.
 It will be consumed when meeting \jmp{} and \call{}
 instructions, so as to avoid infinite loop and recursive
-function call, and reset when the high-level
+function call and ensure termination preserving, 
+and reset when the high-level
 abstract assembly primitive executes.
 
 \begin{definition}[Simulation for Instruction Sequence]
@@ -2785,15 +2786,19 @@ function.
     %     \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
     %             {i}{0}{(\primcom, \hpstate)}
     % \]
-    The index $i$ can be instantiated as a pair of
-    $(\word, |\,\asmimp[\pc]\,|)$, where $|\,\cblk\,|$ means
+    The index $i$ can be instantiated as 
+    $(\word, 0, |\,\asmimp[\pc]\,|)$, where $|\,\cblk\,|$ means
     getting the length of instruction sequence $\cblk$.
-    And $(\word, |\, \cblk \,|) < (\word', |\,\cblk'\,|)$
-    is defined as:
+    And $(\word, k, |\, \cblk \,|) < (\word', k', |\,\cblk'\,|)$
+    is defined as ($k$ and $k'$ are depths of function call):
     \[
-        \word < \word' \lor
-        (\word = \word' \land
-        |\,\cblk\,| < |\,\cblk'\,|)
+        \word < \word' \lor 
+        (\word = \word' \land 
+        (k < k' \lor (k = k' \land 
+        |\,\cblk\,| < |\,\cblk'\,|)))
+        % \word < \word' \lor
+        % (\word = \word' \land
+        % |\,\cblk\,| < |\,\cblk'\,|)
     \]
 
     The simulation relation $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
@@ -3022,7 +3027,9 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
             (shown as $\preccurlyeq$ in the above figure)
             ensures that for each step
             of low-level execution, the high-level program will
-            execute zero or one step.
+            execute zero or one step. So we 
+            establish the simulation relation between 
+            low- and high-level programs. 
     \end{itemize}
 
     The assumption $\progsafe((\code, \hprimset), \hpstate)$
