@@ -2079,7 +2079,7 @@ and we explain them in turn in the following.
 \textbf{First}, 
 % we should give some restrictions
 % for the execution of abstract assembly primitive.
-The program counters should be equal to
+the program counters should be equal to
 $\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$
 is contained in $\reg{15}$ register after the execution
 of abstract assembly primitive.
@@ -2140,14 +2140,14 @@ below:
 specified in the precondition, and it's execution
 should be done in the final state.
 \textbf{Third}, there is an {\it invariant}
-between low- and high-level program, holding at the entry of
-the function, and our logic needs to ensure that such invariant
+between low- and high-level programs, holding at the entry of
+the function. Our logic needs to ensure that such invariant
 can be reestablished at the exit of function.
 % \input{picture/Sim}
 % (\Fig{\ref{fig:Logic Ensures State Relation Reestablished}} gives a
 % more straightforward way to understand this restriction, and
 % we use the purple dashed line to represent this invariant).
-We define \INV{} to represent this invariant below formally:
+We define \INV{} to represent such invariant below formally:
 % our logic needs to make sure that
 % the state relation defined in
 % \Def{\ref{fig:State Relation between Low- and High-level Program State}},
@@ -2215,7 +2215,7 @@ We define \INV{} to represent this invariant below formally:
     \end{array}
 \]
 The invariant consists of the state relation between low- and
-high-level program state,
+high-level program states,
 shown as $\stateRel{\state}{\hpstate}$,
 and the safe execution of the primitive command
 ($\primMultiTrans{}{*}{}$ denotes zero or one step).
@@ -2736,7 +2736,8 @@ imply the contextual refinement between implementation
 $\asmimp$ and abstract assembly primitives $\hprimset$.
 
 {\color{blue}
-Below, we show the soundness proof of our logic.
+\paragraph{\textbf{Soundness Proof.}}
+We show the soundness proof of our logic.
 We first give Lemma~\ref{lemma:function correctness}
 to show that the simulation relation for instruction
 sequence can compose to the simulation relation for
@@ -2844,8 +2845,8 @@ function.
                     \label{a:wfcdblk}
             \end{align}
             Then we unfold the proof goal $\models\asmimp:\Cspec{}$
-            according to its definition
-            (\Def{\ref{def:soundness of instruction sequence}}).
+            by its definition
+            (in \Def{\ref{def:soundness of instruction sequence}}).
             And we need to prove that for all
             $\lab{} \in \dom(\Cspec{})$, $\lgvl$ :
             \begin{align}
@@ -2859,7 +2860,7 @@ function.
             $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}
             \implies
             \semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$,
-            we can finish the proof by applying this lemma.
+            we finish the proof by applying this lemma.
 
         \item By the definition of
             $\wfprim{\Cspec{}}{\asmimp}{\hprimset}$
@@ -2892,8 +2893,8 @@ function.
                 \label{a:semwdcdhp2}
             \end{equation}
 
-            Then, we unfold $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$,
-            and we need to prove that for all $\lab{} \in \dom(\hprimset),
+            Then, by unfolding $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$,
+            we need to prove that for all $\lab{} \in \dom(\hprimset),
             \lgvl$, there exisits $\hprim$, $\args{\val}$,
             $\relspecpre$, $\relspecpost$, such that:
             \begin{itemize}
@@ -3002,10 +3003,14 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
                 \input{picture/client-code-exec}
                 \vspace*{-0.5em}
             \end{center}
-            We know that the high-level executes the same command
-            $\comm$, because the client code of low- and
-            high-level programs are the same.
-            And the state relation, shown as $\stateRel{\state}{\hpstate}$
+            Since the client code of low- and high-level 
+            programs are the same, the high-level will 
+            execute the same command $\comm$.
+            % We know that the high-level executes the same command
+            % $\comm$, because the client code of low- and
+            % high-level programs are the same.
+            We can prove that  
+            the state relation, shown as $\stateRel{\state}{\hpstate}$
             and defined in \Sec{\ref{subsec:correctness-primitive}},
             can be preserved after the execution, shown
             as $\stateRel{\state'}{\hpstate'}$. So, we
