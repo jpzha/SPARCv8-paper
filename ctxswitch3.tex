@@ -4,12 +4,12 @@
 \indent
 We apply our program logic to verify
 that a context switch routine implemented in \sparc,
-which saves the current task's context and 
-restores the new task's context, 
+which saves the current task's context and
+restores the new task's context,
 % is used to save the current task's context and
-% restore the new task's context, 
-contextually refines the $\primsw{}$ primitive 
-defined in \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}. 
+% restore the new task's context,
+contextually refines the $\primsw{}$ primitive
+defined in \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 \Fig{\ref{fig:The Structure of Context Switch Routine}}
 shows the structure of the code.
 \begin{center}
@@ -19,33 +19,33 @@ shows the structure of the code.
 \end{center}
 \begin{itemize}
     \item \texttt{SwitchEntry}
-    is the entry of the context switch routine. 
+    is the entry of the context switch routine.
     It saves \localRN{} and \inRN{} registers of current
-    window into stack (in memory), and call 
+    window into stack (in memory), and call
     \texttt{reg\_save} to save other registers into TCB.
-    
+
     \item
     \texttt{Save\_UsedWindows} saves
 	the register windows (except the current one)
-    into the current task's stack in memory. 
-    % It checks whether the previous window is valid. 
-    % If yes, it uses the instruction $\crestore{}$ 
-    % to set the previous window as the current one, 
-    % and saves its contents into stack (in memory), 
+    into the current task's stack in memory.
+    % It checks whether the previous window is valid.
+    % If yes, it uses the instruction $\crestore{}$
+    % to set the previous window as the current one,
+    % and saves its contents into stack (in memory),
     % then check the previous one continuously.
 
-    \item     
+    \item
     \texttt{Switch\_NewContext}
-    restores the general registers from the new task's TCB 
+    restores the general registers from the new task's TCB
     (by calling \texttt{reg\_restore})
-    and its stack in memory 
+    and its stack in memory
     respectively. Then it sets the new task as
     the current one.
 \end{itemize}
 
 The main complexity of the verification lies in
 the code that manages the register window.
-To save all the used 
+To save all the used
 register windows, \texttt{Save\_UsedWindows}
 repetitively restores the next window into general registers
 (as the current window)
@@ -54,11 +54,11 @@ and then saves them into memory, until all the windows are saved.
 \paragraph{\textbf{Specification.}}
 Below we give the pre- and post-conditions
 ($\Apre$ and $\Apost$) of the verified module.
-Each of them takes 6 arguments, 
-the id of the current task $\ctid$, the id of the new 
-task $\ntid$, the values $\env$ of general registers and 
-other register windows saving contexts, 
-the new task's context $\nst$ to be restored, 
+Each of them takes 6 arguments,
+the id of the current task $\ctid$, the id of the new
+task $\ntid$, the values $\env$ of general registers and
+other register windows saving contexts,
+the new task's context $\nst$ to be restored,
 and the thread local state $\hthrdlocalst_c$
 of current task and $\hthrdlocalst_n$ of the new task.
 \[
@@ -69,29 +69,29 @@ of current task and $\hthrdlocalst_n$ of the new task.
         \quad
         \begin{array}{l}
             \Env{\env} \sepstar
-            (\relmsto{\TaskNew}{(\thrdid_n, 0)}) \sepstar 
+            (\relmsto{\TaskNew}{(\thrdid_n, 0)}) \sepstar
             \metricAst{10} \sepstar \\
             \quad
-            \RelCurT{\thrdid_c}{\notCare}{\env}{\hthrdlocalst_c} \sepstar 
-            \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar 
+            \RelCurT{\thrdid_c}{\notCare}{\env}{\hthrdlocalst_c} \sepstar
+            \RelRdyT{\thrdid_n}{\nst}{\hthrdlocalst_n} \sepstar
             \safePrimAst{\, \primsw(\nil) \,}
         \end{array}
         \\
         \\[-8pt]
         \Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
-        \ \define \\ 
+        \ \define \\
         \quad
         \begin{array}{l}
-            \exists \, \env', \hthrdlocalst'. \, \Env{\env'} 
-            \sepstar (\relmsto{\TaskNew}{(\thrdid_n, 0)}) 
+            \exists \, \env', \hthrdlocalst'. \, \Env{\env'}
+            \sepstar (\relmsto{\TaskNew}{(\thrdid_n, 0)})
             \sepstar \
             \\
             \quad
             (\RelCurT{\thrdid_n}{\nst}{\env'}{\hthrdlocalst'}
-            \,\land\,\pEnv{\env'} = \nst) \sepstar 
+            \,\land\,\pEnv{\env'} = \nst) \sepstar
             \\
             \qquad
-            \RelRdyT{\thrdid_c}{\pEnv{\env}}{\hthrdlocalst_c} \sepstar 
+            \RelRdyT{\thrdid_c}{\pEnv{\env}}{\hthrdlocalst_c} \sepstar
             \safePrimAst{\, \primdone \,}
         \end{array}
     \end{array}
@@ -100,44 +100,44 @@ In the specification,
 we use $\Env{\env}$ to specify the values of
 general registers and the register windows.
 We describe the state
-of the current task 
+of the current task
 % (its TCB and stack in memory)
-using $\RelCurT{\ctid}{\notCare}{\env}{\hthrdlocalst_c}$. 
-It describes the memory of current task's TCB 
-and stack for saving contexts in low-level, 
-the thread local state $\hthrdlocalst_c$ in high-level, 
-and the state relation between the current thread $\ctid$ 
-in low- and high-level. 
-Similarly, $\RelRdyT{\ntid}{\nst}{\hthrdlocalst_n}$  
-describes states of new task $\ntid$ in low- and high-level 
-programs and their relation. 
-% Here, we use $\nst$ to represent the saved context 
-% of task $\ntid$. 
-The memory location 
-$\TaskNew$ records the identifier of the new task $\ntid$.  
+using $\RelCurT{\ctid}{\notCare}{\env}{\hthrdlocalst_c}$.
+It describes the memory of current task's TCB
+and stack for saving contexts in low-level,
+the thread local state $\hthrdlocalst_c$ in high-level,
+and the state relation between the current thread $\ctid$
+in low- and high-level.
+Similarly, $\RelRdyT{\ntid}{\nst}{\hthrdlocalst_n}$
+describes states of new task $\ntid$ in low- and high-level
+programs and their relation.
+% Here, we use $\nst$ to represent the saved context
+% of task $\ntid$.
+The memory location
+$\TaskNew$ records the identifier of the new task $\ntid$.
 And we use $\relmsto{\TaskNew}{(\ntid, 0)}$ to denote that
-$\TaskNew$ saves $(\tid_n, 0)$ 
-in both low- and high-level memory. 
+$\TaskNew$ saves $(\tid_n, 0)$
+in both low- and high-level memory.
 \[
-    \relmsto{\loc}{\val} \ \define \ 
+    \relmsto{\loc}{\val} \ \define \
     (\msto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val})
 \]
 
-The precondition takes ten tokens ($\metricAst{10}$). 
-As we have explained, verifying instruction \call{} 
-and \jmp{} will consume a token. 
+The precondition takes ten tokens ($\metricAst{10}$).
+As we have explained, verifying instruction \call{}
+and \jmp{} will consume a token.
 So, verifying function call
-\regsave{} and \regrestore{} will 
-both consume a token. And \SaveUsedWin{}, 
-which saves the context of each previous window 
-into memory repetitively until the invalid one,  
-% checks each previous window 
-% and saves its contexts into memory until the invalid one, 
-will execute at most eight times, 
-because the upper bound of 
-the number of windows is eight. 
-So, ten tokens is sufficient (two for \regsave{} and 
-\regrestore{}, and eight for \SaveUsedWin{}). 
+\regsave{} and \regrestore{} will
+both consume a token. And \SaveUsedWin{},
+which saves the context of each previous window
+into memory repetitively until the invalid one,
+% checks each previous window
+% and saves its contexts into memory until the invalid one,
+will execute at most eight times,
+because the upper bound of
+the number of windows is eight.
+So, ten tokens is sufficient (two for \regsave{} and
+\regrestore{}, and eight for \SaveUsedWin{}).
 
 If we compare $\Apre$ and $\Apost$, we can see that
 $\ntid$ becomes the current task
@@ -150,32 +150,32 @@ that we want to save or restore as context.
 Correspondingly, $\ctid$ becomes a non-current-thread,
 and part of its environment $\env$ at the entry of
 the context switch is saved, as specified by
-$\RelRdyT{\ctid}{\pEnv{\env}}{\hthrdlocalst_c}$. 
-The execution of $\primsw$ should be done in the final state. 
-We use $\hthrdlocalst'$ to represent the thread local 
-state of $\ntid$ instead of $\hthrdlocalst_n$ 
-in the final state, because the execution of 
-$\primsw$ will modify the program counters 
-in $\hthrdlocalst_n$. 
+$\RelRdyT{\ctid}{\pEnv{\env}}{\hthrdlocalst_c}$.
+The execution of $\primsw$ should be done in the final state.
+We use $\hthrdlocalst'$ to represent the thread local
+state of $\ntid$ instead of $\hthrdlocalst_n$
+in the final state, because the execution of
+$\primsw$ will modify the program counters
+in $\hthrdlocalst_n$.
 
 {\color{blue}
-\paragraph{\textbf{Proof outline}} We show how to use 
-our relational program logic defined in 
-\Fig{\ref{fig:Selected Inference Rules for Refinement Verification}} 
-to verify the correctness of context switch routine. 
-We first instantiate the set of 
+\paragraph{\textbf{Proof outline}} We show how to use
+our relational program logic defined in
+\Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}
+to verify the correctness of context switch routine.
+We first instantiate the set of
 abstract assembly primitive (\ref{ctxswitch-hprimset})
 and the code heap specification (\ref{ctxswitch-Cspec})
 below:
 \begin{align}
-    & \hprimset \ \define \ \{ \SwitchEntry \leadsto 
-        \primsw \} 
+    & \hprimset \ \define \ \{ \SwitchEntry \leadsto
+        \primsw \}
         \label{ctxswitch-hprimset} \\
     & \!\begin{array}{lcl}
-        \Cspec & \define & 
+        \Cspec & \define &
         \{ \SwitchEntry \leadsto (\Apre, \Apost), \\
         & & \quad
-        \regsave \leadsto 
+        \regsave \leadsto
         (\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}}),\\
         & & \quad
         \regrestore \leadsto
@@ -189,32 +189,32 @@ below:
     \end{array}
 \end{align}
 
-The set of abstract assembly primitive $\hprimset$ 
-contains only one abstract assembly primitive $\primsw$. 
+The set of abstract assembly primitive $\hprimset$
+contains only one abstract assembly primitive $\primsw$.
 And the code heap specification $\Cspec{}$
-contains the specifications of each code blocks. 
-We use 
-$(\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}})$, 
-$(\relspecpre_{\textit{rr}}, \relspecpost_{\textit{rr}})$, 
+contains the specifications of each code blocks.
+We use
+$(\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}})$,
+$(\relspecpre_{\textit{rr}}, \relspecpost_{\textit{rr}})$,
 $(\relspecpre_{\textit{su}}, \relspecpost_{\textit{su}})$ and
 $(\relspecpre_{\textit{sn}}, \relspecpost_{\textit{sn}})$
-to represent the specifications of 
-\regsave{}, \regrestore{}, 
-\SaveUsedWin{} and \SwitchNewTask{} respectively. 
-Since the post-condition in our logic specifies the 
-state when the \textit{current function returns}, 
+to represent the specifications of
+\regsave{}, \regrestore{},
+\SaveUsedWin{} and \SwitchNewTask{} respectively.
+Since the post-condition in our logic specifies the
+state when the \textit{current function returns},
 the specification of \SwitchEntry{} is $(\Apre, \Apost)$.
-% We use 
-% $(\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}})$, 
-% $(\relspecpre_{\textit{rr}}, \relspecpost_{\textit{rr}})$, 
+% We use
+% $(\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}})$,
+% $(\relspecpre_{\textit{rr}}, \relspecpost_{\textit{rr}})$,
 % $(\relspecpre_{\textit{su}}, \relspecpost_{\textit{su}})$ and
-% $(\relspecpre_{\textit{sn}}, \relspecpost_{\textit{sn}})$ to 
-% represent the specifications of 
-% \regsave{}, \regrestore{}, 
-% \SaveUsedWin{} and \SwitchNewTask{} respectively. 
+% $(\relspecpre_{\textit{sn}}, \relspecpost_{\textit{sn}})$ to
+% represent the specifications of
+% \regsave{}, \regrestore{},
+% \SaveUsedWin{} and \SwitchNewTask{} respectively.
 
-First, we prove that the specification of 
-context switch routine is well-defined in 
+First, we prove that the specification of
+context switch routine is well-defined in
 Lemma~\ref{lemma:ctxswitch-wdspec}.
 \begin{lemma}
     \em
@@ -222,117 +222,117 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
     $\wdSpec{\Apre}{\Apost}{\primsw}$
 \end{lemma}
 \begin{proof}
-    By the definition of 
-    $\textsf{wdSpec}$ (defined in 
-    \Def{\ref{def:well-defined specification}}), 
+    By the definition of
+    $\textsf{wdSpec}$ (defined in
+    \Def{\ref{def:well-defined specification}}),
     we need to prove the following:
-    % The correctness proof of this lemma is 
-    % straight-forward. According to the definition of 
-    % $\textsf{wdSpec}$ (defined in 
-    % \Def{\ref{def:well-defined specification}}), 
-    % we need to prove that the following three properties 
+    % The correctness proof of this lemma is
+    % straight-forward. According to the definition of
+    % $\textsf{wdSpec}$ (defined in
+    % \Def{\ref{def:well-defined specification}}),
+    % we need to prove that the following three properties
     % hold:
     \begin{itemize}
-        \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$. 
-        if $\primsw(\args{\val})(\hpstate)(\hpstate')$, and 
-        $\hpstate \perp \hpstate_r$, 
-        then the following holds : 
+        \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$.
+        if $\primsw(\args{\val})(\hpstate)(\hpstate')$, and
+        $\hpstate \perp \hpstate_r$,
+        then the following holds :
         \begin{itemize}
             \small
-            \item $\hpstate'.\hthrdlocalst.\pc = \lab{} + 8$, 
+            \item $\hpstate'.\hthrdlocalst.\pc = \lab{} + 8$,
                 $\hpstate'.\hthrdlocalst.\npc = \lab{} + 12$
                 (where $\hpstate'.\hthrdlocalst.\hRstate.\hRfile
                     ({\reg{15}}) = \lab{}$);
-            \item there exists $\hpstate'', \hpstate_r'$, 
-                $\primsw(\args{\val})(\hpstate \uplus \hpstate_r) 
-                    (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$, 
-                and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$, 
-                $\hpstate_r.\Mem = \hpstate_r'.\Mem$; 
+            \item there exists $\hpstate'', \hpstate_r'$,
+                $\primsw(\args{\val})(\hpstate \uplus \hpstate_r)
+                    (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$,
+                and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$,
+                $\hpstate_r.\Mem = \hpstate_r'.\Mem$;
         \end{itemize}
 
-        Prove by the definition of $\primsw$, which 
-        ensures that, in the final state, 
-        the program counters will point to 
-        the correct pointers and the threads and 
-        memory in $\hpstate_r$ remain unchanged, 
-        because the execution of $\primsw$ only accesses 
-        the current and new tasks in thread pool 
+        Prove by the definition of $\primsw$, which
+        ensures that, in the final state,
+        the program counters will point to
+        the correct pointers and the threads and
+        memory in $\hpstate_r$ remain unchanged,
+        because the execution of $\primsw$ only accesses
+        the current and new tasks in thread pool
         and the location $\TaskNew$ in memory.
 
-        % The definition of $\primsw$ ensures that the 
-        % program counters will point to the correct pointers, 
-        % and its execution only accesses 
-        % the current and new tasks in thread pool 
-        % and the location $\TaskNew$ in memory. 
-        % So, the threads and memory specified in $\hpstate_r$ 
-        % remain unchanged in final state. 
+        % The definition of $\primsw$ ensures that the
+        % program counters will point to the correct pointers,
+        % and its execution only accesses
+        % the current and new tasks in thread pool
+        % and the location $\TaskNew$ in memory.
+        % So, the threads and memory specified in $\hpstate_r$
+        % remain unchanged in final state.
 
         \item for any $\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n$,
             \begin{itemize}
                 \small
-                \item $\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n) 
-                    \Longrightarrow \safePrimAst{\primsw} \sepstar \atrue$; 
-                \item $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n) 
-                    \Longrightarrow \safePrimAst{\primdone} \sepstar \atrue$; 
-            \end{itemize}   
+                \item $\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
+                    \Longrightarrow \safePrimAst{\primsw} \sepstar \atrue$;
+                \item $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
+                    \Longrightarrow \safePrimAst{\primdone} \sepstar \atrue$;
+            \end{itemize}
         \vspace*{0.3em}
         Prove by the definition of $\Apre$ and $\Apost$.
-        % According the definition of $\Apre$ and $\Apost$, 
-        % we are done. 
+        % According the definition of $\Apre$ and $\Apost$,
+        % we are done.
 
-        \item for any $\args{\val}, \state, \hpstate$, 
-        if $(\state, \hpstate, \notCare, \notCare) \in 
-            \INV{(\primsw(\args{\val}), \args{\val})}$, 
-        then there exists $\thrdid_c, \thrdid_n, \env$, $\nst, 
-        \hthrdlocalst_c, \hthrdlocalst_n, \relastP_r$ and $\word$, 
+        \item for any $\args{\val}, \state, \hpstate$,
+        if $(\state, \hpstate, \notCare, \notCare) \in
+            \INV{(\primsw(\args{\val}), \args{\val})}$,
+        then there exists $\thrdid_c, \thrdid_n, \env$, $\nst,
+        \hthrdlocalst_c, \hthrdlocalst_n, \relastP_r$ and $\word$,
         such that:
         \begin{itemize}
             \small
             \item $\asrtmodel{(\state, \hpstate, \primsw(\args{\val}), \word)}
-                {\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, 
-                \hthrdlocalst_n) \sepstar \relastP_r}$; 
-            \item  $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, 
-                \hthrdlocalst_n) \sepstar \relastP_r \Longrightarrow 
-                \INV{(\primdone, \notCare)}$; 
-            \item $\Sta(\primsw(\args{\val}), \relastP_r)$. 
+                {\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
+                \hthrdlocalst_n) \sepstar \relastP_r}$;
+            \item  $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
+                \hthrdlocalst_n) \sepstar \relastP_r \Longrightarrow
+                \INV{(\primdone, \notCare)}$;
+            \item $\Sta(\primsw(\args{\val}), \relastP_r)$.
         \end{itemize}
 
-        Prove by the definitions of $\Apre$ and $\Apost$. 
-        They specify the states of task $\tid_c$ and 
+        Prove by the definitions of $\Apre$ and $\Apost$.
+        They specify the states of task $\tid_c$ and
         $\tid_n$ and memory location $\TaskNew$
-        % of original current task $\tid_c$,  
-        % new task $\tid_n$ and memory location $\TaskNew$ 
-        in low- and high-level. And we define the frame 
-        % The definitions of $\Apre$ and $\Apost$ describe that 
-        % the states of original current task $\tid_c$,  
-        % new task $\tid_n$ and memory location $\TaskNew$ 
-        % in low- and high-level. 
-        % We define the frame 
-        $\relastP_r$ to depict the state of the 
-        remaining tasks and memory 
-        (excluding tasks $\tid_c$, $\tid_n$, and 
+        % of original current task $\tid_c$,
+        % new task $\tid_n$ and memory location $\TaskNew$
+        in low- and high-level. And we define the frame
+        % The definitions of $\Apre$ and $\Apost$ describe that
+        % the states of original current task $\tid_c$,
+        % new task $\tid_n$ and memory location $\TaskNew$
+        % in low- and high-level.
+        % We define the frame
+        $\relastP_r$ to depict the state of the
+        remaining tasks and memory
+        (excluding tasks $\tid_c$, $\tid_n$, and
         memory location $\TaskNew$) in low- and high-level.
-        Then, we can prove that the 
-        state relation between low- and high-level 
-        holds at the entry and 
-        exit of context switch routine. 
-        Since the execution of $\primsw$ only accesses 
-        the current and new tasks in thread pool, and the 
-        memory location $\TaskNew$, 
-        the threads and memory specified in assertion 
-        $\relastP_r$ remain unchanged 
-        in the final state and $\relastP_r$ keeps 
+        Then, we can prove that the
+        state relation between low- and high-level
+        holds at the entry and
+        exit of context switch routine.
+        Since the execution of $\primsw$ only accesses
+        the current and new tasks in thread pool, and the
+        memory location $\TaskNew$,
+        the threads and memory specified in assertion
+        $\relastP_r$ remain unchanged
+        in the final state and $\relastP_r$ keeps
         stable ($\Sta(\primsw, \relastP_r)$).
     \end{itemize}
-    Thus we are done. 
+    Thus we are done.
 \end{proof}
 
-We use $\code_{\texttt{switch}}$ to represent the 
-code heap storing the code of context switch routine, 
-which includes the code blocks \SwitchEntry{}, 
-\regsave{}, \regrestore{}, 
-\SaveUsedWin{} and \SwitchNewTask{}. We prove that 
-the $\code_{\texttt{switch}}$ is well-defined in 
+We use $\code_{\texttt{switch}}$ to represent the
+code heap storing the code of context switch routine,
+which includes the code blocks \SwitchEntry{},
+\regsave{}, \regrestore{},
+\SaveUsedWin{} and \SwitchNewTask{}. We prove that
+the $\code_{\texttt{switch}}$ is well-defined in
 Lemma~\ref{lemma:ctxswitch-wfcdhp}.
 
 \begin{lemma}
@@ -341,18 +341,18 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$
 \end{lemma}
 \begin{proof}
-    The code heap specification $\Cspec{}$ have been 
-    defined in (\ref{ctxswitch-Cspec}). We unfold 
-    $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$ 
-    according to its definition 
-    (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}). 
-    And we need to prove that for any $\lgvl_1$, 
-    $\lgvl_2$, $\lgvl_3$, 
+    The code heap specification $\Cspec{}$ have been
+    defined in (\ref{ctxswitch-Cspec}). We unfold
+    $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$
+    according to its definition
+    (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}).
+    And we need to prove that for any $\lgvl_1$,
+    $\lgvl_2$, $\lgvl_3$,
     $\lgvl_4$ and $\lgvl_5$, the following hold
-    (we use $\lab{\textit{se}}$, $\lab{\textit{rs}}$, 
-    $\lab{\textit{rr}}$, $\lab{\textit{su}}$ and 
+    (we use $\lab{\textit{se}}$, $\lab{\textit{rs}}$,
+    $\lab{\textit{rr}}$, $\lab{\textit{su}}$ and
     $\lab{\textit{sn}}$ to represent the starting labels of
-    \SwitchEntry{}, \regsave{}, \regrestore{}, 
+    \SwitchEntry{}, \regsave{}, \regrestore{},
     \SaveUsedWin{} and \SwitchNewTask{} below):
     \begin{align}
         & \wfcblk{\Apre \ \lgvl_1}{\Apost \ \lgvl_1}
@@ -365,7 +365,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
             {\relspecpost_{\textit{rs}} \ \lgvl_2}
             {\lab{\textit{rs}}}
             {\code_{\texttt{switch}}
-            [\lab{\textit{rs}}]} 
+            [\lab{\textit{rs}}]}
             \tag{g-wfrs}
             \label{ctxswitch-wfrs} \\
         & \wfcblk{\relspecpre_{\textit{rr}} \ \lgvl_3}
@@ -373,13 +373,13 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
             {\lab{\textit{rr}}}
             {\code_{\texttt{switch}}
             [\lab{\textit{rr}}]}
-            \tag{g-wfrr} 
+            \tag{g-wfrr}
             \label{ctxswitch-wfrr} \\
         & \wfcblk{\relspecpre_{\textit{su}} \ \lgvl_4}
             {\relspecpost_{\textit{su}} \ \lgvl_4}
             {\lab{\textit{su}}}
             {\code_{\texttt{switch}}[\lab{\textit{su}}]}
-            \tag{g-wfsu} 
+            \tag{g-wfsu}
             \label{ctxswitch-wfsu} \\
         & \wfcblk{\relspecpre_{\textit{sn}} \ \lgvl_5}
             {\relspecpost_{\textit{sn}} \ \lgvl_5}
@@ -387,7 +387,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
             {\code_{\texttt{switch}}[\lab{\textit{sn}}]}
             \tag{g-wfsn}
             \label{ctxswitch-wfsn}
-    \end{align} 
+    \end{align}
 
     \begin{center}
         \input{picture/point-refine-ctxswitch}
@@ -397,93 +397,93 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     \end{center}
 
     The correctness proof from
-    (\ref{ctxswitch-wfse}) to (\ref{ctxswitch-wfsn}) 
-    can be done by applying the inference rules for 
-    code block shown in 
-    \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}. 
-    We can choose any place to apply 
-    \myrule{ABSCSQ} rule to execute primitive $\primsw$. 
-    Here, we apply \myrule{ABSCSQ} rule 
-    in verifying the code block 
-    \SwitchNewTask{} (\ref{ctxswitch-wfsn}), 
-    when context switch routine returns, 
-    as shown in \Fig{\ref{fig:refinement reasoning}}. 
+    (\ref{ctxswitch-wfse}) to (\ref{ctxswitch-wfsn})
+    can be done by applying the inference rules for
+    code block shown in
+    \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}.
+    We can choose any place to apply
+    \myrule{ABSCSQ} rule to execute primitive $\primsw$.
+    Here, we apply \myrule{ABSCSQ} rule
+    in verifying the code block
+    \SwitchNewTask{} (\ref{ctxswitch-wfsn}),
+    when context switch routine returns,
+    as shown in \Fig{\ref{fig:refinement reasoning}}.
     In \Fig{\ref{fig:refinement reasoning}}, we use the
     solid circle to represent the point applying \myrule{ABSCSQ} rule,
-    and after the execution of $\primsw$, the 
-    state relation between low- and high-level can 
-    be reestablished and we use solid line to represent 
+    and after the execution of $\primsw$, the
+    state relation between low- and high-level can
+    be reestablished and we use solid line to represent
     that such relation holds in \Fig{\ref{fig:refinement reasoning}}.
-    % and prove that the state 
-    % relation between low- and high-level programs 
-    % can be reestablished in verifying 
-    % (\ref{ctxswitch-wfsn}), when context switch routine 
+    % and prove that the state
+    % relation between low- and high-level programs
+    % can be reestablished in verifying
+    % (\ref{ctxswitch-wfsn}), when context switch routine
     % returns, as shown in \Fig{\ref{fig:refinement reasoning}}.
     % In \Fig{\ref{fig:refinement reasoning}}, we use the
-    % solid circle to represent the point applying \myrule{ABSCSQ} rule, 
-    % and use the solid line to repesent that 
+    % solid circle to represent the point applying \myrule{ABSCSQ} rule,
+    % and use the solid line to repesent that
     % the state relation
-    % between low- and high-level holds. 
+    % between low- and high-level holds.
 \end{proof}
 
 \begin{theorem}[Context Switch Routine Correctness]
     \em
-    $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$. 
+    $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$.
 \end{theorem}
 \begin{proof}
-    By the definition of 
-    $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$, 
-    where $\hprimset$ and $\Cspec{}$ are defined in 
-    (\ref{ctxswitch-hprimset}) and (\ref{ctxswitch-Cspec}) 
-    respectively, we prove the following hold:
-    % We unfold 
-    % $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$ 
-    % by its definition 
-    % (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}), 
-    % where $\hprimset$ and $\Cspec{}$ are defined in 
-    % (\ref{ctxswitch-hprimset}) and (\ref{ctxswitch-Cspec}) 
+    By the definition of
+    $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$,
+    where $\hprimset$ and $\Cspec{}$ are defined in
+    (\ref{ctxswitch-hprimset}) and (\ref{ctxswitch-Cspec})
+    respectively, we prove the following:
+    % We unfold
+    % $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$
+    % by its definition
+    % (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}),
+    % where $\hprimset$ and $\Cspec{}$ are defined in
+    % (\ref{ctxswitch-hprimset}) and (\ref{ctxswitch-Cspec})
     % respectively, and we prove the following hold:
     \begin{itemize}
-        \item $\wfcdhp{\asmimp}{\Cspec{}}$. 
+        \item $\wfcdhp{\asmimp}{\Cspec{}}$.
             Prove by applying Lemma~\ref{lemma:ctxswitch-wfcdhp}.
-            % The correctness proof of this subgoal can be done by 
-            % apply Lemma~\ref{lemma:ctxswitch-wfcdhp}. 
+            % The correctness proof of this subgoal can be done by
+            % apply Lemma~\ref{lemma:ctxswitch-wfcdhp}.
         \item $\wdSpec{\Apre}{\apost}{\primsw}$.
             Prove by applying Lemma ~\ref{lemma:ctxswitch-wdspec}.
-            % The correctness proof of this subgoal can be done by 
+            % The correctness proof of this subgoal can be done by
             % apply Lemma~\ref{lemma:ctxswitch-wdspec}.
     \end{itemize}
     Thus we are done.
 \end{proof}
 
-This part of work has not been mechanized in Coq. 
-In our conference paper, we show that 
-we apply our logic that do not support 
-refinement verification to verify 
-the main body of the context switch routine in 
-a realistic embedded OS kernel for aerospace crafts, 
-which consists of around 250 lines of SPARCv8 code, 
-by 6690 lines of Coq proof scripts. Here, the 
-context switch routine verified by applying our 
-relational program logic is a 
-simplified version of context switch routine, 
-which omits some details like judging whether the 
-current thread is a valid thread. 
-Verifying that each code block is well-defined 
-by applying the inference rules in our new logic is 
-no different from the previous proof work. 
-The additional proof effect includes: 
-(1) proving that the specification of context 
-switch routine is well-defined (presented in 
-Lemma~\ref{lemma:ctxswitch-wdspec}); 
-(2) applying \myrule{ABSCSQ} rule to execute 
-primitive $\primsw$ and proving that the state 
-relation between low- and high-level programs 
-can be reestablished in verifying code block 
-\SwitchNewTask{}, when context switch routine 
-returns (as noted in the proof of 
-Lemma~\ref{lemma:ctxswitch-wfcdhp}). 
+This part of work has not been mechanized in Coq.
+In our conference paper, we show that
+we apply our logic that do not support
+refinement verification to verify
+the main body of the context switch routine in
+a realistic embedded OS kernel for aerospace crafts,
+which consists of around 250 lines of SPARCv8 code,
+by 6690 lines of Coq proof scripts. Here, the
+context switch routine verified by applying our
+relational program logic is a
+simplified version of context switch routine,
+which omits some details like judging whether the
+current thread is a valid thread.
+Verifying that each code block is well-defined
+by applying the inference rules in our new logic is
+no different from the previous proof work.
+The additional proof effect includes:
+(1) proving that the specification of context
+switch routine is well-defined (presented in
+Lemma~\ref{lemma:ctxswitch-wdspec});
+(2) applying \myrule{ABSCSQ} rule to execute
+primitive $\primsw$ and proving that the state
+relation between low- and high-level programs
+can be reestablished in verifying code block
+\SwitchNewTask{}, when context switch routine
+returns (as noted in the proof of
+Lemma~\ref{lemma:ctxswitch-wfcdhp}).
 
-We present more details of this part of proof 
+We present more details of this part of proof
 work in TR~\cite{coqimp}.
-}
+} 

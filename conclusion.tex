@@ -16,9 +16,9 @@ which makes it difficult to interact with other modules
 verified in different logic. Since our goal is to
 verify inline assembly and link the verified code
 with the verified C programs, we give a direct-style
-semantic model of the logic judgments. And it allows us 
-to extend our program logic to support verifying 
-contextual refinement without much challenges. 
+semantic model of the logic judgments. And it allows us
+to extend our program logic to support verifying
+contextual refinement without much challenges.
 Also SCAP
 is based on a simplified subset of assembly instructions,
 while our work is focused on a realistically modeled
@@ -36,12 +36,12 @@ As part of the Foundational Proof-Carrying Code (FPCC)
 project~\cite{FPCC},
 Tan and Appel present a program logic $\mathcal{L}_c$
 for reasoning about control flow in assembly code~\cite{cflogic}.
-Although $\mathcal{L}_c$ is implemented 
-on top of the SPARC machine language, 
+Although $\mathcal{L}_c$ is implemented
+on top of the SPARC machine language,
 the underlying logic is a type system instead
 of a full-blown program logic for functional correctness.
 It reasons about functions in the continuation-passing
-style. Also 
+style. Also
 handling SPARC features such as delayed writes or delayed
 control transfers is not the focus of $\mathcal{L}_c$.
 %They also reason about functions in the continuation-passing
@@ -49,64 +49,64 @@ control transfers is not the focus of $\mathcal{L}_c$.
 There has been work on mechanized semantics of the SPARCv8 ISA.
 %Here are already some works for SPARCv8 ISA formalization.
 \etal{Hou}~\cite{sparcv8-formalization-Isabelle} model the SPARCv8 ISA
-in Isabelle/HOL, and test their formal model against 
-LENON3 simulation board, 
-which is a synthesisable VHDL model of a 32-bit processor 
-compliant with the SPARCv8 architecture, 
-through more than 100,000 instruction instances.   
+in Isabelle/HOL, and test their formal model against
+LENON3 simulation board,
+which is a synthesisable VHDL model of a 32-bit processor
+compliant with the SPARCv8 architecture,
+through more than 100,000 instruction instances.
 \etal{Wang}~\cite{sparc-formalization} formalize its semantics in Coq.
 %However, both of their works give no program logic.
 Our operational semantics of SPARCv8 follows \etal{Wang}~\cite{sparc-formalization}.
 %\etal{Wang}~\cite{sparc-formalization}
 %formalize the SPARCv8 ISA in Coq but give
 %no program logic. Our operational
-%semantics of SPARCv8 follows their work. 
-Since neither \etal{Wang} nor we validate the 
-formalization against actual hardware, this remains 
-as future work. 
+%semantics of SPARCv8 follows their work.
+Since neither \etal{Wang} nor we validate the
+formalization against actual hardware, this remains
+as future work.
 
-% But \etal{Wang} do not validate their formalization against actual 
-% hardware, we remain it as a future work. 
+% But \etal{Wang} do not validate their formalization against actual
+% hardware, we remain it as a future work.
 
 \etal{Ni}~\cite{ctxm} verify a context switch module of 19 lines
 in x86 code to showcase the support of embedded
-code pointers (ECP) in XCAP~\cite{xcap}. 
-We use our program logic to verify the contextual 
-refinement between a context switch routine in \sparc{} 
-and $\primsw{}$ primitive. The context switch routine 
-implemented in \sparc{} that we verified 
-is more complicated then 
-implemented in x86, because of the requirement to save 
+code pointers (ECP) in XCAP~\cite{xcap}.
+We use our program logic to verify the contextual
+refinement between a context switch routine in \sparc{}
+and $\primsw{}$ primitive. The context switch routine
+implemented in \sparc{} that we verified
+is more complicated then
+implemented in x86, because of the requirement to save
 the contexts stored in register window in memory.
 % The context switch
 % module we verify comes from a practical OS kernel,
 % which is more realistic and consists of more than 250 lines
-% of assembly code, but our logic (\textbf{CALL} rule) 
-% does not really support the switch of return pointers,   
-% which requires further extension like OCAP~\cite{FengTLDI07}. 
+% of assembly code, but our logic (\textbf{CALL} rule)
+% does not really support the switch of return pointers,
+% which requires further extension like OCAP~\cite{FengTLDI07}.
 % Our focus is to verify the
-% code manages the register windows, and the function calls made internally. 
-% We address this problem of calling context switch routine in 
-% another way in our work, such that we can use the extended 
-% program logic to verify the contextual refinement between 
-% context switch routine and $\primsw{}$ primitive. 
-% The method of verifying context switch primitive in our work is 
+% code manages the register windows, and the function calls made internally.
+% We address this problem of calling context switch routine in
+% another way in our work, such that we can use the extended
+% program logic to verify the contextual refinement between
+% context switch routine and $\primsw{}$ primitive.
+% The method of verifying context switch primitive in our work is
 % inspired by the approach used by \etal{Guo}~\cite{ctxmGuo}
-% that protects the TCBs through abstraction, but the state 
-% relation between low- and high-level program state in our work is more 
-% sophisticated than theirs, because of some specific mechanisms, 
-% like register windows, in SPARCv8. 
-% They also do not develop a general program 
-% logic for refinement verification of the assembly.  
-% Our extended program logic is based on the relational program logic, 
-% which has already been well used 
-% successfully in the refinement verification 
-% of C-style language \cite{Xu16cav,liang13pldi,liang14lics}.  
+% that protects the TCBs through abstraction, but the state
+% relation between low- and high-level program state in our work is more
+% sophisticated than theirs, because of some specific mechanisms,
+% like register windows, in SPARCv8.
+% They also do not develop a general program
+% logic for refinement verification of the assembly.
+% Our extended program logic is based on the relational program logic,
+% which has already been well used
+% successfully in the refinement verification
+% of C-style language \cite{Xu16cav,liang13pldi,liang14lics}.
 
-Yang and Hawblitzel~\cite{YangPLDI10} verify Verve, an x86 
-implementation of an experimental operating system. Verve has two 
-levels, the high-level TAL code and the low-level ``Nucleus'' 
-that provides primitive access to hardware and memory. 
+Yang and Hawblitzel~\cite{YangPLDI10} verify Verve, an x86
+implementation of an experimental operating system. Verve has two
+levels, the high-level TAL code and the low-level ``Nucleus''
+that provides primitive access to hardware and memory.
 The Nucleus code is verified automatically using the Z3 SMT solver,
 while the goal of our work is to generate machine checkable proofs.
 Another key difference is the use of different ISAs. Here
@@ -116,19 +116,19 @@ There have been many techniques and tools proposed for automated
 program verification (\eg~\cite{SymbolicExecutionSpLogic,Smallfoot}).
 It is possible to adapt them to verify SPARCv8 code.
 We propose a new program logic and do the verification in Coq mainly
-because the work is part of a big project for a fully certified OS 
-kernel for aerospace crafts whose inline assembly is written in 
-SPARCv8. We already have a program logic implemented in Coq for 
-C programs, which allows us to verify C code with Coq proofs. 
-Therefore we want to have a program logic for SPARCv8 so that 
-it can be linked with the correctness proof of 
+because the work is part of a big project for a fully certified OS
+kernel for aerospace crafts whose inline assembly is written in
+SPARCv8. We already have a program logic implemented in Coq for
+C programs, which allows us to verify C code with Coq proofs.
+Therefore we want to have a program logic for SPARCv8 so that
+it can be linked with the correctness proof of
 C and can generate machine-checkable Coq proofs too.
 That said, many of the automated verification techniques can
 be applied to reduce the manual efforts to write Coq proofs,
-which we would like to study in the future work. 
-% We have already shown that it's possible to apply some 
-% Coq tactics based on separation logic \cite{practical-tactics} 
-% in our work.  
+which we would like to study in the future work.
+% We have already shown that it's possible to apply some
+% Coq tactics based on separation logic \cite{practical-tactics}
+% in our work.
 
 
 % %Most of our code verification works are done by hand now.
@@ -247,36 +247,36 @@ Our logic is based on a realistic semantics
 model and supports the main features of \sparc,
 including delayed control transfer, delayed writes,
 and register windows.
-It also supports modular reasoning of 
-function call in a direct-style and 
-refinement verification. 
-We apply our logic to verify  
-that there is a contextual refinement between 
-a context switch routine implementated 
+It also supports modular reasoning of
+function call in a direct-style and
+refinement verification.
+We apply our logic to verify
+that there is a contextual refinement between
+a context switch routine implementated
 in \sparc{} and $\primsw$ primitive for task switching.
-% And we also extend the program logic to support 
-% refinement verification and apply the extended 
-% program logic to verify 
-% that there is a contextual refinement between 
-% a context switch routine implementated 
-% in \sparc{} and $\primsw$ primitive for task switching. 
+% And we also extend the program logic to support
+% refinement verification and apply the extended
+% program logic to verify
+% that there is a contextual refinement between
+% a context switch routine implementated
+% in \sparc{} and $\primsw$ primitive for task switching.
 % We have applied the program logic to verify
 % the main body of the context switch routine
-% in a realistic embedded OS kernel. 
-% And we also extend the program logic to support 
-% refinement verification. 
+% in a realistic embedded OS kernel.
+% And we also extend the program logic to support
+% refinement verification.
 Our current work can only handle
-sequential \sparc{} program verification and 
-do not consider interrupt in machine model.  
-We will extend it for concurrency verification 
+sequential \sparc{} program verification and
+do not consider interrupt in machine model.
+We will extend it for concurrency verification
 and finish the step {\color{blue} \textcircled{1}} shown in
 \Fig{\ref{fig:idea to establish contextual refinement}}
-that the compilation can ensure the behaviors 
-of the Pseudo-SPARCv8 code calling abstraction assembly 
-primitives in intermediate level refines 
-the behaviors of 
-the client C code calling abstract assembly primitives 
-in source level in the future. 
+that the compilation can ensure the behaviors
+of the Pseudo-SPARCv8 code calling abstraction assembly
+primitives in intermediate level refines
+the behaviors of
+the client C code calling abstract assembly primitives
+in source level in the future.
 % %and accurate models of \sparc{} program,
 % %and supports module, local, function call/return
 % %and main features of \sparc{} verification.
@@ -292,9 +292,9 @@ in source level in the future.
 % % with verified C code for whole system
 % % verification.
 {\color{blue}
-We will also consider to automate the reasoning  
-for certain parts with automatic provers like Z3~\cite{Z3} 
-or some integration with framework like Frama-C~\cite{framac}, to 
-reduce the required human effort in the verification work 
-in the future. 
-}
+We will also consider to automate the reasoning
+for certain parts with automatic provers like Z3~\cite{Z3}
+or integration with framework like Frama-C~\cite{framac}, to
+reduce the required human effort in the verification work
+in the future.
+} 

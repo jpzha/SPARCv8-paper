@@ -5,8 +5,8 @@ In this section, we present our \textit{relational}
 program logic for refinement verification of
 SPARCv8 code. %, which is the expansion of our conference paper.
 {\color{blue}
-This, as an extension of our conference paper,
-consists of the following work:
+As an extension of our conference paper,
+it consists of the following work:
 %In order to support such expansion, we do the following:
 \begin{itemize}
     \item We define a new Pseudo-\sparc{} language
@@ -15,7 +15,7 @@ consists of the following work:
         \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}};
     \item We make some modifications to the \sparc{}
         language defined in \Sec{\ref{sec:modeling}} and
-        let it act as the low level in our refinement
+        let it act as the low level language in our refinement
         verification. We present our low-level \sparc{}
         language and the modifications in
         \Sec{\ref{subsec:low-level SPARCv8 Program}};
@@ -33,13 +33,14 @@ consists of the following work:
         The semantics of judgements,
         different from the previous work
         in our conference paper which only ensures the
-        partial correctness of verified program,
+        partial correctness of verified programs,
         are defined as simulation relations
-        between the low-level and high-level programs.
+        between the low-level and high-level programs
+        which guarantees contextual refinement.
         % And the soundness proof needs to
         % be reestablished.
 \end{itemize}
-Below we show each part of work.
+%Below we show each part of work.
 }
 % Inspired by the {\it relational} program logic for
 % refinement verification, \eg{\cite{liang13pldi,Xu16cav}},
@@ -747,27 +748,30 @@ as the following form:
     }
 \]
 {\color{blue}
-The low-level \sparc{} program is somewhat different
+The low-level \sparc{} program is slightly different
 from the \sparc{} program defined in
 \Sec{\ref{sec:modeling}}:
 \begin{enumerate}
-    \item The low-level \sparc{} program uses simple
+    \item The low-level \sparc{} program uses the
         instructions defined in
         \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}.
-        It means that we need to give semantics to the additional
+        This means that we need to give semantics to the %additional
         pseudo instructions $\Psave$, $\Prestore$ and
-        $\cprint$ in low-level \sparc{} program.
+        $\cprint$ in the low-level \sparc{} program.
         Since the $\Psave$ and $\Prestore$
-        are specific forms of $\csave{}$ and
-        $\crestore{}$ as explained, 
+        are simply special forms of $\csave{}$ and
+        $\crestore{}$ as explained,
         and $\cprint$ is a primitive
-        responsible for generating observable event,
-        which does the same thing as the high-level one,
-        defining their semantics is not a challenge.
+        responsible for generating observable events,
+        %which does the same thing as the high-level one,
+        defining their semantics is not a challenge
+        and the translation of programs in this modified language 
+        into ones in the standard \sparc{} language is 
+        trivial.
     \item The program transition defined in
-        \Sec{\ref{sec:modeling}} doesn't generate
-        observable event. Here, in order to support
-        refinement verification, since 
+        \Sec{\ref{sec:modeling}} does not generate
+        observable events. Here, in order to support
+        refinement verification, since
         we use the event trace refinement~\cite{liang14lics},
         each step of the program
         generates either an empty message $\tau$,
@@ -1493,7 +1497,7 @@ state after executing one step of the delayed writes.
 Suppose a relational state
 $(\state', \hpstate, \primcom, \word)$ satisfies the
 assertion $\relastP$, where $\state' = (\mem, (\RFile', \Wstack), \DBuf')$,
-the $\nxtAst{\relastP}$ holds after executing a step
+then $\nxtAst{\relastP}$ holds after executing a step
 of delayed writes ($\Dstep{(\RFile', \Wstack')}{(\RFile, \Wstack)}$)
 from $\state'$.
 }
@@ -2076,7 +2080,7 @@ and we explain them in turn in the following.
     \end{enumerate}
 \end{definition}
 
-\textbf{First}, 
+\textbf{First},
 % we should give some restrictions
 % for the execution of abstract assembly primitive.
 the program counters should be equal to
@@ -2363,7 +2367,7 @@ represent $n$-step execution.
 The $\word$ in simulation records the number of tokens.
 It will be consumed when meeting \jmp{} and \call{}
 instructions, so as to avoid infinite loop and recursive
-function call and ensure termination preserving, 
+function call and ensure termination preserving,
 and reset when the high-level
 abstract assembly primitive executes.
 
@@ -2787,15 +2791,15 @@ function.
     %     \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
     %             {i}{0}{(\primcom, \hpstate)}
     % \]
-    The index $i$ can be instantiated as 
+    The index $i$ can be instantiated as
     $(\word, 0, |\,\asmimp[\pc]\,|)$, where $|\,\cblk\,|$ means
     getting the length of instruction sequence $\cblk$.
     And $(\word, k, |\, \cblk \,|) < (\word', k', |\,\cblk'\,|)$
     is defined as ($k$ and $k'$ are depths of function call):
     \[
-        \word < \word' \lor 
-        (\word = \word' \land 
-        (k < k' \lor (k = k' \land 
+        \word < \word' \lor
+        (\word = \word' \land
+        (k < k' \lor (k = k' \land
         |\,\cblk\,| < |\,\cblk'\,|)))
         % \word < \word' \lor
         % (\word = \word' \land
@@ -3003,13 +3007,13 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
                 \input{picture/client-code-exec}
                 \vspace*{-0.5em}
             \end{center}
-            Since the client code of low- and high-level 
-            programs are the same, the high-level will 
+            Since the client code of low- and high-level
+            programs are the same, the high-level will
             execute the same command $\comm$.
             % We know that the high-level executes the same command
             % $\comm$, because the client code of low- and
             % high-level programs are the same.
-            We can prove that  
+            We can prove that
             the state relation, shown as $\stateRel{\state}{\hpstate}$
             and defined in \Sec{\ref{subsec:correctness-primitive}},
             can be preserved after the execution, shown
@@ -3032,9 +3036,9 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
             (shown as $\preccurlyeq$ in the above figure)
             ensures that for each step
             of low-level execution, the high-level program will
-            execute zero or one step. So we 
-            establish the simulation relation between 
-            low- and high-level programs. 
+            execute zero or one step. So we
+            establish the simulation relation between
+            low- and high-level programs.
     \end{itemize}
 
     The assumption $\progsafe((\code, \hprimset), \hpstate)$
