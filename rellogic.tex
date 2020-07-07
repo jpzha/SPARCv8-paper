@@ -1492,8 +1492,8 @@ We use $\nxtAst{\relastP}$ to describe the
 state after executing one step of the delayed writes.
 Suppose a relational state
 $(\state', \hpstate, \primcom, \word)$ satisfies the
-assertion $\relastP$, where $\state' = (\mem, (\RFile', \Wstack), \DBuf')$.
-Then $\nxtAst{\relastP}$ holds after executing a step
+assertion $\relastP$, where $\state' = (\mem, (\RFile', \Wstack), \DBuf')$,
+the $\nxtAst{\relastP}$ holds after executing a step
 of delayed writes ($\Dstep{(\RFile', \Wstack')}{(\RFile, \Wstack)}$)
 from $\state'$.
 }

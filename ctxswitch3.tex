@@ -404,7 +404,8 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     We can choose any place to apply 
     \myrule{ABSCSQ} rule to execute primitive $\primsw$. 
     Here, we apply \myrule{ABSCSQ} rule 
-    in verifying (\ref{ctxswitch-wfsn}), 
+    in verifying the code block 
+    \SwitchNewTask{} (\ref{ctxswitch-wfsn}), 
     when context switch routine returns, 
     as shown in \Fig{\ref{fig:refinement reasoning}}. 
     In \Fig{\ref{fig:refinement reasoning}}, we use the
@@ -413,7 +414,6 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     state relation between low- and high-level can 
     be reestablished and we use solid line to represent 
     that such relation holds in \Fig{\ref{fig:refinement reasoning}}.
-
     % and prove that the state 
     % relation between low- and high-level programs 
     % can be reestablished in verifying 
