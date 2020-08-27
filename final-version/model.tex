@@ -31,7 +31,7 @@
 				(\RFile, \Wstack)
 			\\
 			\\[-9pt]
-			\TYPE{(Memory)} & \mem & \in &
+			\TYPE{(Mem)} & \mem & \in &
 				\TYPE{Addr} \rightharpoonup \TYPE{Val}
 			& &
 			\TYPE{(ProgCount)} & \pc, \npc & \in & \TYPE{Word}
@@ -98,11 +98,15 @@ in CompCert to define the memory in our work.
 % so that each procedure can have a block of its own
 % stack frame.
 The memory address $\loc$ is defined as a pair of
-its block id and the offset. The type of block is the integer
+its block id and the offset. 
+The type of block (\TYPE{Block}) is the integer
 in mathemantics presented as $\Ztype$, and the type of offset
-is a 32-bit integer, which we called {\it words} in our work.
-So, the value here is either a word $\word$ or address $\loc$.
-The whole program configuration $\prog$ consists of the code heap
+is a 32-bit integer, which we called {\it words} 
+(\TYPE{Word}) in our work.
+So, the value (\TYPE{Val}) here 
+is either a word $\word$ or address $\loc$.
+The whole program configuration (\TYPE{Prog})
+$\prog$ consists of the code heap
 $\code$, the machine state $\state$, and the program counters $\pc$
 and $\npc$.
 %\sparc{} program can be viewed as a composition of
@@ -112,34 +116,41 @@ from labels $\lab{}$ to commands $c$.
 Labels are also 32-bit integers (called {\em words}),
 which can be viewed as addresses or locations
 where the commands are saved in the code heap.
-The operand expression $\oexp$, which is either a general
+The operand expression (\TYPE{OpExp})
+$\oexp$, which is either a general
 register $\reg{}$ or a word $\word$,
-and address expression $\aexp$,
+and address expression (\TYPE{AddrExp}) $\aexp$,
 which is either an operand expression or a
 sum of the values of register $\reg{}$ and an operation
 expression, are auxiliary definitions used as parameters of commands.
-Commands in \sparc{} can be classified into two categories:
-(1) simple instruction $\simplins{}$, which does sequential
+Commands (\TYPE{Comm}) in \sparc{} can be classified into two categories:
+(1) simple instruction (\TYPE{SimpIns})
+$\simplins{}$, which does sequential
 operation, \eg{} arithmetic operation ``\cadd{}",
 or memory operations
 ``\ld{}" (load) and ``\st{}" (store), or register window
 operations ``\csave{}" and ``\crestore{}", or special
-register operations ``\rd{}" (read) and ``\cwr{}" (write);
+register operations ``\rd{}" (read) and ``\cwr{}" (write), 
+{\color{blue}
+or ``\nop{}", whose execution changes no program state
+(except assigning \npc{} to \pc{} and (\npc{}+4) to \npc{})};
 (2) control-transfer instructions,
 \eg{} \call{} and \retl{} for
 function call and return, or \jmp{} and \be{} for
 unconditional and conditional branch.
 
-The machine state $\state$ consists of three parts:
-the memory $\mem$, the register state $\Rstate$
-which is a pair of register file $\RFile$ and frame list $\Wstack$,
-and the delay buffer $\DBuf$.
+The machine state (\TYPE{State}) $\state$ consists of three parts:
+the memory (\TYPE{Mem}) $\mem$, 
+the register state (\TYPE{Rstate}) $\Rstate$
+which is a pair of register file 
+(\TYPE{RegFile}) $\RFile$ and frame list (\TYPE{FrameList}) $\Wstack$,
+and the delay buffer (\TYPE{DelayBuff}) $\DBuf$.
 As defined in Fig.~\ref{fig:Register File and Frame List},
 $\RFile$ is a partial mapping
 from register names to values.
 Registers include the general registers $\regr$,
-the processor state register $\psr$
-and the special registers $\sr$.
+the processor state register (\TYPE{PsrReg}) $\psr$
+and the special registers (\TYPE{SpeReg}) $\sr$.
 The processor state register $\psr$ contains
 the integer condition code fields $\regn$,
 $\regz$, $\regv$ and $\regc$,
@@ -221,7 +232,7 @@ $\DBuf$ below.
 \end{figure*}
 
 \paragraph{\textbf{Register windows and frame List.}}
-\sparc{} provides 32 general registers, which are split into
+\sparc{} provides 32 general registers that are split into
 four groups
 as \globalRN{} ($\reg{0} \sim \reg{7}$),
 \outRN{} ($\reg{8} \sim \reg{15}$), \localRN ($\reg{16} \sim \reg{23}$)
@@ -241,7 +252,7 @@ The $\regcwp$ register (part of $\psr$) records the id number
 of the current window ($\regcwp=0$ in this example).
 \begin{figure*}[!t]
 	\centering
-	\includegraphics[width=59ex]{window}
+	\includegraphics[width=60ex]{window}
 	% \includegraphics[width=58ex]{window}
 	\caption{Register Windows (figure taken from \cite{sparc})}
 	\label{fig:RegisterWindows}
@@ -786,11 +797,11 @@ form of $\Dstep{(\RFile, \DBuf)}{(\RFile', \DBuf')}$ below:
 {\small
 $$
 \begin{array}{c}
+\!\!
 \infer
 {\Dstep{(\RFile, \nil)}{(\RFile,\nil)}}
 {}
-\\
-\\
+\quad \ \
 %
 % \qquad\qquad
 %
@@ -830,7 +841,7 @@ map, we can prove the following lemma.
     if and only if
     there exists $\RFile_1'$ and $\RFile_2'$, such that
     $\Dstep{(\RFile_1, \DBuf)}{(\RFile_1', \DBuf')}$, $\Dstep{(\RFile_2, \DBuf)}{(\RFile_2', \DBuf')}$,
-    and $\RFile' = \RFile_1' \uplus \RFile_2'$.
+    and $\RFile = \RFile_1' \uplus \RFile_2'$.
 \end{lemma}
 Here the disjoint union $\RFile_1 \uplus \RFile_2$ represents the union of
 $\RFile_1$ and $\RFile_2$ if they have disjoint domains, and undefined

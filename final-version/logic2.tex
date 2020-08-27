@@ -12,7 +12,7 @@ that doesn't support refinement verification to
 present how our logic handles the
 features of \sparc{}, 
 {\color{blue} and the relational program logic for  
-refinement reasoning can be found in  
+refinement reasoning is introduced in  
 \Sec{\ref{sec:refine-verification-sparc}}}.
 
 % In this section,
@@ -368,8 +368,63 @@ $
 $
 %\end{enumerate}
 \end{lemma}
-The lemma can be proved following Lemma~\ref{lemma:RFileSplitExDelay}.
+The lemma can be proved following 
+Lemma~\ref{lemma:RFileSplitExDelay}, and 
+we present the proof of this lemma below.
+\begin{proof}
+	``$\Longrightarrow$": 
+	if $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+		{\nxtAst{(\astP\sepstar\astQ)}}$, then 
+	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+		{\nxtAst{(\astP)}\sepstar\nxtAst{(\astQ)}}$. 
+	According to the definition of $\nxtAst{(\notCare)}$, 
+	we get there exists $\RFile'$ and $\DBuf'$, such that:
+	\begin{align}
+		& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \label{a:dstep1} \\
+		& \asrtmodel{(\Mem, (\RFile', \Wstack), \DBuf')}
+			{\astP\sepstar\astQ} \label{a:asthold}
+	\end{align}
+	We unfold (\ref{a:asthold}) according to the definition 
+	of $(\notCare \sepstar \notCare)$ and get there exists 
+	$\Mem_1$, $\Mem_2$, $\RFile_1'$ and $\RFile_2'$ such that:
+	\begin{align}
+		& \Mem = \Mem_1\cup\Mem_2, \, \Mem_1\perp\Mem_2 
+		\label{a:memsplit} \\
+		& \RFile' = \RFile_1'\cup\RFile_2', \, \RFile_1'\perp\RFile_2'
+		\label{a:regsplit} \\
+		& \asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf')}{\astP} 
+		\label{a:pholds} \\
+		& \asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf')}{\astQ}
+		\label{a:qholds} 
+	\end{align}
+	By applying Lemma~\ref{lemma:RFileSplitExDelay}
+	on (\ref{a:dstep1}) and (\ref{a:regsplit}), we get 
+	that there exists $\RFile_1$ and $\RFile_1$, 
+	where $\RFile_1\perp\RFile_2$ and 
+	$\RFile = \RFile_1\cup\RFile_2$, such that
+	\begin{align}
+		& \Dstep{(\RFile_1', \DBuf')}{(\RFile_1, \DBuf)}
+		\label{a:dstep-split1} \\
+		& \Dstep{(\RFile_2', \DBuf')}{(\RFile_2, \DBuf)}
+		\label{a:dstep-split2}
+	\end{align}
+	From (\ref{a:pholds}) and (\ref{a:dstep-split1}), 
+	we get $\asrtmodel{(\Mem_1, (\RFile_1, \Wstack), \DBuf)}{\nxtAst{\astP}}$; 
+	and from (\ref{a:qholds}) and (\ref{a:dstep-split2}), 
+	we get $\asrtmodel{(\Mem_2, (\RFile_2, \Wstack), \DBuf)}{\nxtAst{\astQ}}$.
+	Thus, we get that 
+	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+		{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$ holds, 
+	and finish the proof of this case.
 
+	``$\Longleftarrow$": if 
+	$\asrtmodel{(\Mem,(\RFile,\Wstack),\DBuf)}{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$,
+	then $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+	{\nxtAst{(\astP\sepstar\astQ)}}$. According to the 
+	definition of $\nxtAst{(\notCare)}$ and $(\notCare \sepstar \notCare)$, 
+	we get that there exists $\Mem_1$, $\Mem_2$, $\RFile_1'$, 
+	$\RFile_2'$, $\RFile_1$, $\RFile_2$ and $\DBuf'$, such that:
+\end{proof}
 
 We use $\frmst{\cwp}{\Wstack}$ to describe the pointer
 $\regcwp$ of the current register window and the frame

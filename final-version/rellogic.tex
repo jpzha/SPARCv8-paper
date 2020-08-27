@@ -296,7 +296,6 @@ of client code preserve such restriction:
     \vspace{-1em}
     \caption{Syntax of Pseudo-SPARCv8 Code}
     \label{fig:syntax-of-concur-pseudo-sparc}
-    \vspace{-1em}
 \end{figure*}
 \begin{figure*}[!t]
     \centering
@@ -350,14 +349,14 @@ of client code preserve such restriction:
 
 We define the syntax of the high-level Pseudo-SPARCv8 language
 in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}.
-The code $\HMd$ has two parts:
+The code (\TYPE{HCode}) $\HMd$ has two parts:
 the code heap $\code$
-and the set of abstract primitives $\hprimset$,
+and the set of abstract primitives (\TYPE{PrimSet}) $\hprimset$,
 which is a partial mapping from labels to
 abstract assembly primitive. The code heap $\code$ in $\HMd$
 acts as the client to
 call abstract assembly primitives.
-The abstract assembly primitive $\hprim$
+The abstract assembly primitive (\TYPE{Prim}) $\hprim$
 is defined as a relation that takes a list of values
 as arguments and maps a high-level program state
 (defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}})
@@ -369,7 +368,7 @@ to another.
 % Comparing the simple instruction with the one shown in
 % \Fig{\ref{fig:Machine States and Language for SPARC Code}},
 % we add three pseudo instructions.
-We add three pseudo instructions in simple instruction.
+We add three pseudo instructions in simple instruction (\TYPE{SimpIns}).
 The $\Psave \ \word$
 and $\Prestore$ restrict the instruction \csave{}
 and \crestore{} to be used in the specific form as
@@ -381,19 +380,22 @@ generates an message $\outEvt{\val}$
 as an observable event.
 % whose execution will occur an output $\outEvt{\val}$,
 % to generate observable events.
-The high-level message
+The high-level message (\TYPE{HMsg})
 $\hmsg$ can be either an empty message $\empmsg$, or an output
 $\outEvt{\val}$, or a $\callEvt{\lab{}, \args{\val}}$ meaning to
 call a primitive labelled $\lab{}$ with arguments $\args{\val}$.
 
-The machine states of the high-level Pseudo-SPARCv8 program
+The machine states \TYPE{(HState)}
+of the high-level Pseudo-SPARCv8 program
 are defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}.
 The high-level program $\HProg$ is a pair of high-level code
 $\HMd$ and high-level state $\hpstate$. High-level
-state is a tuple including: a thread pool $\thrdpool$,
+state is a tuple including: 
+a thread pool (\TYPE{ThrdPool}) $\thrdpool$,
 % the identifier of the current thread $\thrdid$,
-current thread id $\thrdid$, the thread local state
-$\hthrdlocalst$ of the current thread, and the memory $\Mem$.
+current thread id (\TYPE{Tid}) $\thrdid$, 
+the thread local state (\TYPE{ThrdLcSt}) $\hthrdlocalst$ 
+of the current thread, and the memory (\TYPE{Mem}) $\Mem$.
 
 \begin{figure*}[!t]
     \centering
@@ -569,12 +571,13 @@ $\hthrdlocalst$ of the current thread, and the memory $\Mem$.
 
 \paragraph{\textbf{Thread Local State.}}
 The thread local state $\hthrdlocalst$
-is a triple of high-level register state $\hRstate$,
+is a triple of high-level register state
+\TYPE{(HRstate)} $\hRstate$,
 and program counters $\pc$ and $\npc$. The high-level
 register state $\hRstate$ consists of
-the high-level register file $\hRfile$,
+the high-level register file (\TYPE{HRegFile}) $\hRfile$,
 % the block of the current stack frame $\block$,
-and the high-level frame list $\hWstk$.
+and the high-level frame list (\TYPE{HFrmList}) $\hWstk$.
 $\hrn$ is the high-level register names, where
 the $\regcwp$ is omitted as introduced before and
 we also omit special registers for simplicity,
@@ -667,7 +670,7 @@ $\HGlobTrans{(\HMd, \hpstate)}{\hmsg}{(\HMd, \hpstate')}$ is defined
 in \Fig{\ref{fig:selected-opsem-high-level-prog}} (a). In each step,
 the program may either execute the instruction pointed by $\pc$
 and generate empty message $\empmsg$ or an output $\outEvt{\val}$,
-or call  an abtract assembly primitive in the primitive set.
+or call  an abstract assembly primitive in the primitive set.
 When calling an abstract assembly primitive,
 the execution of current thread (defined as
 $(\hlocalstep{\notCare}{\notCare}{\ \notCare \ }{\notCare})$ in
@@ -2082,7 +2085,7 @@ $\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$
 is contained in $\reg{15}$ register after the execution
 of abstract assembly primitive.
 It ensures that the low-level implementation
-and high-level abstract assembly primtive will return to
+and high-level abstract assembly primitive will return to
 the same code pointers after executions.
 % because
 % the \textbf{RETL} rule also restricts
@@ -2134,8 +2137,8 @@ below:
 %satisfies a simple {\it Frame Property}: if the primitive can
 %execute on a subset of a high-level state safely, then it can
 %also execute safely on the full high-level state.
-\textbf{Second}, the abtract assembly primitive should be
-specified in the precondition, and it's execution
+\textbf{Second}, the abstract assembly primitive should be
+specified in the precondition, and its execution
 should be done in the final state.
 \textbf{Third}, there is an {\it invariant}
 between low- and high-level programs, holding at the entry of
@@ -2901,7 +2904,7 @@ function.
 
             Then, by unfolding $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$,
             we need to prove that for all $\lab{} \in \dom(\hprimset),
-            \lgvl$, there exisits $\hprim$, $\args{\val}$,
+            \lgvl$, there exists $\hprim$, $\args{\val}$,
             $\relspecpre$, $\relspecpost$, such that:
             \begin{itemize}
                 \small

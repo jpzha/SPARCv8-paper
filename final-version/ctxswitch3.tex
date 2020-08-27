@@ -20,8 +20,8 @@ shows the structure of the code.
 \begin{itemize}
     \item \texttt{SwitchEntry}
     is the entry of the context switch routine.
-    It saves \localRN{} and \inRN{} registers of current
-    window into stack (in memory), and call
+    It saves the \localRN{} and \inRN{} registers of current
+    window into stack (in memory), and calls
     \texttt{reg\_save} to save other registers into TCB.
 
     \item
@@ -161,9 +161,9 @@ in $\hthrdlocalst_n$.
 \paragraph{\textbf{Proof outline}} We show how to use
 our relational program logic defined in
 \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}
-to verify the correctness of context switch routine.
+to verify the correctness of the context switch routine.
 We first instantiate the set of
-abstract assembly primitive (\ref{ctxswitch-hprimset})
+abstract assembly primitives (\ref{ctxswitch-hprimset})
 and the code heap specification (\ref{ctxswitch-Cspec})
 below:
 \begin{align}
@@ -191,7 +191,7 @@ below:
 The set of abstract assembly primitive $\hprimset$
 contains only one abstract assembly primitive $\primsw$.
 And the code heap specification $\Cspec{}$
-contains the specifications of each code blocks.
+contains the specifications of each code block.
 We use
 $(\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}})$,
 $(\relspecpre_{\textit{rr}}, \relspecpost_{\textit{rr}})$,
@@ -314,7 +314,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
         Then, we can prove that the
         state relation between low- and high-level
         holds at the entry and
-        exit of context switch routine.
+        exit of the context switch routine.
         Since the execution of $\primsw$ only accesses
         the current and new tasks in thread pool, and the
         memory location $\TaskNew$,
