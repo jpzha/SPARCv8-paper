@@ -1,0 +1,27 @@
+\begin{tikzpicture}[font=\small, line width=0.75pt]
+    \node (low1) at (0, 1.5) {$\bullet$};
+    \node (lS1) at (-0.2, 1.7) {$\state$};
+    
+    \node (high1) at (0, 0) {$\bullet$};
+    \node (hS1) at (-0.2, -0.2) {$\hpstate$};
+
+    \draw[-, line width=0.5pt] 
+        (low1) to node[left]{$\preccurlyeq$} (high1);
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    \node (low2) at (2, 1.5) {$\bullet$};
+    \node (lS2) at (2.2, 1.7) {$\state'$};
+
+    \node (high2) at (2, 0) {$\bullet$};
+    \node (hS2) at (2.2, -0.2) {$\hpstate'$};
+    
+    \draw[-, line width=0.5pt] 
+        (low2) to node[left]{$\preccurlyeq$} (high2);
+    \node (*) at (1.75, 0.15) {*};
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    \draw[->] (low1) to (low2);
+    \draw[->, dashed] (high1) to (high2);
+\end{tikzpicture}

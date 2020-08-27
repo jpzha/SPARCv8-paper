@@ -1,0 +1,744 @@
+\section{Introduction}
+
+Operating system kernels are at
+the most foundational layer of computer software systems.
+To interact directly with hardware,
+many important components in OS kernels are implemented
+in assembly, such as the context switch code or the code that
+manages interrupts.
+In addition, there is also code written directly in assembly
+to achieve high performance (\eg{} \textsf{memcpy} in linux
+v2.6.17.10 \cite{linuxv2.6.17.10}).
+Correctness of such assembly code is crucial to ensure
+the safety and security of the whole system.
+However, assembly code verification remains a challenging
+task in existing work on OS kernel verification
+(\eg~\cite{Xu16cav, sel4, deepspec}),
+where the assembly code is either unverified or verified based on
+operational semantics without a general program logic.
+
+SPARC (Scalable Processor ARChitecture)
+is a CPU instruction set architecture (ISA) with high-performance
+and great flexibility~\cite{sparc}.
+% \footnote{The SPARC Architecture Manual
+% (\textit{Version 8}).
+% \url{https://gaisler.com/doc/sparcv8.pdf}}.
+It has been widely used in various processors
+for workstations and embedded systems. %, and space mission.
+The \sparc{} ISA has some interesting features, which
+make it a non-trivial task to design a Hoare-style
+program logic for assembly code.
+%Designing a practical Hoare-style program logic
+%for \sparc{} code isn't an easy work
+%because we will meet many challenges as following :
+
+\begin{itemize}
+	\item \textit{Delayed control transfers}.
+	\sparc{} has two program counters \pc{} and \npc.
+    The \npc{} register points to the next instruction
+    to run.
+	Control-transfer instructions in \sparc{}
+	change \npc{} instead of \pc{} to the target program point,
+    while \pc{} takes the original value of \npc.
+	This makes the control transfer to happen one cycle later
+    than the execution of the control transfer instructions.
+	
+	\item \textit{Delayed writes}.
+	The $\cwr$ instruction that writes a special class
+    of registers such as the window invalid mask register
+    \regwim{} does not take effect immediately.
+    % $\regwim$ used to justify
+    % whether a register window is valid does not take
+    % effect immediately.
+    That is, ``they may take until
+    completion of the third instruction following the write
+    instruction to consummate their write operation.
+    The number of delay instructions (0 to 3)
+    is implementation-dependent"~\cite{sparc}.
+
+	% The $\cwr$ instruction that writes a special class
+    % of registers
+    % does not take effect immediately.
+    % % in the current cycle when
+    % %pointed to \pc.
+    % Instead the write operation is buffered
+    % and then executed $X$ cycles later, where $X$ is a
+    % predefined
+    % system parameter which usually ranges from 0 to 3.
+
+	\item \textit{Register windows}.
+	\sparc{} uses register windows
+	and a window rotation mechanism
+	to avoid saving contexts in the stack directly
+    and achieves high performance in context management.
+    % {\color{blue}
+    % As the example shown in
+    % \Fig{\ref{fig:An Example for SPARC Code}},
+    % the \texttt{CALLER} doesn't save its context in
+    % stack in memory when calling function
+    % \texttt{ChangeY},
+    % but use an instruction \csave{} to save
+    % context by window rotation.
+    % }
+	%and a significant reduction in context management.
+\end{itemize}
+
+We use a simple example
+in Fig.~\ref{fig:An Example for SPARC Code}
+to show these three features.
+\sparc{} has 32 general registers, which are split into four
+logic groups
+as \textsf{global} ($\reg{0} \sim \reg{7}$),
+\outRN{} ($\reg{8} \sim \reg{15}$),
+\localRN{} ($\reg{16} \sim \reg{23}$) and
+\inRN{} ($\reg{24} \sim \reg{31}$) registers.
+Correspondingly, we give aliases ``$\greg{0} \sim \greg{7}$'',
+``$\oreg{0} \sim \oreg{7}$'', ``$\lreg{0} \sim \lreg{7}$''
+and ``$\ireg{0} \sim \ireg{7}$'' for these groups
+respectively.
+\vspace*{-1em}
+\begin{center}
+    $
+        \begin{array}{ll}
+            \texttt{CALLER}: &
+            \quad\hspace*{2.5ex} \texttt{ChangeY} : \\[1ex]
+            \begin{array}{ll}
+                \quad & \dots \\
+                \text{1} \ \ & \mov \quad 1, \; \oreg{0} \\
+                \text{2} & \call \quad \text{ChangeY} \\
+                \text{3} &
+                    \csave \quad \spreg, \; -64, \; \spreg \\
+                \text{4} &
+                    \mov \quad \oreg{0}, \; \lreg{0} \\
+                \quad & \dots \\
+                \quad
+            \end{array} & \
+            \begin{array}{ll}
+                \text{5} \ \ &
+                    \rd \quad \regY, \; \lreg{0} \\
+                \text{6} &
+                    \cwr \quad \ireg{0}, \; 0, \; \regY \\
+                \text{7} & \nop \\
+                \text{8} & \nop \\
+                \text{9} & \nop \\
+                \text{10} & \ret \\
+                \text{11} &
+                    \crestore \quad \lreg{0}, 0, \oreg{0}
+            \end{array}
+        \end{array}
+    $
+    \figurecaption{An Example for SPARC Code}
+    \label{fig:An Example for SPARC Code}
+\end{center}
+
+\texttt{CALLER} in Fig.~\ref{fig:An Example for SPARC Code}
+calls \texttt{ChangeY},
+which updates the {\em special register} \texttt{Y}
+and returns its original value.
+
+% \begin{figure*}[!t]
+% 	\vspace{-0.5em}
+% 	\[
+% 		\begin{array}{ll}
+%             \texttt{CALLER}: &
+%             \quad\hspace*{2.5ex} \texttt{ChangeY} : \\[1ex]
+% 			\begin{array}{ll}
+% 				\quad & \dots \\
+% 				\text{1} \quad & \mov \quad 1, \; \oreg{0} \\
+% 				\text{2} \quad & \call \quad \text{ChangeY} \\
+%                 \text{3} \quad &
+%                     \csave \quad \spreg, \; -64, \; \spreg \\
+%                 \text{4} \quad &
+%                     \mov \quad \oreg{0}, \; \lreg{0} \\
+% 				\quad & \dots \\
+% 				\quad
+% 			\end{array} & \quad\quad
+% 			\begin{array}{ll}
+%                 \text{5} \quad &
+%                     \rd \quad \regY, \; \lreg{0} \\
+%                 \text{6} \quad &
+%                     \cwr \quad \ireg{0}, \; 0, \; \regY \\
+% 				\text{7} \quad & \nop \\
+% 				\text{8} \quad & \nop \\
+% 				\text{9} \quad & \nop \\
+% 				\text{10} \quad & \ret \\
+%                 \text{11} \quad &
+%                     \crestore \quad \lreg{0}, 0, \oreg{0}
+% 			\end{array}
+% 		\end{array}
+% 	\]
+% 	\caption{An Example for SPARC Code}
+% 	\label{fig:An Example for SPARC Code}
+% 	\vspace{-0.5em}
+% \end{figure*}
+
+\texttt{ChangeY} requires an input parameter
+as the new value for the special register {\tt Y}.
+\texttt{CALLER} calls \texttt{ChangeY} at line 2,
+and \pc{} and \npc{} point to line 2 and 3 respectively at this
+moment.
+The call instruction changes the value of \pc{} to \npc{}
+and lets \npc{} point to the entry of
+\texttt{ChangeY} at line 5,
+which means the control-flow will not transfer to \texttt{ChangeY}
+in the next cycle,
+but in the cycle after the execution of the $\csave$
+instruction following the call. Similarly, when
+\texttt{ChangeY} returns (at line 10), the control is transferred
+back to the caller after executing the $\crestore$
+instruction at line 11.
+We call this feature ``delayed control transfers''.
+
+%\sparc{} program won't save current context when occurring function call.
+\sparc{} uses the $\csave$ instruction (at line 3 in the example)
+to save the current context
+and $\crestore$ (at line 10) to restore it.
+As explained above, among the 32 general registers,
+the \outRN{}, \localRN{} and \inRN{} registers form the
+{\em current register window}.
+The \localRN{} registers are for private use in the current context.
+The \inRN{} and \outRN{} registers are shared with adjacent register windows
+for parameters passing.
+The $\csave$ instruction rotates the register window from the
+current one to the next. Then the \localRN{} and \inRN{}
+registers in the original window are no longer accessible,
+and the original \outRN{} registers become the \inRN{} registers
+in the current window.
+In \Fig{\ref{fig:An Example for SPARC Code}},
+the \texttt{CALLER} uses the \csave{} instruction 
+(at line 3) to save its context
+(\localRN{} and \inRN{} registers) and rotate the
+register window (so that the 
+\outRN{} registers become the \inRN{} registers).
+So, the $\ireg{0}$ register
+assessed in \texttt{ChangeY} at line 6 is
+the same register as the $\oreg{0}$ modified in
+\texttt{CALLER} at line 1.
+The $\crestore$ instruction does the inverse.
+The arguments taken by the $\csave$ and  $\crestore$ instructions
+are irrelevant here and can be ignored.
+% Note that the arguments taken by the $\csave{}$
+% in this example says,
+% in addition to operate the register window,
+% the execution of this instruction will also
+% allocate a new stack frame size 64 bytes
+% to \texttt{ChangY}. Here, $\spreg$ register,
+% which is an alias of $\reg{14}$, usually
+% acts as the stack pointer in SPARCv8.
+% The $\crestore{}$ instruction does the inverse
+% and the arguments it takes are irrelevant here
+% and can be ignored.
+
+% assign the value of ($\spreg\!-\!64$), where the value
+% of the register $\spreg$ is taken
+% from the original window, to the $\spreg$ register
+% in the new register window.
+% The $\spreg$ register, which is an alias of $\reg{14}$,
+% acts as the stack pointer.
+% So, `` $\csave{} \ \spreg, -64, \spreg$ "
+% in this example allocates a new stack frame size 64 bytes
+% to the callee (\texttt{ChangY}).
+% % The arguments taken by the $\crestore{}$
+% % are irrelevant here and can be ignored here.
+% Because the $\crestore{}$ instruction restores
+% the stack pointer of the caller, the stack frame
+% allocated for callee will be freed after executing
+% $\crestore{}$.
+
+At line 6, the $\cwr$ instruction tries to
+update the special register {\tt Y}
+with the value of $\ireg{0} \! \xorOP 0$
+(bitwise exclusive OR).
+Note that the $\ireg{0}$
+register here is the same register as $\oreg{0}$ at line 1.
+However, the write is delayed for $X$ cycles,
+where $X$ is some predefined system parameter
+that ranges from 0 to 3.
+For portability, programmers usually do not rely
+on the exact value of $X$ and assume it takes
+the maximum value 3.
+Therefore three \nop{} instructions
+are inserted.
+Reading of {\tt Y} earlier than line 9
+may give us the old value.
+This feature is called ``delayed writes''.
+
+These features make the semantics of the \sparc{} code
+context-dependent. For instance, a read of a special register
+(\eg{} the register {\tt Y} in the above example) needs to
+make sure there are enough instructions executed since the
+most recent {\em delayed} write. As another example,
+the instruction following the \call{} can be any
+instruction in general, but it is not supposed to
+update the register $\RAreg$, which contains the return
+address saved by the \call{} instruction.
+In addition,
+the delayed control transfer
+and the register windows also allow highly flexible calling
+conventions. Together, they make it a challenging task
+to have a Hoare-style program logic for local and modular
+reasoning of \sparc{} assembly code.
+
+Working towards a certified OS kernel for aerospace
+crafts whose inline assembly is written in \sparc,
+we try to address these challenges and propose a practical
+program logic for realistically modelled \sparc{} code.
+We have applied our logic to verify the main body of
+the task context switch routine in the kernel~\cite{zha18aplas}.
+% \mycomments{Xinyu: Cite the APLAS paper here}
+
+However, the OS kernel is implemented as
+C language mainly and SPARCv8 as inline assembly.
+Just having a traditional Hoare-style
+program logic for SPARCv8, which can only make sure
+the safe execution of SPARCv8 program if the initial
+state satisfies the precondition, is insufficient.
+\etal{Xu}~\cite{Xu16cav} propose a program logic for
+verifying the correctness of OS kernel implemented in
+C language with inline assembly,
+but they use {\em abstract assembly primitives} to
+substitute the inline assembly in their verification work.
+As a supplement to their work, we extend our
+program logic so that it can ensure the
+contextual refinement relation,
+shown in (\ref{eq:refinement}),
+between the implementations and
+their corresponding abstract assembly primitives.
+Here, we use $\Clang$, $\AbsPrimC$,
+and $\asmimp$ to represent the C language program,
+the set of abstract assembly
+primitive and the implementations of
+abstract assembly primitives respectively.
+It means $\asmimp$ refines $\AbsPrimC$ under
+\textit{any context} $\Clang$.
+\begin{equation}
+    \forall \, \Clang. \,
+    \Clang[\asmimp] \refine \Clang[\AbsPrimC]
+    \label{eq:refinement}
+\end{equation}
+%
+Here we use ``$\refine$'' to represent the refinement
+relation.
+%The $\Clang[\asmimp] \refine \Clang[\AbsPrimC]$ represents
+%that $\Clang[\asmimp]$ refines $\Clang[\AbsPrimC]$.}
+%
+
+However, if we use C program as a client code to
+call inline assembly code, we need to define the
+semantics of C-assembly interaction.
+%It may be possible to use
+%\textit{interaction semantics}~\cite{Stewart15popl}
+%to implement multi-language linking, but
+%there is a contraint in interaction semantics
+%requiring that a callee must always return to its caller when
+%finished, and therefore it can't handle calling the context switch
+%routine, which uses the return address on a different stack and jumps
+%to a different caller.
+\begin{center}
+    $
+        \begin{array}{l}
+            \semantics{\Clang[\AbsPrimC]}^{\textsf{C}}
+            \\
+            \\[-5pt]
+            \
+            {\color{blue} \textcircled{1}} \ \
+            \rotatebox[origin=c]{90}{$\refine$} \ \
+            \Longleftarrow \ \
+            \boxed{C = \textit{Comp}(\Clang)}
+            \\
+            \\[-5pt]
+            \semantics{\code[\hprimset]}^{\textsf{P-SPARCv8}}
+            \\
+            \\[-5pt]
+            \
+            {\color{blue} \textcircled{2}} \ \
+            \rotatebox[origin=c]{90}{$\refine$} \ \
+            \Longleftarrow \ \
+            \boxed{\vdash\asmimp:\hprimset}
+            \\
+            \\[-5pt]
+            \semantics{\code[\asmimp]}^{\textsf{SPARCv8}}
+        \end{array}
+    $
+    \figurecaption{Idea to establish contextual refinement}
+    \label{fig:idea to establish contextual refinement}
+\end{center}
+
+Since the goal of this paper is to verify the correctness of the
+assembly code with respect to the abstract assembly primitives,
+we want to avoid the C-assembly interaction (and leave it as
+future work). We decompose the OS verification tasks into
+two steps, as shown in \Fig{\ref{fig:idea to establish contextual refinement}},
+and focus on step {\color{blue} \textcircled{2}} only in this paper.
+% some constraints in interaction semantics and
+% features of SPARCv8 make it difficult to use
+% interaction semantics in our work.
+% \textbf{First}, interaction semantics requires that
+% the callee must return to caller when finished.
+% So, it can't handle calling context switch routine.
+% \textbf{Second}, it's also difficult to instantiate
+% the SPARCv8 language in interaction semantics.
+% The features of SPARCv8 makes the semantics of
+% SPARCv8 code context-dependent. For example,
+% the caller of
+
+%We take the approach shown in
+%\Fig{\ref{fig:idea to establish contextual refinement}}.
+
+%We consider a method to establish the contextual
+%refinement between implementations and their
+%corresponding abstract assembly primitives without
+%cross-language interaction.
+%We use \Fig{\ref{fig:idea to establish contextual refinement}}
+%to illustrate our idea.
+
+% We introduce this figure from top to down.
+The source program of OS kernel
+$\Clang[\AbsPrimC]$, which executes
+under the C language semantics (shown as
+$\semantics{\notCare}^{\textsf{C}}$),
+is implemented as C language
+with a set of abstract assembly primitive $\AbsPrimC$.
+The compiler (\textit{Comp}) translates the
+C program $\Clang$ to \sparc{} code $\code$.
+As {\color{blue} \textcircled{1}} shows,
+we assume the compilation ensures the
+refinement between $\Clang[\AbsPrimC]$ and
+$\code[\hprimset]$ that
+executes under Pseudo-SPARCv8 semantics shown as
+$\semantics{\notCare}^{\textsf{P-SPARCv8}}$.
+Here, the $\hprimset$ represents the set of
+abstract assembly primitives in the middle layer.
+We use distinguished notations to represent
+the set of abstract assembly primitives in source
+and intermediate level, because they execute on
+different program states and have different semantics.
+The Pseudo-SPARCv8 language $\code[\hprimset]$,
+which uses \sparc{} as client code and is able to
+call abstract assembly primitives in $\hprimset$,
+will be defined in the following sections.
+In step {\color{blue} \textcircled{2}},
+we verify using our refinement logic that
+the whole \sparc{} program
+$\code[\asmimp]$ executing under the realistically
+modelled SPARCv8 semantics, represented as
+$\semantics{\notCare}^{\textsf{SPARCv8}}$, refines
+the program $\code[\hprimset]$ executing
+under the Pseudo-SPARCv8 semantics.
+Finally, we can get
+$\semantics{\code[\asmimp]}^{\textsf{SPARCv8}}
+\refine
+\semantics{\Clang[\AbsPrimC]}^{\textsf{C}}$.
+In this work, we focus on
+step {\color{blue} \textcircled{2}}, and
+leave step {\color{blue} \textcircled{1}}
+as future work.
+
+% Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
+% define a set of abstract assembly primitives,
+% which are atomic operations and act as the specifications of
+% the assembly functions,
+% to substitute their concrete implementations
+% for some convenience of program verification.
+% % Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
+% % define an abstract assembly
+% % primitive $\primsw{}$ to substitute the concrete
+% % implementation of context switch rontine,
+% We extend our program logic to support refinement
+% verification to bridge the gap.
+% The extended program logic ensures the
+% {\it contextual refinement} relation \cite{liang13pldi,Xu16cav}
+% between the implementation
+% of SPARCv8 function and its corresponding abstract assembly
+% primitive. The {\it contextual refinement} can be represented
+% as the following form, which means that
+% calling a SPARCv8 function $\asmimp$
+% will not produce more observable behaviors than calling
+% its corresponding abstract assembly primitive $\hprim$
+% under {\it any context} $\code$:
+% % the abstract assembly primitive $\hprim$ will not produce more
+% % observable behaviors than calling their implementation $\asmimp$
+% % under {\it any context} $\code$:
+% \[
+%     \forall \ \code. \, \code[\asmimp] \subseteq
+%         \code[\hprim]
+% \]
+
+Our work is based on earlier work on assembly code
+verification but makes the following contributions:
+% \footnote{We list six contributions here. The
+% first four contributions have already presented
+% in the preliminary version~\cite{zha18aplas}
+% of this paper. And the
+% additional two contributions about refinement
+% verification are our new contributions.}:
+
+%The logic, its soundness
+%proof, and the verification of the context switch module
+%are all mechanized in the Coq proof assistant.
+
+% we extend our program logic to support refinement
+% verification. We formuate and verify the correctness of
+% inline assembly SPARCv8 functions as {\it contextual refinement}
+% their implementation and its corresponding abstract assembly
+% primitive, like context switch primitive \textbf{switch} defined
+% in \cite{Xu16cav}. Our extended program logic implies this
+% {\it contextual refinement} relation, and can make sure that the program
+% calling the abstract assembly primitives will not produce more
+% observable behaviors than their implementations.
+% Our work is based on earlier work on assembly code
+% verification but makes the following contributions:
+
+%\indent
+%In this paper,
+%we propose a novel
+%and practical Hoare-style program logic
+%for a realistically modelled machine code, \sparc{}.
+%We not only solve the challenges above,
+%but also show its application
+%in verifying a key module in OS kernel, context switch.
+%To summarize, our work makes the following contributions:
+
+\begin{itemize}
+    \item
+    We propose a new program logic which supports relational reasoning for
+    refinement verification.
+    It ensures that a verified \sparc{} function
+    contextually refines its corresponding
+    abstract assembly primitive.
+%
+    Our logic supports all the above features of \sparc.
+    We redefine basic blocks to include the instruction
+    following the jump or return as the tail of a
+    block, which models the delayed control
+    transfer. To reason about delayed writes, we introduce
+    a modal assertion $\dlyregst{t}\sr\word$, saying that
+    the special register $\sr$ will
+    hold the value $\word$ in up to $t$ cycles.
+    %$\dlyast{t}\astP$, saying that $\astP$
+    %becomes true in up to $t$ cycles. In particular,
+    %$\dlyregst{t}\sr\word$ means the special register $\sr$ will
+    %hold the value $\word$ in up to $t$ cycles.
+    We also give
+    logic rules for $\csave$ and $\crestore$ instructions
+    that do register window rotation.
+%
+%
+%	We present a program logic
+%	that has been designed to fit on
+%	accurate models of \sparc{} language,
+%	so that we can verify the \sparc{} program modularly.
+%	We does not only care about the
+%	safety property of the \sparc{} codes in our work,
+%	but also their functional behavior.
+%	Our logic can support main features of \sparc{} code,
+%	including delayed control-transfer,
+%	register windows, and delayed-write.
+    \item
+    In order to support refinement verification, we define a
+    Pseudo-SPARCv8 language as the language to implement
+    the high-level specification.
+    % which
+    % is multi-threaded and can call abstract
+    % assembly primitives.
+    It also hides the details of
+    sophisticated register window mechanism
+    in \sparc{} by abstraction,
+    and makes its language model
+    simpler than realistic \sparc{}.
+    % and makes the program state
+    % simpler than physical \sparc{} program
+    % (defined in \Sec{\ref{sec:modeling}}).
+    So, it can provide some convenience
+    to write the abstract assembly primitive
+    and reason in Pseudo-SPARCv8 level.
+
+	
+	\item
+    Following SCAP~\cite{Feng06pldi}, our logic supports
+    modular reasoning of function calls in a direct-style.
+    However,
+    we use the traditional pre- and post-conditions as function
+    specifications, instead of the assertion $g$ used
+    in SCAP. This allows us to reuse existing techniques
+    (\eg{} Coq tactics) to simplify the %program
+    verification process.
+    The logic rules for function call and return are general
+    and independent of any specific calling convention.
+
+    \item
+    We give direct-style semantic interpretation for
+    the logic judgments, based on which we establish the
+    soundness. This is different from previous
+    work, which either does syntactic-based soundness proof
+    (\eg{} SCAP~\cite{Feng06pldi}) or treats return code pointers
+    as first-class code pointers and gives CPS-style
+    (continuation-passing style) semantics.
+    Those approaches for soundness make it difficult to verify
+    the interaction between the inline assembly and the C
+    code in the kernel, the latter being verified following
+    a direct-style program logic.
+
+    \item
+	Context switch of concurrent tasks is an important
+    component in OS kernels. It is usually implemented
+    as inline assembly because of the need to access
+    registers and the stack. We apply our logic and
+    verify that there is a contextual refinement
+    between a context switch routine implemented
+    in \sparc{} and an abstract switch primitive.
+
+	% We verify the main body of the context switch routine
+	% in a realistic embedded OS kernel for aerospace crafts,
+    % which consists of around 250 lines of \sparc{} code.
+
+\end{itemize}
+The program logic and its soundness proof
+have been mechanized in Coq~\cite{coqimp}.
+% \footnote{More details about our work are
+% available at TR and the Coq code.
+% \url{https://sites.google.com/site/jcstarticle1/}.}.
+% including the extended program logic
+% for refinement verification, and its soundness proof
+% have been mechanized in Coq
+% \footnote{The implememntation of the program Logic for
+% \sparc{} in {Coq} (project code).
+% \url{https://github.com/jpzha/VeriSparc}.}.
+
+This paper extends the conference paper in
+APLAS 2018~\cite{zha18aplas}.
+The program logic there can only verify the partial
+correctness of \sparc{} code and we make the following
+expansions:
+\begin{itemize}
+    \item We propose a new program logic to do
+        relational reasoning for refinement verification
+        (\Sec{\ref{subsec:rellogic}} for details).
+    \item In order to support refinement verification,
+        this paper presents a new Pseudo-SPARCv8 language
+        as the high-level
+        specification language
+        (\Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}
+        for details).
+    \item We also use the new logic to verify the implementation
+        of a context switch routine, by showing that
+        the implementation contextually
+        refines an abstract switch primitive
+        (\Sec{\ref{sec:ctxswitch}} for details).
+\end{itemize}
+
+% We propose a new
+% %We extend the program logic introduced in conference
+% %paper, which can only prove the partial
+% %correctness of \sparc{} code, and propose a new
+% program logic to do relational reasoning for
+% refinement verification. We also use the new logic
+% to verify the implementation of a context switch routine,
+% by showing that the implementation code contextually
+% refines an abstract switch primitive.
+% % \footnote{In the conference paper,
+% %     we introduce that we apply our program logic
+% %     for partial correctness to
+% %     verify the main body of the context switch routine
+% % 	in a realistic embedded OS kernel for aerospace crafts,
+% %     which consists of around 250 lines of \sparc{} code,
+% %     by 6690 lines of Coq proof scripts.
+% %     And this is replaced by applying our new logic
+% %     to verify that the implementation of a
+% %     context switch routine
+% %     contextually refines an abstract switch primitive
+% %     in this paper.}.
+% In order to support refinement verification,
+% this paper also presents a new Pseudo-SPARCv8 language
+% as the language to implement the high-level specification.
+
+% We extend
+% the program logic, which can only prove the partial
+% correctness of \sparc{} code in conference paper,
+% to support refinement verification and use it to
+% verify that there is a contextual refinement between
+% a context switch routine implemented
+% in \sparc{} and $\primsw$ primitive for task switching
+% \footnote{In the conference paper,
+%     we introduce that we apply our program logic
+%     for partial correctness to
+%     verify the main body of the context switch routine
+% 	in a realistic embedded OS kernel for aerospace crafts,
+%     which consists of around 250 lines of \sparc{} code,
+%     by 6690 lines of Coq proof scripts.
+%     We omit such introduction in this version.}.
+% And in order to support refinement verification,
+% we a define Pseudo-SPARCv8 language as the high-level.
+
+% the verification of the context switch module
+% \footnote{Code of the context switch routine cannot
+% be published due to copyright issues},
+% and the extended program logic for
+% refinememt verification have been mechanized in
+% Coq~\cite{coqimp}.
+% >>>>>>> New
+%Coq\footnote{We
+%do not give the URL of the code for anonymity. The code
+%is available upon request. The released package does not contain the
+%verified context switch routine, due to copyright concerns.}.
+%,
+%and part of the Coq code has been made available online~\cite{coqimp}
+%	\footnote[1]{Code of the context switch module
+%    cannot be published due to
+%    copyright issues.}.
+
+
+In the remainder of the paper,
+%we first introduce the background of our work
+%and give an overview of our approach.
+we present the program model
+and operational semantics of \sparc{} in Sec.~\ref{sec:modeling}.
+% <<<<<<< HEAD
+% Then we propose the program logic in Sec.~\ref{sec:logic},
+% including the inference rules and the soundness proof,
+% and show how our logic supprts the three main features of SPARCv8.
+% We show the verification of the main body of the context switch routine
+% in Sec.~\ref{sec:ctxswitch}.
+% The Pseudo-SPARCv8 program and extended
+% program logic to support refinement verification is
+% presented in \Sec{\ref{sec:refine-verification-sparc}}.
+% % The extended program logic to
+% % support refinement verification is presented in
+% % \Sec{\ref{sec:refine-verification-sparc}}, including
+% % the high-level Pseudo-SPARCv8 program introduced in
+% % \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
+% =======
+For clear presentation, we use a
+simplified version of our program logic that
+doesn't support refinement verification to
+demonstrate how our logic supports the three main
+features of \sparc{} in \Sec{\ref{sec:logic}},
+which is the main point
+of our work and irrelevant with
+refinement verification.
+% supporting
+% refinement verification in program logic.
+% the program logic in Sec.~\ref{sec:logic},
+% including the inference rules and the soundness proof,
+% and show how our logic supprts the three main features of SPARCv8.
+We present the Pseudo-SPARCv8 program and
+the relational program logic for refinement reasoning
+% how
+% our logic supports refinement verification
+in \Sec{\ref{sec:refine-verification-sparc}}.
+We show the verification of a context switch routine
+in \sparc{} in Sec.~\ref{sec:ctxswitch}.
+% the main body of the context switch routine
+% in Sec.~\ref{sec:ctxswitch}.
+% The extended program logic to
+% support refinement verification is presented in
+% \Sec{\ref{sec:refine-verification-sparc}}, including
+% the high-level Pseudo-SPARCv8 program introduced in
+% \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
+% >>>>>>> New
+Finally, we discuss more on
+related work and conclude in Sec. \ref{sec:conclusion}.
+%Sec.~\ref{sec:ctxswitch} gives an actual application of our logic
+%to verify a realistic context switch module in an embedded OS kernel.
+%Finally, we discuss more related work
+%and conclusion in Sec. \ref{sec:conclusion}.

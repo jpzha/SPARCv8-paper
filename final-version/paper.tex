@@ -1,0 +1,178 @@
+\documentclass[twoside]{article}
+\usepackage{amsfonts,amssymb,amsbsy,textcomp,marvosym,picins,amsmath,caption,threeparttable,amsthm,subfigure}
+\usepackage{eurosym,mathrsfs,fancyhdr,CJK,multicol,graphics,indentfirst,color,bm,upgreek,booktabs,graphicx}
+
+%%%%%%%%% users add package %%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{url}
+\usepackage[all]{xy}
+\usepackage{extarrows}
+\usepackage{proof}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{epstopdf}
+\usepackage{bbm}
+\usepackage{tikz}
+\usepackage{rotating}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{stfloats}
+\usepackage[section]{placeins}
+\usepackage{rotating}
+\usepackage{balance}
+
+\include{local}
+
+\usetikzlibrary{patterns}
+
+\newcommand\mycomments[1]{{\bf [[[ {#1} ]]]}}
+\newtheoremstyle{thmstyle}{3pt}{3pt}{\kaishu}{0cm}{\heiti2 }{}{1em}{}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\makeatletter
+\newcommand\figurecaption{\def\@captype{figure}\caption}
+\newcommand\tablecaption{\def\@captype{table}\caption}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\usepackage[noend]{algorithm}
+%\usepackage[noend]{algorithmic}
+%\usepackage[lined,algonl,boxed]{algorithm2e}
+\looseness=-1
+%------------Page layout and margin and Headrule-------------
+\headsep=5mm \headheight=4mm \topmargin=0cm \oddsidemargin=-0.5cm
+\evensidemargin=-0.5cm \marginparwidth=0pt \marginparsep= 0pt
+\marginparpush=0pt \textheight=23.1cm \textwidth=17.5cm \footskip=8mm
+\columnsep=7mm \setlength{\doublerulesep}{0.1pt}
+\footnotesep=3.5mm\arraycolsep=2pt
+\font\tenrm=cmr10
+%===========================================================
+\def\footnoterule{\kern 1mm \hrule width 10cm \kern 2mm}
+\def\rmd{{\rm d}} \def\rmi{{\rm i}} \def\rme{{\rm e}}
+\def\sj#1{$^{[#1]}$}\def\lt{\left}\def\rt{\right}
+\renewcommand{\captionfont}{\footnotesize}
+\renewcommand\tablename{\bf \footnotesize Table}
+\renewcommand\figurename{\footnotesize Fig.\!\!}
+\captionsetup{labelsep=period}%
+\captionsetup[longtable]{labelsep=period}%
+\allowdisplaybreaks
+\sloppy
+\renewcommand{\headrulewidth}{0pt}
+\catcode`@=11
+\def\title#1{\vspace{3mm}\begin{flushleft}\vglue-.1cm\Large\bf\boldmath\protect\baselineskip=18pt plus.2pt minus.1pt #1
+\end{flushleft}\vspace{1mm} }
+\def\author#1{\begin{flushleft}\normalsize #1\end{flushleft}\vspace*{-4pt} \vspace{3mm}}
+\def\address#1#2{\begin{flushleft}\vglue-.35cm${}^{#1}$\small\it #2\vglue-.35cm\end{flushleft}\vspace{-2mm}\par}
+\def\jz#1#2{{$^{\footnotesize\textcircled{\tiny #1}}$\footnotetext{$^{\footnotesize\textcircled{\tiny #1}}$#2}}}
+\def\jzd#1#2{$^{\footnotesize\textcircled{\tiny{#1}}}$\footnotetext{$^{\footnotesize\textcircled{\tiny{#1}}}$#2}}
+\catcode`@=11
+\def\section{\@startsection{section}{1}{\z@}%
+ %{-3.5ex \@plus -1ex \@minus -.2ex}%
+ {-3ex \@plus -.3ex \@minus -.2ex}%
+ {2.2ex \@plus.2ex}%
+{\normalfont\normalsize\protect\baselineskip=14.5pt plus.2pt minus.2pt\bfseries}}
+\def\subsection{\@startsection{subsection}{2}{\z@}%
+ %{-3.25ex\@plus -1ex \@minus -.2ex}%
+ {-3ex\@plus -.2ex \@minus -.2ex}%
+ {2ex \@plus.2ex}%
+{\normalfont\normalsize\protect\baselineskip=12.5pt plus.2pt minus.2pt\bfseries}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+ %{-3.25ex\@plus -1ex \@minus -.2ex}%
+ {-2.2ex\@plus -.21ex \@minus -.2ex}%
+ {1.4ex \@plus.2ex}
+{\normalfont\normalsize\protect\baselineskip=12pt plus.2pt minus.2pt\sl}}
+\def\proofname{{\indent \it Proof.}}
+%===========================================================锟斤拷锟较诧拷锟斤拷
+
+\pagestyle{fancy}
+\fancyhf{}% 锟斤拷锟揭趁家筹拷锟�
+\fancyhead[LO]{\small\sl First Author {\it et al.}: Shortened Title Within 45 Characters}%
+\fancyhead[RO]{\small\thepage}
+\fancyhead[LE]{\small\thepage}
+\fancyhead[RE]{\small\sl J. Comput. Sci. \& Technol., January 2018,
+Vol., No.}
+\setcounter{page}{1}
+\begin{document}
+\begin{CJK*}{GBK}{song}
+\thispagestyle{empty}
+\vspace*{-13mm}
+\noindent {\small First Author, Second Author, Third
+Author {\it et al.} Journal of computer science and technology: Instruction for authors.
+JOURNAL OF COMPUTER SCIENCE AND TECHNOLOGY \ 33(1): \thepage--\pageref{last-page}
+\ January 2018. DOI 10.1007/s11390-015-0000-0}
+%===========================================================
+\vspace*{2mm}
+
+\title{Modular Verification of SPARCv8 Code}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{Junpeng Zha$^{1}$, Xinyu Feng$^{2,*}$, and Lei Qiao$^{3}$}
+
+\address{1}{Nanjing University, Nanjing 210023, China}
+\address{2}{State Key Laboratory for Novel Software Technology, Nanjing 210023, China}
+\address{3}{Beijing Institute of Control Engineering, Beijing 100080, China}
+
+\vspace{2mm}
+
+\noindent E-mail: jpzha@smail.nju.edu.cn; xyfeng@nju.edu.cn;
+fly2moon@aliyun.com  \\[-1mm]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \author{First Author[\textcolor{blue}{First-Name Surname}]$^{1,2,*}$, Second Author$^{1}$, and Third Author$^{2}$}
+
+% \address{1}{Institute of Computing Technology, Chinese Academy of Sciences, Beijing 100190, China}
+% \address{2}{[\textcolor{blue}{Affiliation, City Postcode, Country}]}
+
+% \vspace{2mm}
+
+% \noindent E-mail: ***@*********; ***@********* [\textcolor{blue}{Please list the emails of all the authors in order}]\\[-1mm]
+
+\noindent Received July 15, 2018 [\textcolor{blue}{Month Day, Year}]; revised October 14, 2018 [\textcolor{blue}{Month Day, Year}].\\[1mm]
+
+\let\thefootnote\relax\footnotetext{{}\\[-4mm]\indent\ Regular Paper\\[.5mm]
+%\indent\quad Special Section of CAD/Graphcis 2017\\[.5mm]
+%\indent\quad  A preliminary version of the paper was published in SMP 2014.\\[.5mm]
+% \indent\ by the National Natural Science Foundation of China under Grant Nos.~******** and ********, the National High Technology Research and Development 863 Program of China under Grant No.~********, the National Basic Research 973 Program of China under Grant No.~********, and the Natural Science Foundation of Shandong Province of China under Grant No.~*******. \\[.5mm]
+\indent\ by the National Natural Science Foundation of China under Grant No.61632005.\\[.5mm]
+\indent\ $^*$Corresponding Author
+%\\[1.2mm]\indent\quad $^{\footnotesize\textcircled{\tiny1}}$
+\\[.5mm]\indent\ \copyright Institute of Computing Technology, Chinese Academy of Sciences \& Springer Nature Singapore Pte Ltd. 2020}
+
+\noindent {\small\bf Abstract}
+  \baselineskip=18pt plus.2pt minus.2pt
+  \quad \input{abstract2}
+
+\vspace*{3mm}
+
+\noindent{\small\bf Keywords} \quad
+{\small SPARCv8, assembly code verification, context switch,
+  Coq, refinement verification}
+
+\vspace*{4mm}
+
+\end{CJK*}
+\baselineskip=18pt plus.2pt minus.2pt
+\parskip=0pt plus.2pt minus0.2pt
+\begin{multicols}{2}
+
+  \balance
+  \input{intro2}
+  \input{model}
+  \input{logic2}
+  \input{rellogic}
+  \input{ctxswitch3}
+  \input{conclusion}
+
+  \bibliographystyle{unsrt}{
+    \footnotesize
+    \itemsep=-3pt plus.2pt minus.2pt
+    \baselineskip=13pt plus.2pt minus.2pt
+    \bibliography{refs}}
+
+\label{last-page}
+\end{multicols}
+\label{last-page}
+\end{document}
+
