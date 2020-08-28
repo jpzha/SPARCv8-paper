@@ -287,7 +287,8 @@ refinement reasoning will be introduced in
 \end{figure*}
 
 %\indent
-We define the syntax of assertions in Fig.~\ref{fig:Syntax of Assertions},
+We define the syntax of assertions 
+(\textit{Asrt}) in Fig.~\ref{fig:Syntax of Assertions},
 and their semantics in Fig.~\ref{fig:Semantics of Assertions}.
 We extend separation logic assertions with specifications of
 delay buffers and register windows. Registers are like
@@ -389,7 +390,7 @@ Lemma~\ref{lemma:dly-sep-split} below.
 		{\nxtAst{(\astP\sepstar\astQ)}}$, then 
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 		{\nxtAst{(\astP)}\sepstar\nxtAst{(\astQ)}}$. 
-	By the definition of $\nxtAst{(\notCare)}$, 
+	From the semantics of assertions, 
 	we get there exists $\RFile'$ and $\DBuf'$, such that:
 	\begin{align}
 		& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \label{a:dstep1} \\
@@ -429,8 +430,8 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	``$\Longleftarrow$": if 
 	$\asrtmodel{(\Mem,(\RFile,\Wstack),\DBuf)}{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$,
 	then $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
-	{\nxtAst{(\astP\sepstar\astQ)}}$. By the 
-	definition of $\nxtAst{(\notCare)}$ and $(\notCare \sepstar \notCare)$, 
+	{\nxtAst{(\astP\sepstar\astQ)}}$. 
+	From the semantics of assertions, 
 	we get that there exists $\Mem_1$, $\Mem_2$, $\RFile_1'$, 
 	$\RFile_2'$, $\RFile_1$, $\RFile_2$, $\DBuf_1'$ and $\DBuf_2'$, 
 	where $\RFile = \RFile_1\uplus\RFile_2$, such that:

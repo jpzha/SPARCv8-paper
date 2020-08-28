@@ -14,7 +14,7 @@ it consists of the following work:
         \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}};
     \item We make some modifications to the \sparc{}
         language defined in \Sec{\ref{sec:modeling}} and
-        let it act as the low level language in our refinement
+        let it act as the low-level language in our refinement
         verification. We present our low-level \sparc{}
         language and the modifications in
         \Sec{\ref{subsec:low-level SPARCv8 Program}};
@@ -34,7 +34,7 @@ it consists of the following work:
         in our conference paper which only ensures the
         partial correctness of verified programs,
         are defined as simulation relations
-        between the low-level and high-level programs
+        between the low- and high-level programs
         which guarantees contextual refinement.
         % And the soundness proof needs to
         % be reestablished.
@@ -578,8 +578,8 @@ register state $\hRstate$ consists of
 the high-level register file (\TYPE{HRegFile}) $\hRfile$,
 % the block of the current stack frame $\block$,
 and the high-level frame list (\TYPE{HFrmList}) $\hWstk$.
-$\hrn$ is the high-level register names, where
-the $\regcwp$ is omitted as introduced before and
+$\hrn$ is the high-level register names (\TYPE{HRegName}), 
+where the $\regcwp$ is omitted as introduced before and
 we also omit special registers for simplicity,
 because we forbid
 the high-level client code to modify them
@@ -736,13 +736,13 @@ as the following form:
     {
         \LGlobTrans{(\code, (\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
             { \empmsg / \outEvt{\val} }
-            {(\code, (\Mem, (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
+            {(\code, (\Mem', (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
     }
     {
         \begin{array}{l}
             \Dstep{(\RFile, \DBuf)}{(\RFile', \DBuf')} \\
             \llocalstep{\code}
-                {((\Mem', (\RFile', \Wstack), \DBuf'), \pc, \npc)}
+                {((\Mem, (\RFile', \Wstack), \DBuf'), \pc, \npc)}
                 { \empmsg / \outEvt{\val} }
                 {((\Mem', (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
         \end{array}
@@ -755,7 +755,7 @@ from the \sparc{} program defined in
     \item The low-level \sparc{} program uses the
         instructions defined in
         \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}.
-        This means that we need to give semantics to the %additional
+        It means that we need to give semantics to the %additional
         pseudo instructions $\Psave$, $\Prestore$ and
         $\cprint$ in the low-level \sparc{} program.
         Since the $\Psave$ and $\Prestore$
@@ -797,7 +797,8 @@ and TR~\cite{coqimp}.
 
 We first establish a state relation
 between low- and high-level program states.
-We define this relation below, shown as
+We define this relation below 
+($\uplus$ means disjoint union), shown as
 ``$\stateRel{\state}{\hpstate}$".
 \[
     \small
@@ -1234,13 +1235,13 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
             \hpstate.\Mem = \emptyset \, \land \,
             \hpstate.\thrdpool = \emptyset \, \land \,
             \asrtmodel{\state}{\aemp} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}{\astP}
             & \, \define \, &
             \asrtmodel{\state}{\astP} \, \land \,
             \hpstate.\Mem = \emptyset \, \land \,
             \hpstate.\thrdpool = \emptyset  \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\hregsto{\hrn}{\val}} & \define &
                 \hpstate.\hthrdlocalst.\hRstate.\hRfile(\hrn)
@@ -1251,7 +1252,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
                 %     {\astCurCont{\thrdid}{\hthrdlocalst}} \, \land \,
                 % \hthrdlocalst.\hRstate.\hRfile(\hrn) = \val
             \\
-            \\[-8pt]
+            \\[-9pt]
             % \asrtmodel{(\state, \hpstate, \primcom, \word)}
             %     {\hregsto{\hrn}{\val}} & \define & \\
             % &
@@ -1265,7 +1266,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
                 \, \land \,
                 \hpstate.\thrdpool = \emptyset \, \land \,
                 \asrtmodel{\state}{\aemp} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\astCurCont{\thrdid}{\hthrdlocalst}}
                 & \define &
@@ -1285,14 +1286,14 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
                 % \,\land\, \thrdpool\backslash\{\tid\} = \emptyset
                 \,\land\, \asrtmodel{\state}{\aemp}
                 \\
-                \\[-8pt]
+                \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\astRdyCont{\thrdid}{\hthrdlocalst}} & \define &
                 \hpstate.\thrdpool =\{ \thrdid \rightsquigarrow \hthrdlocalst \}
                 \, \land \, \hpstate.\Mem = \emptyset \, \land \,
                 \tid \neq \hpstate.\tid\,\land\,
                 \asrtmodel{\state}{\aemp} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\safePrimAst{\primcom'}} & \define &
                 \primcom = \primcom' \, \land \,
@@ -1303,12 +1304,12 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
                 %         {(\primdone, \hpstate')}
                 % ) \, \land \,
                 \asrtmodel{(\state, \hpstate, \primcom, \word)}{\empAst} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\metricAst{\word'}}
             & \define & \word' \leq \word \, \land \,
             \asrtmodel{(\state, \hpstate, \primcom, \word)}{\empAst} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}{\nxtAst{\relastP}}
             & \define &
             % \exists \, \state_1, \state_2. \,
@@ -1329,7 +1330,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
             %     % \, \state = \state_1 \uplus \state_2
             % }
             \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\relastP \sepstar \relastQ} & \define &
                 \exists \, \state_1, \state_2, \hpstate_1, \hpstate_2,
@@ -1490,7 +1491,7 @@ to avoid infinite loops and recursive calls to make sure
 the termination preserving refinement.
 % The idea is taken from RGSim-T \cite{liang14lics}.
 
-We use $\nxtAst{\relastP}$ to describe the
+The assertion $\nxtAst{\relastP}$ describes the
 state after executing one step of the delayed writes.
 Suppose a relational state
 $(\state', \hpstate, \primcom, \word)$ satisfies the
@@ -2221,7 +2222,9 @@ shown as $\stateRel{\state}{\hpstate}$,
 {\color{blue} and the safe execution of the primitive 
 command, which means that 
 the primitive command $\primcom$ can execute 
-to $\primdone$ safely, presented as 
+zero (if $\primcom = \primdone$)
+or one (if $\primcom = \hprim(\args{\val})$) 
+step from the current state, presented as 
 $\exists \, \hpstate'. \,
     \primMultiTrans{(\primcom, \hpstate)}
                     {*}{(\primdone, \hpstate')}$, 
