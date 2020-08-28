@@ -100,15 +100,16 @@ in CompCert to define the memory in our work.
 The memory address $\loc$ is defined as a pair of
 its block id and the offset. 
 The type of block (\TYPE{Block}) is the integer
-in mathemantics presented as $\Ztype$, and the type of offset
+in mathemantics presented as $\Ztype$, 
+and the type of offset (\TYPE{Word})
 is a 32-bit integer, which we called {\it words} 
-(\TYPE{Word}) in our work.
+in our work.
 So, the value (\TYPE{Val}) here 
 is either a word $\word$ or address $\loc$.
 The whole program configuration (\TYPE{Prog})
-$\prog$ consists of the code heap
-$\code$, the machine state $\state$, and the program counters $\pc$
-and $\npc$.
+$\prog$ consists of the code heap (\TYPE{CodeHeap})
+$\code$, the machine state (\TYPE{State}) $\state$, 
+and the program counters $\pc$ and $\npc$.
 %\sparc{} program can be viewed as a composition of
 %code heap, machine state, pc and npc.
 The code heap $\code$ is a partial function
@@ -147,7 +148,7 @@ which is a pair of register file
 and the delay buffer (\TYPE{DelayBuff}) $\DBuf$.
 As defined in Fig.~\ref{fig:Register File and Frame List},
 $\RFile$ is a partial mapping
-from register names to values.
+from register names (\TYPE{RegName}) to values.
 Registers include the general registers $\regr$,
 the processor state register (\TYPE{PsrReg}) $\psr$
 and the special registers (\TYPE{SpeReg}) $\sr$.
@@ -841,7 +842,7 @@ map, we can prove the following lemma.
     if and only if
     there exists $\RFile_1'$ and $\RFile_2'$, such that
     $\Dstep{(\RFile_1, \DBuf)}{(\RFile_1', \DBuf')}$, $\Dstep{(\RFile_2, \DBuf)}{(\RFile_2', \DBuf')}$,
-    and $\RFile = \RFile_1' \uplus \RFile_2'$.
+    and $\RFile' = \RFile_1' \uplus \RFile_2'$.
 \end{lemma}
 Here the disjoint union $\RFile_1 \uplus \RFile_2$ represents the union of
 $\RFile_1$ and $\RFile_2$ if they have disjoint domains, and undefined
