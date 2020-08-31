@@ -846,17 +846,15 @@ And we use {\it event trace refinement}
 proposed by \etal{Liang} \cite{liang14lics}.
 
 \begin{definition}[Primitive Correctness]
-    \em
     \label{def:prim-correctness}
-    $\asmimp \ctxrefine \hprimset$ iff  \\
-    for any $\code, \, \state, \, \hpstate, \, \pc$ and $\npc$, if
-    $\stateRel{\state}{\hpstate}$, and $\progsafe(\HProg)$,
-    then $\prog \refine \HProg$ holds.
-    % \\
-    % \\[-9pt]
-    (where $\prog = (\code \uplus \asmimp, \state, \pc, \npc), \,
-        \HProg = ((\code, \hprimset), \hpstate)$, and
-        $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$).
+    {\em $\asmimp \ctxrefine \hprimset$} iff  \\
+    for any {\em $\code$}, {\em $\state$}, {\em $\hpstate$}, 
+    {\em $\pc$} and {\em $\npc$}, if
+    {\em $\stateRel{\state}{\hpstate}$}, and {\em $\progsafe(\HProg)$},
+    then {\em $\prog \refine \HProg$} holds.
+    (where {\em $\prog = (\code \uplus \asmimp, \state, \pc, \npc)$}, \,
+        {\em $\HProg = ((\code, \hprimset), \hpstate)$}, and
+        {\em $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$}).
 \end{definition}
 
 We use a code heap $\asmimp$
@@ -1963,74 +1961,49 @@ and we explain them in turn in the following.
 \begin{definition}[Well-defined Specification]
     \label{def:well-defined specification}
     \mbox{} \\
-    \em
-    $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$ holds, iff
+    {\em $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$} holds, iff
     \small
     \begin{enumerate}[1.]
-        \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$.
-            if $\hprim(\args{\val})(\hpstate)(\hpstate')$, and
-            $\hpstate \perp \hpstate_r$,
+        \item for any {\em $\args{\val}$}, 
+            {\em $\hpstate$}, {\em $\hpstate'$}, {\em $\hpstate_r$}.
+            if {\em $\hprim(\args{\val})(\hpstate)(\hpstate')$}, and
+            {\em $\hpstate \perp \hpstate_r$},
             then the following holds :
             \begin{itemize}
-                \item $\hpstate'.\hthrdlocalst.\pc = \lab{}\!+\!8$,
-                    $\hpstate'.\hthrdlocalst.\npc = \lab{}\!+\!12$ \\
-                    (where $\hpstate'.\hthrdlocalst.\hRstate.\hRfile
-                        (\reg{15}) = \lab{}$);
-                \item there exists $\hpstate'', \hpstate_r'$,
+                \item {\em $\hpstate'.\hthrdlocalst.\pc = \lab{}\!+\!8$},
+                    {\em $\hpstate'.\hthrdlocalst.\npc = \lab{}\!+\!12$} \\
+                    (let {\em $\lab{} = \hpstate'.\hthrdlocalst.\hRstate.\hRfile
+                        (\reg{15})$});
+                \item there exists $\hpstate''$, $\hpstate_r'$,
                     $\hprim(\args{\val})(\hpstate \uplus \hpstate_r)
                         (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$,
                     and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$,
                     $\hpstate_r.\Mem = \hpstate_r'.\Mem$;
             \end{itemize}
          \item for any $\lgvl$, there exists $\args{\val}$,
-         	$\relspecpre \ \lgvl \Longrightarrow
-         	 	\safePrimAst{\hprim(\args{\val})} \sepstar \atrue$,
-         	and $\relspecpost \ \lgvl \Longrightarrow
-         		\safePrimAst{\primdone} \sepstar \atrue$;
-%        \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$.
-%            if $\hprim(\args{\val})(\hpstate)(\hpstate')$ and
-%            $\hpstate \perp \hpstate_r$, then
-%            $\hprim(\args{\val})(\hpstate \uplus \hpstate_r)
-%                (\hpstate' \uplus \hpstate_r)$;
+         	{\em $\relspecpre \ \lgvl \Longrightarrow
+         	 	\safePrimAst{\hprim(\args{\val})} \sepstar \atrue$},
+         	and {\em $\relspecpost \ \lgvl \Longrightarrow
+         		\safePrimAst{\primdone} \sepstar \atrue$};
         \item
             for any $\args{\val}, \state, \hpstate$,
-            if $(\state, \hpstate, \notCare, \notCare) \in
-            \INV{(\hprim(\args{\val}), \args{\val})}$,
+            if {\em $(\state, \hpstate, \notCare, \notCare) \in
+            \INV{(\hprim(\args{\val}), \args{\val})}$},
             there exists $\lgvl, \relastP_r$ and $\word$,
             such that \\
-            $
+            {\em $
                 \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
                      {(\relspecpre \ \lgvl \sepstar \relastP_r)}, \,
                 (\relspecpost \ \lgvl \sepstar \relastP_r)
                     \Longrightarrow
                     \INV{(\primdone, \notCare)}
-            $,
-            % \\
-            % \hspace*{0.8em}
-            % $
-            %     \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-            %         {\relspecpre \ \lgvl \sepstar \relastP_r}
-            % $,
-            % if $(\state, \hpstate, \hprim(\args{\val}), \word) \in
-            %     \INV{(\hprim(\args{\val}), \args{\val})}$, then: \\
-            % \hspace*{0.8em}
-            % $
-            %     \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-            %         {\relspecpre \ \lgvl \sepstar \relastP_r}
-            %     % \INV{(\hprim(\args{\val}), \word, \args{\val})}
-            %     % \Longrightarrow
-            %     % \relspecpre \ \lgvl \sepstar \relastP_r
-            % $,
-            % $
-            %     \relspecpost \ \lgvl \sepstar \relastP_r
-            %     \Longrightarrow
-            %     \INV{(\primdone, \notCare)}
-            % $,
+            $},
             and
+            {\em
             $
                 % \wfFrm(\relastP_r)
             	\Sta(\hprim(\args{\val}), \relastP_r)
-            $ hold.
+            $} hold.
             % and one
             % of the following holds :
             % \begin{enumerate}
@@ -2382,57 +2355,56 @@ abstract assembly primitive executes.
 
 \begin{definition}[Simulation for Instruction Sequence]
     \label{def:siminsseq}
-    \em
     \mbox{} \\
-    $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state, \pc, \npc)}
-        {\word}{(\primcom, \hpstate)}$ holds if and only if
+    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state, \pc, \npc)}
+        {\word}{(\primcom, \hpstate)}$} holds if and only if
     the following are true
     (we omit the case
-    for $\be$ here, which is similar to $\jmp$):
+    for {\em $\be$} here, which is similar to {\em $\jmp$}):
 
     \small
     \begin{enumerate}[1.]
-		\item if $\asmimp(\pc) = \simplins$ then:
+		\item if {\em $\asmimp(\pc) = \simplins$} then:
 		\begin{itemize}
 			\item
-			there exist $\state', \pc', \npc'$, such that \\
-			$\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
+			there exist {\em $\state', \pc', \npc'$}, such that \\
+			{\em $\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
 			
 			\item
-			for any $\state', \pc', \npc'$, \\ if
-            $\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$, then
-            there exists $\primcom', \hpstate'$ and $\word'$, such that:
+			for any {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$}, \\ if
+            {\em $\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$}, then
+            there exists {\em $\primcom', \hpstate'$} and {\em $\word'$}, such that:
             \begin{enumerate}[(1)]
-                \item either $\primcom' = \primcom$,
-                    $\hpstate' = \hpstate$ and $\word' = \word$;
+                \item either {\em $\primcom' = \primcom$},
+                    {\em $\hpstate' = \hpstate$} and {\em $\word' = \word$};
                     or
-                    $\primTrans{(\primcom, \hpstate)}
-                        {(\primcom', \hpstate')}$,
+                    {\em $\primTrans{(\primcom, \hpstate)}
+                        {(\primcom', \hpstate')}$},
                 % \item $\primTransMulti{(\primcom, \hpstate)}
                 %             {*}{(\primcom', \hpstate')}$,
-                \item $\simInsSeq{\relastQ}{\Cspec}
+                \item {\em $\simInsSeq{\relastQ}{\Cspec}
                     {(\asmimp, \state', \pc', \npc')}{\word'}
-                    {(\primcom', \hpstate')}$.
+                    {(\primcom', \hpstate')}$}.
             \end{enumerate}
         \end{itemize}
 
-        \item if $\asmimp(\pc) = \jmp \; \aexp$ then:
+        \item if {\em $\asmimp(\pc) = \jmp \; \aexp$} then:
             \begin{itemize}
-                \item there exist $\state', \pc', \npc'$, such that
+                \item there exist {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$}, such that
                 \\
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
-                    {(\state', \pc', \npc')}$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
+                    {(\state', \pc', \npc')}$},
 
-                \item for any $\state', \pc', \npc'$, \\ if
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
-                then there exists $\relspecpre, \relspecpost, \lgvl,
+                \item for any {\em $\state', \pc', \npc'$}, \\ if
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
+                then there exists {\em $\relspecpre, \relspecpost, \lgvl,
                 \primcom', \hpstate'$, $\word'$,
-                $\word'' < \word'$ and $\relastP_r$
+                $\word'' < \word'$} and {\em $\relastP_r$}
                 such that the following hold:
                 \begin{enumerate}[(1)]
                     \item %$\pc' \in \dom(\Psi)$, \;
-                        $\npc' = \pc' \!+\! 4$,
-                        $\Cspec (\pc') = (\relspecpre, \relspecpost)$,
+                        {\em $\npc' = \pc' \!+\! 4$},
+                        {\em $\Cspec (\pc') = (\relspecpre, \relspecpost)$},
                     \item either $\primcom' = \primcom$,
                     $\hpstate' = \hpstate$ and $\word' = \word$;
                     or
@@ -2442,31 +2414,31 @@ abstract assembly primitive executes.
                     %         {*}{(\primcom', \hpstate')}$,
                     \item
                         % $\exists \word'' < \word'$,
-                        $\asrtmodel{(\state', \hpstate', \primcom', \word'')}
-                        {(\specpre \; \lgvl) \sepstar \relastP_r},
-                        (\relspecpost \; \lgvl) \sepstar \relastP_r
-                        \Rightarrow \relastQ$, $\wfFrm(\relastP_r)$.
+                        {\em $\asrtmodel{(\state', \hpstate', \primcom', \word'')}
+                        {(\relspecpre \; \lgvl) \sepstar \relastP_r}$},
+                        $(\relspecpost \; \lgvl) \sepstar \relastP_r
+                        \Rightarrow \relastQ$, {\em $\wfFrm(\relastP_r)$}.
                 \end{enumerate}
             \end{itemize}
 
-            \item if $\asmimp(\pc) = \be \; \lab{}$ then $\dots$
+            \item if {\em $\asmimp(\pc) = \be \; \lab{}$} then $\dots$
 		
-            \item if $\asmimp (\pc) = \call \; \lab{}$ then:
+            \item if {\em $\asmimp (\pc) = \call \; \lab{}$} then:
             \begin{itemize}
-                \item there exist $\state', \pc', \npc'$, such that
+                \item there exist {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$}, such that
                 \\
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
-                    {(\state', \pc', \npc')}$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
+                    {(\state', \pc', \npc')}$},
 
-                \item for any $\state', \pc'$ and $\npc'$, \\
+                \item for any {\em $\state'$}, {\em $\pc'$} and {\em $\npc'$}, \\
                 if
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
                 then there exist $\relspecpre, \relspecpost, \lgvl,
                 \primcom', \hpstate', \word', \word'' < \word'$
                 and $\relastP_r$, such that the following hold:
                 \begin{enumerate}[(1)]
-                    \item $\npc' = \pc'\!+\!4$,
-                        $\Cspec(\pc') = (\relspecpre, \relspecpost)$,
+                    \item {\em $\npc' = \pc'\!+\!4$},
+                        {\em $\Cspec(\pc') = (\relspecpre, \relspecpost)$},
                     %\item $\pc' = \lab{}, \npc' = \lab{}+4$,
 
                     % \item $\lab{} \in \dom(\Psi), \, \Psi(\lab{}) = (\specpre, \specpost)$,
@@ -2482,33 +2454,34 @@ abstract assembly primitive executes.
                         % $\exists \word'' < \word'. \,$
                         $\asrtmodel{(\state', \hpstate', \primcom', \word'')}
                             {(\relspecpre \; \lgvl) * \relastP_r}$,
-                        $\wfFrm(\relastP_r)$,
+                        {\em $\wfFrm(\relastP_r)$},
 
                     \item
                     for any $\state', \hpstate', \primcom', \word'$, \\
                     if $\asrtmodel{(\state', \hpstate', \primcom', \word')}
                         {(\relspecpost \; \lgvl) * \relastP_r}$,
                     then \\
-                    $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state', \pc\!+\!8, \npc\!+\!12)}
-                        {\word'}{(\primcom', \hpstate')}$,
+                    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state', \pc\!+\!8, \npc\!+\!12)}
+                        {\word'}{(\primcom', \hpstate')}$},
 
                     \item
-                    $(\relspecpost \; \lgvl)
-                    \Rightarrow (\reg{15} = \pc)$.
+                    {\em $(\relspecpost \; \lgvl)
+                    \Rightarrow (\reg{15} = \pc)$}.
                 \end{enumerate}
             \end{itemize}
 
-        \item if $\asmimp(\pc) = \retl$ then :
+        \item if {\em $\asmimp(\pc) = \retl$} then :
             \begin{itemize}
-                \item there exist $\state', \pc', \npc'$, such that
+                \item there exist $\state'$, {\em $\pc'$}, {\em $\npc'$}, such that
                 \\
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
-                    {(\state', \pc', \npc')}$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
+                    {(\state', \pc', \npc')}$},
 
-                \item for any $\state', \pc'$ and $\npc'$, \\
+                \item for any {\em $\state'$}, {\em $\pc'$} 
+                and {\em $\npc'$}, \\
                 if
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
-                then there exists $\primcom', \hpstate'$, and $\word'$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
+                then there exists {\em $\primcom'$}, {\em $\hpstate'$}, and {\em $\word'$},
                 such that:
                 \begin{enumerate}[(1)]
                     \item either $\primcom' = \primcom$,
@@ -2518,9 +2491,9 @@ abstract assembly primitive executes.
                         {(\primcom', \hpstate')}$,
                     \item $\asrtmodel{(\state', \hpstate', \primcom', \word')}
                         {\relastQ}$,
-                        $\pc' = \state'.\Rstate.\RFile(\reg{15}) \!+\! 8$,
+                        {\em $\pc' = \state'.\Rstate.\RFile(\reg{15}) \!+\! 8$},
                         and
-                        $\npc' = \state'.\Rstate.\RFile(\reg{15}) \!+\! 12$.
+                        {\em $\npc' = \state'.\Rstate.\RFile(\reg{15}) \!+\! 12$}.
                 \end{enumerate}
             \end{itemize}
     \end{enumerate}
@@ -2537,25 +2510,22 @@ sequences and well-formed code heap.
 % are well-formed.
 
 \begin{definition}[Judgment Semantics]
-	\em
 	\label{def:soundness of instruction sequence}
     \mbox{}
     \begin{itemize}
-    \item $\semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$ if and only if, for all
-    $\asmimp$, $\state$, $\hpstate$, $\primcom$ and $\word$
-    such that $\asmimp[\lab{}] = \cblk$
+    \item {\em $\semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$} if and only if, for all
+    {\em $\asmimp$}, $\state$, $\hpstate$, $\primcom$ and $\word$
+    such that {\em $\asmimp[\lab{}] = \cblk$}
     and $(\state, \hpstate, \primcom, \word) \models \relastP$, we have
-    % $\safetins(\code, \state, \lab{}, \lab{}\!+\!4, \astQ, \Psi)$.
-    $\simInsSeq{\relastQ}{\Cspec}
-        {(\asmimp, \state, \lab{}, \lab{}\!+\!4)}{\word}{(\primcom, \hpstate)}$.
+    {\em $\simInsSeq{\relastQ}{\Cspec}
+        {(\asmimp, \state, \lab{}, \lab{}\!+\!4)}{\word}{(\primcom, \hpstate)}$}.
     %
     %
     \item
     $\models \asmimp \!:\! \Cspec$ if and only if, for all
-    $\lab{}$, $\relspecpre$ and $\relspecpost$ %$\lgvl$ and $\state$
-    such that $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$,
-    %and $\state \models (\specpre \; \lgvl)$,
-    we have $\semwfseqrel{\Cspec}{\relspecpre \; \lgvl}{\relspecpost \; \lgvl}{\asmimp[\lab{}]}$
+    {\em $\lab{}$}, $\relspecpre$ and $\relspecpost$ %$\lgvl$ and $\state$
+    such that {\em $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$},
+    we have {\em $\semwfseqrel{\Cspec}{\relspecpre \; \lgvl}{\relspecpost \; \lgvl}{\asmimp[\lab{}]}$}
     for all $\lgvl$.
     \end{itemize}
 \end{definition}
@@ -2607,70 +2577,69 @@ and the corresponding high-level abstract assembly primitive.
 \end{definition}
 
 \begin{definition}
-    \em
     \label{def:sim-imp-prim-state}
-    $\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}{i}{k}{(\primcom, \hpstate)}$
+    {\em $\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}{i}{k}{(\primcom, \hpstate)}$}
     holds if and only if the following are true:
     \small
     \begin{enumerate}[1.]
-        \item if $\asmimp(\pc) = \simplins$, then:
+        \item if {\em $\asmimp(\pc) = \simplins$}, then:
             \begin{itemize}
-                \item there exists $\state', \pc', \npc'$,
+                \item there exists {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$},
                     such that \\
-                    $\LGlobTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
-                        {(\asmimp, \state', \pc', \npc')}$;
-                \item for any $\state', \pc', \npc'$, \\
+                    {\em $\LGlobTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
+                            {(\asmimp, \state', \pc', \npc')}$};
+                \item for any $\state'$, {\em $\pc'$}, {\em $\npc'$}, \\
                     if
-                    $\LGlobTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
-                        {(\asmimp, \state', \pc', \npc')}$, \\ then one of
+                    {\em $\LGlobTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
+                            {(\asmimp, \state', \pc', \npc')}$}, \\ then one of
                         the following holds:
                     \begin{enumerate}
-                        \item $\exists \, j < i. \
+                        \item {\em $\exists \, j < i. \
                             \simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                                {j}{k}{(\primcom, \hpstate)}$;
+                                {j}{k}{(\primcom, \hpstate)}$};
                         \item there exists $\hpstate', \, j \in \Index$,
                             such that \\
                             $\primTrans{(\primcom, \hpstate)}{(\primdone, \hpstate')}$
                             and \\
-                            $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                                {j}{k}{(\primdone, \hpstate')}$ holds;
+                            {\em $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
+                                    {j}{k}{(\primdone, \hpstate')}$} holds;
                     \end{enumerate}
             \end{itemize}
             \vspace{0.5em}
 
-        \item if $\asmimp(\pc) = \call \ \lab{}$, then:
+        \item if {\em $\asmimp(\pc) = \call \ \lab{}$}, then:
             \begin{itemize}
-                \item there exists $\state', \, \pc', \, \npc'$,
+                \item there exists {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$},
                  such that \\
-                    $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
-                        {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$;
-                \item for any $\state', \pc', \npc'$, \\ if
-                $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
-                    {2}{(\asmimp, \state', \pc', \npc')}$, \\
+                    {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
+                            {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$};
+                \item for any {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$}, \\ if
+                {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
+                        {2}{(\asmimp, \state', \pc', \npc')}$}, \\
                     then one of the following holds:
                 \begin{enumerate}
-                    \item $\exists \, j < i. \
+                    \item {\em $\exists \, j < i. \
                         \simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                            {j}{k+1}{(\primcom, \hpstate)}$;
+                            {j}{k+1}{(\primcom, \hpstate)}$};
                     \item there exists $\hpstate', \, j \in \Index$,
                         such that \\
                         $\primTrans{(\primcom, \hpstate)}{(\primdone, \hpstate')}$
                         and \\
-                        $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                            {j}{k+1}{(\primdone, \hpstate')}$ holds;
+                        {\em $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
+                                {j}{k+1}{(\primdone, \hpstate')}$} holds;
                 \end{enumerate}
             \end{itemize}
             \vspace{0.5em}
 
-        \item if $\asmimp(\pc) = \retl{}$, then:
+        \item if {\em $\asmimp(\pc) = \retl{}$}, then:
             \begin{itemize}
-                \item there exists $\state', \, \pc', \, \npc'$,
+                \item there exists $\state'$, {\em $\pc'$}, {\em $\npc'$},
                 such that \\
-                   $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
-                       {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$;
-                \item for any $\state', \pc', \npc'$, \\
-                    if $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
-                            {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$, \\
+                   {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
+                            {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$};
+                \item for any $\state'$, {\em $\pc'$}, {\em $\npc'$}, \\
+                    if {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
+                            {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$}, \\
                     then there exists $j \in \Index$, $\hpstate'$ and
                     $\primcom'$, such that the following holds:
                     \begin{enumerate}
@@ -2678,20 +2647,19 @@ and the corresponding high-level abstract assembly primitive.
                             and $\primcom' = \primcom$; or
                             $\primTrans{(\primcom, \hpstate)}{(\primcom', \hpstate')}$;
                         \item if $k = 0$, then there exists
-                        	$\word'$:
-                        	(where $\state'.\Rstate.\RFile(\reg{15})
-                        	 = \lab{}$) \\
+                        	$\word'$, such that:
+                        	(let {\em $\lab{} = \state'.\Rstate.\RFile(\reg{15})$}) \\
                             \hspace*{2em}
                             $\asrtmodel{(\state', \hpstate', \primcom', \word')}
                                 {\relastQ}$,
                             $\primcom' = \primdone$, \\
                             \hspace*{2em}
-                            $\pc' = \lab{}\!+\!8$, and
-                            $\npc' = \lab{}\!+\!12$; \\
+                            {\em $\pc' = \lab{}\!+\!8$}, and
+                            {\em $\npc' = \lab{}\!+\!12$}; \\
                             else \\
                             \hspace*{2em}
-                            $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                                {j}{k-1}{(\primcom', \hpstate')}$.
+                            {\em $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
+                                    {j}{k-1}{(\primcom', \hpstate')}$}.
                     \end{enumerate}
             \end{itemize}
     \end{enumerate}
@@ -2756,12 +2724,11 @@ sequence can compose to the simulation relation for
 function.
 \begin{lemma}
     \label{lemma:function correctness}
-    \em
-    If $\semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
-            {\pc}{\asmimp[\pc]}$ and
-    $\models\asmimp:\Cspec{}$, then
-    $\simFunction{(\asmimp, \lab{})}
-        {(\relastP, \, \relastQ)}{\primcom}$.
+    If {\em $\semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
+                {\pc}{\asmimp[\pc]}$} and
+    {\em $\models\asmimp:\Cspec{}$}, then
+    {\em $\simFunction{(\asmimp, \lab{})}
+            {(\relastP, \, \relastQ)}{\primcom}$}.
 \end{lemma}
 \begin{proof}
     By the definition of
@@ -2965,40 +2932,37 @@ between low- and high-level programs in
 Lemma~\ref{lemma:wpsim-implies-refinement}.
 \begin{definition}[Whole program simulation]
     \label{def:wpsim}
-    \em
-    Whenever $\prog \wpsim^{i} \HProg$ holds,
+    Whenever {\em $\prog \wpsim^{i} \HProg$} holds,
     the following are true:
     \begin{enumerate}[1.]
         \small
-        \item if $\LGlobTrans{\prog}{\tau}{\prog'}$,
+        \item if {\em $\LGlobTrans{\prog}{\tau}{\prog'}$},
             then one of the following holds:
             \begin{itemize}
-                \item $\exists j < i. \,
-                    \prog' \wpsim^{j} \HProg$; or
-                \item $\exists j, \HProg'. \,
-                    \HGlobMultiTrans{\HProg}{\tau}{+}{\HProg'}$,
-                    and $\prog' \wpsim^{j} \HProg'$;
+                \item {\em $\exists j < i. \,
+                        \prog' \wpsim^{j} \HProg$}; or
+                \item {\em $\exists j, \HProg'. \,
+                    \HGlobMultiTrans{\HProg}{\tau}{+}{\HProg'}$},
+                    and {\em $\prog' \wpsim^{j} \HProg'$};
             \end{itemize}
-        \item if $\LGlobTrans{\prog}{\event}{\prog'}$,
-            then $\exists j, \HProg'. \,
-            \HGlobMultiTrans{\HProg}{\event}{+}{\HProg'}$,
-            and $\prog \wpsim^{j} \HProg$;
-        \item if $\LGlobTrans{\prog}{\tau}{\evtabort}$,
-            then $\HGlobMultiTrans{\HProg}{\tau}{+}{\evtabort}$.
+        \item if {\em $\LGlobTrans{\prog}{\event}{\prog'}$},
+            then {\em $\exists j, \HProg'. \,
+            \HGlobMultiTrans{\HProg}{\event}{+}{\HProg'}$},
+            and {\em $\prog \wpsim^{j} \HProg$};
+        \item if {\em $\LGlobTrans{\prog}{\tau}{\evtabort}$},
+            then {\em $\HGlobMultiTrans{\HProg}{\tau}{+}{\evtabort}$}.
     \end{enumerate}
 \end{definition}
 
 \begin{lemma}
     \label{lemma:function sim implies whole program sim}
-    \em
     If $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$,
     $\stateRel{\state}{\hpstate}$,
-    $\progsafe((\code, \hprimset), \hpstate)$ and
-    $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$,
-    then
-    $\exists i \in \Index. \,
-    (\code\uplus\asmimp, \state, \pc, \npc)
-    \wpsim^{i} ((\code, \hprimset), \hpstate)$.
+    {\em $\progsafe((\code, \hprimset), \hpstate)$} and
+    {\em $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$},
+    then there exists $i \in \Index$, such that  
+    {\em $(\code\uplus\asmimp, \state, \pc, \npc)
+        \wpsim^{i} ((\code, \hprimset), \hpstate)$}.
 \end{lemma}
 \begin{proof}
     Since the whole program simulation is defined

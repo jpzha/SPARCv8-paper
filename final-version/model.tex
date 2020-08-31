@@ -835,14 +835,13 @@ Note that the write of $\sr$ has no effect if $\sr$ is not
 in the domain of $\RFile$. Since $\RFile$ is defined as a partial
 map, we can prove the following lemma.
 \begin{lemma}
-    \em
 	\label{lemma:RFileSplitExDelay}
-	$\Dstep{(\RFile, \DBuf)}{(\RFile', \DBuf')}$
-    and $\RFile = \RFile_1 \uplus \RFile_2$,
+	{\em $\Dstep{(\RFile, \DBuf)}{(\RFile', \DBuf')}$}
+    and {\em $\RFile = \RFile_1 \uplus \RFile_2$},
     if and only if
-    there exists $\RFile_1'$ and $\RFile_2'$, such that
-    $\Dstep{(\RFile_1, \DBuf)}{(\RFile_1', \DBuf')}$, $\Dstep{(\RFile_2, \DBuf)}{(\RFile_2', \DBuf')}$,
-    and $\RFile' = \RFile_1' \uplus \RFile_2'$.
+    there exists {\em $\RFile_1'$} and {\em $\RFile_2'$}, such that
+    {\em $\Dstep{(\RFile_1, \DBuf)}{(\RFile_1', \DBuf')}$, $\Dstep{(\RFile_2, \DBuf)}{(\RFile_2', \DBuf')}$},
+    and {\em $\RFile' = \RFile_1' \uplus \RFile_2'$}.
 \end{lemma}
 Here the disjoint union $\RFile_1 \uplus \RFile_2$ represents the union of
 $\RFile_1$ and $\RFile_2$ if they have disjoint domains, and undefined

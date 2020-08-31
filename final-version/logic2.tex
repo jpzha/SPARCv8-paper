@@ -158,7 +158,7 @@ refinement reasoning will be introduced in
 			\left\{
 				\begin{array}{ll}
 					(\mem_1 \!\cup\! \mem_2, (\RFile_1 \!\cup\! \RFile_2, \Wstack), \DBuf)
-						 &  \quad \textbf{if} \;
+						 &  \quad \cif \;
 						 		% {\color{blue}
 								%  \dom(\mem_1) \cap \dom(\mem_2) = \emptyset \land
 								%  \dom(\RFile_1) \cap \dom(\RFile_2) = \emptyset}
@@ -177,22 +177,6 @@ refinement reasoning will be introduced in
 
 			\\
 			\\
-%			\DtoS\DBuf \ \define \
-%			\left\{
-%			\begin{array}{ll}
-%				\{(n, \sr, \word)\} \cup \DtoS{\DBuf'}
-%                    & \quad \textbf{if} \;
-%                         \DBuf = (n, \sr, \word) \dbCons \DBuf' \\
-%				
-%				\\[-8pt]
-%				
-%				\emptyset & \quad \textbf{if} \; \DBuf = \nil
-%			\end{array}
-%			\right.
-%            \\
-%			
-%			\\[-5pt]
-
 			\dom(\DBuf) \ \define \
 			\left\{
 			\begin{array}{ll}
@@ -201,7 +185,7 @@ refinement reasoning will be introduced in
 				
 				\\[-8pt]
 				
-				\emptyset & \quad \textbf{if} \; \DBuf = \nil
+				\emptyset & \quad \cif \; \DBuf = \nil
 			\end{array}
 			\right.
             \\
@@ -212,17 +196,17 @@ refinement reasoning will be introduced in
 			\left\{
 			\begin{array}{ll}
 				\sr\not\in\dom(\DBuf')
-                    & \quad \textbf{if} \;
+                    & \quad \cif \;
                          \DBuf = (\tick, \sr, \word) \dbCons \DBuf' \\
 				
 				\\[-8pt]
 				
 				\sr\neq\sr' \land \noDup{\DBuf'}\sr
-                    & \quad \textbf{if} \;
+                    & \quad \cif \;
                          \DBuf = (\tick, \sr', \word) \dbCons \DBuf' \\
 				
 				\\[-8pt]
-				\textbf{True} & \quad \textbf{if} \; \DBuf = \nil
+				\textbf{True} & \quad \cif \; \DBuf = \nil
 			\end{array}
 			\right.
             \\
