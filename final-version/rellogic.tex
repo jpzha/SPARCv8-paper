@@ -1195,7 +1195,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
             \relastP \sepstar \relastQ \sepline \dots
         \end{array}
     \]
-    \vspace*{-0.8em}
+    \vspace*{-1em}
     \figurecaption{Syntax of Relational Assertion}
     \label{fig:Syntax of Relational Assertion}
 \end{center}
@@ -1444,7 +1444,7 @@ defined in \Fig{\ref{fig:Semantics of Assertions}}.
 The assertion $\astCurCont{\thrdid}{\hthrdlocalst}$
 and $\astRdyCont{\thrdid}{\hthrdlocalst}$ represent
 the thread local state of current and ready
-thread respectively. Note the threads in thread pool
+thread respectively. Note that the threads in thread pool
 are viewed as resources and can be separated by
 separation conjunction.
 
@@ -1952,7 +1952,7 @@ the rules shown in \Fig{\ref{fig:Seleted Inference rules}}.
 
 \paragraph{\textbf{Well-defined Specification.}}
 The $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
-defined  formally in
+is defined formally in
 \Def{\ref{def:well-defined specification}}.
 It contains three properties that
 the specifications need to satisfy,
@@ -1968,12 +1968,12 @@ and we explain them in turn in the following.
             {\em $\hpstate$}, {\em $\hpstate'$}, {\em $\hpstate_r$}.
             if {\em $\hprim(\args{\val})(\hpstate)(\hpstate')$}, and
             {\em $\hpstate \perp \hpstate_r$},
-            then the following holds :
+            then the following holds
+            (let {\em $\lab{} = \hpstate'.\hthrdlocalst.\hRstate.\hRfile
+                        (\reg{15})$}):
             \begin{itemize}
                 \item {\em $\hpstate'.\hthrdlocalst.\pc = \lab{}\!+\!8$},
-                    {\em $\hpstate'.\hthrdlocalst.\npc = \lab{}\!+\!12$} \\
-                    (let {\em $\lab{} = \hpstate'.\hthrdlocalst.\hRstate.\hRfile
-                        (\reg{15})$});
+                    {\em $\hpstate'.\hthrdlocalst.\npc = \lab{}\!+\!12$};
                 \item there exists $\hpstate''$, $\hpstate_r'$,
                     $\hprim(\args{\val})(\hpstate \uplus \hpstate_r)
                         (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$,
@@ -2122,7 +2122,8 @@ can be reestablished at the exit of function.
 % (\Fig{\ref{fig:Logic Ensures State Relation Reestablished}} gives a
 % more straightforward way to understand this restriction, and
 % we use the purple dashed line to represent this invariant).
-We define \INV{} to represent such invariant below formally:
+Such invariant is defined as \INV{} formally below: 
+% We define \INV{} to represent such invariant below formally:
 % our logic needs to make sure that
 % the state relation defined in
 % \Def{\ref{fig:State Relation between Low- and High-level Program State}},
@@ -2499,8 +2500,10 @@ abstract assembly primitive executes.
     \end{enumerate}
 \end{definition}
 
-Then we define the semantics for well-formed instruction
-sequences and well-formed code heap.
+Based on the simulation for instruction sequence, 
+we define the semantics for well-formed instruction
+sequences and well-formed code heap in 
+\Def{\ref{def:soundness of instruction sequence}}.
 % The semantics of well-formed instruction sequences tells us that
 % for any $\asmimp$, if the instruction sequence starting from label
 % $\lab{}$ is $\cblk$, then the instruction sequence $\cblk$ can
@@ -2550,9 +2553,9 @@ the safe execution of low-level SPARCv8 function
 and the corresponding high-level abstract assembly primitive.
 
 \begin{definition}[Simulation for Function]
-    \em
     \label{def:simfunc}
     \small
+    \em
     \[
         \begin{array}{l}
             \simFunction{(\asmimp, \lab{})}
@@ -2566,12 +2569,11 @@ and the corresponding high-level abstract assembly primitive.
             \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
                 {i}{0}{(\primcom, \hpstate)} \\
             \\[-9pt]
-            \hspace*{1em}
+            \hspace*{0.8em}
             \text{where }
             \simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}
                 {i}{k}{(\primcom, \hpstate)}
-            \TYPE{ is defined in
-            \Def{\ref{def:sim-imp-prim-state}}}.
+            \text{ is defined in \Def{\ref{def:sim-imp-prim-state}}}.
         \end{array}
     \]
 \end{definition}
@@ -2902,10 +2904,10 @@ function.
                     {\relspecpost \ \lgvl}{\asmimp[\lab{}]}
                 \label{a:startingblk-welldefined}
             \end{equation}
-            Then, we finish the proof by
-            (\ref{a:startingblk-welldefined})
-            (\ref{a:semwdcdhp2}) and
-            Lemma~\ref{lemma:function correctness}.
+            Then, we finish the proof by 
+            applying Lemma~\ref{lemma:function correctness} 
+            on (\ref{a:startingblk-welldefined})
+            (\ref{a:semwdcdhp2}).
     \end{itemize}
     Thus we are done.
 \end{proof}
