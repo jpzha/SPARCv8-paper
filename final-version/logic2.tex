@@ -356,7 +356,7 @@ $$
 \nxtAst{(\dlyregst{\tick\!+\!1}{\sr}{\word})} \Longrightarrow
 \dlyregst{\tick}{\sr}{\word}
 $$
-Also it's easy to see that if $\astP$ syntactically
+Also it is easy to see that if $\astP$ syntactically
 does not contain sub-terms in the form of $\dlyregst{\tick}{\sr}{\word}$,
 then $(\nxtAst\astP) \,\Longleftrightarrow \,\astP$.
 
@@ -486,7 +486,7 @@ intuitionistic assertions. Since $\aexp$ is used as an address,
 we also require it to be properly aligned on a 4-byte boundary.
 We define $\wordaligned{}$ to represent this restriction below.
 The result of the address expression $\aexp$ may be a word, if
-it's a pointer in code heap, or a memory address, if it's a location
+it is a pointer in code heap, or a memory address, if it is a location
 of memory.
 \[
 	\wordaligned{(\val)} \define
@@ -630,7 +630,7 @@ To verify the function, we need to prove that it satisfies
 $(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$.
 Here, $\lv[1]$ and $\lv[2]$ cannot be a memory address,
 because a value plus a memory address is illegal.
-$\lv[3]$ also should be a word, because it's a
+$\lv[3]$ also should be a word, because it is a
 return code pointer whose type is word.
 % records a word as a return code pointer.
 
