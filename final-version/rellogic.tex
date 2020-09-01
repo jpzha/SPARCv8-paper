@@ -1969,7 +1969,7 @@ and we explain them in turn in the following.
             if {\em $\hprim(\args{\val})(\hpstate)(\hpstate')$}, and
             {\em $\hpstate \perp \hpstate_r$},
             then the following holds
-            (let {\em $\lab{} = \hpstate'.\hthrdlocalst.\hRstate.\hRfile
+            (where {\em $\lab{} = \hpstate'.\hthrdlocalst.\hRstate.\hRfile
                         (\reg{15})$}):
             \begin{itemize}
                 \item {\em $\hpstate'.\hthrdlocalst.\pc = \lab{}\!+\!8$},
@@ -2462,7 +2462,7 @@ abstract assembly primitive executes.
                     if $\asrtmodel{(\state', \hpstate', \primcom', \word')}
                         {(\relspecpost \; \lgvl) * \relastP_r}$,
                     then \\
-                    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state', \pc\!+\!8, \npc\!+\!12)}
+                    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state', \pc\!+\!8, \pc\!+\!12)}
                         {\word'}{(\primcom', \hpstate')}$},
 
                     \item
