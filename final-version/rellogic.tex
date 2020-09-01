@@ -1969,7 +1969,7 @@ and we explain them in turn in the following.
             if {\em $\hprim(\args{\val})(\hpstate)(\hpstate')$}, and
             {\em $\hpstate \perp \hpstate_r$},
             then the following holds
-            (let {\em $\lab{} = \hpstate'.\hthrdlocalst.\hRstate.\hRfile
+            (where {\em $\lab{} = \hpstate'.\hthrdlocalst.\hRstate.\hRfile
                         (\reg{15})$}):
             \begin{itemize}
                 \item {\em $\hpstate'.\hthrdlocalst.\pc = \lab{}\!+\!8$},
@@ -2271,58 +2271,9 @@ defined below).
         \hpstate'\perp\hpstate_r' \land
         \asrtmodel{(\state_r, \hpstate_r', \primdone, \word)}
             {\relastP_r}
-        % \Sta(\hprim(\args{\val}), \relastP_r)
-        % \define
-        % \forall \, \state, \hpstate, \hpstate', \word. \\
-        % \qquad
-        % ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-        %     {\relastP_r\sepstar\atrue})
-        % \land
-        % \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
-        % \qquad
-        % \asrtmodel{(\state, \hpstate', \primdone, \word)}
-        % {\relastP_r\sepstar\atrue}
     \end{array}
 \]
 
-% {\small
-% \begin{multline*}
-%     \Sta(\hprim(\args{\val}), \relastP_r)
-%     \define
-%     \forall \, \state, \hpstate, \hpstate', \word. \\
-%     ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-%         {\relastP_r\sepstar\atrue})
-%     \land
-%     \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
-%     \asrtmodel{(\state, \hpstate', \primdone, \word)}
-%         {\relastP_r\sepstar\atrue}
-% \end{multline*}
-% }
-% We show that our extended program logic is sufficient
-% to prove the contextual refinement between
-% a context switch routine written in SPARCv8
-% and $\primsw$ primitive
-% in Appendix~\ref{appendix:ctxswitchproof}.
-% {\small
-% \begin{multline*}
-% 	\forall \, \hpstate_c, \, \hpstate_c', \, \hpstate_r,
-% 	\word, \, \state, \, \relastP_r.  \\
-% 	\primTrans{(\hprim(\args{\val}), \hpstate_c)}
-% 		{(\primdone, \hpstate_c')} \, \land \,
-% 	\hpstate_c \perp \hpstate_r \, \land \,
-% 	\asrtmodel{(\state, \hpstate_r, \hprim(\args{\val}), \word)}
-% 		{\relastP_r} \Longrightarrow \qquad  \qquad \\
-% 	\exists \, \hpstate_r'. \,
-% 	\primTrans{(\hprim(\args{\val}), \hpstate_c \uplus \hpstate_r)}
-% 		{(\primdone, \hpstate_c' \uplus \hpstate_r')} \, \land \,
-% 		\hpstate_c' \perp \hpstate_r' \, \land \,
-% 		\asrtmodel{(\state, \hpstate_r', \primdone, \word)}
-% 			{\relastP_r}
-% \end{multline*}
-% }
-% \vspace*{-1em}
-% \subsection{Logic Ensuring Contextual Refinement}
-% \label{subsec:logic-ensuring-ctxrefinement}
 \subsection{Semantics and Soundness}
 \label{subsec:semantics and soundness}
 
@@ -2338,15 +2289,6 @@ one step.
 It is formally defined in Def.~\ref{def:siminsseq}.
 Here we use ``$\notCare \longmapsto^{n} \notCare$'' to
 represent $n$-step execution.
-% The defintion can ensure
-% the {\it progress} and {\it preservations} of the execution
-% of the instruction sequence. {\it Progress} property means
-% the program can execute a step, when meeting simple instructions,
-% or two steps, when meeting the delayed control transfer instructions,
-% \eg{\call{} and \jmp{}}.
-% {\it Preservations} property means that if the program can execute
-% one or two steps, the remaining part of instruction sequence
-% and high-level primitive can still execute safely.
 The $\word$ in simulation records the number of tokens.
 It will be consumed when meeting \jmp{} and \call{}
 instructions, so as to avoid infinite loop and recursive
@@ -2377,7 +2319,7 @@ abstract assembly primitive executes.
             there exists {\em $\primcom', \hpstate'$} and {\em $\word'$}, such that:
             \begin{enumerate}[(1)]
                 \item either {\em $\primcom' = \primcom$},
-                    {\em $\hpstate' = \hpstate$} and {\em $\word' = \word$};
+                    {\em $\hpstate' = \hpstate$} and {\em $\word' = \word$}; \\
                     or
                     {\em $\primTrans{(\primcom, \hpstate)}
                         {(\primcom', \hpstate')}$},
@@ -2407,7 +2349,7 @@ abstract assembly primitive executes.
                         {\em $\npc' = \pc' \!+\! 4$},
                         {\em $\Cspec (\pc') = (\relspecpre, \relspecpost)$},
                     \item either $\primcom' = \primcom$,
-                    $\hpstate' = \hpstate$ and $\word' = \word$;
+                    $\hpstate' = \hpstate$ and $\word' = \word$; \\
                     or
                     $\primTrans{(\primcom, \hpstate)}
                         {(\primcom', \hpstate')}$,
@@ -2444,7 +2386,7 @@ abstract assembly primitive executes.
 
                     % \item $\lab{} \in \dom(\Psi), \, \Psi(\lab{}) = (\specpre, \specpost)$,
                     \item either $\primcom' = \primcom$,
-                    $\hpstate' = \hpstate$ and $\word' = \word$;
+                    $\hpstate' = \hpstate$ and $\word' = \word$; \\
                     or
                     $\primTrans{(\primcom, \hpstate)}
                         {(\primcom', \hpstate')}$,
@@ -2462,7 +2404,7 @@ abstract assembly primitive executes.
                     if $\asrtmodel{(\state', \hpstate', \primcom', \word')}
                         {(\relspecpost \; \lgvl) * \relastP_r}$,
                     then \\
-                    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state', \pc\!+\!8, \npc\!+\!12)}
+                    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state', \pc\!+\!8, \pc\!+\!12)}
                         {\word'}{(\primcom', \hpstate')}$},
 
                     \item
@@ -2486,7 +2428,7 @@ abstract assembly primitive executes.
                 such that:
                 \begin{enumerate}[(1)]
                     \item either $\primcom' = \primcom$,
-                    $\hpstate' = \hpstate$ and $\word' = \word$;
+                    $\hpstate' = \hpstate$ and $\word' = \word$; \\
                     or
                     $\primTrans{(\primcom, \hpstate)}
                         {(\primcom', \hpstate')}$,
@@ -2638,11 +2580,11 @@ and the corresponding high-level abstract assembly primitive.
                     $\primcom'$, such that the following holds:
                     \begin{enumerate}
                         \item either $j < i$, $\hpstate' = \hpstate$
-                            and $\primcom' = \primcom$; or
-                            $\primTrans{(\primcom, \hpstate)}{(\primcom', \hpstate')}$;
+                            and $\primcom' = \primcom$; \\
+                            or $\primTrans{(\primcom, \hpstate)}{(\primcom', \hpstate')}$;
                         \item if $k = 0$, then there exists
                         	$\word'$, such that:
-                        	(let {\em $\lab{} = \state'.\Rstate.\RFile(\reg{15})$}) \\
+                        	(where {\em $\lab{} = \state'.\Rstate.\RFile(\reg{15})$}) \\
                             \hspace*{2em}
                             $\asrtmodel{(\state', \hpstate', \primcom', \word')}
                                 {\relastQ}$,
