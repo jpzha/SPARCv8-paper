@@ -321,6 +321,8 @@ This prevents more than one delayed write to
 the same register within 4 instruction cycles, which practically
 have no restrictions on programming.
 By the semantics we have
+(the $\astP\Rightarrow\astQ$ means for any $\state$, if 
+$\asrtmodel{\state}{\astP}$ holds, then $\asrtmodel{\state}{\astQ}$ holds)
 $$
 \regst{\sr}{\word} \,\Rightarrow\, \dlyregst{\tick}{\sr}{\word}
 \qquad
