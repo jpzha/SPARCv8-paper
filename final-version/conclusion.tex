@@ -241,19 +241,20 @@ which we would like to study in the future work.
 % %because it's a function and our logic supports
 % %function call/return verification.
 
-\paragraph{\textbf{Conclusion.}}
+\paragraph{\textbf{Conclusion and future work.}}
 We present a relational program logic for \sparc.
 Our logic is based on a realistic semantics
 model and supports the main features of \sparc,
 including delayed control transfer, delayed writes,
 and register windows.
 It also supports modular reasoning of
-function call in a direct-style and
+function calls in a direct-style and
 refinement verification.
 We apply our logic to verify
 that there is a contextual refinement between
-a context switch routine implemented
-in \sparc{} and $\primsw$ primitive for task switching.
+the context switch routine implemented
+in \sparc{} and 
+the $\primsw$ primitive for task switching.
 % And we also extend the program logic to support
 % refinement verification and apply the extended
 % program logic to verify
@@ -265,18 +266,27 @@ in \sparc{} and $\primsw$ primitive for task switching.
 % in a realistic embedded OS kernel.
 % And we also extend the program logic to support
 % refinement verification.
+
 Our current work can only handle
 sequential \sparc{} program verification and
-do not consider interrupt in machine model.
-We will extend it for concurrency verification
+do not consider interrupts in the machine model.
+We would like to extend it for concurrency verification
 and finish the step {\color{blue} \textcircled{1}} shown in
-\Fig{\ref{fig:idea to establish contextual refinement}}
-that the compilation can ensure the behaviors
+\Fig{\ref{fig:idea to establish contextual refinement}} 
+in the future. 
+The step {\color{blue} \textcircled{1}} says that 
+the compilation ensures that the behaviors
 of the Pseudo-SPARCv8 code calling abstraction assembly
-primitives in intermediate level refines
+primitives in intermediate level refine
 the behaviors of
 the client C code calling abstract assembly primitives
-in source level in the future.
+in the source level. 
+% that the compilation can ensure the behaviors
+% of the Pseudo-SPARCv8 code calling abstraction assembly
+% primitives in intermediate level refines
+% the behaviors of
+% the client C code calling abstract assembly primitives
+% in source level in the future.
 % %and accurate models of \sparc{} program,
 % %and supports module, local, function call/return
 % %and main features of \sparc{} verification.
@@ -291,8 +301,8 @@ in source level in the future.
 % % we would like to link the verified inline assembly
 % % with verified C code for whole system
 % % verification.
-We will also consider to automate the reasoning
-for certain parts with automatic provers like Z3~\cite{Z3}
-or integration with framework like Frama-C~\cite{framac}, to
-reduce the required human effort in the verification work
+We also consider automating the reasoning
+for certain parts with Coq tactics~\cite{practical-tactics} or automatic provers like Z3~\cite{Z3}
+% or integrating with framework like Frama-C~\cite{framac}, 
+to reduce the required human effort in the verification work
 in the future.
