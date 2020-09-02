@@ -2338,11 +2338,12 @@ abstract assembly primitive executes.
                 {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
                     {(\state', \pc', \npc')}$},
 
-                \item for any {\em $\state', \pc', \npc'$}, \\ if
+                \item for any $\state'$, {\em $\pc'$}, {\em $\npc'$}, \\ if
                 {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
-                then there exists {\em $\relspecpre, \relspecpost, \lgvl,
-                \primcom', \hpstate'$, $\word'$,
-                $\word'' < \word'$} and {\em $\relastP_r$}
+                then there exists 
+                $\relspecpre$, $\relspecpost$, $\lgvl$,
+                $\primcom'$, $\hpstate'$, $\word'$,
+                $\word'' < \word'$ and {\em $\relastP_r$}
                 such that the following hold:
                 \begin{enumerate}[(1)]
                     \item %$\pc' \in \dom(\Psi)$, \;
@@ -2400,12 +2401,12 @@ abstract assembly primitive executes.
                         {\em $\wfFrm(\relastP_r)$},
 
                     \item
-                    for any $\state', \hpstate', \primcom', \word'$, \\
-                    if $\asrtmodel{(\state', \hpstate', \primcom', \word')}
+                    for any $\state_0$, $\hpstate_0$, $\primcom_0$, $\word_0$, \\
+                    if $\asrtmodel{(\state_0, \hpstate_0, \primcom_0, \word_0)}
                         {(\relspecpost \; \lgvl) * \relastP_r}$,
                     then \\
-                    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state', \pc\!+\!8, \pc\!+\!12)}
-                        {\word'}{(\primcom', \hpstate')}$},
+                    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state_0, \pc\!+\!8, \pc\!+\!12)}
+                        {\word_0}{(\primcom_0, \hpstate_0)}$},
 
                     \item
                     {\em $(\relspecpost \; \lgvl)
@@ -2518,7 +2519,7 @@ and the corresponding high-level abstract assembly primitive.
     holds if and only if the following are true:
     \small
     \begin{enumerate}[1.]
-        \item if {\em $\asmimp(\pc) = \simplins$}, then:
+        \item if {\em $\asmimp(\pc) \in \{ \simplins, \jmp{} \ \aexp, \be \ \lab{} \}$}, then:
             \begin{itemize}
                 \item there exists {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$},
                     such that \\

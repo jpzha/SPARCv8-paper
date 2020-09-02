@@ -624,87 +624,11 @@ expansions:
         (\Sec{\ref{sec:ctxswitch}} for details).
 \end{itemize}
 
-% We propose a new
-% %We extend the program logic introduced in conference
-% %paper, which can only prove the partial
-% %correctness of \sparc{} code, and propose a new
-% program logic to do relational reasoning for
-% refinement verification. We also use the new logic
-% to verify the implementation of a context switch routine,
-% by showing that the implementation code contextually
-% refines an abstract switch primitive.
-% % \footnote{In the conference paper,
-% %     we introduce that we apply our program logic
-% %     for partial correctness to
-% %     verify the main body of the context switch routine
-% % 	in a realistic embedded OS kernel for aerospace crafts,
-% %     which consists of around 250 lines of \sparc{} code,
-% %     by 6690 lines of Coq proof scripts.
-% %     And this is replaced by applying our new logic
-% %     to verify that the implementation of a
-% %     context switch routine
-% %     contextually refines an abstract switch primitive
-% %     in this paper.}.
-% In order to support refinement verification,
-% this paper also presents a new Pseudo-SPARCv8 language
-% as the language to implement the high-level specification.
-
-% We extend
-% the program logic, which can only prove the partial
-% correctness of \sparc{} code in conference paper,
-% to support refinement verification and use it to
-% verify that there is a contextual refinement between
-% a context switch routine implemented
-% in \sparc{} and $\primsw$ primitive for task switching
-% \footnote{In the conference paper,
-%     we introduce that we apply our program logic
-%     for partial correctness to
-%     verify the main body of the context switch routine
-% 	in a realistic embedded OS kernel for aerospace crafts,
-%     which consists of around 250 lines of \sparc{} code,
-%     by 6690 lines of Coq proof scripts.
-%     We omit such introduction in this version.}.
-% And in order to support refinement verification,
-% we a define Pseudo-SPARCv8 language as the high-level.
-
-% the verification of the context switch module
-% \footnote{Code of the context switch routine cannot
-% be published due to copyright issues},
-% and the extended program logic for
-% refinememt verification have been mechanized in
-% Coq~\cite{coqimp}.
-% >>>>>>> New
-%Coq\footnote{We
-%do not give the URL of the code for anonymity. The code
-%is available upon request. The released package does not contain the
-%verified context switch routine, due to copyright concerns.}.
-%,
-%and part of the Coq code has been made available online~\cite{coqimp}
-%	\footnote[1]{Code of the context switch module
-%    cannot be published due to
-%    copyright issues.}.
-
-
 In the remainder of the paper,
 %we first introduce the background of our work
 %and give an overview of our approach.
 we present the program model
 and operational semantics of \sparc{} in Sec.~\ref{sec:modeling}.
-% <<<<<<< HEAD
-% Then we propose the program logic in Sec.~\ref{sec:logic},
-% including the inference rules and the soundness proof,
-% and show how our logic supprts the three main features of SPARCv8.
-% We show the verification of the main body of the context switch routine
-% in Sec.~\ref{sec:ctxswitch}.
-% The Pseudo-SPARCv8 program and extended
-% program logic to support refinement verification is
-% presented in \Sec{\ref{sec:refine-verification-sparc}}.
-% % The extended program logic to
-% % support refinement verification is presented in
-% % \Sec{\ref{sec:refine-verification-sparc}}, including
-% % the high-level Pseudo-SPARCv8 program introduced in
-% % \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
-% =======
 For clear presentation, we use a
 simplified version of our program logic that
 doesn't support refinement verification to
@@ -713,11 +637,6 @@ features of \sparc{} in \Sec{\ref{sec:logic}},
 which is the main point
 of our work and irrelevant with
 refinement verification.
-% supporting
-% refinement verification in program logic.
-% the program logic in Sec.~\ref{sec:logic},
-% including the inference rules and the soundness proof,
-% and show how our logic supprts the three main features of SPARCv8.
 We present the Pseudo-SPARCv8 program and
 the relational program logic for refinement reasoning
 % how
