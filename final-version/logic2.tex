@@ -322,9 +322,9 @@ the same register within 4 instruction cycles, which practically
 have no restrictions on programming.
 By the semantics we have
 $$
-\regst{\sr}{\word} \,\Longrightarrow \dlyregst{\tick}{\sr}{\word}
+\regst{\sr}{\word} \,\Rightarrow\, \dlyregst{\tick}{\sr}{\word}
 \qquad
-\dlyregst{\tick}{\sr}{\word} \,\Longrightarrow\,
+\dlyregst{\tick}{\sr}{\word} \,\Rightarrow\,
 \dlyregst{\tick\!+\!k}{\sr}{\word}
 $$
 
@@ -334,22 +334,22 @@ It specifies states reachable after executing
 one step of delayed writes from those states satisfying $\astP$.
 Therefore we know:
 $$
-\nxtAst{(\dlyregst{0}{\sr}{\word})} \Longrightarrow
+\nxtAst{(\dlyregst{0}{\sr}{\word})} \,\Rightarrow\,
 \regst{\sr}{\word}
 \quad \
-\nxtAst{(\dlyregst{\tick\!+\!1}{\sr}{\word})} \Longrightarrow
+\nxtAst{(\dlyregst{\tick\!+\!1}{\sr}{\word})} \,\Rightarrow\,
 \dlyregst{\tick}{\sr}{\word}
 $$
 Also it is easy to see that if $\astP$ syntactically
 does not contain sub-terms in the form of $\dlyregst{\tick}{\sr}{\word}$,
-then $(\nxtAst\astP) \,\Longleftrightarrow \,\astP$.
+then $(\nxtAst\astP) \,\Leftrightarrow \,\astP$.
 
 The following lemma shows $\nxtAst{(\notCare)}$ is distributive
 over separating conjunction.
 \begin{lemma} %\mbox{}
 \label{lemma:dly-sep-split}
 $
-\nxtAst{(\astP * \astQ)} \,\Longleftrightarrow\, (\nxtAst\astP) * (\nxtAst\astQ)\,.
+\nxtAst{(\astP * \astQ)} \,\Leftrightarrow\, (\nxtAst\astP) * (\nxtAst\astQ)\,.
 $
 %\end{enumerate}
 \end{lemma}
@@ -369,7 +369,7 @@ and we present the proof of
 Lemma~\ref{lemma:dly-sep-split} below.
 {\color{blue}
 \begin{proof}
-	``$\Longrightarrow$": 
+	``$\Rightarrow$": 
 	if $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 		{\nxtAst{(\astP\sepstar\astQ)}}$, then 
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
@@ -411,7 +411,7 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 		{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$ holds.
 
-	``$\Longleftarrow$": if 
+	``$\Leftarrow$": if 
 	$\asrtmodel{(\Mem,(\RFile,\Wstack),\DBuf)}{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$,
 	then $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 	{\nxtAst{(\astP\sepstar\astQ)}}$. 

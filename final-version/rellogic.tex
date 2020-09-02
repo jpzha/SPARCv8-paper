@@ -1980,10 +1980,10 @@ and we explain them in turn in the following.
                     and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$,
                     $\hpstate_r.\Mem = \hpstate_r'.\Mem$;
             \end{itemize}
-         \item for any $\lgvl$, there exists $\args{\val}$,
-         	{\em $\relspecpre \ \lgvl \Longrightarrow
+         \item for any $\lgvl$, there exists $\args{\val}$, such that \\
+         	{\em $\relspecpre \ \lgvl \Rightarrow
          	 	\safePrimAst{\hprim(\args{\val})} \sepstar \atrue$},
-         	and {\em $\relspecpost \ \lgvl \Longrightarrow
+         	and {\em $\relspecpost \ \lgvl \Rightarrow
          		\safePrimAst{\primdone} \sepstar \atrue$};
         \item
             for any $\args{\val}, \state, \hpstate$,
@@ -1995,7 +1995,7 @@ and we explain them in turn in the following.
                 \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
                      {(\relspecpre \ \lgvl \sepstar \relastP_r)}, \,
                 (\relspecpost \ \lgvl \sepstar \relastP_r)
-                    \Longrightarrow
+                    \Rightarrow
                     \INV{(\primdone, \notCare)}
             $},
             and
@@ -2619,7 +2619,7 @@ Then we give the semantics of well-formed primitive in
             \hspace*{5em}
             \wdSpec{\relspecpre}{\relspecpost} {\hprim}
             	\, \land \,
-            	(\relspecpre \ \lgvl \Longrightarrow
+            	(\relspecpre \ \lgvl \Rightarrow
             	\safePrimAst{\, \hprim(\args{\val}) \,}
                 \sepstar \atrue) \\
             \hspace*{5em}
@@ -2818,7 +2818,7 @@ function.
                 \item $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$,
                     $\hprimset(\lab{}) = \hprim$,
                     $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$;
-                \item $\relspecpre \, \lgvl \implies
+                \item $\relspecpre \, \lgvl \Rightarrow
                     \safePrimAst{\, \hprim(\args{\val}) \,}
                     \sepstar \atrue$;
                 \item $\simFunction{(\asmimp, \lab{})}

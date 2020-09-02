@@ -270,9 +270,9 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
             \begin{itemize}
                 \small
                 \item $\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
-                    \Longrightarrow \safePrimAst{\primsw} \sepstar \atrue$;
+                    \Rightarrow \safePrimAst{\primsw} \sepstar \atrue$;
                 \item $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
-                    \Longrightarrow \safePrimAst{\primdone} \sepstar \atrue$;
+                    \Rightarrow \safePrimAst{\primdone} \sepstar \atrue$;
             \end{itemize}
         \vspace*{0.3em}
         Prove by the definition of $\Apre$ and $\Apost$.
@@ -290,8 +290,8 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
             \item $\asrtmodel{(\state, \hpstate, \primsw(\args{\val}), \word)}
                 {\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
                 \hthrdlocalst_n) \sepstar \relastP_r}$;
-            \item  $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
-                \hthrdlocalst_n) \sepstar \relastP_r \Longrightarrow
+            \item  $(\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
+                \hthrdlocalst_n) \sepstar \relastP_r) \Rightarrow
                 \INV{(\primdone, \notCare)}$;
             \item $\Sta(\primsw(\args{\val}), \relastP_r)$.
         \end{itemize}
