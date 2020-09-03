@@ -20,8 +20,8 @@ shows the structure of the code.
 \begin{itemize}
     \item \texttt{SwitchEntry}
     is the entry of the context switch routine.
-    It saves \localRN{} and \inRN{} registers of current
-    window into stack (in memory), and call
+    It saves the \localRN{} and \inRN{} registers of current
+    window into stack (in memory), and calls
     \texttt{reg\_save} to save other registers into TCB.
 
     \item
@@ -158,13 +158,12 @@ in the final state, because the execution of
 $\primsw$ will modify the program counters
 in $\hthrdlocalst_n$.
 
-{\color{blue}
 \paragraph{\textbf{Proof outline}} We show how to use
 our relational program logic defined in
 \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}
-to verify the correctness of context switch routine.
+to verify the correctness of the context switch routine.
 We first instantiate the set of
-abstract assembly primitive (\ref{ctxswitch-hprimset})
+abstract assembly primitives (\ref{ctxswitch-hprimset})
 and the code heap specification (\ref{ctxswitch-Cspec})
 below:
 \begin{align}
@@ -192,7 +191,7 @@ below:
 The set of abstract assembly primitive $\hprimset$
 contains only one abstract assembly primitive $\primsw$.
 And the code heap specification $\Cspec{}$
-contains the specifications of each code blocks.
+contains the specifications of each code block.
 We use
 $(\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}})$,
 $(\relspecpre_{\textit{rr}}, \relspecpost_{\textit{rr}})$,
@@ -271,9 +270,9 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
             \begin{itemize}
                 \small
                 \item $\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
-                    \Longrightarrow \safePrimAst{\primsw} \sepstar \atrue$;
+                    \Rightarrow \safePrimAst{\primsw} \sepstar \atrue$;
                 \item $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
-                    \Longrightarrow \safePrimAst{\primdone} \sepstar \atrue$;
+                    \Rightarrow \safePrimAst{\primdone} \sepstar \atrue$;
             \end{itemize}
         \vspace*{0.3em}
         Prove by the definition of $\Apre$ and $\Apost$.
@@ -291,8 +290,8 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
             \item $\asrtmodel{(\state, \hpstate, \primsw(\args{\val}), \word)}
                 {\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
                 \hthrdlocalst_n) \sepstar \relastP_r}$;
-            \item  $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
-                \hthrdlocalst_n) \sepstar \relastP_r \Longrightarrow
+            \item  $(\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
+                \hthrdlocalst_n) \sepstar \relastP_r) \Rightarrow
                 \INV{(\primdone, \notCare)}$;
             \item $\Sta(\primsw(\args{\val}), \relastP_r)$.
         \end{itemize}
@@ -315,7 +314,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
         Then, we can prove that the
         state relation between low- and high-level
         holds at the entry and
-        exit of context switch routine.
+        exit of the context switch routine.
         Since the execution of $\primsw$ only accesses
         the current and new tasks in thread pool, and the
         memory location $\TaskNew$,
@@ -324,7 +323,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
         in the final state and $\relastP_r$ keeps
         stable ($\Sta(\primsw, \relastP_r)$).
     \end{itemize}
-    Thus we are done.
+    % Thus we are done.
 \end{proof}
 
 We use $\code_{\texttt{switch}}$ to represent the
@@ -453,7 +452,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
             % The correctness proof of this subgoal can be done by
             % apply Lemma~\ref{lemma:ctxswitch-wdspec}.
     \end{itemize}
-    Thus we are done.
+    % Thus we are done.
 \end{proof}
 
 This part of work has not been mechanized in Coq.
@@ -484,6 +483,6 @@ can be reestablished in verifying code block
 returns (as noted in the proof of
 Lemma~\ref{lemma:ctxswitch-wfcdhp}).
 
-We present more details of this part of proof
-work in TR~\cite{coqimp}.
-} 
+% We present more details of this part of proof
+% work in TR~\cite{coqimp}.
+We present more details of proof in TR~\cite{coqimp}.

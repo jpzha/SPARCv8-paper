@@ -10,7 +10,10 @@ In this section,
 we use a simplified version of our program logic
 that doesn't support refinement verification to
 present how our logic handles the
-features of \sparc{}.
+features of \sparc{}. 
+{\color{blue} The relational program logic for  
+refinement reasoning will be introduced in  
+\Sec{\ref{sec:refine-verification-sparc}}}.
 
 % In this section,
 % we introduce the assertion language
@@ -143,13 +146,11 @@ features of \sparc{}.
 			\end{array} \\
 			
 			\\
-			{\color{blue}
 			\mem_1\!\perp\!\mem_2 \ \define \
 			(\dom(\mem_1)\cap\dom(\mem_2)) = \emptyset
 			\qquad \ \
 			\RFile_1\!\perp\!\RFile_2 \ \define \
 			(\dom(\RFile_1)\cap\dom(\RFile_2)) = \emptyset
-			}
 			\\
 			\\[-5pt]
 			
@@ -157,7 +158,7 @@ features of \sparc{}.
 			\left\{
 				\begin{array}{ll}
 					(\mem_1 \!\cup\! \mem_2, (\RFile_1 \!\cup\! \RFile_2, \Wstack), \DBuf)
-						 &  \quad \textbf{if} \;
+						 &  \quad \cif \;
 						 		% {\color{blue}
 								%  \dom(\mem_1) \cap \dom(\mem_2) = \emptyset \land
 								%  \dom(\RFile_1) \cap \dom(\RFile_2) = \emptyset}
@@ -176,22 +177,6 @@ features of \sparc{}.
 
 			\\
 			\\
-%			\DtoS\DBuf \ \define \
-%			\left\{
-%			\begin{array}{ll}
-%				\{(n, \sr, \word)\} \cup \DtoS{\DBuf'}
-%                    & \quad \textbf{if} \;
-%                         \DBuf = (n, \sr, \word) \dbCons \DBuf' \\
-%				
-%				\\[-8pt]
-%				
-%				\emptyset & \quad \textbf{if} \; \DBuf = \nil
-%			\end{array}
-%			\right.
-%            \\
-%			
-%			\\[-5pt]
-
 			\dom(\DBuf) \ \define \
 			\left\{
 			\begin{array}{ll}
@@ -200,7 +185,7 @@ features of \sparc{}.
 				
 				\\[-8pt]
 				
-				\emptyset & \quad \textbf{if} \; \DBuf = \nil
+				\emptyset & \quad \cif \; \DBuf = \nil
 			\end{array}
 			\right.
             \\
@@ -211,17 +196,17 @@ features of \sparc{}.
 			\left\{
 			\begin{array}{ll}
 				\sr\not\in\dom(\DBuf')
-                    & \quad \textbf{if} \;
+                    & \quad \cif \;
                          \DBuf = (\tick, \sr, \word) \dbCons \DBuf' \\
 				
 				\\[-8pt]
 				
 				\sr\neq\sr' \land \noDup{\DBuf'}\sr
-                    & \quad \textbf{if} \;
+                    & \quad \cif \;
                          \DBuf = (\tick, \sr', \word) \dbCons \DBuf' \\
 				
 				\\[-8pt]
-				\textbf{True} & \quad \textbf{if} \; \DBuf = \nil
+				\textbf{True} & \quad \cif \; \DBuf = \nil
 			\end{array}
 			\right.
             \\
@@ -286,7 +271,8 @@ features of \sparc{}.
 \end{figure*}
 
 %\indent
-We define the syntax of assertions in Fig.~\ref{fig:Syntax of Assertions},
+We define the syntax of assertions 
+(\textit{Asrt}) in Fig.~\ref{fig:Syntax of Assertions},
 and their semantics in Fig.~\ref{fig:Semantics of Assertions}.
 We extend separation logic assertions with specifications of
 delay buffers and register windows. Registers are like
@@ -335,10 +321,12 @@ This prevents more than one delayed write to
 the same register within 4 instruction cycles, which practically
 have no restrictions on programming.
 By the semantics we have
+(the $\astP\Rightarrow\astQ$ means for any $\state$, if 
+$\asrtmodel{\state}{\astP}$ holds, then $\asrtmodel{\state}{\astQ}$ holds)
 $$
-\regst{\sr}{\word} \,\Longrightarrow \dlyregst{\tick}{\sr}{\word}
+\regst{\sr}{\word} \,\Rightarrow\, \dlyregst{\tick}{\sr}{\word}
 \qquad
-\dlyregst{\tick}{\sr}{\word} \,\Longrightarrow\,
+\dlyregst{\tick}{\sr}{\word} \,\Rightarrow\,
 \dlyregst{\tick\!+\!k}{\sr}{\word}
 $$
 
@@ -348,27 +336,121 @@ It specifies states reachable after executing
 one step of delayed writes from those states satisfying $\astP$.
 Therefore we know:
 $$
-\nxtAst{(\dlyregst{0}{\sr}{\word})} \Longrightarrow
+\nxtAst{(\dlyregst{0}{\sr}{\word})} \,\Rightarrow\,
 \regst{\sr}{\word}
 \quad \
-\nxtAst{(\dlyregst{\tick\!+\!1}{\sr}{\word})} \Longrightarrow
+\nxtAst{(\dlyregst{\tick\!+\!1}{\sr}{\word})} \,\Rightarrow\,
 \dlyregst{\tick}{\sr}{\word}
 $$
-Also it's easy to see that if $\astP$ syntactically
+Also it is easy to see that if $\astP$ syntactically
 does not contain sub-terms in the form of $\dlyregst{\tick}{\sr}{\word}$,
-then $(\nxtAst\astP) \,\Longleftrightarrow \,\astP$.
+then $(\nxtAst\astP) \,\Leftrightarrow \,\astP$.
 
 The following lemma shows $\nxtAst{(\notCare)}$ is distributive
 over separating conjunction.
 \begin{lemma} %\mbox{}
 \label{lemma:dly-sep-split}
 $
-\nxtAst{(\astP * \astQ)} \,\Longleftrightarrow\, (\nxtAst\astP) * (\nxtAst\astQ)\,.
+\nxtAst{(\astP * \astQ)} \,\Leftrightarrow\, (\nxtAst\astP) * (\nxtAst\astQ)\,.
 $
 %\end{enumerate}
 \end{lemma}
-The lemma can be proved following Lemma~\ref{lemma:RFileSplitExDelay}.
+The lemma can be proved following 
+Lemma~\ref{lemma:RFileSplitExDelay}. Let 
+\[
+	\begin{array}{ll}
+		\RFile_1\uplus\RFile_2 \define 
+		\RFile_1\cup\RFile_2 \quad 
+		& \cif \ \RFile_1\perp\RFile_2 \\ \\[-9pt]
+		\Mem_1\uplus\Mem_2 \define 
+		\Mem_1\cup\Mem_2 \quad 
+		& \cif \ \Mem_1\perp\Mem_2
+	\end{array}
+\]
+and we present the proof of 
+Lemma~\ref{lemma:dly-sep-split} below.
+{\color{blue}
+\begin{proof}
+	``$\Rightarrow$": 
+	if $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+		{\nxtAst{(\astP\sepstar\astQ)}}$, then 
+	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+		{\nxtAst{(\astP)}\sepstar\nxtAst{(\astQ)}}$. 
+	From the semantics of assertions, 
+	we get there exists $\RFile'$ and $\DBuf'$, such that:
+	\begin{align}
+		& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \label{a:dstep1} \\
+		& \asrtmodel{(\Mem, (\RFile', \Wstack), \DBuf')}
+			{\astP\sepstar\astQ} \label{a:asthold}
+	\end{align}
+	From (\ref{a:asthold}), there exists 
+	$\Mem_1$, $\Mem_2$, $\RFile_1'$ and $\RFile_2'$ such that:
+	\begin{align}
+		& \Mem = \Mem_1\uplus\Mem_2 
+		\label{a:memsplit} \\
+		& \RFile' = \RFile_1'\uplus\RFile_2'
+		\label{a:regsplit} \\
+		& \asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf')}{\astP} 
+		\label{a:pholds} \\
+		& \asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf')}{\astQ}
+		\label{a:qholds} 
+	\end{align}
+	By applying Lemma~\ref{lemma:RFileSplitExDelay}
+	on (\ref{a:dstep1}) and (\ref{a:regsplit}), we get 
+	that there exists $\RFile_1$ and $\RFile_1$, 
+	where $\RFile = \RFile_1\uplus\RFile_2$, such that
+	\begin{align}
+		& \Dstep{(\RFile_1', \DBuf')}{(\RFile_1, \DBuf)}
+		\label{a:dstep-split1} \\
+		& \Dstep{(\RFile_2', \DBuf')}{(\RFile_2, \DBuf)}
+		\label{a:dstep-split2}
+	\end{align}
+	From (\ref{a:pholds}) and (\ref{a:dstep-split1}), 
+	we get $\asrtmodel{(\Mem_1, (\RFile_1, \Wstack), \DBuf)}{\nxtAst{\astP}}$; 
+	and from (\ref{a:qholds}) and (\ref{a:dstep-split2}), 
+	we get $\asrtmodel{(\Mem_2, (\RFile_2, \Wstack), \DBuf)}{\nxtAst{\astQ}}$.
+	Thus, we prove that 
+	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+		{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$ holds.
 
+	``$\Leftarrow$": if 
+	$\asrtmodel{(\Mem,(\RFile,\Wstack),\DBuf)}{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$,
+	then $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+	{\nxtAst{(\astP\sepstar\astQ)}}$. 
+	From the semantics of assertions, 
+	we get there exists $\Mem_1$, $\Mem_2$, $\RFile_1'$, 
+	$\RFile_2'$, $\RFile_1$, $\RFile_2$, $\DBuf_1'$ and $\DBuf_2'$, 
+	where $\RFile = \RFile_1\uplus\RFile_2$, such that:
+	\begin{align}
+		& \Dstep{(\RFile_1', \DBuf_1')}{(\RFile_1, \DBuf)}, \, 
+		\Dstep{(\RFile_2', \DBuf_2')}{(\RFile_2, \DBuf)}
+		\label{a:dstep-split} \\
+		& \asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf_1')}
+			{\astP}
+		\label{a:phold1} \\
+		& \asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf_2')}
+			{\astQ}
+		\label{a:qhold2}
+	\end{align}
+	By the definition of the step of the 
+	delayed writes, we can prove that 
+	$\DBuf_1' = \DBuf_2'$. Let 
+	$\DBuf' = \DBuf_1' = \DBuf_2'$. 
+	By applying Lemma~\ref{lemma:RFileSplitExDelay} 
+	on (\ref{a:dstep-split}), we get there exists 
+	$\RFile'$, such that $\RFile' = \RFile_1'\uplus\RFile_2'$ 
+	and the following holds:
+	\begin{equation}
+		\Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)}
+		\label{a:dstep2}	
+	\end{equation}
+	From (\ref{a:phold1}), (\ref{a:qhold2}) and 
+	(\ref{a:dstep1}), we prove that 
+	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+	{\nxtAst{(\astP\sepstar\astQ)}}$ holds.
+	Thus, we are done.
+\end{proof}
+}
 
 We use $\frmst{\cwp}{\Wstack}$ to describe the pointer
 $\regcwp$ of the current register window and the frame
@@ -390,7 +472,7 @@ intuitionistic assertions. Since $\aexp$ is used as an address,
 we also require it to be properly aligned on a 4-byte boundary.
 We define $\wordaligned{}$ to represent this restriction below.
 The result of the address expression $\aexp$ may be a word, if
-it's a pointer in code heap, or a memory address, if it's a location
+it is a pointer in code heap, or a memory address, if it is a location
 of memory.
 \[
 	\wordaligned{(\val)} \define
@@ -462,7 +544,7 @@ and the post-conditions with the same $\lgvl$ allows
 us to establish relationship of states specified
 in the pre- and post-conditions.
 
-Although we assign a $\theta$ to each basic block,
+Although we assign a specification $\theta$ to each basic block,
 the post-condition does not specify the states reached at the end
 of the block. Instead, it specifies the condition
 that needs to be specified in the future when the
@@ -534,7 +616,7 @@ To verify the function, we need to prove that it satisfies
 $(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$.
 Here, $\lv[1]$ and $\lv[2]$ cannot be a memory address,
 because a value plus a memory address is illegal.
-$\lv[3]$ also should be a word, because it's a
+$\lv[3]$ also should be a word, because it is a
 return code pointer whose type is word.
 % records a word as a return code pointer.
 
@@ -681,7 +763,6 @@ return code pointer whose type is word.
 				}
 			\]
 
-			{\color{blue}
 			\[
 				\infer[\tinybftext{(BE)}]
 				{
@@ -706,7 +787,6 @@ return code pointer whose type is word.
 					\end{array}
 				}
 			\]
-			}
 %			\[
 %				\infer[\tinybftext{(RETL)}]
 %				{
@@ -1007,7 +1087,6 @@ return code pointer whose type is word.
 
 \Fig{\ref{fig:Seleted Inference rules}} shows
 selected inference rules in our logic.
-{\color{blue}
 Our logic divides the proof work into three layers.
 We define the well-formed code heap in the form of
 ($\wfcdhp{\code}{\Cspec{}}$) to verify the code heap $\code$,
@@ -1017,7 +1096,6 @@ instruction sequence $\cblk$ starting from $\lab{}$
 in code heap, and well-formed instruction in the form of
 ($\wfins{\astP}{\simplins{}}{\astQ}$) to verify the
 single simple instruction $\simplins{}$.
-}
 
 The top rule \cdhp{} verifies the code
 heap $\code$. It requires that every basic block
@@ -1155,7 +1233,6 @@ contains the correct return address,
 we know $\RAreg$ contains the correct value
 before $\retl$.
 
-{\color{blue}
 The \myrule{BE} rule checks the {\em current} value of register $\regz$
 and decides whether the branch will be taken
 after executing the following instruction $\simplins{}$. If the
@@ -1164,7 +1241,6 @@ the branch is taken and this rule does the same
 things as the \myrule{JMP} rule; otherwise,
 the branch is {\em not} taken and the remaining instruction
 sequence $\cblk$ should be well-formed.
-}
 
 %We present the \callrule{} rule and \retlrule{} rule
 %for certifying function call/return.
