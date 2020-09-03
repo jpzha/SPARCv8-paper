@@ -321,7 +321,7 @@ This prevents more than one delayed write to
 the same register within 4 instruction cycles, which practically
 have no restrictions on programming.
 By the semantics we have
-(the $\astP\Rightarrow\astQ$ means for any $\state$, if 
+($\astP\Rightarrow\astQ$ means for any $\state$, if 
 $\asrtmodel{\state}{\astP}$ holds, then $\asrtmodel{\state}{\astQ}$ holds)
 $$
 \regst{\sr}{\word} \,\Rightarrow\, \dlyregst{\tick}{\sr}{\word}
@@ -444,11 +444,10 @@ Lemma~\ref{lemma:dly-sep-split} below.
 		\Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)}
 		\label{a:dstep2}	
 	\end{equation}
-	From (\ref{a:phold1}), (\ref{a:qhold2}) and 
-	(\ref{a:dstep1}), we prove that 
+	By (\ref{a:phold1}), (\ref{a:qhold2}) and 
+	(\ref{a:dstep2}), we prove that 
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 	{\nxtAst{(\astP\sepstar\astQ)}}$ holds.
-	Thus, we are done.
 \end{proof}
 }
 
@@ -616,7 +615,7 @@ To verify the function, we need to prove that it satisfies
 $(\specpre\,\lv, \specpost\,\lv)$ for all $\lv$.
 Here, $\lv[1]$ and $\lv[2]$ cannot be a memory address,
 because a value plus a memory address is illegal.
-$\lv[3]$ also should be a word, because it is a
+$\lv[3]$ should also be a word, because it is a
 return code pointer whose type is word.
 % records a word as a return code pointer.
 

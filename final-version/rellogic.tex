@@ -105,11 +105,11 @@ the context switch routine will check
 whether the previous window is valid
 (in clockwise direction in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
-and use instruction $\crestore{}$ to set it as the
+and use $\crestore{}$ instruction to set it as the
 current one and save its contents into stack
-(in memory) until the previous one is invalid
+(in memory) until the previous one
 (filled with east north lines
-in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}).
+in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) is invalid.
 We require that the execution of client code
 preserves such restriction. Otherwise, some SPARCv8
 functions like context switch routine, whose
@@ -219,8 +219,8 @@ of client code preserve such restriction:
     but excluding the current one pointed by \regcwp{})
     in the Pseudo-SPARCv8 level.
     The \regcwp{} register is no longer needed in
-    Pseudo-SPARCv8 program because the register window
-    is abstracted away.
+    Pseudo-SPARCv8 program since the register windows
+    are abstracted away.
     The low-level program in our work doesn't use this
     abstraction, because the low-level program
     should be realistically modelled,
@@ -579,7 +579,7 @@ the high-level register file (\TYPE{HRegFile}) $\hRfile$,
 % the block of the current stack frame $\block$,
 and the high-level frame list (\TYPE{HFrmList}) $\hWstk$.
 $\hrn$ is the high-level register names (\TYPE{HRegName}), 
-where the $\regcwp$ is omitted as introduced before and
+where the $\regcwp$ register is omitted as introduced before and
 we also omit special registers for simplicity,
 because we forbid
 the high-level client code to modify them
@@ -655,10 +655,10 @@ an instantiation of $\hprim$ below:
 %     \end{array}
 %     $$
 % }
-The execution of the $\primsw{}$ primitive takes no arguments
+The $\primsw{}$ primitive takes no arguments
 ($\args{\val} = \nil$), and changes the identifier
 of the current thread according to the value
-in location $\TaskNew$. We use parameters $\hpstate$
+in the location $\TaskNew$. We use parameters $\hpstate$
 and $\hpstate'$ to represent the machine states before
 and after execution of $\primsw{}$ respectively.
 
@@ -678,9 +678,9 @@ $(\hlocalstep{\notCare}{\notCare}{\ \notCare \ }{\notCare})$ in
 a message $\callEvt{\lab{}, \args{\val}}$, which means that it
 hopes to call the abstract assembly primitive $\hprim$ labelled
 $\lab{}$, which is {\it not} in the domain of code heap $\code$,
-with arguments $\args{\val}$
+with the arguments $\args{\val}$
 (we use $\arguments(\hRstate, \Mem, \args{\val})$
-to get arguments $\args{\val}$
+to get the arguments $\args{\val}$
 from high-level state, and its definition is omitted here).
 %After executing the abstract assembly primitive, the program
 %control transfer should return to execute the client code
@@ -688,14 +688,14 @@ from high-level state, and its definition is omitted here).
 %\subseteq \dom(\code)$).
 
 The thread local step is defined in
-\Fig{\ref{fig:selected-opsem-high-level-prog}} (b).
+\Fig{\ref{fig:selected-opsem-high-level-prog}} (b)
 Here, the step for simple instruction $\simplins{}$ is
 represented as ``$\hexeci{\simplins{}}{\notCare}{\notCare}$".
 We show the state transition relation for pseudo instructions
 $\Psave \ \word$ and $\Prestore$ in
 \Fig{\ref{fig:selected-opsem-high-level-prog}} (c).
 Supposing the current register state $\hRstate$ is
-$(\hRfile, \hWstk)$, executing instruction
+$(\hRfile, \hWstk)$, the execution of
 $\Psave \ \word$ will save the \localRN{} and \inRN{} registers
 % and the block id  $\block_0$ of the current stack frame
 into high-level frame list $\hWstk$. It also allocates
@@ -710,8 +710,8 @@ by convention \cite{sparc},
 and this part of memory is abstracted away in
 Pseudo-SPARCv8 program as we have explained and shown in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}.
-The instruction $\Prestore$ does the reverse,
-freeing the block of current stack frame
+$\Prestore$ does the reverse,
+freeing the block of the current stack frame
 (represented as $\mfree(\block, \Mem) = \Mem'$), and
 restoring the context of the previous procedure
 saved in $\hWstk$.
@@ -758,7 +758,7 @@ from the \sparc{} program defined in
         It means that we need to give semantics to the %additional
         pseudo instructions $\Psave$, $\Prestore$ and
         $\cprint$ in the low-level \sparc{} program.
-        Since the $\Psave$ and $\Prestore$
+        Since $\Psave$ and $\Prestore$
         are simply special forms of $\csave{}$ and
         $\crestore{}$ as explained,
         and $\cprint$ is a primitive
@@ -770,9 +770,12 @@ from the \sparc{} program defined in
         trivial.
     \item The program transition defined in
         \Sec{\ref{sec:modeling}} does not generate
-        observable events. Here, in order to support
-        refinement verification, since
-        we use the event trace refinement~\cite{liang14lics},
+        observable events. 
+        Here, Since we want to support refinement verification 
+        and use the event trace refinement~\cite{liang14lics}, 
+        % Here, in order to support
+        % refinement verification, since
+        % we use the event trace refinement~\cite{liang14lics},
         each step of the program
         generates either an empty message $\tau$,
         or an output $\outEvt{\val}$ produced
@@ -784,11 +787,10 @@ from the \sparc{} program defined in
 % $\cprint$ and acts as an observable behavior.
 Note that the client
 code and the implementations of abstract assembly primitives
-in low-level are both \sparc{} code heap. So, we do not need
+in the low-level are both \sparc{} code heap. So, we do not need
 to define their linking in semantics.
 More details of the low-level program can be found in
-our Coq code 
-and TR~\cite{coqimp}.
+our Coq code and TR~\cite{coqimp}.
 % \ref{sec:more-llang}.
 
 % \input{picture/StateRel}
@@ -828,12 +830,12 @@ cell located $\TaskCur$ saving the current thread id; and shared
 memory $\Mem'$ that is same as the high-level memory.
 The delayed buffer $\DBuf$ is $\nil$, because client
 is not permitted to modify any special register
-through instructions $\cwr{}$. The memory $\Mem_T$ used to
+through the $\cwr{}$ instructions. The memory $\Mem_T$ used to
 save the contexts of the ready threads is {\it abstracted} as a thread pool
 in high-level program. Their relation is represented as
 ``$\rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}$".
 We use ``$\curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}$"
-to represent the state relation of current thread $\thrdid$
+to represent the state relation of the current thread
 in low- and high-level programs.
 % Full definitions of the state relation
 % can be found in Appendix \ref{sec:more-staterel}.
@@ -842,7 +844,7 @@ The correctness of abstract assembly primitives
 is defined in terms of {\it contextual refinement}.
 We give its formal definition in
 \Def{\ref{def:prim-correctness}}.
-And we use {\it event trace refinement}
+And we use the {\it event trace refinement}
 proposed by \etal{Liang} \cite{liang14lics}.
 
 \begin{definition}[Primitive Correctness]
