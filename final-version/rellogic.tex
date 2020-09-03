@@ -1417,7 +1417,7 @@ defined in \Fig{\ref{fig:Semantics of Relation Assertion}},
 and a word $\word$ recording the number of the tokens.
 The high-level primitive command $\primcom$ is
 either an abstract assembly primitive $\hprim$
-parameterized with its arguments $\args{\val}$, or a
+parameterized over arguments $\args{\val}$, or a
 $\primdone$ meaning the primitive has already been
 executed. The relational assertion $\relastP$ reserves
 original assertion $\astP$ describing the low-level
@@ -1483,7 +1483,7 @@ current high-level primitive command is $\primcom$.
 %     \sepstar \atrue
 % \]
 And the assertion $\metricAst{\word}$ takes a word $\word$,
-which can also be separated by separation conjunction,
+which can also be separated by separation conjunction ($\sepstar$),
 to state that the number of tokens in current state is
 \textit{no less} than $\word$. In the
 introduction of the inference rules following, we use tokens
@@ -1504,7 +1504,7 @@ from $\state'$.
 % \label{subsec:logic-rule-refinemet}
 \paragraph{Inference Rules in Relational Program Logic}
 The code specification $\RelBspec$ and code heap specification
-$\Cspec$ for refinement verification are defined below :
+$\Cspec$ in relational program logic are defined below :
 \[
     \small
     \!\!\!\!
@@ -1875,7 +1875,7 @@ shown as $\metricAst{1}$, in order to avoid
 infinite loops and recursive function calls,
 because our refinement relation is
 termination-preserving.
-The $\wfFrm(\relastP_r)$, whose definition is omitted here,
+$\wfFrm(\relastP_r)$, whose definition is omitted here,
 means there is no sub-term in
 form of $(\astCurCont{\thrdid}{\hthrdlocalst})$,
 $(\hregsto{\hrn}{\val})$ and $\safePrimAst{\primcom}$
@@ -1953,7 +1953,7 @@ the rules shown in \Fig{\ref{fig:Seleted Inference rules}}.
 % \end{multline*}
 
 \paragraph{\textbf{Well-defined Specification.}}
-The $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
+$\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
 is defined formally in
 \Def{\ref{def:well-defined specification}}.
 It contains three properties that
@@ -2056,13 +2056,13 @@ and we explain them in turn in the following.
 \textbf{First},
 % we should give some restrictions
 % for the execution of abstract assembly primitive.
-the program counters should be equal to
-$\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$
+the program counters should equal
+$\lab{}\!+\!8$ and $\lab{}\!+\!12$ respectively, where $\lab{}$
 is contained in $\reg{15}$ register after the execution
-of abstract assembly primitive.
+of the abstract assembly primitive $\hprim$.
 It ensures that the low-level implementation
 and high-level abstract assembly primitive will return to
-the same code pointers after executions.
+the same code pointers.
 % because
 % the \textbf{RETL} rule also restricts
 % that the low-level program will return to
@@ -2075,7 +2075,7 @@ We also require that
 if an abstract assembly primitive
 can execute safely on a part of program state,
 it can also execute safely on the whole program state,
-and additional program state remains unchanged.
+and the additional program state remains unchanged.
 Here, $\hpstate\perp\hpstate_r$ is defined formally
 below:
 \[
@@ -2196,27 +2196,27 @@ The invariant consists of the state relation between low- and
 high-level program states,
 shown as $\stateRel{\state}{\hpstate}$, 
 {\color{blue} and the safe execution of the primitive 
-command, which means that 
-the primitive command $\primcom$ can execute 
+command $\primcom$, which means that 
+$\primcom$ can execute 
 zero (if $\primcom = \primdone$)
-or one (if $\primcom = \hprim(\args{\val})$) 
-step from the current state, presented as 
+or one step (if $\primcom = \hprim(\args{\val})$) 
+from the current state, presented as 
 $\exists \, \hpstate'. \,
     \primMultiTrans{(\primcom, \hpstate)}
-                    {*}{(\primdone, \hpstate')}$, 
-and we use $\primMultiTrans{}{*}{}$ to denote
+                    {*}{(\primdone, \hpstate')}$. 
+We use $\primMultiTrans{}{*}{}$ to denote
 zero or one step.}
 % and the safe execution of the primitive command
 % ($\primMultiTrans{}{*}{}$ denotes zero or one step).
 Including the safe execution of
-the primitive command is essential
+the primitive command is essential, 
 because we can get some knowledge of high-level program
-state from the safe execution of
+state from the safe execution of the
 primitive command $\primcom$.
 For example, if $\INV{(\primsw(\nil), \nil)}$
 holds, we know that the location $\TaskNew$
 must save a pointer pointing to a ready thread
-in thread pool from the safe execution of primitive $\primsw$.
+in thread pool from the safe execution of the primitive $\primsw$.
 % and we
 % can write them in the precondition of the specification
 % of the context switch routine.
@@ -2225,7 +2225,7 @@ in thread pool from the safe execution of primitive $\primsw$.
 Then we in turn know that the memory location $\TaskNew$
 in low-level state also saves the same pointer
 from the state relation
-between low- and high-level program.
+between low- and high-level programs.
 \[
     \small
     \begin{array}{l}
