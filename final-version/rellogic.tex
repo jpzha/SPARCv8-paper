@@ -1487,7 +1487,7 @@ which can also be separated by separation conjunction ($\sepstar$),
 to state that the number of tokens in current state is
 \textit{no less} than $\word$. In the
 introduction of the inference rules following, we use tokens
-to avoid infinite loops and recursive calls to make sure
+to avoid infinite loops and recursive function calls to make sure
 the termination preserving refinement.
 % The idea is taken from RGSim-T \cite{liang14lics}.
 
@@ -2216,7 +2216,7 @@ primitive command $\primcom$.
 For example, if $\INV{(\primsw(\nil), \nil)}$
 holds, we know that the location $\TaskNew$
 must save a pointer pointing to a ready thread
-in thread pool from the safe execution of the primitive $\primsw$.
+in the thread pool from the safe execution of the primitive $\primsw$.
 % and we
 % can write them in the precondition of the specification
 % of the context switch routine.
@@ -2251,8 +2251,8 @@ between low- and high-level programs.
 %     \sepstar \atrue
 % \]
 % }
-We introduce frame $\relastP_r$ for local reasoning,
-and it should be stable under the execution
+We introduce the frame $\relastP_r$ for local reasoning.
+It should be stable under the execution
 of the abstract assembly primitive
 (shown as $\Sta(\hprim(\args{\val}), \relastP_r)$
 defined below).
@@ -2285,7 +2285,7 @@ It says $\asmimp$ can execute safely
 from $\state$, $\pc$ and $\npc$ until reaching
 the end of the current instruction sequence ($\asmimp[\pc]$),
 and $\astQ$ holds if $\asmimp[\pc]$ ends with the return
-instruction $\retl{}$, and for each step of low-level
+instruction $\retl{}$, and for each step of the low-level
 execution, the high-level program will execute zero or
 one step.
 It is formally defined in Def.~\ref{def:siminsseq}.
@@ -2293,8 +2293,8 @@ Here we use ``$\notCare \longmapsto^{n} \notCare$'' to
 represent $n$-step execution.
 The $\word$ in simulation records the number of tokens.
 It will be consumed when meeting \jmp{} and \call{}
-instructions, so as to avoid infinite loop and recursive
-function call and ensure termination preserving,
+instructions, so as to avoid infinite loops and recursive
+function calls and ensure termination preserving,
 and reset when the high-level
 abstract assembly primitive executes.
 
@@ -2470,7 +2470,7 @@ sequences and well-formed code heap below.
     \end{itemize}
 \end{definition}
 
-Next, we define the simulation for function in
+Next, we define the simulation for functions in
 \Def{\ref{def:simfunc}}. It means that if there
 exists a relational state $(\state, \hpstate, \primcom, \word)$
 satisfying the precondition $\relastP$, then we have
@@ -2478,16 +2478,16 @@ the simulation
 $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{} + 4)}
     {i}{0}{(\primcom, \hpstate)}$ defined in
 \Def{\ref{def:sim-imp-prim-state}}.
-The definition of simulation
+The simulation
 $\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}
     {i}{k}{(\primcom, \hpstate)}$ carries an index $i$,
 which is used to ensure the termination preserving,
-and the depth $k$ of function call, which
+and the depth $k$ of function calls, which
 increases by the \call{} instruction
 and decreases by \retl{} (unless $k=0$).
-The simulation relation ensures
-the safe execution of low-level SPARCv8 function
-and the corresponding high-level abstract assembly primitive.
+This simulation relation ensures
+the safe execution of the low-level SPARCv8 function
+and its corresponding high-level abstract assembly primitive.
 
 \begin{definition}[Simulation for Function]
     \label{def:simfunc}
@@ -2604,7 +2604,7 @@ and the corresponding high-level abstract assembly primitive.
     \end{enumerate}
 \end{definition}
 
-Then we give the semantics of well-formed primitive in
+Then we give the semantics for well-formed primitive in
 \Def{\ref{def:wdprim-sem}}.
 \begin{definition}[Well-defined Primitive Set Semantics]
     \em
@@ -2829,7 +2829,7 @@ function.
             \end{itemize}
             The proof of the first subgoal can be done by
             assumption (\ref{a:wdspec}) directly; the second
-            one can be done according to the definition of
+            one can be done by the definition of
             $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
             (defined in \Def{\ref{def:well-defined specification}}),
             which requires that the abstract assembly primitive should
