@@ -105,11 +105,11 @@ the context switch routine will check
 whether the previous window is valid
 (in clockwise direction in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
-and use instruction $\crestore{}$ to set it as the
+and use $\crestore{}$ instruction to set it as the
 current one and save its contents into stack
-(in memory) until the previous one is invalid
+(in memory) until the previous one
 (filled with east north lines
-in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}).
+in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) is invalid.
 We require that the execution of client code
 preserves such restriction. Otherwise, some SPARCv8
 functions like context switch routine, whose
@@ -156,8 +156,8 @@ of client code preserve such restriction:
     We also introduce ``$\Prestore$"
     as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
     \footnote{In SPARCv8, $\greg{0}$ is always 0,
-    and usually used as parameters when instructions do not
-    require specific parameters.},
+    and usually used as a parameter when instructions do not
+    require a specific parameter.},
     whose execution just restores the previous window
     and doesn't modify the value of any register
     in the previous window restored.
@@ -219,8 +219,8 @@ of client code preserve such restriction:
     but excluding the current one pointed by \regcwp{})
     in the Pseudo-SPARCv8 level.
     The \regcwp{} register is no longer needed in
-    Pseudo-SPARCv8 program because the register window
-    is abstracted away.
+    Pseudo-SPARCv8 program since the register windows
+    are abstracted away.
     The low-level program in our work doesn't use this
     abstraction, because the low-level program
     should be realistically modelled,
@@ -579,7 +579,7 @@ the high-level register file (\TYPE{HRegFile}) $\hRfile$,
 % the block of the current stack frame $\block$,
 and the high-level frame list (\TYPE{HFrmList}) $\hWstk$.
 $\hrn$ is the high-level register names (\TYPE{HRegName}), 
-where the $\regcwp$ is omitted as introduced before and
+where the $\regcwp$ register is omitted as introduced before and
 we also omit special registers for simplicity,
 because we forbid
 the high-level client code to modify them
@@ -655,10 +655,10 @@ an instantiation of $\hprim$ below:
 %     \end{array}
 %     $$
 % }
-The execution of the $\primsw{}$ primitive takes no arguments
+The $\primsw{}$ primitive takes no arguments
 ($\args{\val} = \nil$), and changes the identifier
 of the current thread according to the value
-in location $\TaskNew$. We use parameters $\hpstate$
+in the location $\TaskNew$. We use parameters $\hpstate$
 and $\hpstate'$ to represent the machine states before
 and after execution of $\primsw{}$ respectively.
 
@@ -678,9 +678,9 @@ $(\hlocalstep{\notCare}{\notCare}{\ \notCare \ }{\notCare})$ in
 a message $\callEvt{\lab{}, \args{\val}}$, which means that it
 hopes to call the abstract assembly primitive $\hprim$ labelled
 $\lab{}$, which is {\it not} in the domain of code heap $\code$,
-with arguments $\args{\val}$
+with the arguments $\args{\val}$
 (we use $\arguments(\hRstate, \Mem, \args{\val})$
-to get arguments $\args{\val}$
+to get the arguments $\args{\val}$
 from high-level state, and its definition is omitted here).
 %After executing the abstract assembly primitive, the program
 %control transfer should return to execute the client code
@@ -688,14 +688,14 @@ from high-level state, and its definition is omitted here).
 %\subseteq \dom(\code)$).
 
 The thread local step is defined in
-\Fig{\ref{fig:selected-opsem-high-level-prog}} (b).
+\Fig{\ref{fig:selected-opsem-high-level-prog}} (b)
 Here, the step for simple instruction $\simplins{}$ is
 represented as ``$\hexeci{\simplins{}}{\notCare}{\notCare}$".
 We show the state transition relation for pseudo instructions
 $\Psave \ \word$ and $\Prestore$ in
 \Fig{\ref{fig:selected-opsem-high-level-prog}} (c).
 Supposing the current register state $\hRstate$ is
-$(\hRfile, \hWstk)$, executing instruction
+$(\hRfile, \hWstk)$, the execution of
 $\Psave \ \word$ will save the \localRN{} and \inRN{} registers
 % and the block id  $\block_0$ of the current stack frame
 into high-level frame list $\hWstk$. It also allocates
@@ -710,8 +710,8 @@ by convention \cite{sparc},
 and this part of memory is abstracted away in
 Pseudo-SPARCv8 program as we have explained and shown in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}.
-The instruction $\Prestore$ does the reverse,
-freeing the block of current stack frame
+$\Prestore$ does the reverse,
+freeing the block of the current stack frame
 (represented as $\mfree(\block, \Mem) = \Mem'$), and
 restoring the context of the previous procedure
 saved in $\hWstk$.
@@ -758,7 +758,7 @@ from the \sparc{} program defined in
         It means that we need to give semantics to the %additional
         pseudo instructions $\Psave$, $\Prestore$ and
         $\cprint$ in the low-level \sparc{} program.
-        Since the $\Psave$ and $\Prestore$
+        Since $\Psave$ and $\Prestore$
         are simply special forms of $\csave{}$ and
         $\crestore{}$ as explained,
         and $\cprint$ is a primitive
@@ -770,9 +770,12 @@ from the \sparc{} program defined in
         trivial.
     \item The program transition defined in
         \Sec{\ref{sec:modeling}} does not generate
-        observable events. Here, in order to support
-        refinement verification, since
-        we use the event trace refinement~\cite{liang14lics},
+        observable events. 
+        Here, Since we want to support refinement verification 
+        and use the event trace refinement~\cite{liang14lics}, 
+        % Here, in order to support
+        % refinement verification, since
+        % we use the event trace refinement~\cite{liang14lics},
         each step of the program
         generates either an empty message $\tau$,
         or an output $\outEvt{\val}$ produced
@@ -784,11 +787,10 @@ from the \sparc{} program defined in
 % $\cprint$ and acts as an observable behavior.
 Note that the client
 code and the implementations of abstract assembly primitives
-in low-level are both \sparc{} code heap. So, we do not need
+in the low-level are both \sparc{} code heap. So, we do not need
 to define their linking in semantics.
 More details of the low-level program can be found in
-our Coq code 
-and TR~\cite{coqimp}.
+our Coq code and TR~\cite{coqimp}.
 % \ref{sec:more-llang}.
 
 % \input{picture/StateRel}
@@ -828,12 +830,12 @@ cell located $\TaskCur$ saving the current thread id; and shared
 memory $\Mem'$ that is same as the high-level memory.
 The delayed buffer $\DBuf$ is $\nil$, because client
 is not permitted to modify any special register
-through instructions $\cwr{}$. The memory $\Mem_T$ used to
+through the $\cwr{}$ instructions. The memory $\Mem_T$ used to
 save the contexts of the ready threads is {\it abstracted} as a thread pool
 in high-level program. Their relation is represented as
 ``$\rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}$".
 We use ``$\curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}$"
-to represent the state relation of current thread $\thrdid$
+to represent the state relation of the current thread
 in low- and high-level programs.
 % Full definitions of the state relation
 % can be found in Appendix \ref{sec:more-staterel}.
@@ -842,7 +844,7 @@ The correctness of abstract assembly primitives
 is defined in terms of {\it contextual refinement}.
 We give its formal definition in
 \Def{\ref{def:prim-correctness}}.
-And we use {\it event trace refinement}
+And we use the {\it event trace refinement}
 proposed by \etal{Liang} \cite{liang14lics}.
 
 \begin{definition}[Primitive Correctness]
@@ -1415,7 +1417,7 @@ defined in \Fig{\ref{fig:Semantics of Relation Assertion}},
 and a word $\word$ recording the number of the tokens.
 The high-level primitive command $\primcom$ is
 either an abstract assembly primitive $\hprim$
-parameterized with its arguments $\args{\val}$, or a
+parameterized over arguments $\args{\val}$, or a
 $\primdone$ meaning the primitive has already been
 executed. The relational assertion $\relastP$ reserves
 original assertion $\astP$ describing the low-level
@@ -1481,11 +1483,11 @@ current high-level primitive command is $\primcom$.
 %     \sepstar \atrue
 % \]
 And the assertion $\metricAst{\word}$ takes a word $\word$,
-which can also be separated by separation conjunction,
+which can also be separated by separation conjunction ($\sepstar$),
 to state that the number of tokens in current state is
 \textit{no less} than $\word$. In the
 introduction of the inference rules following, we use tokens
-to avoid infinite loops and recursive calls to make sure
+to avoid infinite loops and recursive function calls to make sure
 the termination preserving refinement.
 % The idea is taken from RGSim-T \cite{liang14lics}.
 
@@ -1502,7 +1504,7 @@ from $\state'$.
 % \label{subsec:logic-rule-refinemet}
 \paragraph{Inference Rules in Relational Program Logic}
 The code specification $\RelBspec$ and code heap specification
-$\Cspec$ for refinement verification are defined below :
+$\Cspec$ in relational program logic are defined below :
 \[
     \small
     \!\!\!\!
@@ -1873,7 +1875,7 @@ shown as $\metricAst{1}$, in order to avoid
 infinite loops and recursive function calls,
 because our refinement relation is
 termination-preserving.
-The $\wfFrm(\relastP_r)$, whose definition is omitted here,
+$\wfFrm(\relastP_r)$, whose definition is omitted here,
 means there is no sub-term in
 form of $(\astCurCont{\thrdid}{\hthrdlocalst})$,
 $(\hregsto{\hrn}{\val})$ and $\safePrimAst{\primcom}$
@@ -1951,7 +1953,7 @@ the rules shown in \Fig{\ref{fig:Seleted Inference rules}}.
 % \end{multline*}
 
 \paragraph{\textbf{Well-defined Specification.}}
-The $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
+$\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
 is defined formally in
 \Def{\ref{def:well-defined specification}}.
 It contains three properties that
@@ -2054,13 +2056,13 @@ and we explain them in turn in the following.
 \textbf{First},
 % we should give some restrictions
 % for the execution of abstract assembly primitive.
-the program counters should be equal to
-$\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$
+the program counters should equal
+$\lab{}\!+\!8$ and $\lab{}\!+\!12$ respectively, where $\lab{}$
 is contained in $\reg{15}$ register after the execution
-of abstract assembly primitive.
+of the abstract assembly primitive $\hprim$.
 It ensures that the low-level implementation
 and high-level abstract assembly primitive will return to
-the same code pointers after executions.
+the same code pointers.
 % because
 % the \textbf{RETL} rule also restricts
 % that the low-level program will return to
@@ -2073,7 +2075,7 @@ We also require that
 if an abstract assembly primitive
 can execute safely on a part of program state,
 it can also execute safely on the whole program state,
-and additional program state remains unchanged.
+and the additional program state remains unchanged.
 Here, $\hpstate\perp\hpstate_r$ is defined formally
 below:
 \[
@@ -2194,27 +2196,27 @@ The invariant consists of the state relation between low- and
 high-level program states,
 shown as $\stateRel{\state}{\hpstate}$, 
 {\color{blue} and the safe execution of the primitive 
-command, which means that 
-the primitive command $\primcom$ can execute 
+command $\primcom$, which means that 
+$\primcom$ can execute 
 zero (if $\primcom = \primdone$)
-or one (if $\primcom = \hprim(\args{\val})$) 
-step from the current state, presented as 
+or one step (if $\primcom = \hprim(\args{\val})$) 
+from the current state, presented as 
 $\exists \, \hpstate'. \,
     \primMultiTrans{(\primcom, \hpstate)}
-                    {*}{(\primdone, \hpstate')}$, 
-and we use $\primMultiTrans{}{*}{}$ to denote
+                    {*}{(\primdone, \hpstate')}$. 
+We use $\primMultiTrans{}{*}{}$ to denote
 zero or one step.}
 % and the safe execution of the primitive command
 % ($\primMultiTrans{}{*}{}$ denotes zero or one step).
 Including the safe execution of
-the primitive command is essential
+the primitive command is essential, 
 because we can get some knowledge of high-level program
-state from the safe execution of
+state from the safe execution of the
 primitive command $\primcom$.
 For example, if $\INV{(\primsw(\nil), \nil)}$
 holds, we know that the location $\TaskNew$
 must save a pointer pointing to a ready thread
-in thread pool from the safe execution of primitive $\primsw$.
+in the thread pool from the safe execution of the primitive $\primsw$.
 % and we
 % can write them in the precondition of the specification
 % of the context switch routine.
@@ -2223,7 +2225,7 @@ in thread pool from the safe execution of primitive $\primsw$.
 Then we in turn know that the memory location $\TaskNew$
 in low-level state also saves the same pointer
 from the state relation
-between low- and high-level program.
+between low- and high-level programs.
 \[
     \small
     \begin{array}{l}
@@ -2249,8 +2251,8 @@ between low- and high-level program.
 %     \sepstar \atrue
 % \]
 % }
-We introduce frame $\relastP_r$ for local reasoning,
-and it should be stable under the execution
+We introduce the frame $\relastP_r$ for local reasoning.
+It should be stable under the execution
 of the abstract assembly primitive
 (shown as $\Sta(\hprim(\args{\val}), \relastP_r)$
 defined below).
@@ -2283,7 +2285,7 @@ It says $\asmimp$ can execute safely
 from $\state$, $\pc$ and $\npc$ until reaching
 the end of the current instruction sequence ($\asmimp[\pc]$),
 and $\astQ$ holds if $\asmimp[\pc]$ ends with the return
-instruction $\retl{}$, and for each step of low-level
+instruction $\retl{}$, and for each step of the low-level
 execution, the high-level program will execute zero or
 one step.
 It is formally defined in Def.~\ref{def:siminsseq}.
@@ -2291,8 +2293,8 @@ Here we use ``$\notCare \longmapsto^{n} \notCare$'' to
 represent $n$-step execution.
 The $\word$ in simulation records the number of tokens.
 It will be consumed when meeting \jmp{} and \call{}
-instructions, so as to avoid infinite loop and recursive
-function call and ensure termination preserving,
+instructions, so as to avoid infinite loops and recursive
+function calls and ensure termination preserving,
 and reset when the high-level
 abstract assembly primitive executes.
 
@@ -2468,7 +2470,7 @@ sequences and well-formed code heap below.
     \end{itemize}
 \end{definition}
 
-Next, we define the simulation for function in
+Next, we define the simulation for functions in
 \Def{\ref{def:simfunc}}. It means that if there
 exists a relational state $(\state, \hpstate, \primcom, \word)$
 satisfying the precondition $\relastP$, then we have
@@ -2476,16 +2478,16 @@ the simulation
 $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{} + 4)}
     {i}{0}{(\primcom, \hpstate)}$ defined in
 \Def{\ref{def:sim-imp-prim-state}}.
-The definition of simulation
+The simulation
 $\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}
     {i}{k}{(\primcom, \hpstate)}$ carries an index $i$,
 which is used to ensure the termination preserving,
-and the depth $k$ of function call, which
+and the depth $k$ of function calls, which
 increases by the \call{} instruction
 and decreases by \retl{} (unless $k=0$).
-The simulation relation ensures
-the safe execution of low-level SPARCv8 function
-and the corresponding high-level abstract assembly primitive.
+This simulation relation ensures
+the safe execution of the low-level SPARCv8 function
+and its corresponding high-level abstract assembly primitive.
 
 \begin{definition}[Simulation for Function]
     \label{def:simfunc}
@@ -2602,7 +2604,7 @@ and the corresponding high-level abstract assembly primitive.
     \end{enumerate}
 \end{definition}
 
-Then we give the semantics of well-formed primitive in
+Then we give the semantics for well-formed primitive in
 \Def{\ref{def:wdprim-sem}}.
 \begin{definition}[Well-defined Primitive Set Semantics]
     \em
@@ -2644,21 +2646,23 @@ we can establish a simulation relation
 defined in \Def{\ref{def:simfunc}}
 between its low-level implementation
 in code heap $\asmimp$ and itself.
-Theorem~\ref{thm:logic soundness},
-whose correctness can be derived from Lemmas
-\ref{lemma:Logic Ensures Simulation}
-and \ref{lemma:Simulation Implies Primitive Correctness},
+% Theorem~\ref{thm:logic soundness},
+% whose correctness can be derived from Lemmas
+% \ref{lemma:Logic Ensures Simulation}
+% and \ref{lemma:Simulation Implies Primitive Correctness},
+Theorem~\ref{thm:logic soundness}
 shows the soundness of our logic,
-which means that the extended program logic can
-imply the contextual refinement between implementation
-$\asmimp$ and abstract assembly primitives $\hprimset$.
+which means that the relational program logic can
+imply the contextual refinement between the implementation
+$\asmimp$ and abstract assembly primitive set $\hprimset$. 
+% We give soundness proof below.
 
 \paragraph{\textbf{Soundness Proof.}}
 We show the soundness proof of our logic.
 We first give Lemma~\ref{lemma:function correctness}
 to show that the simulation relation for instruction
-sequence can compose to the simulation relation for
-function.
+sequences can compose to the simulation relation for
+functions.
 \begin{lemma}
     \label{lemma:function correctness}
     If {\em $\semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
@@ -2827,7 +2831,7 @@ function.
             \end{itemize}
             The proof of the first subgoal can be done by
             assumption (\ref{a:wdspec}) directly; the second
-            one can be done according to the definition of
+            one can be done by the definition of
             $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
             (defined in \Def{\ref{def:well-defined specification}}),
             which requires that the abstract assembly primitive should
@@ -2849,7 +2853,7 @@ function.
 
 Then, we give
 Lemma~\ref{lemma:Simulation Implies Primitive Correctness},
-which says that our simulation for function implies
+which says that our simulation for functions implies
 primitive correctness. We introduce a whole program
 simulation defined in \Def{\ref{def:wpsim}} and divide
 the correctness proof of
@@ -2860,7 +2864,7 @@ into two steps.
 % into two steps. We introduce a whole program simulation
 % defined in \Def{\ref{def:wpsim}}.
 \textit{First}, we prove
-that the simulation for function implies
+that the simulation for functions implies
 the whole program simulation in
 Lemma~\ref{lemma:function sim implies whole program sim};
 \textit{Second}, we prove that
@@ -2951,8 +2955,9 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \end{itemize}
 
     The assumption $\progsafe((\code, \hprimset), \hpstate)$
-    makes sure that the client code doesn't include instruction
-    \csave{}, \crestore{} and \cwr{}, because we do not give
+    ensures that the client code does not include
+    \csave{}, \crestore{} and \cwr{} instructions, 
+    because we do not give
     semantics to them in high-level as explained in
     \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 \end{proof}

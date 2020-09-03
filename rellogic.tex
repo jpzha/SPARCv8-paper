@@ -4,7 +4,6 @@
 In this section, we present our \textit{relational}
 program logic for refinement verification of
 SPARCv8 code. %, which is the expansion of our conference paper.
-{\color{blue}
 As an extension of our conference paper,
 it consists of the following work:
 %In order to support such expansion, we do the following:
@@ -15,7 +14,7 @@ it consists of the following work:
         \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}};
     \item We make some modifications to the \sparc{}
         language defined in \Sec{\ref{sec:modeling}} and
-        let it act as the low level language in our refinement
+        let it act as the low-level language in our refinement
         verification. We present our low-level \sparc{}
         language and the modifications in
         \Sec{\ref{subsec:low-level SPARCv8 Program}};
@@ -35,13 +34,12 @@ it consists of the following work:
         in our conference paper which only ensures the
         partial correctness of verified programs,
         are defined as simulation relations
-        between the low-level and high-level programs
+        between the low- and high-level programs
         which guarantees contextual refinement.
         % And the soundness proof needs to
         % be reestablished.
 \end{itemize}
 %Below we show each part of work.
-}
 % Inspired by the {\it relational} program logic for
 % refinement verification, \eg{\cite{liang13pldi,Xu16cav}},
 % we extend our program logic for SPARCv8 to support
@@ -70,7 +68,7 @@ and the set of abstract assembly primitives.
 Here, we require that the execution of client SPARCv8 code
 preserves a restriction between register
 window and stack in memory, shown
-as the left side of
+on the left side of
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}
 (\regcwp{} points to the current window and \regwim{} marks
 the invalid window, the details of overlapping
@@ -117,7 +115,7 @@ preserves such restriction. Otherwise, some SPARCv8
 functions like context switch routine, whose
 executions will store the contexts saved in
 register windows into stack in memory, cannot be
-verified if it's unclear where to save the
+verified if it is unclear where to save the
 contents of some windows.
 % We require the execution of client code
 % preserving this relation so that the relation
@@ -157,7 +155,7 @@ of client code preserve such restriction:
     size $w$ allocated newly for the next window.
     We also introduce ``$\Prestore$"
     as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
-    \footnote{In SPARCv8, $\greg{0}$ is always equal to 0,
+    \footnote{In SPARCv8, $\greg{0}$ is always 0,
     and usually used as parameters when instructions do not
     require specific parameters.},
     whose execution just restores the previous window
@@ -298,7 +296,6 @@ of client code preserve such restriction:
     \vspace{-1em}
     \caption{Syntax of Pseudo-SPARCv8 Code}
     \label{fig:syntax-of-concur-pseudo-sparc}
-    \vspace{-1em}
 \end{figure*}
 \begin{figure*}[!t]
     \centering
@@ -352,14 +349,14 @@ of client code preserve such restriction:
 
 We define the syntax of the high-level Pseudo-SPARCv8 language
 in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}.
-The code $\HMd$ has two parts :
+The code (\TYPE{HCode}) $\HMd$ has two parts:
 the code heap $\code$
-and the set of abstract primitives $\hprimset$,
+and the set of abstract primitives (\TYPE{PrimSet}) $\hprimset$,
 which is a partial mapping from labels to
 abstract assembly primitive. The code heap $\code$ in $\HMd$
 acts as the client to
 call abstract assembly primitives.
-The abstract assembly primitive $\hprim$
+The abstract assembly primitive (\TYPE{Prim}) $\hprim$
 is defined as a relation that takes a list of values
 as arguments and maps a high-level program state
 (defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}})
@@ -371,10 +368,10 @@ to another.
 % Comparing the simple instruction with the one shown in
 % \Fig{\ref{fig:Machine States and Language for SPARC Code}},
 % we add three pseudo instructions.
-We add three pseudo instructions in simple instruction.
+We add three pseudo instructions in simple instruction (\TYPE{SimpIns}).
 The $\Psave \ \word$
 and $\Prestore$ restrict the instruction \csave{}
-and \crestore{} to be used in specific form as
+and \crestore{} to be used in the specific form as
 mentioned before.
 We also introduce $\cprint \ \reg{}$,
 whose execution outputs the value $\val$ in
@@ -383,19 +380,22 @@ generates an message $\outEvt{\val}$
 as an observable event.
 % whose execution will occur an output $\outEvt{\val}$,
 % to generate observable events.
-The high-level message
+The high-level message (\TYPE{HMsg})
 $\hmsg$ can be either an empty message $\empmsg$, or an output
 $\outEvt{\val}$, or a $\callEvt{\lab{}, \args{\val}}$ meaning to
 call a primitive labelled $\lab{}$ with arguments $\args{\val}$.
 
-The machine states of the high-level Pseudo-SPARCv8 program
-is defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}.
+The machine states \TYPE{(HState)}
+of the high-level Pseudo-SPARCv8 program
+are defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}.
 The high-level program $\HProg$ is a pair of high-level code
 $\HMd$ and high-level state $\hpstate$. High-level
-state is a tuple including: a thread pool $\thrdpool$,
+state is a tuple including: 
+a thread pool (\TYPE{ThrdPool}) $\thrdpool$,
 % the identifier of the current thread $\thrdid$,
-current thread id $\thrdid$, the thread local state
-$\hthrdlocalst$ of the current thread, and the memory $\Mem$.
+current thread id (\TYPE{Tid}) $\thrdid$, 
+the thread local state (\TYPE{ThrdLcSt}) $\hthrdlocalst$ 
+of the current thread, and the memory (\TYPE{Mem}) $\Mem$.
 
 \begin{figure*}[!t]
     \centering
@@ -571,15 +571,16 @@ $\hthrdlocalst$ of the current thread, and the memory $\Mem$.
 
 \paragraph{\textbf{Thread Local State.}}
 The thread local state $\hthrdlocalst$
-is a triple of high-level register state $\hRstate$,
+is a triple of high-level register state
+\TYPE{(HRstate)} $\hRstate$,
 and program counters $\pc$ and $\npc$. The high-level
-register state $\hRstate$ consists:
-the high-level register file $\hRfile$,
+register state $\hRstate$ consists of
+the high-level register file (\TYPE{HRegFile}) $\hRfile$,
 % the block of the current stack frame $\block$,
-and the high-level frame list $\hWstk$.
-$\hrn$ is the high-level register names, where
-the $\regcwp$ is omitted as introduced before and
-we also omit special register for simplicity,
+and the high-level frame list (\TYPE{HFrmList}) $\hWstk$.
+$\hrn$ is the high-level register names (\TYPE{HRegName}), 
+where the $\regcwp$ is omitted as introduced before and
+we also omit special registers for simplicity,
 because we forbid
 the high-level client code to modify them
 \footnote{There is no problem to reserve special
@@ -591,7 +592,7 @@ $(\fm_1, \fm_2)$, which is used to save
 the contexts (\localRN{} and \inRN{} registers)
 $\fm_1$ and $\fm_2$ of previous procedures.
 After introducing the state of high-level program,
-We define the primitive $\primsw$ as
+we define the primitive $\primsw$ as
 an instantiation of $\hprim$ below:
 \[
     \small\!\!
@@ -654,9 +655,9 @@ an instantiation of $\hprim$ below:
 %     \end{array}
 %     $$
 % }
-The execution of $\primsw{}$ primitive takes no arguments
+The execution of the $\primsw{}$ primitive takes no arguments
 ($\args{\val} = \nil$), and changes the identifier
-of current thread according to the value
+of the current thread according to the value
 in location $\TaskNew$. We use parameters $\hpstate$
 and $\hpstate'$ to represent the machine states before
 and after execution of $\primsw{}$ respectively.
@@ -669,7 +670,7 @@ $\HGlobTrans{(\HMd, \hpstate)}{\hmsg}{(\HMd, \hpstate')}$ is defined
 in \Fig{\ref{fig:selected-opsem-high-level-prog}} (a). In each step,
 the program may either execute the instruction pointed by $\pc$
 and generate empty message $\empmsg$ or an output $\outEvt{\val}$,
-or call  an abtract assembly primitive in the primitive set.
+or call  an abstract assembly primitive in the primitive set.
 When calling an abstract assembly primitive,
 the execution of current thread (defined as
 $(\hlocalstep{\notCare}{\notCare}{\ \notCare \ }{\notCare})$ in
@@ -735,7 +736,7 @@ as the following form:
     {
         \LGlobTrans{(\code, (\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
             { \empmsg / \outEvt{\val} }
-            {(\code, (\Mem, (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
+            {(\code, (\Mem', (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
     }
     {
         \begin{array}{l}
@@ -747,7 +748,6 @@ as the following form:
         \end{array}
     }
 \]
-{\color{blue}
 The low-level \sparc{} program is slightly different
 from the \sparc{} program defined in
 \Sec{\ref{sec:modeling}}:
@@ -755,7 +755,7 @@ from the \sparc{} program defined in
     \item The low-level \sparc{} program uses the
         instructions defined in
         \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}.
-        This means that we need to give semantics to the %additional
+        It means that we need to give semantics to the %additional
         pseudo instructions $\Psave$, $\Prestore$ and
         $\cprint$ in the low-level \sparc{} program.
         Since the $\Psave$ and $\Prestore$
@@ -778,14 +778,14 @@ from the \sparc{} program defined in
         or an output $\outEvt{\val}$ produced
         by $\cprint$.
 \end{enumerate}
-}
+
 % Each step of the program produces either an empty message $\empmsg$, or
 % an output $\outEvt{\val}$ that is produced by the instruction
 % $\cprint$ and acts as an observable behavior.
-{\color{blue} Note that the client
+Note that the client
 code and the implementations of abstract assembly primitives
 in low-level are both \sparc{} code heap. So, we do not need
-to define their linking in semantics.}
+to define their linking in semantics.
 More details of the low-level program can be found in
 our Coq code 
 and TR~\cite{coqimp}.
@@ -797,7 +797,8 @@ and TR~\cite{coqimp}.
 
 We first establish a state relation
 between low- and high-level program states.
-We define this relation below, shown as
+We define this relation below 
+($\uplus$ means disjoint union), shown as
 ``$\stateRel{\state}{\hpstate}$".
 \[
     \small
@@ -845,17 +846,15 @@ And we use {\it event trace refinement}
 proposed by \etal{Liang} \cite{liang14lics}.
 
 \begin{definition}[Primitive Correctness]
-    \em
     \label{def:prim-correctness}
-    $\asmimp \ctxrefine \hprimset$ iff  \\
-    for any $\code, \, \state, \, \hpstate, \, \pc$ and $\npc$, if
-    $\stateRel{\state}{\hpstate}$, and $\progsafe(\HProg)$,
-    then $\prog \refine \HProg$ holds.
-    % \\
-    % \\[-9pt]
-    (where $\prog = (\code \uplus \asmimp, \state, \pc, \npc), \,
-        \HProg = ((\code, \hprimset), \hpstate)$, and
-        $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$).
+    {\em $\asmimp \ctxrefine \hprimset$} iff  \\
+    for any {\em $\code$}, {\em $\state$}, {\em $\hpstate$}, 
+    {\em $\pc$} and {\em $\npc$}, if
+    {\em $\stateRel{\state}{\hpstate}$}, and {\em $\progsafe(\HProg)$},
+    then {\em $\prog \refine \HProg$} holds.
+    (where {\em $\prog = (\code \uplus \asmimp, \state, \pc, \npc)$}, \,
+        {\em $\HProg = ((\code, \hprimset), \hpstate)$}, and
+        {\em $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$}).
 \end{definition}
 
 We use a code heap $\asmimp$
@@ -886,7 +885,6 @@ is defined formally below:
     (\exists \, \HProg''. \,
         \HGlobTrans{\HProg'}{}{\HProg''})
 \]
-{\color{blue}
 The client code $\code$ is \sparc{} code, so
 the high-level code is a pair of $\code$ and $\hprimset$,
 % And their linking is defined in
@@ -901,7 +899,6 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
     \code \cup \asmimp \quad
     \cif \ \dom(\code)\cap\dom(\asmimp) = \emptyset
 \]
-}
 
 % \subsection{State Relation between Low- and High-level Program}
 % \label{subsec:state-rel}
@@ -1198,7 +1195,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
             \relastP \sepstar \relastQ \sepline \dots
         \end{array}
     \]
-    \vspace*{-0.8em}
+    \vspace*{-1em}
     \figurecaption{Syntax of Relational Assertion}
     \label{fig:Syntax of Relational Assertion}
 \end{center}
@@ -1236,13 +1233,13 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
             \hpstate.\Mem = \emptyset \, \land \,
             \hpstate.\thrdpool = \emptyset \, \land \,
             \asrtmodel{\state}{\aemp} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}{\astP}
             & \, \define \, &
             \asrtmodel{\state}{\astP} \, \land \,
             \hpstate.\Mem = \emptyset \, \land \,
             \hpstate.\thrdpool = \emptyset  \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\hregsto{\hrn}{\val}} & \define &
                 \hpstate.\hthrdlocalst.\hRstate.\hRfile(\hrn)
@@ -1253,7 +1250,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
                 %     {\astCurCont{\thrdid}{\hthrdlocalst}} \, \land \,
                 % \hthrdlocalst.\hRstate.\hRfile(\hrn) = \val
             \\
-            \\[-8pt]
+            \\[-9pt]
             % \asrtmodel{(\state, \hpstate, \primcom, \word)}
             %     {\hregsto{\hrn}{\val}} & \define & \\
             % &
@@ -1267,7 +1264,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
                 \, \land \,
                 \hpstate.\thrdpool = \emptyset \, \land \,
                 \asrtmodel{\state}{\aemp} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\astCurCont{\thrdid}{\hthrdlocalst}}
                 & \define &
@@ -1287,14 +1284,14 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
                 % \,\land\, \thrdpool\backslash\{\tid\} = \emptyset
                 \,\land\, \asrtmodel{\state}{\aemp}
                 \\
-                \\[-8pt]
+                \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\astRdyCont{\thrdid}{\hthrdlocalst}} & \define &
                 \hpstate.\thrdpool =\{ \thrdid \rightsquigarrow \hthrdlocalst \}
                 \, \land \, \hpstate.\Mem = \emptyset \, \land \,
                 \tid \neq \hpstate.\tid\,\land\,
                 \asrtmodel{\state}{\aemp} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\safePrimAst{\primcom'}} & \define &
                 \primcom = \primcom' \, \land \,
@@ -1305,12 +1302,12 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
                 %         {(\primdone, \hpstate')}
                 % ) \, \land \,
                 \asrtmodel{(\state, \hpstate, \primcom, \word)}{\empAst} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\metricAst{\word'}}
             & \define & \word' \leq \word \, \land \,
             \asrtmodel{(\state, \hpstate, \primcom, \word)}{\empAst} \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}{\nxtAst{\relastP}}
             & \define &
             % \exists \, \state_1, \state_2. \,
@@ -1331,7 +1328,7 @@ $\code$ and $\asmimp$ are \sparc{} code heap:
             %     % \, \state = \state_1 \uplus \state_2
             % }
             \\
-            \\[-8pt]
+            \\[-9pt]
             \asrtmodel{(\state, \hpstate, \primcom, \word)}
                 {\relastP \sepstar \relastQ} & \define &
                 \exists \, \state_1, \state_2, \hpstate_1, \hpstate_2,
@@ -1447,7 +1444,7 @@ defined in \Fig{\ref{fig:Semantics of Assertions}}.
 The assertion $\astCurCont{\thrdid}{\hthrdlocalst}$
 and $\astRdyCont{\thrdid}{\hthrdlocalst}$ represent
 the thread local state of current and ready
-thread respectively. Note the threads in thread pool
+thread respectively. Note that the threads in thread pool
 are viewed as resources and can be separated by
 separation conjunction.
 
@@ -1492,8 +1489,7 @@ to avoid infinite loops and recursive calls to make sure
 the termination preserving refinement.
 % The idea is taken from RGSim-T \cite{liang14lics}.
 
-{\color{blue}
-We use $\nxtAst{\relastP}$ to describe the
+The assertion $\nxtAst{\relastP}$ describes the
 state after executing one step of the delayed writes.
 Suppose a relational state
 $(\state', \hpstate, \primcom, \word)$ satisfies the
@@ -1501,7 +1497,6 @@ assertion $\relastP$, where $\state' = (\mem, (\RFile', \Wstack), \DBuf')$,
 then $\nxtAst{\relastP}$ holds after executing a step
 of delayed writes ($\Dstep{(\RFile', \Wstack')}{(\RFile, \Wstack)}$)
 from $\state'$.
-}
 
 % \subsection{Inference Rules for Refinement Verification}
 % \label{subsec:logic-rule-refinemet}
@@ -1957,7 +1952,7 @@ the rules shown in \Fig{\ref{fig:Seleted Inference rules}}.
 
 \paragraph{\textbf{Well-defined Specification.}}
 The $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
-defined  formally in
+is defined formally in
 \Def{\ref{def:well-defined specification}}.
 It contains three properties that
 the specifications need to satisfy,
@@ -1966,74 +1961,49 @@ and we explain them in turn in the following.
 \begin{definition}[Well-defined Specification]
     \label{def:well-defined specification}
     \mbox{} \\
-    \em
-    $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$ holds, iff
+    {\em $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$} holds, iff
     \small
     \begin{enumerate}[1.]
-        \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$.
-            if $\hprim(\args{\val})(\hpstate)(\hpstate')$, and
-            $\hpstate \perp \hpstate_r$,
-            then the following holds :
+        \item for any {\em $\args{\val}$}, 
+            {\em $\hpstate$}, {\em $\hpstate'$}, {\em $\hpstate_r$}.
+            if {\em $\hprim(\args{\val})(\hpstate)(\hpstate')$}, and
+            {\em $\hpstate \perp \hpstate_r$},
+            then the following holds
+            (where {\em $\lab{} = \hpstate'.\hthrdlocalst.\hRstate.\hRfile
+                        (\reg{15})$}):
             \begin{itemize}
-                \item $\hpstate'.\hthrdlocalst.\pc = \lab{}\!+\!8$,
-                    $\hpstate'.\hthrdlocalst.\npc = \lab{}\!+\!12$ \\
-                    (where $\hpstate'.\hthrdlocalst.\hRstate.\hRfile
-                        (\reg{15}) = \lab{}$);
-                \item there exists $\hpstate'', \hpstate_r'$,
+                \item {\em $\hpstate'.\hthrdlocalst.\pc = \lab{}\!+\!8$},
+                    {\em $\hpstate'.\hthrdlocalst.\npc = \lab{}\!+\!12$};
+                \item there exists $\hpstate''$, $\hpstate_r'$,
                     $\hprim(\args{\val})(\hpstate \uplus \hpstate_r)
                         (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$,
                     and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$,
                     $\hpstate_r.\Mem = \hpstate_r'.\Mem$;
             \end{itemize}
-         \item for any $\lgvl$, there exists $\args{\val}$,
-         	$\relspecpre \ \lgvl \Longrightarrow
-         	 	\safePrimAst{\hprim(\args{\val})} \sepstar \atrue$,
-         	and $\relspecpost \ \lgvl \Longrightarrow
-         		\safePrimAst{\primdone} \sepstar \atrue$;
-%        \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$.
-%            if $\hprim(\args{\val})(\hpstate)(\hpstate')$ and
-%            $\hpstate \perp \hpstate_r$, then
-%            $\hprim(\args{\val})(\hpstate \uplus \hpstate_r)
-%                (\hpstate' \uplus \hpstate_r)$;
+         \item for any $\lgvl$, there exists $\args{\val}$, such that \\
+         	{\em $\relspecpre \ \lgvl \Rightarrow
+         	 	\safePrimAst{\hprim(\args{\val})} \sepstar \atrue$},
+         	and {\em $\relspecpost \ \lgvl \Rightarrow
+         		\safePrimAst{\primdone} \sepstar \atrue$};
         \item
             for any $\args{\val}, \state, \hpstate$,
-            if $(\state, \hpstate, \notCare, \notCare) \in
-            \INV{(\hprim(\args{\val}), \args{\val})}$,
+            if {\em $(\state, \hpstate, \notCare, \notCare) \in
+            \INV{(\hprim(\args{\val}), \args{\val})}$},
             there exists $\lgvl, \relastP_r$ and $\word$,
             such that \\
-            $
+            {\em $
                 \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
                      {(\relspecpre \ \lgvl \sepstar \relastP_r)}, \,
                 (\relspecpost \ \lgvl \sepstar \relastP_r)
-                    \Longrightarrow
+                    \Rightarrow
                     \INV{(\primdone, \notCare)}
-            $,
-            % \\
-            % \hspace*{0.8em}
-            % $
-            %     \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-            %         {\relspecpre \ \lgvl \sepstar \relastP_r}
-            % $,
-            % if $(\state, \hpstate, \hprim(\args{\val}), \word) \in
-            %     \INV{(\hprim(\args{\val}), \args{\val})}$, then: \\
-            % \hspace*{0.8em}
-            % $
-            %     \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-            %         {\relspecpre \ \lgvl \sepstar \relastP_r}
-            %     % \INV{(\hprim(\args{\val}), \word, \args{\val})}
-            %     % \Longrightarrow
-            %     % \relspecpre \ \lgvl \sepstar \relastP_r
-            % $,
-            % $
-            %     \relspecpost \ \lgvl \sepstar \relastP_r
-            %     \Longrightarrow
-            %     \INV{(\primdone, \notCare)}
-            % $,
+            $},
             and
+            {\em
             $
                 % \wfFrm(\relastP_r)
             	\Sta(\hprim(\args{\val}), \relastP_r)
-            $ hold.
+            $} hold.
             % and one
             % of the following holds :
             % \begin{enumerate}
@@ -2089,7 +2059,7 @@ $\lab{}\!+\!8$ and $\lab{}\!+\!12$, where $\lab{}$
 is contained in $\reg{15}$ register after the execution
 of abstract assembly primitive.
 It ensures that the low-level implementation
-and high-level abstract assembly primtive will return to
+and high-level abstract assembly primitive will return to
 the same code pointers after executions.
 % because
 % the \textbf{RETL} rule also restricts
@@ -2141,8 +2111,8 @@ below:
 %satisfies a simple {\it Frame Property}: if the primitive can
 %execute on a subset of a high-level state safely, then it can
 %also execute safely on the full high-level state.
-\textbf{Second}, the abtract assembly primitive should be
-specified in the precondition, and it's execution
+\textbf{Second}, the abstract assembly primitive should be
+specified in the precondition, and its execution
 should be done in the final state.
 \textbf{Third}, there is an {\it invariant}
 between low- and high-level programs, holding at the entry of
@@ -2152,7 +2122,8 @@ can be reestablished at the exit of function.
 % (\Fig{\ref{fig:Logic Ensures State Relation Reestablished}} gives a
 % more straightforward way to understand this restriction, and
 % we use the purple dashed line to represent this invariant).
-We define \INV{} to represent such invariant below formally:
+Such invariant is defined as \INV{} formally below: 
+% We define \INV{} to represent such invariant below formally:
 % our logic needs to make sure that
 % the state relation defined in
 % \Def{\ref{fig:State Relation between Low- and High-level Program State}},
@@ -2221,9 +2192,20 @@ We define \INV{} to represent such invariant below formally:
 \]
 The invariant consists of the state relation between low- and
 high-level program states,
-shown as $\stateRel{\state}{\hpstate}$,
-and the safe execution of the primitive command
-($\primMultiTrans{}{*}{}$ denotes zero or one step).
+shown as $\stateRel{\state}{\hpstate}$, 
+{\color{blue} and the safe execution of the primitive 
+command, which means that 
+the primitive command $\primcom$ can execute 
+zero (if $\primcom = \primdone$)
+or one (if $\primcom = \hprim(\args{\val})$) 
+step from the current state, presented as 
+$\exists \, \hpstate'. \,
+    \primMultiTrans{(\primcom, \hpstate)}
+                    {*}{(\primdone, \hpstate')}$, 
+and we use $\primMultiTrans{}{*}{}$ to denote
+zero or one step.}
+% and the safe execution of the primitive command
+% ($\primMultiTrans{}{*}{}$ denotes zero or one step).
 Including the safe execution of
 the primitive command is essential
 because we can get some knowledge of high-level program
@@ -2289,58 +2271,9 @@ defined below).
         \hpstate'\perp\hpstate_r' \land
         \asrtmodel{(\state_r, \hpstate_r', \primdone, \word)}
             {\relastP_r}
-        % \Sta(\hprim(\args{\val}), \relastP_r)
-        % \define
-        % \forall \, \state, \hpstate, \hpstate', \word. \\
-        % \qquad
-        % ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-        %     {\relastP_r\sepstar\atrue})
-        % \land
-        % \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
-        % \qquad
-        % \asrtmodel{(\state, \hpstate', \primdone, \word)}
-        % {\relastP_r\sepstar\atrue}
     \end{array}
 \]
 
-% {\small
-% \begin{multline*}
-%     \Sta(\hprim(\args{\val}), \relastP_r)
-%     \define
-%     \forall \, \state, \hpstate, \hpstate', \word. \\
-%     ((\asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
-%         {\relastP_r\sepstar\atrue})
-%     \land
-%     \hprim(\args{\val})(\hpstate)(\hpstate'))\imp \\
-%     \asrtmodel{(\state, \hpstate', \primdone, \word)}
-%         {\relastP_r\sepstar\atrue}
-% \end{multline*}
-% }
-% We show that our extended program logic is sufficient
-% to prove the contextual refinement between
-% a context switch routine written in SPARCv8
-% and $\primsw$ primitive
-% in Appendix~\ref{appendix:ctxswitchproof}.
-% {\small
-% \begin{multline*}
-% 	\forall \, \hpstate_c, \, \hpstate_c', \, \hpstate_r,
-% 	\word, \, \state, \, \relastP_r.  \\
-% 	\primTrans{(\hprim(\args{\val}), \hpstate_c)}
-% 		{(\primdone, \hpstate_c')} \, \land \,
-% 	\hpstate_c \perp \hpstate_r \, \land \,
-% 	\asrtmodel{(\state, \hpstate_r, \hprim(\args{\val}), \word)}
-% 		{\relastP_r} \Longrightarrow \qquad  \qquad \\
-% 	\exists \, \hpstate_r'. \,
-% 	\primTrans{(\hprim(\args{\val}), \hpstate_c \uplus \hpstate_r)}
-% 		{(\primdone, \hpstate_c' \uplus \hpstate_r')} \, \land \,
-% 		\hpstate_c' \perp \hpstate_r' \, \land \,
-% 		\asrtmodel{(\state, \hpstate_r', \primdone, \word)}
-% 			{\relastP_r}
-% \end{multline*}
-% }
-% \vspace*{-1em}
-% \subsection{Logic Ensuring Contextual Refinement}
-% \label{subsec:logic-ensuring-ctxrefinement}
 \subsection{Semantics and Soundness}
 \label{subsec:semantics and soundness}
 
@@ -2356,15 +2289,6 @@ one step.
 It is formally defined in Def.~\ref{def:siminsseq}.
 Here we use ``$\notCare \longmapsto^{n} \notCare$'' to
 represent $n$-step execution.
-% The defintion can ensure
-% the {\it progress} and {\it preservations} of the execution
-% of the instruction sequence. {\it Progress} property means
-% the program can execute a step, when meeting simple instructions,
-% or two steps, when meeting the delayed control transfer instructions,
-% \eg{\call{} and \jmp{}}.
-% {\it Preservations} property means that if the program can execute
-% one or two steps, the remaining part of instruction sequence
-% and high-level primitive can still execute safely.
 The $\word$ in simulation records the number of tokens.
 It will be consumed when meeting \jmp{} and \call{}
 instructions, so as to avoid infinite loop and recursive
@@ -2374,59 +2298,59 @@ abstract assembly primitive executes.
 
 \begin{definition}[Simulation for Instruction Sequence]
     \label{def:siminsseq}
-    \em
     \mbox{} \\
-    $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state, \pc, \npc)}
-        {\word}{(\primcom, \hpstate)}$ holds if and only if
+    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state, \pc, \npc)}
+        {\word}{(\primcom, \hpstate)}$} holds if and only if
     the following are true
     (we omit the case
-    for $\be$ here, which is similar to $\jmp$):
+    for {\em $\be$} here, which is similar to {\em $\jmp$}):
 
     \small
     \begin{enumerate}[1.]
-		\item if $\asmimp(\pc) = \simplins$ then:
+		\item if {\em $\asmimp(\pc) = \simplins$} then:
 		\begin{itemize}
 			\item
-			there exist $\state', \pc', \npc'$, such that \\
-			$\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
+			there exist {\em $\state', \pc', \npc'$}, such that \\
+			{\em $\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
 			
 			\item
-			for any $\state', \pc', \npc'$, \\ if
-            $\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$, then
-            there exists $\primcom', \hpstate'$ and $\word'$, such that:
+			for any {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$}, \\ if
+            {\em $\lptrans{\asmimp}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$}, then
+            there exists {\em $\primcom', \hpstate'$} and {\em $\word'$}, such that:
             \begin{enumerate}[(1)]
-                \item either $\primcom' = \primcom$,
-                    $\hpstate' = \hpstate$ and $\word' = \word$;
+                \item either {\em $\primcom' = \primcom$},
+                    {\em $\hpstate' = \hpstate$} and {\em $\word' = \word$}; \\
                     or
-                    $\primTrans{(\primcom, \hpstate)}
-                        {(\primcom', \hpstate')}$,
+                    {\em $\primTrans{(\primcom, \hpstate)}
+                        {(\primcom', \hpstate')}$},
                 % \item $\primTransMulti{(\primcom, \hpstate)}
                 %             {*}{(\primcom', \hpstate')}$,
-                \item $\simInsSeq{\relastQ}{\Cspec}
+                \item {\em $\simInsSeq{\relastQ}{\Cspec}
                     {(\asmimp, \state', \pc', \npc')}{\word'}
-                    {(\primcom', \hpstate')}$.
+                    {(\primcom', \hpstate')}$}.
             \end{enumerate}
         \end{itemize}
 
-        \item if $\asmimp(\pc) = \jmp \; \aexp$ then:
+        \item if {\em $\asmimp(\pc) = \jmp \; \aexp$} then:
             \begin{itemize}
-                \item there exist $\state', \pc', \npc'$, such that
+                \item there exist {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$}, such that
                 \\
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
-                    {(\state', \pc', \npc')}$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
+                    {(\state', \pc', \npc')}$},
 
-                \item for any $\state', \pc', \npc'$, \\ if
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
-                then there exists $\relspecpre, \relspecpost, \lgvl,
-                \primcom', \hpstate'$, $\word'$,
-                $\word'' < \word'$ and $\relastP_r$
+                \item for any $\state'$, {\em $\pc'$}, {\em $\npc'$}, \\ if
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
+                then there exists 
+                $\relspecpre$, $\relspecpost$, $\lgvl$,
+                $\primcom'$, $\hpstate'$, $\word'$,
+                $\word'' < \word'$ and {\em $\relastP_r$}
                 such that the following hold:
                 \begin{enumerate}[(1)]
                     \item %$\pc' \in \dom(\Psi)$, \;
-                        $\npc' = \pc' \!+\! 4$,
-                        $\Cspec (\pc') = (\relspecpre, \relspecpost)$,
+                        {\em $\npc' = \pc' \!+\! 4$},
+                        {\em $\Cspec (\pc') = (\relspecpre, \relspecpost)$},
                     \item either $\primcom' = \primcom$,
-                    $\hpstate' = \hpstate$ and $\word' = \word$;
+                    $\hpstate' = \hpstate$ and $\word' = \word$; \\
                     or
                     $\primTrans{(\primcom, \hpstate)}
                         {(\primcom', \hpstate')}$,
@@ -2434,36 +2358,36 @@ abstract assembly primitive executes.
                     %         {*}{(\primcom', \hpstate')}$,
                     \item
                         % $\exists \word'' < \word'$,
-                        $\asrtmodel{(\state', \hpstate', \primcom', \word'')}
-                        {(\specpre \; \lgvl) \sepstar \relastP_r},
-                        (\relspecpost \; \lgvl) \sepstar \relastP_r
-                        \Rightarrow \relastQ$, $\wfFrm(\relastP_r)$.
+                        {\em $\asrtmodel{(\state', \hpstate', \primcom', \word'')}
+                        {(\relspecpre \; \lgvl) \sepstar \relastP_r}$},
+                        $(\relspecpost \; \lgvl) \sepstar \relastP_r
+                        \Rightarrow \relastQ$, {\em $\wfFrm(\relastP_r)$}.
                 \end{enumerate}
             \end{itemize}
 
-            \item if $\asmimp(\pc) = \be \; \lab{}$ then $\dots$
+            \item if {\em $\asmimp(\pc) = \be \; \lab{}$} then $\dots$
 		
-            \item if $\asmimp (\pc) = \call \; \lab{}$ then:
+            \item if {\em $\asmimp (\pc) = \call \; \lab{}$} then:
             \begin{itemize}
-                \item there exist $\state', \pc', \npc'$, such that
+                \item there exist {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$}, such that
                 \\
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
-                    {(\state', \pc', \npc')}$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
+                    {(\state', \pc', \npc')}$},
 
-                \item for any $\state', \pc'$ and $\npc'$, \\
+                \item for any {\em $\state'$}, {\em $\pc'$} and {\em $\npc'$}, \\
                 if
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
                 then there exist $\relspecpre, \relspecpost, \lgvl,
                 \primcom', \hpstate', \word', \word'' < \word'$
                 and $\relastP_r$, such that the following hold:
                 \begin{enumerate}[(1)]
-                    \item $\npc' = \pc'\!+\!4$,
-                        $\Cspec(\pc') = (\relspecpre, \relspecpost)$,
+                    \item {\em $\npc' = \pc'\!+\!4$},
+                        {\em $\Cspec(\pc') = (\relspecpre, \relspecpost)$},
                     %\item $\pc' = \lab{}, \npc' = \lab{}+4$,
 
                     % \item $\lab{} \in \dom(\Psi), \, \Psi(\lab{}) = (\specpre, \specpost)$,
                     \item either $\primcom' = \primcom$,
-                    $\hpstate' = \hpstate$ and $\word' = \word$;
+                    $\hpstate' = \hpstate$ and $\word' = \word$; \\
                     or
                     $\primTrans{(\primcom, \hpstate)}
                         {(\primcom', \hpstate')}$,
@@ -2474,80 +2398,72 @@ abstract assembly primitive executes.
                         % $\exists \word'' < \word'. \,$
                         $\asrtmodel{(\state', \hpstate', \primcom', \word'')}
                             {(\relspecpre \; \lgvl) * \relastP_r}$,
-                        $\wfFrm(\relastP_r)$,
+                        {\em $\wfFrm(\relastP_r)$},
 
                     \item
-                    for any $\state', \hpstate', \primcom', \word'$, \\
-                    if $\asrtmodel{(\state', \hpstate', \primcom', \word')}
+                    for any $\state_0$, $\hpstate_0$, $\primcom_0$, $\word_0$, \\
+                    if $\asrtmodel{(\state_0, \hpstate_0, \primcom_0, \word_0)}
                         {(\relspecpost \; \lgvl) * \relastP_r}$,
                     then \\
-                    $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state', \pc\!+\!8, \npc\!+\!12)}
-                        {\word'}{(\primcom', \hpstate')}$,
+                    {\em $\simInsSeq{\relastQ}{\Cspec}{(\asmimp, \state_0, \pc\!+\!8, \pc\!+\!12)}
+                        {\word_0}{(\primcom_0, \hpstate_0)}$},
 
                     \item
-                    $(\relspecpost \; \lgvl)
-                    \Rightarrow (\reg{15} = \pc)$.
+                    {\em $(\relspecpost \; \lgvl)
+                    \Rightarrow (\reg{15} = \pc)$}.
                 \end{enumerate}
             \end{itemize}
 
-        \item if $\asmimp(\pc) = \retl$ then :
+        \item if {\em $\asmimp(\pc) = \retl$} then :
             \begin{itemize}
-                \item there exist $\state', \pc', \npc'$, such that
+                \item there exist $\state'$, {\em $\pc'$}, {\em $\npc'$}, such that
                 \\
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
-                    {(\state', \pc', \npc')}$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}
+                    {(\state', \pc', \npc')}$},
 
-                \item for any $\state', \pc'$ and $\npc'$, \\
+                \item for any {\em $\state'$}, {\em $\pc'$} 
+                and {\em $\npc'$}, \\
                 if
-                $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$,
-                then there exists $\primcom', \hpstate'$, and $\word'$,
+                {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
+                then there exists {\em $\primcom'$}, {\em $\hpstate'$}, and {\em $\word'$},
                 such that:
                 \begin{enumerate}[(1)]
                     \item either $\primcom' = \primcom$,
-                    $\hpstate' = \hpstate$ and $\word' = \word$;
+                    $\hpstate' = \hpstate$ and $\word' = \word$; \\
                     or
                     $\primTrans{(\primcom, \hpstate)}
                         {(\primcom', \hpstate')}$,
                     \item $\asrtmodel{(\state', \hpstate', \primcom', \word')}
                         {\relastQ}$,
-                        $\pc' = \state'.\Rstate.\RFile(\reg{15}) \!+\! 8$,
+                        {\em $\pc' = \state'.\Rstate.\RFile(\reg{15}) \!+\! 8$},
                         and
-                        $\npc' = \state'.\Rstate.\RFile(\reg{15}) \!+\! 12$.
+                        {\em $\npc' = \state'.\Rstate.\RFile(\reg{15}) \!+\! 12$}.
                 \end{enumerate}
             \end{itemize}
     \end{enumerate}
 \end{definition}
 
+% Based on the simulation for instruction sequence, 
 Then we define the semantics for well-formed instruction
-sequences and well-formed code heap.
-% The semantics of well-formed instruction sequences tells us that
-% for any $\asmimp$, if the instruction sequence starting from label
-% $\lab{}$ is $\cblk$, then the instruction sequence $\cblk$ can
-% execute safely if the relational state satisfies the precondition
-% $\relastP$. And the semantics of well-formed code heap says that
-% all the instruction sequences in code heap $\asmimp$
-% are well-formed.
+sequences and well-formed code heap below.
 
 \begin{definition}[Judgment Semantics]
-	\em
 	\label{def:soundness of instruction sequence}
     \mbox{}
     \begin{itemize}
-    \item $\semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$ if and only if, for all
-    $\asmimp$, $\state$, $\hpstate$, $\primcom$ and $\word$
-    such that $\asmimp[\lab{}] = \cblk$
+    \item {\em $\semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$} if and only if, for all
+    {\em $\asmimp$}, $\state$, $\hpstate$, $\primcom$ and $\word$
+    such that {\em $\asmimp[\lab{}] = \cblk$}
     and $(\state, \hpstate, \primcom, \word) \models \relastP$, we have
-    % $\safetins(\code, \state, \lab{}, \lab{}\!+\!4, \astQ, \Psi)$.
-    $\simInsSeq{\relastQ}{\Cspec}
-        {(\asmimp, \state, \lab{}, \lab{}\!+\!4)}{\word}{(\primcom, \hpstate)}$.
+    {\em $\simInsSeq{\relastQ}{\Cspec}
+        {(\asmimp, \state, \lab{}, \lab{}\!+\!4)}{\word}{(\primcom, \hpstate)}$}.
     %
     %
     \item
     $\models \asmimp \!:\! \Cspec$ if and only if, for all
-    $\lab{}$, $\relspecpre$ and $\relspecpost$ %$\lgvl$ and $\state$
-    such that $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$,
-    %and $\state \models (\specpre \; \lgvl)$,
-    we have $\semwfseqrel{\Cspec}{\relspecpre \; \lgvl}{\relspecpost \; \lgvl}{\asmimp[\lab{}]}$
+    {\em $\lab{}$}, $\relspecpre$ and $\relspecpost$ %$\lgvl$ and $\state$
+    such that {\em $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$},
+    we have {\em $\semwfseqrel{\Cspec}{\relspecpre \; \lgvl}{\relspecpost \; \lgvl}{\asmimp[\lab{}]}$}
     for all $\lgvl$.
     \end{itemize}
 \end{definition}
@@ -2572,9 +2488,9 @@ the safe execution of low-level SPARCv8 function
 and the corresponding high-level abstract assembly primitive.
 
 \begin{definition}[Simulation for Function]
-    \em
     \label{def:simfunc}
     \small
+    \em
     \[
         \begin{array}{l}
             \simFunction{(\asmimp, \lab{})}
@@ -2588,102 +2504,99 @@ and the corresponding high-level abstract assembly primitive.
             \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
                 {i}{0}{(\primcom, \hpstate)} \\
             \\[-9pt]
-            \hspace*{1em}
+            \hspace*{0.8em}
             \text{where }
             \simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}
                 {i}{k}{(\primcom, \hpstate)}
-            \TYPE{ is defined in
-            \Def{\ref{def:sim-imp-prim-state}}}.
+            \text{ is defined in \Def{\ref{def:sim-imp-prim-state}}}.
         \end{array}
     \]
 \end{definition}
 
 \begin{definition}
-    \em
     \label{def:sim-imp-prim-state}
-    $\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}{i}{k}{(\primcom, \hpstate)}$
+    {\em $\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}{i}{k}{(\primcom, \hpstate)}$}
     holds if and only if the following are true:
     \small
     \begin{enumerate}[1.]
-        \item if $\asmimp(\pc) = \simplins$, then:
+        \item if {\em $\asmimp(\pc) \in \{ \simplins, \jmp{} \ \aexp, \be \ \lab{} \}$}, then:
             \begin{itemize}
-                \item there exists $\state', \pc', \npc'$,
+                \item there exists {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$},
                     such that \\
-                    $\LGlobTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
-                        {(\asmimp, \state', \pc', \npc')}$;
-                \item for any $\state', \pc', \npc'$, \\
+                    {\em $\LGlobTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
+                            {(\asmimp, \state', \pc', \npc')}$};
+                \item for any $\state'$, {\em $\pc'$}, {\em $\npc'$}, \\
                     if
-                    $\LGlobTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
-                        {(\asmimp, \state', \pc', \npc')}$, \\ then one of
+                    {\em $\LGlobTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
+                            {(\asmimp, \state', \pc', \npc')}$}, \\ then one of
                         the following holds:
                     \begin{enumerate}
-                        \item $\exists \, j < i. \
+                        \item {\em $\exists \, j < i. \
                             \simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                                {j}{k}{(\primcom, \hpstate)}$;
+                                {j}{k}{(\primcom, \hpstate)}$};
                         \item there exists $\hpstate', \, j \in \Index$,
                             such that \\
                             $\primTrans{(\primcom, \hpstate)}{(\primdone, \hpstate')}$
                             and \\
-                            $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                                {j}{k}{(\primdone, \hpstate')}$ holds;
+                            {\em $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
+                                    {j}{k}{(\primdone, \hpstate')}$} holds;
                     \end{enumerate}
             \end{itemize}
             \vspace{0.5em}
 
-        \item if $\asmimp(\pc) = \call \ \lab{}$, then:
+        \item if {\em $\asmimp(\pc) = \call \ \lab{}$}, then:
             \begin{itemize}
-                \item there exists $\state', \, \pc', \, \npc'$,
+                \item there exists {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$},
                  such that \\
-                    $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
-                        {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$;
-                \item for any $\state', \pc', \npc'$, \\ if
-                $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
-                    {2}{(\asmimp, \state', \pc', \npc')}$, \\
+                    {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
+                            {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$};
+                \item for any {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$}, \\ if
+                {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
+                        {2}{(\asmimp, \state', \pc', \npc')}$}, \\
                     then one of the following holds:
                 \begin{enumerate}
-                    \item $\exists \, j < i. \
+                    \item {\em $\exists \, j < i. \
                         \simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                            {j}{k+1}{(\primcom, \hpstate)}$;
+                            {j}{k+1}{(\primcom, \hpstate)}$};
                     \item there exists $\hpstate', \, j \in \Index$,
                         such that \\
                         $\primTrans{(\primcom, \hpstate)}{(\primdone, \hpstate')}$
                         and \\
-                        $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                            {j}{k+1}{(\primdone, \hpstate')}$ holds;
+                        {\em $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
+                                {j}{k+1}{(\primdone, \hpstate')}$} holds;
                 \end{enumerate}
             \end{itemize}
             \vspace{0.5em}
 
-        \item if $\asmimp(\pc) = \retl{}$, then:
+        \item if {\em $\asmimp(\pc) = \retl{}$}, then:
             \begin{itemize}
-                \item there exists $\state', \, \pc', \, \npc'$,
+                \item there exists $\state'$, {\em $\pc'$}, {\em $\npc'$},
                 such that \\
-                   $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
-                       {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$;
-                \item for any $\state', \pc', \npc'$, \\
-                    if $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
-                            {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$, \\
+                   {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
+                            {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$};
+                \item for any $\state'$, {\em $\pc'$}, {\em $\npc'$}, \\
+                    if {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
+                            {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$}, \\
                     then there exists $j \in \Index$, $\hpstate'$ and
                     $\primcom'$, such that the following holds:
                     \begin{enumerate}
                         \item either $j < i$, $\hpstate' = \hpstate$
-                            and $\primcom' = \primcom$; or
-                            $\primTrans{(\primcom, \hpstate)}{(\primcom', \hpstate')}$;
+                            and $\primcom' = \primcom$; \\
+                            or $\primTrans{(\primcom, \hpstate)}{(\primcom', \hpstate')}$;
                         \item if $k = 0$, then there exists
-                        	$\word'$:
-                        	(where $\state'.\Rstate.\RFile(\reg{15})
-                        	 = \lab{}$) \\
+                        	$\word'$, such that:
+                        	(where {\em $\lab{} = \state'.\Rstate.\RFile(\reg{15})$}) \\
                             \hspace*{2em}
                             $\asrtmodel{(\state', \hpstate', \primcom', \word')}
                                 {\relastQ}$,
                             $\primcom' = \primdone$, \\
                             \hspace*{2em}
-                            $\pc' = \lab{}\!+\!8$, and
-                            $\npc' = \lab{}\!+\!12$; \\
+                            {\em $\pc' = \lab{}\!+\!8$}, and
+                            {\em $\npc' = \lab{}\!+\!12$}; \\
                             else \\
                             \hspace*{2em}
-                            $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
-                                {j}{k-1}{(\primcom', \hpstate')}$.
+                            {\em $\simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
+                                    {j}{k-1}{(\primcom', \hpstate')}$}.
                     \end{enumerate}
             \end{itemize}
     \end{enumerate}
@@ -2706,7 +2619,7 @@ Then we give the semantics of well-formed primitive in
             \hspace*{5em}
             \wdSpec{\relspecpre}{\relspecpost} {\hprim}
             	\, \land \,
-            	(\relspecpre \ \lgvl \Longrightarrow
+            	(\relspecpre \ \lgvl \Rightarrow
             	\safePrimAst{\, \hprim(\args{\val}) \,}
                 \sepstar \atrue) \\
             \hspace*{5em}
@@ -2740,7 +2653,6 @@ which means that the extended program logic can
 imply the contextual refinement between implementation
 $\asmimp$ and abstract assembly primitives $\hprimset$.
 
-{\color{blue}
 \paragraph{\textbf{Soundness Proof.}}
 We show the soundness proof of our logic.
 We first give Lemma~\ref{lemma:function correctness}
@@ -2749,12 +2661,11 @@ sequence can compose to the simulation relation for
 function.
 \begin{lemma}
     \label{lemma:function correctness}
-    \em
-    If $\semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
-            {\pc}{\asmimp[\pc]}$ and
-    $\models\asmimp:\Cspec{}$, then
-    $\simFunction{(\asmimp, \lab{})}
-        {(\relastP, \, \relastQ)}{\primcom}$.
+    If {\em $\semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
+                {\pc}{\asmimp[\pc]}$} and
+    {\em $\models\asmimp:\Cspec{}$}, then
+    {\em $\simFunction{(\asmimp, \lab{})}
+            {(\relastP, \, \relastQ)}{\primcom}$}.
 \end{lemma}
 \begin{proof}
     By the definition of
@@ -2900,14 +2811,14 @@ function.
 
             Then, by unfolding $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$,
             we need to prove that for all $\lab{} \in \dom(\hprimset),
-            \lgvl$, there exisits $\hprim$, $\args{\val}$,
+            \lgvl$, there exists $\hprim$, $\args{\val}$,
             $\relspecpre$, $\relspecpost$, such that:
             \begin{itemize}
                 \small
                 \item $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$,
                     $\hprimset(\lab{}) = \hprim$,
                     $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$;
-                \item $\relspecpre \, \lgvl \implies
+                \item $\relspecpre \, \lgvl \Rightarrow
                     \safePrimAst{\, \hprim(\args{\val}) \,}
                     \sepstar \atrue$;
                 \item $\simFunction{(\asmimp, \lab{})}
@@ -2928,12 +2839,12 @@ function.
                     {\relspecpost \ \lgvl}{\asmimp[\lab{}]}
                 \label{a:startingblk-welldefined}
             \end{equation}
-            Then, we finish the proof by
-            (\ref{a:startingblk-welldefined})
-            (\ref{a:semwdcdhp2}) and
-            Lemma~\ref{lemma:function correctness}.
+            Then, we finish the proof by 
+            applying Lemma~\ref{lemma:function correctness} 
+            on (\ref{a:startingblk-welldefined})
+            (\ref{a:semwdcdhp2}).
     \end{itemize}
-    Thus we are done.
+    % Thus we are done.
 \end{proof}
 
 Then, we give
@@ -2958,40 +2869,37 @@ between low- and high-level programs in
 Lemma~\ref{lemma:wpsim-implies-refinement}.
 \begin{definition}[Whole program simulation]
     \label{def:wpsim}
-    \em
-    Whenever $\prog \wpsim^{i} \HProg$ holds,
+    Whenever {\em $\prog \wpsim^{i} \HProg$} holds,
     the following are true:
     \begin{enumerate}[1.]
         \small
-        \item if $\LGlobTrans{\prog}{\tau}{\prog'}$,
+        \item if {\em $\LGlobTrans{\prog}{\tau}{\prog'}$},
             then one of the following holds:
             \begin{itemize}
-                \item $\exists j < i. \,
-                    \prog' \wpsim^{j} \HProg$; or
-                \item $\exists j, \HProg'. \,
-                    \HGlobMultiTrans{\HProg}{\tau}{+}{\HProg'}$,
-                    and $\prog' \wpsim^{j} \HProg'$;
+                \item {\em $\exists j < i. \,
+                        \prog' \wpsim^{j} \HProg$}; or
+                \item {\em $\exists j, \HProg'. \,
+                    \HGlobMultiTrans{\HProg}{\tau}{+}{\HProg'}$},
+                    and {\em $\prog' \wpsim^{j} \HProg'$};
             \end{itemize}
-        \item if $\LGlobTrans{\prog}{\event}{\prog'}$,
-            then $\exists j, \HProg'. \,
-            \HGlobMultiTrans{\HProg}{\event}{+}{\HProg'}$,
-            and $\prog \wpsim^{j} \HProg$;
-        \item if $\LGlobTrans{\prog}{\tau}{\evtabort}$,
-            then $\HGlobMultiTrans{\HProg}{\tau}{+}{\evtabort}$.
+        \item if {\em $\LGlobTrans{\prog}{\event}{\prog'}$},
+            then {\em $\exists j, \HProg'. \,
+            \HGlobMultiTrans{\HProg}{\event}{+}{\HProg'}$},
+            and {\em $\prog \wpsim^{j} \HProg$};
+        \item if {\em $\LGlobTrans{\prog}{\tau}{\evtabort}$},
+            then {\em $\HGlobMultiTrans{\HProg}{\tau}{+}{\evtabort}$}.
     \end{enumerate}
 \end{definition}
 
 \begin{lemma}
     \label{lemma:function sim implies whole program sim}
-    \em
     If $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$,
     $\stateRel{\state}{\hpstate}$,
-    $\progsafe((\code, \hprimset), \hpstate)$ and
-    $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$,
-    then
-    $\exists i \in \Index. \,
-    (\code\uplus\asmimp, \state, \pc, \npc)
-    \wpsim^{i} ((\code, \hprimset), \hpstate)$.
+    {\em $\progsafe((\code, \hprimset), \hpstate)$} and
+    {\em $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$},
+    then there exists $i \in \Index$, such that  
+    {\em $(\code\uplus\asmimp, \state, \pc, \npc)
+        \wpsim^{i} ((\code, \hprimset), \hpstate)$}.
 \end{lemma}
 \begin{proof}
     Since the whole program simulation is defined
@@ -3124,7 +3032,6 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     Lemma~\ref{lemma:Logic Ensures Simulation} and
     \ref{lemma:Simulation Implies Primitive Correctness}.
 \end{proof}
-}
 
 % We give the semantics of \textbf{WfPrim} rule in
 % \Def{\ref{def:wdprim-sem}}.
