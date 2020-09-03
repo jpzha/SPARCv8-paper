@@ -125,9 +125,9 @@ in both low- and high-level memory.
 \]
 
 The precondition takes ten tokens ($\metricAst{10}$).
-As we have explained, verifying instruction \call{}
-and \jmp{} will consume a token.
-So, verifying function call
+As we have explained, verifying \call{}
+and \jmp{} instructions will consume a token.
+So, verifying the function calls
 \regsave{} and \regrestore{} will
 both consume a token. And \SaveUsedWin{},
 which saves the context of each previous window
@@ -155,7 +155,7 @@ $\RelRdyT{\ctid}{\pEnv{\env}}{\hthrdlocalst_c}$.
 The execution of $\primsw$ should be done in the final state.
 We use $\hthrdlocalst'$ to represent the thread local
 state of $\ntid$ instead of $\hthrdlocalst_n$
-in the final state, because the execution of
+in the final state, since the execution of
 $\primsw$ will modify the program counters
 in $\hthrdlocalst_n$.
 
@@ -466,21 +466,21 @@ which consists of around 250 lines of SPARCv8 code,
 by 6690 lines of Coq proof scripts. Here, the
 context switch routine verified by applying our
 relational program logic is a
-simplified version of context switch routine,
+simplified version of such context switch routine,
 which omits some details like judging whether the
 current thread is a valid thread.
 Verifying that each code block is well-defined
 by applying the inference rules in our new logic is
 no different from the previous proof work.
-The additional proof effort includes:
+The additional proof efforts include:
 (1) proving that the specification of context
 switch routine is well-defined (presented in
 Lemma~\ref{lemma:ctxswitch-wdspec});
 (2) applying \myrule{ABSCSQ} rule to execute
-primitive $\primsw$ and proving that the state
+the $\primsw$ primitive and proving that the state
 relation between low- and high-level programs
 can be reestablished in verifying code block
-\SwitchNewTask{}, when context switch routine
+\SwitchNewTask{}, when the context switch routine
 returns (as noted in the proof of
 Lemma~\ref{lemma:ctxswitch-wfcdhp}).
 

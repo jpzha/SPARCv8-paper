@@ -9,7 +9,7 @@ style where return addresses are viewed as first
 class code pointers~\cite{PCC,FPCC,TAL,TALx86,Yu03ESOP,xcap,cflogic}.
 SCAP~\cite{Feng06pldi} supports assembly code verification
 with various stack-based control abstractions, including
-function call and return. We follow the same idea here.
+function calls and returns. We follow the same idea here.
 However, SCAP gives a syntactic-based soundness proof
 by establishing the preservation of the syntactic judgment,
 which makes it difficult to interact with other modules
@@ -17,7 +17,8 @@ verified in different logic. Since our goal is to
 verify inline assembly and link the verified code
 with the verified C programs, we give a direct-style
 semantic model of the logic judgments. And it allows us
-to extend our program logic to support verifying
+to extend our program logic in conference version 
+to support verifying
 contextual refinement without much challenges.
 Also SCAP
 is based on a simplified subset of assembly instructions,
@@ -26,8 +27,7 @@ subset of \sparc{} instructions.
 
 In terms of the support of realistic instruction sets,
 previous work on proof-carrying code (PCC) and
-typed assembly language (TAL) mostly supports subsets of
-x86.
+typed assembly language (TAL) mostly supports subsets of x86.
 Myreen's work \cite{arm-veri} presents a framework for
 ARM verification based on a realistic model
 (but it doesn't support function call and return).
@@ -61,7 +61,7 @@ Our operational semantics of SPARCv8 follows \etal{Wang}~\cite{sparc-formalizati
 %formalize the SPARCv8 ISA in Coq but give
 %no program logic. Our operational
 %semantics of SPARCv8 follows their work.
-Since neither \etal{Wang} nor we validate the
+However neither \etal{Wang} nor we validate the
 formalization against actual hardware, this remains
 as future work.
 
@@ -304,5 +304,5 @@ in the source level.
 We also consider automating the reasoning
 for certain parts with Coq tactics~\cite{practical-tactics} or automatic provers like Z3~\cite{Z3}
 % or integrating with framework like Frama-C~\cite{framac}, 
-to reduce the required human effort in the verification work
+to reduce the required manual efforts in the verification work
 in the future.
