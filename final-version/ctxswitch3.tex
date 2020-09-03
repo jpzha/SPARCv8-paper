@@ -11,7 +11,7 @@ restores the new task's context,
 contextually refines the $\primsw{}$ primitive
 defined in \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 \Fig{\ref{fig:The Structure of Context Switch Routine}}
-shows the structure of the code.
+shows the structure of the context switch routine that we proved.
 \begin{center}
     \input{picture/CodeStructure2}
     \figurecaption{The Structure of Context Switch Routine}
@@ -21,8 +21,9 @@ shows the structure of the code.
     \item \texttt{SwitchEntry}
     is the entry of the context switch routine.
     It saves the \localRN{} and \inRN{} registers of current
-    window into stack (in memory), and calls
-    \texttt{reg\_save} to save other registers into TCB.
+    window into the current task's stack in memory, and calls
+    \texttt{reg\_save} to save other registers into 
+    the current task's TCB.
 
     \item
     \texttt{Save\_UsedWindows} saves

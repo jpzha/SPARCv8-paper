@@ -2646,21 +2646,23 @@ we can establish a simulation relation
 defined in \Def{\ref{def:simfunc}}
 between its low-level implementation
 in code heap $\asmimp$ and itself.
-Theorem~\ref{thm:logic soundness},
-whose correctness can be derived from Lemmas
-\ref{lemma:Logic Ensures Simulation}
-and \ref{lemma:Simulation Implies Primitive Correctness},
+% Theorem~\ref{thm:logic soundness},
+% whose correctness can be derived from Lemmas
+% \ref{lemma:Logic Ensures Simulation}
+% and \ref{lemma:Simulation Implies Primitive Correctness},
+Theorem~\ref{thm:logic soundness}
 shows the soundness of our logic,
-which means that the extended program logic can
-imply the contextual refinement between implementation
-$\asmimp$ and abstract assembly primitives $\hprimset$.
+which means that the relational program logic can
+imply the contextual refinement between the implementation
+$\asmimp$ and abstract assembly primitive set $\hprimset$. 
+% We give soundness proof below.
 
 \paragraph{\textbf{Soundness Proof.}}
 We show the soundness proof of our logic.
 We first give Lemma~\ref{lemma:function correctness}
 to show that the simulation relation for instruction
-sequence can compose to the simulation relation for
-function.
+sequences can compose to the simulation relation for
+functions.
 \begin{lemma}
     \label{lemma:function correctness}
     If {\em $\semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
@@ -2851,7 +2853,7 @@ function.
 
 Then, we give
 Lemma~\ref{lemma:Simulation Implies Primitive Correctness},
-which says that our simulation for function implies
+which says that our simulation for functions implies
 primitive correctness. We introduce a whole program
 simulation defined in \Def{\ref{def:wpsim}} and divide
 the correctness proof of
@@ -2862,7 +2864,7 @@ into two steps.
 % into two steps. We introduce a whole program simulation
 % defined in \Def{\ref{def:wpsim}}.
 \textit{First}, we prove
-that the simulation for function implies
+that the simulation for functions implies
 the whole program simulation in
 Lemma~\ref{lemma:function sim implies whole program sim};
 \textit{Second}, we prove that
@@ -2953,8 +2955,9 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \end{itemize}
 
     The assumption $\progsafe((\code, \hprimset), \hpstate)$
-    makes sure that the client code doesn't include instruction
-    \csave{}, \crestore{} and \cwr{}, because we do not give
+    ensures that the client code does not include
+    \csave{}, \crestore{} and \cwr{} instructions, 
+    because we do not give
     semantics to them in high-level as explained in
     \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 \end{proof}
