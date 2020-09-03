@@ -236,7 +236,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
         \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$.
         if $\primsw(\args{\val})(\hpstate)(\hpstate')$, and
         $\hpstate \perp \hpstate_r$,
-        then the following holds :
+        then the following holds:
         \begin{itemize}
             \small
             \item $\hpstate'.\hthrdlocalst.\pc = \lab{} + 8$,
@@ -250,12 +250,12 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
                 $\hpstate_r.\Mem = \hpstate_r'.\Mem$;
         \end{itemize}
 
-        Prove by the definition of $\primsw$, which
-        ensures that, in the final state,
+        Prove by the definition of $\primsw$.
+        It ensures that, in the final state,
         the program counters will point to
-        the correct pointers and the threads and
-        memory in $\hpstate_r$ remain unchanged,
-        because the execution of $\primsw$ only accesses
+        the correct pointers, and the threads and
+        memory specified in $\hpstate_r$ remain unchanged,
+        since the execution of $\primsw$ only accesses
         the current and new tasks in thread pool
         and the location $\TaskNew$ in memory.
 
@@ -298,7 +298,8 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
         \end{itemize}
 
         Prove by the definitions of $\Apre$ and $\Apost$.
-        They specify the states of task $\tid_c$ and
+        Both $\Apre$ and $\Apost$
+        specify the states of task $\tid_c$ and
         $\tid_n$ and memory location $\TaskNew$
         % of original current task $\tid_c$,
         % new task $\tid_n$ and memory location $\TaskNew$
