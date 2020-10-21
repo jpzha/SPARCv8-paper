@@ -222,111 +222,114 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
     $\wdSpec{\Apre}{\Apost}{\primsw}$
 \end{lemma}
 \begin{proof}
-    By the definition of
-    $\textsf{wdSpec}$ (defined in
-    \Def{\ref{def:well-defined specification}}),
-    we need to prove the following:
-    % The correctness proof of this lemma is
-    % straight-forward. According to the definition of
-    % $\textsf{wdSpec}$ (defined in
-    % \Def{\ref{def:well-defined specification}}),
-    % we need to prove that the following three properties
-    % hold:
-    \begin{itemize}
-        \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$.
-        if $\primsw(\args{\val})(\hpstate)(\hpstate')$, and
-        $\hpstate \perp \hpstate_r$,
-        then the following holds:
-        \begin{itemize}
-            \small
-            \item $\hpstate'.\hthrdlocalst.\pc = \lab{} + 8$,
-                $\hpstate'.\hthrdlocalst.\npc = \lab{} + 12$
-                (where $\hpstate'.\hthrdlocalst.\hRstate.\hRfile
-                    ({\reg{15}}) = \lab{}$);
-            \item there exists $\hpstate'', \hpstate_r'$,
-                $\primsw(\args{\val})(\hpstate \uplus \hpstate_r)
-                    (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$,
-                and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$,
-                $\hpstate_r.\Mem = \hpstate_r'.\Mem$;
-        \end{itemize}
-
-        Prove by the definition of $\primsw$.
-        It ensures that, in the final state,
-        the program counters will point to
-        the correct pointers, and the threads and
-        memory specified in $\hpstate_r$ remain unchanged,
-        since the execution of $\primsw$ only accesses
-        the current and new tasks in thread pool
-        and the location $\TaskNew$ in memory.
-
-        % The definition of $\primsw$ ensures that the
-        % program counters will point to the correct pointers,
-        % and its execution only accesses
-        % the current and new tasks in thread pool
-        % and the location $\TaskNew$ in memory.
-        % So, the threads and memory specified in $\hpstate_r$
-        % remain unchanged in final state.
-
-        \item for any $\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n$,
-            \begin{itemize}
-                \small
-                \item $\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
-                    \Rightarrow \safePrimAst{\primsw} \sepstar \atrue$;
-                \item $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
-                    \Rightarrow \safePrimAst{\primdone} \sepstar \atrue$;
-            \end{itemize}
-        \vspace*{0.3em}
-        Prove by the definition of $\Apre$ and $\Apost$.
-        % According the definition of $\Apre$ and $\Apost$,
-        % we are done.
-
-        \item for any $\args{\val}, \state, \hpstate$,
-        if $(\state, \hpstate, \notCare, \notCare) \in
-            \INV{(\primsw(\args{\val}), \args{\val})}$,
-        then there exists $\thrdid_c, \thrdid_n, \env$, $\nst,
-        \hthrdlocalst_c, \hthrdlocalst_n, \relastP_r$ and $\word$,
-        such that:
-        \begin{itemize}
-            \small
-            \item $\asrtmodel{(\state, \hpstate, \primsw(\args{\val}), \word)}
-                {\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
-                \hthrdlocalst_n) \sepstar \relastP_r}$;
-            \item  $(\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
-                \hthrdlocalst_n) \sepstar \relastP_r) \Rightarrow
-                \INV{(\primdone, \notCare)}$;
-            \item $\Sta(\primsw(\args{\val}), \relastP_r)$.
-        \end{itemize}
-
-        Prove by the definitions of $\Apre$ and $\Apost$.
-        Both $\Apre$ and $\Apost$
-        specify the states of task $\tid_c$ and
-        $\tid_n$ and memory location $\TaskNew$
-        % of original current task $\tid_c$,
-        % new task $\tid_n$ and memory location $\TaskNew$
-        in low- and high-level. And we define the frame
-        % The definitions of $\Apre$ and $\Apost$ describe that
-        % the states of original current task $\tid_c$,
-        % new task $\tid_n$ and memory location $\TaskNew$
-        % in low- and high-level.
-        % We define the frame
-        $\relastP_r$ to depict the state of the
-        remaining tasks and memory
-        (excluding tasks $\tid_c$, $\tid_n$, and
-        memory location $\TaskNew$) in low- and high-level.
-        Then, we can prove that the
-        state relation between low- and high-level
-        holds at the entry and
-        exit of the context switch routine.
-        Since the execution of $\primsw$ only accesses
-        the current and new tasks in thread pool, and the
-        memory location $\TaskNew$,
-        the threads and memory specified in assertion
-        $\relastP_r$ remain unchanged
-        in the final state and $\relastP_r$ keeps
-        stable ($\Sta(\primsw, \relastP_r)$).
-    \end{itemize}
-    % Thus we are done.
+    Prove by the definition of $\textsf{wdSpec}$ 
+    (in \Def{\ref{def:well-defined specification}}).
 \end{proof}
+% \begin{proof}
+%     Prove by the definition of
+%     $\textsf{wdSpec}$ (defined in
+%     \Def{\ref{def:well-defined specification}}).
+%     % we need to prove the following:
+%     % % The correctness proof of this lemma is
+%     % % straight-forward. According to the definition of
+%     % % $\textsf{wdSpec}$ (defined in
+%     % % \Def{\ref{def:well-defined specification}}),
+%     % % we need to prove that the following three properties
+%     % % hold:
+%     % \begin{itemize}
+%     %     \item for any $\args{\val}, \hpstate, \hpstate', \hpstate_r$.
+%     %     if $\primsw(\args{\val})(\hpstate)(\hpstate')$, and
+%     %     $\hpstate \perp \hpstate_r$,
+%     %     then the following holds:
+%     %     \begin{itemize}
+%     %         \small
+%     %         \item $\hpstate'.\hthrdlocalst.\pc = \lab{} + 8$,
+%     %             $\hpstate'.\hthrdlocalst.\npc = \lab{} + 12$
+%     %             (where $\hpstate'.\hthrdlocalst.\hRstate.\hRfile
+%     %                 ({\reg{15}}) = \lab{}$);
+%     %         \item there exists $\hpstate'', \hpstate_r'$,
+%     %             $\primsw(\args{\val})(\hpstate \uplus \hpstate_r)
+%     %                 (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$,
+%     %             and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$,
+%     %             $\hpstate_r.\Mem = \hpstate_r'.\Mem$;
+%     %     \end{itemize}
+
+%     %     Prove by the definition of $\primsw$.
+%     %     It ensures that, in the final state,
+%     %     the program counters will point to
+%     %     the correct pointers, and the threads and
+%     %     memory specified in $\hpstate_r$ remain unchanged,
+%     %     since the execution of $\primsw$ only accesses
+%     %     the current and new tasks in thread pool
+%     %     and the location $\TaskNew$ in memory.
+
+%     %     % The definition of $\primsw$ ensures that the
+%     %     % program counters will point to the correct pointers,
+%     %     % and its execution only accesses
+%     %     % the current and new tasks in thread pool
+%     %     % and the location $\TaskNew$ in memory.
+%     %     % So, the threads and memory specified in $\hpstate_r$
+%     %     % remain unchanged in final state.
+
+%     %     \item for any $\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n$,
+%     %         \begin{itemize}
+%     %             \small
+%     %             \item $\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
+%     %                 \Rightarrow \safePrimAst{\primsw} \sepstar \atrue$;
+%     %             \item $\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c, \hthrdlocalst_n)
+%     %                 \Rightarrow \safePrimAst{\primdone} \sepstar \atrue$;
+%     %         \end{itemize}
+%     %     \vspace*{0.3em}
+%     %     Prove by the definition of $\Apre$ and $\Apost$.
+%     %     % According the definition of $\Apre$ and $\Apost$,
+%     %     % we are done.
+
+%     %     \item for any $\args{\val}, \state, \hpstate$,
+%     %     if $(\state, \hpstate, \notCare, \notCare) \in
+%     %         \INV{(\primsw(\args{\val}), \args{\val})}$,
+%     %     then there exists $\thrdid_c, \thrdid_n, \env$, $\nst,
+%     %     \hthrdlocalst_c, \hthrdlocalst_n, \relastP_r$ and $\word$,
+%     %     such that:
+%     %     \begin{itemize}
+%     %         \small
+%     %         \item $\asrtmodel{(\state, \hpstate, \primsw(\args{\val}), \word)}
+%     %             {\Apre(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
+%     %             \hthrdlocalst_n) \sepstar \relastP_r}$;
+%     %         \item  $(\Apost(\thrdid_c, \thrdid_n, \env, \nst, \hthrdlocalst_c,
+%     %             \hthrdlocalst_n) \sepstar \relastP_r) \Rightarrow
+%     %             \INV{(\primdone, \notCare)}$;
+%     %         \item $\Sta(\primsw(\args{\val}), \relastP_r)$.
+%     %     \end{itemize}
+%     %     Prove by the definitions of $\Apre$ and $\Apost$.
+%     %     Both $\Apre$ and $\Apost$
+%     %     specify the states of task $\tid_c$ and
+%     %     $\tid_n$ and memory location $\TaskNew$
+%     %     % of original current task $\tid_c$,
+%     %     % new task $\tid_n$ and memory location $\TaskNew$
+%     %     in low- and high-level. And we define the frame
+%     %     % The definitions of $\Apre$ and $\Apost$ describe that
+%     %     % the states of original current task $\tid_c$,
+%     %     % new task $\tid_n$ and memory location $\TaskNew$
+%     %     % in low- and high-level.
+%     %     % We define the frame
+%     %     $\relastP_r$ to depict the state of the
+%     %     remaining tasks and memory
+%     %     (excluding tasks $\tid_c$, $\tid_n$, and
+%     %     memory location $\TaskNew$) in low- and high-level.
+%     %     Then, we can prove that the
+%     %     state relation between low- and high-level
+%     %     holds at the entry and
+%     %     exit of the context switch routine.
+%     %     Since the execution of $\primsw$ only accesses
+%     %     the current and new tasks in thread pool, and the
+%     %     memory location $\TaskNew$,
+%     %     the threads and memory specified in assertion
+%     %     $\relastP_r$ remain unchanged
+%     %     in the final state and $\relastP_r$ keeps
+%     %     stable ($\Sta(\primsw, \relastP_r)$).
+%     % \end{itemize}
+%     % % Thus we are done.
+% \end{proof}
 
 We use $\code_{\texttt{switch}}$ to represent the
 code heap storing the code of context switch routine,
@@ -487,4 +490,4 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}).
 
 % We present more details of this part of proof
 % work in TR~\cite{coqimp}.
-We present more details of proof in TR~\cite{coqimp}.
+% We present more details of proof in TR~\cite{coqimp}.

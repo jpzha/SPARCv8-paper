@@ -8,7 +8,7 @@ in assembly, such as the context switch code or the code that
 manages interrupts.
 In addition, there is also code written directly in assembly
 to achieve high performance (\eg{} \textsf{memcpy} in linux
-v2.6.17.10 \cite{linuxv2.6.17.10}).
+v2.6.17.10\footnote{Linux v2.6.17.10. \url{https://elixir.bootlin.com/linux/v2.6.17.10/source/arch}}.
 Correctness of such assembly code is crucial to ensure
 the safety and security of the whole system.
 However, assembly code verification remains a challenging
@@ -19,7 +19,7 @@ operational semantics without a general program logic.
 
 SPARC (Scalable Processor ARChitecture)
 is a CPU instruction set architecture (ISA) with high-performance
-and great flexibility~\cite{sparc}.
+and great flexibility\footnote{\label{fn:SPARC} SPARC. \url{https://gaisler.com/doc/sparcv8.pdf}}.
 It has been widely used in various processors
 for workstations and embedded systems. %, and space mission.
 The \sparc{} ISA has some interesting features, which
@@ -51,7 +51,7 @@ program logic for assembly code.
     completion of the third instruction following the write
     instruction to consummate their write operation.
     The number of delay instructions (0 to 3)
-    is implementation-dependent"~\cite{sparc}.
+    is implementation-dependent".
 
 	% The $\cwr$ instruction that writes a special class
     % of registers
@@ -156,7 +156,7 @@ to show these three features.
         \end{array}
     $
     \figurecaption{An Example for SPARC Code. 
-    (a) The function \texttt{CALLER}. (b) The function \texttt{ChangeY}.}
+    (a) Function \texttt{CALLER}. (b) Function \texttt{ChangeY}.}
     \label{fig:An Example for SPARC Code}
 \end{center}
 
@@ -636,7 +636,7 @@ verification but makes the following contributions.
 The program logic and its soundness proof
 have been mechanized in Coq. Coq proofs and a compansion 
 technical report are available at 
-\url{}
+\url{https://github.com/jpzha/VeriSparc}.
 % \footnote{More details about our work are
 % available at TR and the Coq code.
 % \url{https://sites.google.com/site/jcstarticle1/}.}.

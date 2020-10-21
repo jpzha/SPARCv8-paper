@@ -65,7 +65,7 @@ it consists of the following work.
 The Pseudo-SPARCv8 language contains two parts:
 the SPARCv8 code as client
 and the set of abstract assembly primitives.
-Here, we require that the execution of client SPARCv8 code
+Here, we require that the execution of the client SPARCv8 code
 preserves a restriction between register
 window and stack in memory, shown
 in 
@@ -76,7 +76,9 @@ of adjacent windows are omitted in the figure).
 \begin{center}
     \input{picture/RegWinAbs2}
     \vspace*{-0.5em}
-    \figurecaption{Abstraction of context management}
+    \figurecaption{Abstraction of context management. 
+    (a) Reigster windows and stack in memory. 
+    (b) High-level frame list}
     \label{fig:Abstraction of Register Windows and Memory}
     \vspace{-0.5em}
 \end{center}
@@ -352,7 +354,7 @@ The code (\TYPE{HCode}) $\HMd$ has two parts:
 the code heap $\code$
 and the set of abstract primitives (\TYPE{PrimSet}) $\hprimset$,
 which is a partial mapping from labels to
-abstract assembly primitive. The code heap $\code$ in $\HMd$
+abstract assembly primitives. The code heap $\code$ in $\HMd$
 acts as the client to
 call abstract assembly primitives.
 The abstract assembly primitive (\TYPE{Prim}) $\hprim$
@@ -400,7 +402,7 @@ of the current thread, and the memory (\TYPE{Mem}) $\Mem$.
     \centering
     \small
     \vspace*{-0.5em}
-    \subfigure[High-level Program Transition]{
+    \subfigure[]{
         \begin{minipage}[b]{1\textwidth}
         \[
             \begin{array}{c}
@@ -451,7 +453,7 @@ of the current thread, and the memory (\TYPE{Mem}) $\Mem$.
         \end{minipage}
     }
 
-    \subfigure[High-level Thread Local Transition]
+    \subfigure[]
     {
         \begin{minipage}[b]{1\textwidth}
         \[
@@ -516,7 +518,7 @@ of the current thread, and the memory (\TYPE{Mem}) $\Mem$.
         \end{minipage}
     }
 
-    \subfigure[High-level Instruction Transition]
+    \subfigure[]
     {
         \begin{minipage}[b]{1\textwidth}
         \[
@@ -564,7 +566,10 @@ of the current thread, and the memory (\TYPE{Mem}) $\Mem$.
         \vspace{0.2em}
         \end{minipage}
     }
-    \caption{Selected operational semantics rules for high-level program}
+    \caption{Selected operational semantics rules for high-level program. 
+    (a) High-level Program Transisition. 
+    (b) High-level Thread Local Transisition.
+    (c) High-level Instruction Transistion.} 
     \label{fig:selected-opsem-high-level-prog}
 \end{figure*}
 
@@ -662,25 +667,35 @@ and $\hpstate'$ to represent the machine states before
 and after the execution of $\primsw{}$ respectively.
 
 \paragraph{\textbf{Operational Semantics in High-level.}}
-The operational semantics for high-level Pseudo-SPARCv8 program
+The operational semantics for Pseudo-SPARCv8
 is defined in \Fig{\ref{fig:selected-opsem-high-level-prog}}.
 The high-level program transition relation
 $\HGlobTrans{(\HMd, \hpstate)}{\hmsg}{(\HMd, \hpstate')}$ is defined
 in \Fig{\ref{fig:selected-opsem-high-level-prog}} (a). In each step,
 the program may either execute the instruction pointed by $\pc$
 and generate empty message $\empmsg$ or an output $\outEvt{\val}$,
-or call  an abstract assembly primitive in the primitive set.
+or call an abstract assembly primitive in the primitive set.
 When calling an abstract assembly primitive,
-the execution of current thread (defined as
-$(\hlocalstep{\notCare}{\notCare}{\ \notCare \ }{\notCare})$ in
-\Fig{\ref{fig:selected-opsem-high-level-prog}} (b)) will generate
-a message $\callEvt{\lab{}, \args{\val}}$, which means that it
-hopes to call the abstract assembly primitive $\hprim$ labelled
-$\lab{}$, which is {\it not} in the domain of code heap $\code$,
-with the arguments $\args{\val}$
-(we use $\arguments(\hRstate, \Mem, \args{\val})$
-to get the arguments $\args{\val}$
-from high-level state, and its definition is omitted here).
+a message $\callEvt{\lab{}, \args{\val}}$ will be generated. 
+It means that we
+hope to call the abstract assembly primitive labelled
+$\lab{}$ with the arguments $\args{\val}$ 
+($\arguments(\hRstate, \Mem, \args{\val})$, whose definition
+is omitted here, means getting the arguments $\args{\val}$
+from $\hRstate$ and $\Mem$).
+% (we use $\arguments(\hRstate, \Mem, \args{\val})$
+% to get the arguments $\args{\val}$
+% from high-level state, and its definition is omitted here).
+% the execution of current thread (defined as
+% $(\hlocalstep{\notCare}{\notCare}{\ \notCare \ }{\notCare})$ in
+% \Fig{\ref{fig:selected-opsem-high-level-prog}} (b)) will generate
+% a message $\callEvt{\lab{}, \args{\val}}$, which means that it
+% hopes to call the abstract assembly primitive $\hprim$ labelled
+% $\lab{}$, which is {\it not} in the domain of code heap $\code$,
+% with the arguments $\args{\val}$
+% (we use $\arguments(\hRstate, \Mem, \args{\val})$
+% to get the arguments $\args{\val}$
+% from high-level state, and its definition is omitted here).
 %After executing the abstract assembly primitive, the program
 %control transfer should return to execute the client code
 %(shown as $\{\hthrdlocalst''.\pc, \hthrdlocalst''.\npc\}
@@ -688,7 +703,7 @@ from high-level state, and its definition is omitted here).
 
 The thread local step is defined in
 \Fig{\ref{fig:selected-opsem-high-level-prog}} (b).
-Here, the step for simple instruction $\simplins{}$ is
+The step for simple instruction $\simplins{}$ is
 represented as ``$\hexeci{\simplins{}}{\notCare}{\notCare}$".
 We show the state transition relation for pseudo instructions
 $\Psave \ \word$ and $\Prestore$ in
@@ -700,18 +715,18 @@ $\Psave \ \word$ will save the \localRN{} and \inRN{} registers
 into high-level frame list $\hWstk$. It also allocates
 a new block $\block$ of size 64-byte to $\word$ byte
 as a new stack frame in memory
-(represented as $\malloc(\Mem, \block, 64, \word) = \Mem'$).
+(shown as $\malloc(\Mem, \block, 64, \word) = \Mem'$).
 % The size of the block $\block$ is from 64 byte to $\word$ byte.
 The reason why it starts from 64-byte is that the 0 to 64 bytes
 (16 words) in a stack frame are usually reserved to save
 the context in window (\localRN{} and \inRN{} registers)
-by convention \cite{sparc},
+by convention,
 and this part of memory is abstracted away in
 Pseudo-SPARCv8 program as we have explained and shown in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}}.
 $\Prestore$ does the reverse,
 freeing the block of the current stack frame
-(represented as $\mfree(\block, \Mem) = \Mem'$), and
+(shown as $\mfree(\block, \Mem) = \Mem'$), and
 restoring the context of the previous procedure
 saved in $\hWstk$.
 % More details of the high-level Pseudo
@@ -785,11 +800,11 @@ from the \sparc{} program defined in
 % an output $\outEvt{\val}$ that is produced by the instruction
 % $\cprint$ and acts as an observable behavior.
 Note that the client
-code and the implementations of abstract assembly primitives
-in the low-level are both \sparc{} code heap. So, we do not need
+code and the implementations of primitives
+in low-level are both \sparc{} code heap. So, we do not need
 to define their linking in semantics.
-More details of the low-level program can be found in
-our Coq code and TR~\cite{coqimp}.
+% More details of the low-level program can be found in
+% our Coq code and TR~\cite{coqimp}.
 % \ref{sec:more-llang}.
 
 % \input{picture/StateRel}
@@ -1663,10 +1678,10 @@ $\lgvl$.
     \subfigure
     {
         \begin{minipage}{1\linewidth}
-            $\boxed{\wfprim{\Cspec}{\asmimp}{\Cspec}}$ \quad\quad
-            \textbf{(Well-formed Primitive)}
+            $\boxed{\wfprim{\Cspec}{\asmimp}{\Cspec}}$ \quad \ \
+            \text{(Well-formed Primitive)}
             \[
-				\infer[\tinybftext{(WfPrim)}]
+				\infer[(\myrule{WfPrim})]
 				{
 					\wfprim{\Cspec}{\asmimp}{\hprimset}
 				}
@@ -1698,10 +1713,10 @@ $\lgvl$.
     \subfigure
     {
         \begin{minipage}{1\textwidth}
-            $\boxed{\wfcdhp{\asmimp}{\Cspec}}$ \qquad
-            \textbf{(Well-formed Code Heap)}
+            $\boxed{\wfcdhp{\asmimp}{\Cspec}}$ \quad \ \ 
+            \text{(Well-formed Code Heap)}
             \[
-                \infer[\tinybftext{(WfInt)}]
+                \infer[(\myrule{WfInt})]
                 {
                     \wfcdhp{\asmimp}{\Cspec}
                 }
@@ -1722,11 +1737,11 @@ $\lgvl$.
     {
         \begin{minipage}{1\textwidth}
             $\boxed{\wdcblk{\Cspec}{\relastP}{\relastQ}
-                {\lab{}}{\cblk}}$ \qquad
-            \textbf{(Well-formed Instruction Sequences)}
+                {\lab{}}{\cblk}}$ \quad \ \ 
+            \text{(Well-formed Instruction Sequences)}
             \[
                 \begin{array}{c}
-                    \infer[\tinybftext{(SEQ)}]
+                    \infer[(\myrule{SEQ})]
                     {
                         \wdcblk{\Cspec}{\relastP}{\relastQ}
                             {\lab{}}{\simplins{}; \, \cblk}
@@ -1741,7 +1756,7 @@ $\lgvl$.
                             {\relastP'}{\relastQ}{\lab{}\!+\!4}{\cblk}
                     } \\
                     \\[-5pt]
-                    \infer[\tinybftext{(JMP)}]
+                    \infer[(\myrule{JMP})]
                     {
                         \wdcblk{\Cspec}{\relastP}{\relastQ}
                             {\lab{}}{\jmp \; \aexp; \, \simplins}
@@ -1764,7 +1779,7 @@ $\lgvl$.
                         \end{array}
                     } \\
                     \\[-5pt]
-                    \infer[\tinybftext{(CALL)}]
+                    \infer[(\myrule{CALL})]
                     {
                         \wdcblk{\Cspec}{\relastP}{\relastQ}
                             {\lab{}}{\call \; \lab{}'; \, \simplins; \, \cblk}
@@ -1790,7 +1805,7 @@ $\lgvl$.
                         \end{array}	
                     } \\
                     \\[-5pt]
-                    \infer[\tinybftext{(RETL)}]
+                    \infer[(\myrule{RETL})]
                     {
                         \wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\retl; \, \simplins}
                     }
@@ -1804,7 +1819,7 @@ $\lgvl$.
                                     \relastP_2 \Rightarrow \relastQ
                     } \\
                     \\[-5pt]
-                    \infer[\tinybftext{(ABSCSQ)}]
+                    \infer[(\myrule{ABSCSQ})]
                     {
                         \wdcblk{\Cspec}{\relastP}{\relastQ}
                             {\lab{}}{\cblk}
@@ -2053,7 +2068,7 @@ and we explain them in turn in the following.
     \end{enumerate}
 \end{definition}
 
-\textbf{First},
+First,
 % we should give some restrictions
 % for the execution of abstract assembly primitive.
 the program counters should equal
@@ -2113,10 +2128,10 @@ below:
 %satisfies a simple {\it Frame Property}: if the primitive can
 %execute on a subset of a high-level state safely, then it can
 %also execute safely on the full high-level state.
-\textbf{Second}, the abstract assembly primitive should be
+Second, the abstract assembly primitive should be
 specified in the precondition, and its execution
 should be done in the final state.
-\textbf{Third}, there is an {\it invariant}
+Third, there is an {\it invariant}
 between low- and high-level programs, holding at the entry of
 the function. Our logic needs to ensure that such invariant
 can be reestablished at the exit of function.
@@ -2506,7 +2521,6 @@ and its corresponding high-level abstract assembly primitive.
             \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
                 {i}{0}{(\primcom, \hpstate)} \\
             \\[-9pt]
-            \hspace*{0.8em}
             \text{where }
             \simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}
                 {i}{k}{(\primcom, \hpstate)}
@@ -2657,7 +2671,7 @@ imply the contextual refinement between the implementation
 $\asmimp$ and abstract assembly primitive set $\hprimset$. 
 % We give soundness proof below.
 
-\paragraph{\textbf{Soundness Proof.}}
+\paragraph{Soundness Proof.}
 We show the soundness proof of our logic.
 We first give Lemma~\ref{lemma:function correctness}
 to show that the simulation relation for instruction
@@ -2671,63 +2685,67 @@ functions.
     {\em $\simFunction{(\asmimp, \lab{})}
             {(\relastP, \, \relastQ)}{\primcom}$}.
 \end{lemma}
-\begin{proof}
-    By the definition of
-    $\simFunction{(\asmimp, \lab{})}
-        {(\relastP, \, \relastQ)}{\primcom}$
-    (in \Def{\ref{def:simfunc}}),
-    we need to prove that, for all $\state$, $\hpstate$,
-    $\word$ and $\primcom$:
-    \begin{multline*}
-        \asrtmodel{(\state, \hpstate, \word, \primcom)}
-            {\relastP} \implies \\
-            \exists \, i \in \Index. \
-            \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
-                {i}{0}{(\primcom, \hpstate)}
-    \end{multline*}
+% \begin{proof}
+%     By the definition of
+%     $\simFunction{(\asmimp, \lab{})}
+%         {(\relastP, \, \relastQ)}{\primcom}$
+%     (in \Def{\ref{def:simfunc}}),
+%     we need to prove that, for all $\state$, $\hpstate$,
+%     $\word$ and $\primcom$:
+%     \begin{multline*}
+%         \asrtmodel{(\state, \hpstate, \word, \primcom)}
+%             {\relastP} \implies \\
+%             \exists \, i \in \Index. \
+%             \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
+%                 {i}{0}{(\primcom, \hpstate)}
+%     \end{multline*}
 
-    % the following hold:
-    % % We unfold
-    % % $\simFunction{(\asmimp, \lab{})}
-    % %     {(\relastP, \, \relastQ)}{\primcom}$ according
-    % % to its definition (in \Def{\ref{def:simfunc}})
-    % % and get the following assumptions:
-    % \begin{align}
-    %     & \semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
-    %         {\pc}{\asmimp[\pc]} \\
-    %     & \models\asmimp:\Cspec{} \\
-    %     & \asrtmodel{(\state, \hpstate, \word, \primcom)}
-    %         {\relastP}
-    % \end{align}
-    % And we need to prove:
-    % % that there exisits
-    % % $i \in \Index$, such that:
-    % \[
-    %     \exists \, i \in \Index. \
-    %     \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
-    %             {i}{0}{(\primcom, \hpstate)}
-    % \]
-    The index $i$ can be instantiated as
-    $(\word, 0, |\,\asmimp[\pc]\,|)$, where $|\,\cblk\,|$ means
-    getting the length of instruction sequence $\cblk$.
-    And $(\word, k, |\, \cblk \,|) < (\word', k', |\,\cblk'\,|)$
-    is defined as ($k$ and $k'$ are depths of function call):
-    \[
-        \word < \word' \lor
-        (\word = \word' \land
-        (k < k' \lor (k = k' \land
-        |\,\cblk\,| < |\,\cblk'\,|)))
-        % \word < \word' \lor
-        % (\word = \word' \land
-        % |\,\cblk\,| < |\,\cblk'\,|)
-    \]
+%     % the following hold:
+%     % % We unfold
+%     % % $\simFunction{(\asmimp, \lab{})}
+%     % %     {(\relastP, \, \relastQ)}{\primcom}$ according
+%     % % to its definition (in \Def{\ref{def:simfunc}})
+%     % % and get the following assumptions:
+%     % \begin{align}
+%     %     & \semwffseqrel{\Cspec{}}{\relastP}{\relastQ}
+%     %         {\pc}{\asmimp[\pc]} \\
+%     %     & \models\asmimp:\Cspec{} \\
+%     %     & \asrtmodel{(\state, \hpstate, \word, \primcom)}
+%     %         {\relastP}
+%     % \end{align}
+%     % And we need to prove:
+%     % % that there exisits
+%     % % $i \in \Index$, such that:
+%     % \[
+%     %     \exists \, i \in \Index. \
+%     %     \simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
+%     %             {i}{0}{(\primcom, \hpstate)}
+%     % \]
+%     The index $i$ can be instantiated as
+%     $(\word, 0, |\,\asmimp[\pc]\,|)$, where $|\,\cblk\,|$ means
+%     getting the length of instruction sequence $\cblk$.
+%     And $(\word, k, |\, \cblk \,|) < (\word', k', |\,\cblk'\,|)$
+%     is defined as ($k$ and $k'$ are depths of function call):
+%     \[
+%         \word < \word' \lor
+%         (\word = \word' \land
+%         (k < k' \lor (k = k' \land
+%         |\,\cblk\,| < |\,\cblk'\,|)))
+%         % \word < \word' \lor
+%         % (\word = \word' \land
+%         % |\,\cblk\,| < |\,\cblk'\,|)
+%     \]
 
-    The simulation relation $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
-    {i}{0}{(\primcom, \hpstate)}$ is defined co-inductively
-    in \Def{\ref{def:sim-imp-prim-state}}. So, we prove
-    it by co-induction and discuss each case of the simulation
-    respectively.
-\end{proof}
+%     The simulation relation $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{}+4)}
+%     {i}{0}{(\primcom, \hpstate)}$ is defined co-inductively
+%     in \Def{\ref{def:sim-imp-prim-state}}. So, we prove
+%     it by co-induction and discuss each case of the simulation
+%     respectively.
+% \end{proof}
+
+Then, in Lemma~\ref{lemma:Logic Ensures Simulation}, 
+we show that our logic ensures the simulation relations 
+between the SPARCv8 implementations and abstract assembly primitives.
 
 \begin{lemma}[Logic Ensures Simulation]
     \em
@@ -2742,116 +2760,116 @@ functions.
             \semWdPrim{\Cspec}{\asmimp}{\hprimset}$
     \end{itemize}
 \end{lemma}
-\begin{proof}
-    We prove each conclusion respectively.
-    \begin{itemize}
-        \item The well-formed instruction sequence shown as
-            $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$
-            is defined inductively in
-            \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}.
-            We proof it by induction over the derivation of
-            $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$.
+% \begin{proof}
+%     We prove each conclusion respectively.
+%     \begin{itemize}
+%         \item The well-formed instruction sequence shown as
+%             $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$
+%             is defined inductively in
+%             \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}.
+%             We proof it by induction over the derivation of
+%             $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}$.
 
-        \item By the definition of
-            $\wfcdhp{\asmimp}{\Cspec}$
-            (defined in
-            \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}),
-            we get that for all $\lab{} \in \dom(\Cspec{})$, $\lgvl$:
-            \begin{align}
-                & \Cspec(\lab{}) = (\relspecpre, \relspecpost)
-                    \label{a:wfcdhp-spec} \\
-                & \wfcblk{\relspecpre \, \lgvl}
-                    {\relspecpost \, \lgvl}{\lab{}}{\asmimp[\lab{}]}
-                    \label{a:wfcdblk}
-            \end{align}
-            Then we unfold the proof goal $\models\asmimp:\Cspec{}$
-            by its definition
-            (in \Def{\ref{def:soundness of instruction sequence}}).
-            And we need to prove that for all
-            $\lab{} \in \dom(\Cspec{})$, $\lgvl$ :
-            \begin{align}
-                & \Cspec{}(\lab{}) = (\relspecpre, \relspecpost)
-                    \tag{g1} \label{g1} \\
-                & \semwfseqrel{\Cspec{}}{\relspecpre \, \lgvl}
-                    {\relspecpost \, \lgvl}{\asmimp[\lab{}]}
-                    \tag{g2} \label{g2}
-            \end{align}
-            Because we have already proved that:
-            $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}
-            \implies
-            \semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$,
-            we finish the proof by applying this lemma.
+%         \item By the definition of
+%             $\wfcdhp{\asmimp}{\Cspec}$
+%             (defined in
+%             \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}),
+%             we get that for all $\lab{} \in \dom(\Cspec{})$, $\lgvl$:
+%             \begin{align}
+%                 & \Cspec(\lab{}) = (\relspecpre, \relspecpost)
+%                     \label{a:wfcdhp-spec} \\
+%                 & \wfcblk{\relspecpre \, \lgvl}
+%                     {\relspecpost \, \lgvl}{\lab{}}{\asmimp[\lab{}]}
+%                     \label{a:wfcdblk}
+%             \end{align}
+%             Then we unfold the proof goal $\models\asmimp:\Cspec{}$
+%             by its definition
+%             (in \Def{\ref{def:soundness of instruction sequence}}).
+%             And we need to prove that for all
+%             $\lab{} \in \dom(\Cspec{})$, $\lgvl$ :
+%             \begin{align}
+%                 & \Cspec{}(\lab{}) = (\relspecpre, \relspecpost)
+%                     \tag{g1} \label{g1} \\
+%                 & \semwfseqrel{\Cspec{}}{\relspecpre \, \lgvl}
+%                     {\relspecpost \, \lgvl}{\asmimp[\lab{}]}
+%                     \tag{g2} \label{g2}
+%             \end{align}
+%             Because we have already proved that:
+%             $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}
+%             \implies
+%             \semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$,
+%             we finish the proof by applying this lemma.
 
-        \item By the definition of
-            $\wfprim{\Cspec{}}{\asmimp}{\hprimset}$
-            % according to its definition
-            (defined in
-            \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}),
-            the following hold:
-            \begin{align}
-                & \wfcdhp{\asmimp}{\Cspec{}} \label{a:wdcdhp2} \\
-                & \begin{array}{l}
-                      \text{for all } \lab{} \in \dom(\Cspec{}),
-                      \exists \hprim, \specpre, \specpost. \\
-                      \quad \ \
-                      \left\{
-                          \begin{array}{l}
-                             \Cspec(\lab{}) = (\relspecpre, \relspecpost), \,
-                             \hprimset(\lab{}) = \hprim \\
-                             \wdSpec{\relspecpre}{\relspecpre}{\hprim}
-                          \end{array}
-                      \right.
-                  \end{array}
-                  \label{a:wdspec}
-            \end{align}
-            Since we have proved that
-            $\wfcdhp{\asmimp}{\Cspec{}} \implies
-            \models\asmimp:\Cspec{}$, we get that
-            the following holds from (\ref{a:wdcdhp2}):
-            \begin{equation}
-                \models\asmimp:\Cspec{}
-                \label{a:semwdcdhp2}
-            \end{equation}
+%         \item By the definition of
+%             $\wfprim{\Cspec{}}{\asmimp}{\hprimset}$
+%             % according to its definition
+%             (defined in
+%             \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}),
+%             the following hold:
+%             \begin{align}
+%                 & \wfcdhp{\asmimp}{\Cspec{}} \label{a:wdcdhp2} \\
+%                 & \begin{array}{l}
+%                       \text{for all } \lab{} \in \dom(\Cspec{}),
+%                       \exists \hprim, \specpre, \specpost. \\
+%                       \quad \ \
+%                       \left\{
+%                           \begin{array}{l}
+%                              \Cspec(\lab{}) = (\relspecpre, \relspecpost), \,
+%                              \hprimset(\lab{}) = \hprim \\
+%                              \wdSpec{\relspecpre}{\relspecpre}{\hprim}
+%                           \end{array}
+%                       \right.
+%                   \end{array}
+%                   \label{a:wdspec}
+%             \end{align}
+%             Since we have proved that
+%             $\wfcdhp{\asmimp}{\Cspec{}} \implies
+%             \models\asmimp:\Cspec{}$, we get that
+%             the following holds from (\ref{a:wdcdhp2}):
+%             \begin{equation}
+%                 \models\asmimp:\Cspec{}
+%                 \label{a:semwdcdhp2}
+%             \end{equation}
 
-            Then, by unfolding $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$,
-            we need to prove that for all $\lab{} \in \dom(\hprimset),
-            \lgvl$, there exists $\hprim$, $\args{\val}$,
-            $\relspecpre$, $\relspecpost$, such that:
-            \begin{itemize}
-                \small
-                \item $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$,
-                    $\hprimset(\lab{}) = \hprim$,
-                    $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$;
-                \item $\relspecpre \, \lgvl \Rightarrow
-                    \safePrimAst{\, \hprim(\args{\val}) \,}
-                    \sepstar \atrue$;
-                \item $\simFunction{(\asmimp, \lab{})}
-                    {(\relspecpre \ \lgvl, \,\relspecpost \ \lgvl)}
-                    {\hprim(\args{\val})}$;
-            \end{itemize}
-            The proof of the first subgoal can be done by
-            assumption (\ref{a:wdspec}) directly; the second
-            one can be done by the definition of
-            $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
-            (defined in \Def{\ref{def:well-defined specification}}),
-            which requires that the abstract assembly primitive should
-            be specified in the precondition; as for the
-            third one, we first prove that the following
-            holds by (\ref{a:semwdcdhp2}):
-            \begin{equation}
-                \semwfseqrel{\Cspec}{\relspecpre \ \lgvl}
-                    {\relspecpost \ \lgvl}{\asmimp[\lab{}]}
-                \label{a:startingblk-welldefined}
-            \end{equation}
-            Then, we finish the proof by 
-            applying Lemma~\ref{lemma:function correctness} 
-            on (\ref{a:startingblk-welldefined})
-            (\ref{a:semwdcdhp2}).
-    \end{itemize}
-    % Thus we are done.
-\end{proof}
+%             Then, by unfolding $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$,
+%             we need to prove that for all $\lab{} \in \dom(\hprimset),
+%             \lgvl$, there exists $\hprim$, $\args{\val}$,
+%             $\relspecpre$, $\relspecpost$, such that:
+%             \begin{itemize}
+%                 \small
+%                 \item $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$,
+%                     $\hprimset(\lab{}) = \hprim$,
+%                     $\Cspec(\lab{}) = (\relspecpre, \relspecpost)$;
+%                 \item $\relspecpre \, \lgvl \Rightarrow
+%                     \safePrimAst{\, \hprim(\args{\val}) \,}
+%                     \sepstar \atrue$;
+%                 \item $\simFunction{(\asmimp, \lab{})}
+%                     {(\relspecpre \ \lgvl, \,\relspecpost \ \lgvl)}
+%                     {\hprim(\args{\val})}$;
+%             \end{itemize}
+%             The proof of the first subgoal can be done by
+%             assumption (\ref{a:wdspec}) directly; the second
+%             one can be done by the definition of
+%             $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
+%             (defined in \Def{\ref{def:well-defined specification}}),
+%             which requires that the abstract assembly primitive should
+%             be specified in the precondition; as for the
+%             third one, we first prove that the following
+%             holds by (\ref{a:semwdcdhp2}):
+%             \begin{equation}
+%                 \semwfseqrel{\Cspec}{\relspecpre \ \lgvl}
+%                     {\relspecpost \ \lgvl}{\asmimp[\lab{}]}
+%                 \label{a:startingblk-welldefined}
+%             \end{equation}
+%             Then, we finish the proof by 
+%             applying Lemma~\ref{lemma:function correctness} 
+%             on (\ref{a:startingblk-welldefined})
+%             (\ref{a:semwdcdhp2}).
+%     \end{itemize}
+%     % Thus we are done.
+% \end{proof}
 
-Then, we give
+Next, we give
 Lemma~\ref{lemma:Simulation Implies Primitive Correctness},
 which says that our simulation for functions implies
 primitive correctness. We introduce a whole program
@@ -2905,62 +2923,62 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     {\em $(\code\uplus\asmimp, \state, \pc, \npc)
         \wpsim^{i} ((\code, \hprimset), \hpstate)$}.
 \end{lemma}
-\begin{proof}
-    Since the whole program simulation is defined
-    co-inductively, we prove this lemma by co-induction.
-    We discuss whether the low-level program
-    is executing the command $\comm$ in client code
-    $\code$ or the implementations of
-    abstract assembly primitives $\asmimp$.
-    \begin{itemize}
-        \item If $\comm \in \dom(\code)$, we use the
-            following figure to illustrate such case:
-            \begin{center}
-                \vspace*{-0.5em}
-                \input{picture/client-code-exec}
-                \vspace*{-0.5em}
-            \end{center}
-            Since the client code of low- and high-level
-            programs are the same, the high-level will
-            execute the same command $\comm$.
-            % We know that the high-level executes the same command
-            % $\comm$, because the client code of low- and
-            % high-level programs are the same.
-            We can prove that
-            the state relation, shown as $\stateRel{\state}{\hpstate}$
-            and defined in \Sec{\ref{subsec:correctness-primitive}},
-            can be preserved after the execution, shown
-            as $\stateRel{\state'}{\hpstate'}$. So, we
-            establish the simulation relation between
-            low- and high-level programs.
+% \begin{proof}
+%     Since the whole program simulation is defined
+%     co-inductively, we prove this lemma by co-induction.
+%     We discuss whether the low-level program
+%     is executing the command $\comm$ in client code
+%     $\code$ or the implementations of
+%     abstract assembly primitives $\asmimp$.
+%     \begin{itemize}
+%         \item If $\comm \in \dom(\code)$, we use the
+%             following figure to illustrate such case:
+%             \begin{center}
+%                 \vspace*{-0.5em}
+%                 \input{picture/client-code-exec}
+%                 \vspace*{-0.5em}
+%             \end{center}
+%             Since the client code of low- and high-level
+%             programs are the same, the high-level will
+%             execute the same command $\comm$.
+%             % We know that the high-level executes the same command
+%             % $\comm$, because the client code of low- and
+%             % high-level programs are the same.
+%             We can prove that
+%             the state relation, shown as $\stateRel{\state}{\hpstate}$
+%             and defined in \Sec{\ref{subsec:correctness-primitive}},
+%             can be preserved after the execution, shown
+%             as $\stateRel{\state'}{\hpstate'}$. So, we
+%             establish the simulation relation between
+%             low- and high-level programs.
 
-        \item If $\comm \in \dom(\asmimp)$, we use the
-            following figure to illustrate such case:
-            \begin{center}
-                \vspace*{-0.5em}
-                \input{picture/asmimp-code-exec}
-                \vspace*{-0.5em}
-            \end{center}
-            The assumption $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$
-            defined in \Def{\ref{def:wdprim-sem}} says that
-            each \sparc{} function has a simulation relation
-            with its corresponding abstract assembly primitive.
-            Such simulation relation
-            (shown as $\preccurlyeq$ in the above figure)
-            ensures that for each step
-            of low-level execution, the high-level program will
-            execute zero or one step. So we
-            establish the simulation relation between
-            low- and high-level programs.
-    \end{itemize}
+%         \item If $\comm \in \dom(\asmimp)$, we use the
+%             following figure to illustrate such case:
+%             \begin{center}
+%                 \vspace*{-0.5em}
+%                 \input{picture/asmimp-code-exec}
+%                 \vspace*{-0.5em}
+%             \end{center}
+%             The assumption $\semWdPrim{\Cspec}{\asmimp}{\hprimset}$
+%             defined in \Def{\ref{def:wdprim-sem}} says that
+%             each \sparc{} function has a simulation relation
+%             with its corresponding abstract assembly primitive.
+%             Such simulation relation
+%             (shown as $\preccurlyeq$ in the above figure)
+%             ensures that for each step
+%             of low-level execution, the high-level program will
+%             execute zero or one step. So we
+%             establish the simulation relation between
+%             low- and high-level programs.
+%     \end{itemize}
 
-    The assumption $\progsafe((\code, \hprimset), \hpstate)$
-    ensures that the client code does not include
-    \csave{}, \crestore{} and \cwr{} instructions, 
-    because we do not give
-    semantics to them in high-level as explained in
-    \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
-\end{proof}
+%     The assumption $\progsafe((\code, \hprimset), \hpstate)$
+%     ensures that the client code does not include
+%     \csave{}, \crestore{} and \cwr{} instructions, 
+%     because we do not give
+%     semantics to them in high-level as explained in
+%     \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
+% \end{proof}
 
 \begin{lemma}
     \label{lemma:wpsim-implies-refinement}
@@ -2992,6 +3010,9 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
         ((\code, \hprimset), \hpstate)
     \end{multline*}
 
+    We finish the proof by applying 
+    Lemma~\ref{lemma:function sim implies whole program sim} 
+    and \ref{lemma:wpsim-implies-refinement}.
     % we get the
     % following assumptions:
     % % We unfold $\asmimp \crefine \hprimset$ according to
@@ -3010,18 +3031,18 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     %     ((\code, \hprimset), \hpstate)
     %     \tag{g3} \label{g3}
     % \end{equation}
-    Here, the $\code$ is the client code, and
-    $\state$ and $\hpstate$ represent the initial states
-    of low- and high-level program respectively.
-    By Lemma~\ref{lemma:function sim implies whole program sim},
-    we know there exisits $i \in \Index$, such that:
-    \begin{equation}
-        (\code\uplus\asmimp, \state, \pc, \npc)
-        \wpsim^{i}
-        ((\code, \hprimset), \hpstate) \label{a:wpsim}
-    \end{equation}
-    By applying Lemma~\ref{lemma:wpsim-implies-refinement}
-    on (\ref{a:wpsim}), the proof is done.
+    % Here, $\code$ is the client code.
+    % $\state$ and $\hpstate$ represent the initial states
+    % of low- and high-level programs respectively.
+    % By Lemma~\ref{lemma:function sim implies whole program sim},
+    % we get there exisits $i \in \Index$, such that:
+    % \begin{equation}
+    %     (\code\uplus\asmimp, \state, \pc, \npc)
+    %     \wpsim^{i}
+    %     ((\code, \hprimset), \hpstate) \label{a:wpsim}
+    % \end{equation}
+    % By applying Lemma~\ref{lemma:wpsim-implies-refinement}
+    % on (\ref{a:wpsim}), the proof is done.
 \end{proof}
 
 \begin{theorem}[Logic Soundness]

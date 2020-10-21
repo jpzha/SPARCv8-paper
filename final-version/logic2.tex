@@ -373,7 +373,6 @@ Lemma~\ref{lemma:RFileSplitExDelay}. Let
 \]
 and we present the proof of 
 Lemma~\ref{lemma:dly-sep-split} below.
-{\color{blue}
 \begin{proof}
 	``$\Rightarrow$": 
 	if $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
@@ -422,7 +421,7 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	then $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 	{\nxtAst{(\astP\sepstar\astQ)}}$. 
 	From the semantics of assertions, 
-	we get there exists $\Mem_1$, $\Mem_2$, $\RFile_1'$, 
+	we get there exist $\Mem_1$, $\Mem_2$, $\RFile_1'$, 
 	$\RFile_2'$, $\RFile_1$, $\RFile_2$, $\DBuf_1'$ and $\DBuf_2'$, 
 	where $\RFile = \RFile_1\uplus\RFile_2$, such that:
 	\begin{align}
@@ -452,7 +451,6 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 	{\nxtAst{(\astP\sepstar\astQ)}}$.
 \end{proof}
-}
 
 We use $\frmst{\cwp}{\Wstack}$ to describe the pointer
 $\regcwp$ of the current register window and the frame

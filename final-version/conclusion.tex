@@ -34,7 +34,7 @@ ARM verification based on a realistic model
 
 As part of the Foundational Proof-Carrying Code (FPCC)
 project~\cite{FPCC},
-Tan and Appel present a program logic $\mathcal{L}_c$
+Tan and Appel presented a program logic $\mathcal{L}_c$
 for reasoning about control flow in assembly code~\cite{cflogic}.
 Although $\mathcal{L}_c$ is implemented
 on top of the SPARC machine language,
@@ -48,13 +48,13 @@ control transfers is not the focus of $\mathcal{L}_c$.
 %style.
 There has been work on mechanized semantics of the SPARCv8 ISA.
 %Here are already some works for SPARCv8 ISA formalization.
-\etal{Hou}~\cite{sparcv8-formalization-Isabelle} model the SPARCv8 ISA
+\etal{Hou}~\cite{sparcv8-formalization-Isabelle} modelled the SPARCv8 ISA
 in Isabelle/HOL, and test their formal model against
 LENON3 simulation board,
 which is a synthesisable VHDL model of a 32-bit processor
 compliant with the SPARCv8 architecture,
 through more than 100,000 instruction instances.
-\etal{Wang}~\cite{sparc-formalization} formalize its semantics in Coq.
+\etal{Wang}~\cite{sparc-formalization} formalized its semantics in Coq.
 %However, both of their works give no program logic.
 Our operational semantics of SPARCv8 follows \etal{Wang}~\cite{sparc-formalization}.
 %\etal{Wang}~\cite{sparc-formalization}
@@ -68,7 +68,7 @@ as future work.
 % But \etal{Wang} do not validate their formalization against actual
 % hardware, we remain it as a future work.
 
-\etal{Ni}~\cite{ctxm} verify a context switch module of 19 lines
+\etal{Ni}~\cite{ctxm} verified a context switch module of 19 lines
 in x86 code to showcase the support of embedded
 code pointers (ECP) in XCAP~\cite{xcap}.
 We use our program logic to verify the contextual
@@ -103,7 +103,7 @@ the contexts stored in register window in memory.
 % successfully in the refinement verification
 % of C-style language \cite{Xu16cav,liang13pldi,liang14lics}.
 
-Yang and Hawblitzel~\cite{YangPLDI10} verify Verve, an x86
+Yang and Hawblitzel~\cite{YangPLDI10} verified Verve, an x86
 implementation of an experimental operating system. Verve has two
 levels, the high-level TAL code and the low-level ``Nucleus''
 that provides primitive access to hardware and memory.

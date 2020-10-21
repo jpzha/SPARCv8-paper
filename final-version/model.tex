@@ -251,7 +251,7 @@ The $\regcwp$ register (part of $\psr$) records the id number
 of the current window ($\regcwp=0$ in this example).
 \begin{figure*}[!t]
 	\centering
-	\includegraphics[width=9cm]{window}
+	\includegraphics[width=8.7cm]{window}
 	% \includegraphics[width=58ex]{window}
 	\caption{Register Windows (figure taken from \cite{sparc})}
 	\label{fig:RegisterWindows}
@@ -324,11 +324,11 @@ for appending an element at the tail of a list.
       \qquad
      \inRN \ \define \  [\reg{24}, \dots, \reg{31}]
      \\
-     \\[-5pt]
+     \\[-8pt]
      \RFile([\reg{i}, \dots, \reg{i+k}]) \ \define\
      [\RFile(\reg{i}), \dots, \RFile(\reg{i+k})]
      \\
-     \\[-5pt]
+     \\[-8pt]
      %
      \Rupd{\reg{i}, \dots, \reg{i+7}}{\fm} \ \define \
 			R\{ \reg{i} \rightsquigarrow \val_0 \}
@@ -384,7 +384,7 @@ for appending an element at the tail of a list.
             \end{array}
             \right. \\
 %            & & \where \ \ Q = (R, F)
-            \\[-5pt]
+            \\[-8pt]
 
             \incwin(\RFile, \Wstack) & \define &
             \left\{
@@ -500,7 +500,7 @@ omit features like interrupts and traps.
 We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 \begin{figure*}
 	\centering
-	\subfigure[Program Transition]
+	\subfigure[]
 	{
 		\begin{minipage}[b]{1\textwidth}
 		% \small
@@ -527,7 +527,7 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 		\end{minipage}
 	}
 	
-	\subfigure[Control Transfer Instruction Transition]
+	\subfigure[]
 	{	
 		\begin{minipage}[b]{1\textwidth}
 		% \small
@@ -608,7 +608,7 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 		\end{minipage}
 	}
 	
-	\subfigure[Save, Restore and Wr instruction Transition]
+	\subfigure[]
 	{
 		\begin{minipage}[b]{1\textwidth}
 			% \small
@@ -683,7 +683,7 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 		\end{minipage}
 	}
 	
-	\subfigure[Simple Instruction Transition]
+	\subfigure[]
 	{
 		\begin{minipage}[b]{1\linewidth}
 			% \small
@@ -741,7 +741,7 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 		\end{minipage}	
 	}
 
-	\subfigure[Expression Semantics]
+	\subfigure[]
 	{
 		\begin{minipage}[b]{1\linewidth}
 			% \small
@@ -783,8 +783,12 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 			\vspace{0.3cm}
 		\end{minipage}	
 	}
-	\caption{Selected operational semantics rules
-		(taken from~\cite{sparc-formalization})}
+	\caption{Selected operational semantics rules. 
+	(a) Program Transition. 
+	(b) Control Transfer Instruction Transitions. 
+	(c) Save, Restore and Wr Instruction Transitions. 
+	(d) Simple Instruction Transitions. 
+	(e) Expression Semantics.}
 	\label{Selected Operational Semantics}
 \end{figure*}
 The program transition relation
