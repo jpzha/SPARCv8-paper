@@ -360,18 +360,20 @@ $
 %\end{enumerate}
 \end{lemma}
 The lemma can be proved following 
-Lemma~\ref{lemma:RFileSplitExDelay}. Let 
-\[
-	\begin{array}{ll}
-		\RFile_1\uplus\RFile_2 \define 
-		\RFile_1\cup\RFile_2 \quad 
-		& \cif \ \RFile_1\perp\RFile_2 \\ \\[-9pt]
-		\Mem_1\uplus\Mem_2 \define 
-		\Mem_1\cup\Mem_2 \quad 
-		& \cif \ \Mem_1\perp\Mem_2
-	\end{array}
-\]
-and we present the proof of 
+Lemma~\ref{lemma:RFileSplitExDelay}. 
+% Let 
+% \[
+% 	\begin{array}{ll}
+% 		\RFile_1\uplus\RFile_2 \define 
+% 		\RFile_1\cup\RFile_2 \quad 
+% 		& \cif \ \RFile_1\perp\RFile_2 \\ \\[-9pt]
+% 		\Mem_1\uplus\Mem_2 \define 
+% 		\Mem_1\cup\Mem_2 \quad 
+% 		& \cif \ \Mem_1\perp\Mem_2
+% 	\end{array}
+% \]
+% and 
+we present the proof of 
 Lemma~\ref{lemma:dly-sep-split} below.
 \begin{proof}
 	``$\Rightarrow$": 
@@ -379,25 +381,38 @@ Lemma~\ref{lemma:dly-sep-split} below.
 		{\nxtAst{(\astP\sepstar\astQ)}}$, then 
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 		{\nxtAst{(\astP)}\sepstar\nxtAst{(\astQ)}}$. 
-	From the semantics of assertions, 
-	we get there exist $\RFile'$ and $\DBuf'$, such that:
+	% From the semantics of assertions, 
+	We first get there exist $\RFile'$, $\DBuf'$, 
+	$\mem_1$, $\mem_2$, $\RFile_1'$ and $\RFile_2'$ such that:
 	\begin{align}
 		& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \label{a:dstep1} \\
-		& \asrtmodel{(\Mem, (\RFile', \Wstack), \DBuf')}
-			{\astP\sepstar\astQ} \label{a:asthold}
-	\end{align}
-	From (\ref{a:asthold}), there exist 
-	$\Mem_1$, $\Mem_2$, $\RFile_1'$ and $\RFile_2'$ such that:
-	\begin{align}
-		& \Mem = \Mem_1\uplus\Mem_2 
-		\label{a:memsplit} \\
 		& \RFile' = \RFile_1'\uplus\RFile_2'
 		\label{a:regsplit} \\
+		& \Mem = \Mem_1\uplus\Mem_2 
+		\label{a:memsplit} \\
 		& \asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf')}{\astP} 
 		\label{a:pholds} \\
 		& \asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf')}{\astQ}
 		\label{a:qholds} 
 	\end{align}
+	% such that:
+	% \begin{align}
+	% 	& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \label{a:dstep1} \\
+	% 	& \asrtmodel{(\Mem, (\RFile', \Wstack), \DBuf')}
+	% 		{\astP\sepstar\astQ} \label{a:asthold}
+	% \end{align}
+	% From (\ref{a:asthold}), there exist 
+	% $\Mem_1$, $\Mem_2$, $\RFile_1'$ and $\RFile_2'$ such that:
+	% \begin{align}
+	% 	& \Mem = \Mem_1\uplus\Mem_2 
+	% 	\label{a:memsplit} \\
+	% 	& \RFile' = \RFile_1'\uplus\RFile_2'
+	% 	\label{a:regsplit} \\
+	% 	& \asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf')}{\astP} 
+	% 	\label{a:pholds} \\
+	% 	& \asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf')}{\astQ}
+	% 	\label{a:qholds} 
+	% \end{align}
 	By applying Lemma~\ref{lemma:RFileSplitExDelay}
 	on (\ref{a:dstep1}) and (\ref{a:regsplit}), we get 
 	that there exist $\RFile_1$ and $\RFile_1$, 
@@ -420,8 +435,8 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	$\asrtmodel{(\Mem,(\RFile,\Wstack),\DBuf)}{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$,
 	then $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 	{\nxtAst{(\astP\sepstar\astQ)}}$. 
-	From the semantics of assertions, 
-	we get there exist $\Mem_1$, $\Mem_2$, $\RFile_1'$, 
+	% From the semantics of assertions, 
+	We first get there exist $\Mem_1$, $\Mem_2$, $\RFile_1'$, 
 	$\RFile_2'$, $\RFile_1$, $\RFile_2$, $\DBuf_1'$ and $\DBuf_2'$, 
 	where $\RFile = \RFile_1\uplus\RFile_2$, such that:
 	\begin{align}

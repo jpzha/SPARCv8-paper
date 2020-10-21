@@ -243,7 +243,7 @@ which we would like to study in the future work.
 
 \section{Conclusions and Future Work}
 \label{sec:conclusion}
-We present a relational program logic for \sparc.
+We define a relational program logic for \sparc.
 Our logic is based on a realistic semantics
 model and supports the main features of \sparc,
 including delayed control transfer, delayed writes,
@@ -251,11 +251,14 @@ and register windows.
 It also supports modular reasoning of
 function calls in a direct-style and
 refinement verification.
-We apply our logic to verify
-that there is a contextual refinement between
-the context switch routine implemented
-in \sparc{} and 
-the $\primsw$ primitive for task switching.
+We apply our logic to verify that a context switch routine 
+implemented in \sparc{} contextually refine the $\primsw$
+primitive for task switching.
+% We apply our logic to verify
+% that there is a contextual refinement between
+% the context switch routine implemented
+% in \sparc{} and 
+% the $\primsw$ primitive for task switching.
 % And we also extend the program logic to support
 % refinement verification and apply the extended
 % program logic to verify
@@ -277,12 +280,14 @@ and finish {\color{blue} (S1)} shown in
 \Fig{\ref{fig:idea to establish contextual refinement}} 
 in the future. 
 {\color{blue} (S1)} says that 
-the compilation ensures that the behaviors
-of the Pseudo-SPARCv8 code calling abstraction assembly
-primitives in intermediate level refine
-the behaviors of
-the client C code calling abstract assembly primitives
-in the source level. 
+the compilation ensures that the Pseudo-SPARCv8 code 
+refines the C program with abstract assembly primtives.
+
+% of the Pseudo-SPARCv8 code calling abstraction assembly
+% primitives in intermediate level refine
+% the behaviors of
+% the client C code calling abstract assembly primitives
+% in the source level. 
 % that the compilation can ensure the behaviors
 % of the Pseudo-SPARCv8 code calling abstraction assembly
 % primitives in intermediate level refines

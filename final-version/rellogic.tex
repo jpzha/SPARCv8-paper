@@ -1464,7 +1464,7 @@ defined in \Fig{\ref{fig:Semantics of Assertions}}.
 % defined in \Fig{\ref{fig:Semantics of Assertions}}.
 The assertion $\astCurCont{\thrdid}{\hthrdlocalst}$
 and $\astRdyCont{\thrdid}{\hthrdlocalst}$ represent
-the thread local state of current and ready
+the thread local state of the current and ready
 thread respectively. Note that the threads in thread pool
 are viewed as resources and can be separated by
 separation conjunction.
@@ -1510,14 +1510,16 @@ to avoid infinite loops and recursive function calls to make sure
 the termination preserving refinement.
 % The idea is taken from RGSim-T \cite{liang14lics}.
 
-The assertion $\nxtAst{\relastP}$ describes the
+The assertion $\nxtAst{\relastP}$, which is similar with 
+$\nxtAst{\astP}$ defined in \Fig{\ref{fig:Semantics of Assertions}}, 
+describes the
 state after executing one step of the delayed writes.
-Suppose a relational state
-$(\state', \hpstate, \primcom, \word)$ satisfies the
-assertion $\relastP$, where $\state' = (\mem, (\RFile', \Wstack), \DBuf')$,
-then $\nxtAst{\relastP}$ holds after executing a step
-of delayed writes ($\Dstep{(\RFile', \Wstack')}{(\RFile, \Wstack)}$)
-from $\state'$.
+% Suppose a relational state
+% $(\state', \hpstate, \primcom, \word)$ satisfies the
+% assertion $\relastP$, where $\state' = (\mem, (\RFile', \Wstack), \DBuf')$,
+% then $\nxtAst{\relastP}$ holds after executing a step
+% of delayed writes ($\Dstep{(\RFile', \Wstack')}{(\RFile, \Wstack)}$)
+% from $\state'$.
 
 % \subsection{Inference Rules for Refinement Verification}
 % \label{subsec:logic-rule-refinemet}
@@ -1868,12 +1870,12 @@ $\lgvl$.
 \end{figure*}
 \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}
 shows selected inference rules for refinement verification in our
-logic. The top rule $\textbf{WfPrim}$ verifies the contextual refinement
+logic. The top rule $\myrule{WfPrim}$ verifies the contextual refinement
 between the code heap $\asmimp$ and the corresponding abstract assembly
 primitive set $\hprimset$. It requires that each code block specified
 in $\Cspec$ can be verified with respect to its specification,
-shown as ($\wfcdhp{\asmimp}{\Cspec}$), and the specification
-of the implementation of the abstract assembly primitive needs
+shown as ($\wfcdhp{\asmimp}{\Cspec}$), and the specifications
+of the implementations of abstract assembly primitives need
 to meet some restrictions, shown as $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$,
 which we will discuss in more details following.
 % It requires that
@@ -1914,7 +1916,7 @@ separation conjunction $\sepstar$.
 % {\it current thread} and so on,
 % which are not separated by separation
 % conjunction $\sepstar$.
-The \textbf{ABSCSQ} rule allows us to execute the high-level
+The \myrule{ABSCSQ} rule allows us to execute the high-level
 primitive command specified in precondition.
 The implication $\absExec{\relastP}{\relastP'}$
 is defined below formally:
@@ -1946,9 +1948,9 @@ is defined below formally:
         % \qquad \, \lor \, \relastP = \relastP')
     \end{array}
 \]
-The inference rules for verifying instructions are not
-presented here, because they are no different from
-the rules shown in \Fig{\ref{fig:Seleted Inference rules}}.
+The inference rules for instructions are not
+shown here, since they are no different from
+the rules in \Fig{\ref{fig:Seleted Inference rules}}.
 % The inference rules for verifying instructions,
 % defined as well-formed instruction in
 % \Fig{\ref{fig:Selected Inference Rules for
@@ -1976,8 +1978,8 @@ $\wdSpec{\relspecpre}{\relspecpost}{\hprim}$
 is defined formally in
 \Def{\ref{def:well-defined specification}}.
 It contains three properties that
-the specifications need to satisfy,
-and we explain them in turn in the following.
+the specification needs to satisfy.
+% and we explain them in turn in the following.
 
 \begin{definition}[Well-defined Specification]
     \label{def:well-defined specification}
@@ -2230,8 +2232,9 @@ $\exists \, \hpstate'. \,
 Including the safe execution of
 $\primcom$ is essential, 
 since we can get some knowledge of the high-level program
-state from the safe execution of the
-primitive command $\primcom$.
+state from it.
+% the safe execution of the
+% primitive command $\primcom$.
 For example, if $\INV{(\primsw(\nil), \nil)}$
 holds, we know that the location $\TaskNew$
 must save a pointer pointing to a ready thread
@@ -2282,31 +2285,31 @@ in the thread pool, otherwise the $\primsw$ primitive cannot execute.
 % }
 We introduce the frame $\relastP_r$ for local reasoning. 
 And we use $\Sta(\hprim(\args{\val}), \relastP_r)$, whose 
-definition is omitted here, to say that $\relastP_r$ is 
+definition is omitted here, to say that $\relastP_r$
 still holds after the execution of $\hprim(\args{\val})$.
 % It should be stable under the execution
 % of the abstract assembly primitive
 % (shown as $\Sta(\hprim(\args{\val}), \relastP_r)$
 % defined below).
-\[
-    \small
-    \begin{array}{l}
-        \Sta(\primcom, \relastP_r)
-        \define
-        \forall \, \state_r, \hpstate_r, \hpstate,
-        \hpstate', \word. \\
-        \qquad
-        (\primTransMulti{(\primcom, \hpstate)}{*}{(\primdone, \hpstate')}
-        \land \asrtmodel{(\state_r, \hpstate_r, \primcom, \word)}{\relastP_r}
-        \land \hpstate\perp\hpstate_r) \\
-        \qquad\qquad
-        \implies
-        \exists\, \hpstate_r'. \,
-        \hpstate'\perp\hpstate_r' \land
-        \asrtmodel{(\state_r, \hpstate_r', \primdone, \word)}
-            {\relastP_r}
-    \end{array}
-\]
+% \[
+%     \small
+%     \begin{array}{l}
+%         \Sta(\primcom, \relastP_r)
+%         \define
+%         \forall \, \state_r, \hpstate_r, \hpstate,
+%         \hpstate', \word. \\
+%         \qquad
+%         (\primTransMulti{(\primcom, \hpstate)}{*}{(\primdone, \hpstate')}
+%         \land \asrtmodel{(\state_r, \hpstate_r, \primcom, \word)}{\relastP_r}
+%         \land \hpstate\perp\hpstate_r) \\
+%         \qquad\qquad
+%         \implies
+%         \exists\, \hpstate_r'. \,
+%         \hpstate'\perp\hpstate_r' \land
+%         \asrtmodel{(\state_r, \hpstate_r', \primdone, \word)}
+%             {\relastP_r}
+%     \end{array}
+% \]
 
 \subsection{Semantics and Soundness}
 \label{subsec:semantics and soundness}
@@ -2324,11 +2327,14 @@ It is formally defined in \Def{\ref{def:siminsseq}}.
 Here we use ``$\notCare \longmapsto^{n} \notCare$'' to
 represent $n$-step execution.
 The $\word$ in simulation records the number of tokens.
-It will be consumed when meeting \jmp{} and \call{}
-instructions, so as to avoid infinite loops and recursive
-function calls and ensure termination preserving,
-and reset when the high-level
-abstract assembly primitive executes.
+It will be consumed when meeting the \jmp{} and \call{}
+instructions to avoid infinite loops and recursive in 
+low leve for termination preseving, and reset 
+when the high-level abstract assembly primitive executes.
+% so as to avoid infinite loops and recursive
+% function calls and ensure termination preserving,
+% and reset when the high-level
+% abstract assembly primitive executes.
 
 \begin{definition}[Simulation for Instruction Sequence]
     \label{def:siminsseq}
@@ -2503,23 +2509,26 @@ sequences and well-formed code heap below.
 \end{definition}
 
 Next, we define the simulation for functions in
-\Def{\ref{def:simfunc}}. It means that if there
+\Def{\ref{def:simfunc}}. It says that if there
 exists a relational state $(\state, \hpstate, \primcom, \word)$
 satisfying the precondition $\relastP$, then we have
 the simulation
 $\simFunctionSt{\relastQ}{(\asmimp, \state, \lab{}, \lab{} + 4)}
     {i}{0}{(\primcom, \hpstate)}$ defined in
 \Def{\ref{def:sim-imp-prim-state}}.
-The simulation
-$\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}
-    {i}{k}{(\primcom, \hpstate)}$ carries an index $i$,
+The simulation, which ensures the safe execution of the low-level 
+\sparc{} function and its corresponding high-level abstract assembly primitive, 
+in \Def{\ref{def:sim-imp-prim-state}}
+% % $\simFunctionSt{\relastQ}{(\asmimp, \state, \pc, \npc)}
+%     {i}{k}{(\primcom, \hpstate)}$ 
+carries an index $i$,
 which is used to ensure the termination preserving,
 and the depth $k$ of function calls, which
 increases by the \call{} instruction
 and decreases by \retl{} (unless $k=0$).
-This simulation relation ensures
-the safe execution of the low-level SPARCv8 function
-and its corresponding high-level abstract assembly primitive.
+% This simulation ensures
+% the safe execution of the low-level SPARCv8 function
+% and its corresponding high-level abstract assembly primitive.
 
 \begin{definition}[Simulation for Function]
     \label{def:simfunc}
@@ -2672,7 +2681,7 @@ Then we give the semantics for well-formed primitive in
 \end{definition}
 It says that for any high-level
 abstract assembly primitive
-in primitive set $\hprimset$,
+in the primitive set $\hprimset$,
 we can establish a simulation relation
 defined in \Def{\ref{def:simfunc}}
 between its low-level implementation
@@ -2681,14 +2690,16 @@ in code heap $\asmimp$ and itself.
 % whose correctness can be derived from Lemmas
 % \ref{lemma:Logic Ensures Simulation}
 % and \ref{lemma:Simulation Implies Primitive Correctness},
+
 Theorem~\ref{thm:logic soundness}
-shows the soundness of our logic,
-which means that the relational program logic can
-imply the contextual refinement between the implementation
-$\asmimp$ and abstract assembly primitive set $\hprimset$. 
+shows the soundness of our logic.
+% which means that the relational program logic can
+% imply the contextual refinement between the implementation
+% $\asmimp$ and abstract assembly primitive set $\hprimset$. 
 % We give soundness proof below.
 
-\paragraph{Soundness Proof.}
+\paragraph{Soundness Proof.} 
+
 We show the soundness proof of our logic.
 We first give Lemma~\ref{lemma:function correctness}
 to show that the simulation relation for instruction
@@ -2761,8 +2772,9 @@ functions.
 % \end{proof}
 
 Then, in Lemma~\ref{lemma:Logic Ensures Simulation}, 
-we show that our logic ensures the simulation relations 
-between the SPARCv8 implementations and abstract assembly primitives.
+we show that our logic ensures the simulations. 
+% relations 
+% between the SPARCv8 implementations and abstract assembly primitives.
 
 \begin{lemma}[Logic Ensures Simulation]
     \em
@@ -2888,10 +2900,10 @@ between the SPARCv8 implementations and abstract assembly primitives.
 
 Next, we give
 Lemma~\ref{lemma:Simulation Implies Primitive Correctness},
-which says that our simulation for functions implies
-primitive correctness. We introduce a whole program
-simulation defined in \Def{\ref{def:wpsim}} and divide
-the correctness proof of
+which says that the simulation for functions implies
+the primitive correctness. We define a whole program
+simulation in \Def{\ref{def:wpsim}} and divide
+the proof of
 Lemma~\ref{lemma:Simulation Implies Primitive Correctness}
 into two steps.
 % We divide the correctness proof of
@@ -3013,23 +3025,27 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \]
 \end{lemma}
 \begin{proof}
-    By the definition of $\asmimp \ctxrefine \hprimset$
-    (in \Def{\ref{def:prim-correctness}}), we need to prove
-    that for any $\state$, $\hpstate$, $\code$, $\pc$ and
-    $\npc$:
-    \begin{multline*}
-        (\stateRel{\state}{\hpstate} \land
-        \progsafe((\code, \hprimset), \hpstate) \land
-        \hpstate.\hthrdlocalst = (\notCare, \pc, \npc)) \\
-        \implies
-        (\code\uplus\asmimp, \state, \pc, \npc)
-        \refine
-        ((\code, \hprimset), \hpstate)
-    \end{multline*}
-
-    We finish the proof by applying 
+    We unfold $\asmimp \ctxrefine \hprimset$ according to 
+    its definition in \Def{\ref{def:prim-correctness}}, 
+    and finish the proof by applying 
     Lemma~\ref{lemma:function sim implies whole program sim} 
     and \ref{lemma:wpsim-implies-refinement}.
+    % By the definition of $\asmimp \ctxrefine \hprimset$
+    % (in \Def{\ref{def:prim-correctness}}), we need to prove
+    % that for any $\state$, $\hpstate$, $\code$, $\pc$ and
+    % $\npc$:
+    % \begin{multline*}
+    %     (\stateRel{\state}{\hpstate} \land
+    %     \progsafe((\code, \hprimset), \hpstate) \land
+    %     \hpstate.\hthrdlocalst = (\notCare, \pc, \npc)) \\
+    %     \implies
+    %     (\code\uplus\asmimp, \state, \pc, \npc)
+    %     \refine
+    %     ((\code, \hprimset), \hpstate)
+    % \end{multline*}
+    % We finish the proof by applying 
+    % Lemma~\ref{lemma:function sim implies whole program sim} 
+    % and \ref{lemma:wpsim-implies-refinement}.
     % we get the
     % following assumptions:
     % % We unfold $\asmimp \crefine \hprimset$ according to

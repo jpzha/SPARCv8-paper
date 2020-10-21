@@ -55,13 +55,6 @@ and then saves them into memory, until all the windows are saved.
 \paragraph{\textbf{Specification.}}
 Below we give the pre- and post-conditions
 ($\Apre$ and $\Apost$) of the verified module.
-Each of them takes 6 arguments,
-the id of the current task $\ctid$, the id of the new
-task $\ntid$, the values $\env$ of general registers and
-other register windows saving contexts,
-the new task's context $\nst$ to be restored,
-and the thread local state $\hthrdlocalst_c$
-of current task and $\hthrdlocalst_n$ of the new task.
 \[
     \small
     \begin{array}{l}
@@ -97,6 +90,13 @@ of current task and $\hthrdlocalst_n$ of the new task.
         \end{array}
     \end{array}
 \]
+Each of them takes 6 arguments,
+the id of the current task $\ctid$, the id of the new
+task $\ntid$, the values $\env$ of general registers and
+other register windows saving contexts,
+the new task's context $\nst$ to be restored,
+and the thread local state $\hthrdlocalst_c$
+of current task and $\hthrdlocalst_n$ of the new task.
 In the specification,
 we use $\Env{\env}$ to specify the values of
 general registers and the register windows.
@@ -104,25 +104,29 @@ We describe the state
 of the current task
 % (its TCB and stack in memory)
 using $\RelCurT{\ctid}{\notCare}{\env}{\hthrdlocalst_c}$.
-It describes the memory of current task's TCB
-and stack for saving contexts in low-level,
-the thread local state $\hthrdlocalst_c$ in high-level,
-and the state relation between the current thread $\ctid$
-in low- and high-level.
+It descirbes the states of the current task $\ctid$ 
+in low and high level, and their state relation. 
+% It describes the memory of the current task's TCB
+% and the stack for saving contexts in low-level,
+% the thread local state $\hthrdlocalst_c$ in high-level,
+% and the state relation between the current thread $\ctid$
+% in low- and high-level.
 Similarly, $\RelRdyT{\ntid}{\nst}{\hthrdlocalst_n}$
-describes states of new task $\ntid$ in low- and high-level
-programs and their relation.
+describes states of new task $\ntid$ in low and high level,
+and their state relation.
 % Here, we use $\nst$ to represent the saved context
 % of task $\ntid$.
 The memory location
 $\TaskNew$ records the identifier of the new task $\ntid$.
-And we use $\relmsto{\TaskNew}{(\ntid, 0)}$ to denote that
+$\relmsto{\TaskNew}{(\ntid, 0)}$, where $\relmsto{\loc}{\val}$ 
+is defined as $(\msto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val})$, 
+denotes that
 $\TaskNew$ saves $(\tid_n, 0)$
 in both low- and high-level memory.
-\[
-    \relmsto{\loc}{\val} \ \define \
-    (\msto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val})
-\]
+% \[
+%     \relmsto{\loc}{\val} \ \define \
+%     (\msto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val})
+% \]
 
 The precondition takes ten tokens ($\metricAst{10}$).
 As we have explained, verifying \call{}
@@ -332,7 +336,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
 % \end{proof}
 
 We use $\code_{\texttt{switch}}$ to represent the
-code heap storing the code of context switch routine,
+code heap storing the code of the context switch routine,
 which includes the code blocks \SwitchEntry{},
 \regsave{}, \regrestore{},
 \SaveUsedWin{} and \SwitchNewTask{}. We prove that
@@ -346,12 +350,14 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
 \end{lemma}
 \begin{proof}
     % The code heap specification $\Cspec{}$ have been
-    % defined in (\ref{ctxswitch-Cspec}). 
-    We unfold
-    $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$
-    according to its definition
-    (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}).
-    And we need to prove that for any $\lgvl_1$,
+    % defined in (\ref{ctxswitch-Cspec}).
+    From \myrule{WfInt} rule in 
+    \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}, 
+    % We unfold
+    % $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$
+    % according to its definition
+    % (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}).
+    we need to prove that for any $\lgvl_1$,
     $\lgvl_2$, $\lgvl_3$,
     $\lgvl_4$ and $\lgvl_5$, the following hold
     ($\lab{\textit{se}}$, $\lab{\textit{rs}}$,
@@ -411,7 +417,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     Here, we apply \myrule{ABSCSQ} rule
     in verifying the code block
     \SwitchNewTask{} (\ref{ctxswitch-wfsn}),
-    when context switch routine returns,
+    when the context switch routine returns,
     as shown in \Fig{\ref{fig:refinement reasoning}}.
     In \Fig{\ref{fig:refinement reasoning}}, we use the
     solid circle to represent the point applying \myrule{ABSCSQ} rule,
@@ -437,47 +443,56 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$.
 \end{theorem}
 \begin{proof}
-    By the definition of
-    $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$,
-    where $\hprimset$ and $\Cspec{}$ are defined in
-    (\ref{ctxswitch-hprimset}) and (\ref{ctxswitch-Cspec})
-    respectively, we prove the following:
-    % We unfold
-    % $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$
-    % by its definition
-    % (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}),
+    The proof follows the \myrule{WfPrim} rule in 
+    \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}, 
+    and Lemma~\ref{lemma:ctxswitch-wdspec}
+    and \ref{lemma:ctxswitch-wfcdhp}.
+    % We know that $\wfcdhp{\asmimp}{\Cspec{}}$ holds 
+    % from Lemma~\ref{lemma:ctxswitch-wfcdhp}
+    % By the definition of
+    % $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$,
     % where $\hprimset$ and $\Cspec{}$ are defined in
     % (\ref{ctxswitch-hprimset}) and (\ref{ctxswitch-Cspec})
-    % respectively, and we prove the following hold:
-    \begin{itemize}
-        \item $\wfcdhp{\asmimp}{\Cspec{}}$.
-            Prove by Lemma~\ref{lemma:ctxswitch-wfcdhp}.
-            % The correctness proof of this subgoal can be done by
-            % apply Lemma~\ref{lemma:ctxswitch-wfcdhp}.
-        \item $\wdSpec{\Apre}{\apost}{\primsw}$.
-            Prove by Lemma ~\ref{lemma:ctxswitch-wdspec}.
-            % The correctness proof of this subgoal can be done by
-            % apply Lemma~\ref{lemma:ctxswitch-wdspec}.
-    \end{itemize}
-    % Thus we are done.
+    % respectively, we prove that $\wfcdhp{\asmimp}{\Cspec{}}$
+    % the following:
+    % % We unfold
+    % % $\wfprim{\Cspec}{\code_{\texttt{switch}}}{\hprimset}$
+    % % by its definition
+    % % (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}),
+    % % where $\hprimset$ and $\Cspec{}$ are defined in
+    % % (\ref{ctxswitch-hprimset}) and (\ref{ctxswitch-Cspec})
+    % % respectively, and we prove the following hold:
+    % \begin{itemize}
+    %     \item $\wfcdhp{\asmimp}{\Cspec{}}$.
+    %         Prove by Lemma~\ref{lemma:ctxswitch-wfcdhp}.
+    %         % The correctness proof of this subgoal can be done by
+    %         % apply Lemma~\ref{lemma:ctxswitch-wfcdhp}.
+    %     \item $\wdSpec{\Apre}{\apost}{\primsw}$.
+    %         Prove by Lemma ~\ref{lemma:ctxswitch-wdspec}.
+    %         % The correctness proof of this subgoal can be done by
+    %         % apply Lemma~\ref{lemma:ctxswitch-wdspec}.
+    % \end{itemize}
+    % % Thus we are done.
 \end{proof}
 
 This part of work has not been mechanized in Coq.
 In our conference paper, we show that
-we apply our logic that do not support
-refinement verification to verify
+we apply our logic 
+% that does not support
+% refinement verification 
+for partial correctness to verify
 the main body of the context switch routine in
 a realistic embedded OS kernel for aerospace crafts,
-which consists of around 250 lines of SPARCv8 code,
+which consists of around 250 lines of \sparc{} code,
 by 6690 lines of Coq proof scripts. Here, the
 context switch routine verified by applying our
 relational program logic is a
 simplified version of such context switch routine,
 which omits some details like judging whether the
-current thread is a valid thread.
+current thread is a valid one.
 Verifying that each code block is well-defined
-by applying the inference rules in our new logic is
-no different from the previous proof work.
+using the inference rules in our new logic is
+no different from the previous work.
 The additional proof efforts include:
 (1) proving that the specification of context
 switch routine is well-defined (shown in
@@ -485,8 +500,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec});
 (2) applying \myrule{ABSCSQ} rule to execute
 the $\primsw$ primitive and proving that the state
 relation between low- and high-level programs
-can be reestablished in verifying code block
-\SwitchNewTask{}, when the context switch routine
+can be reestablished when the context switch routine
 returns (as noted in the proof of
 Lemma~\ref{lemma:ctxswitch-wfcdhp}).
 
