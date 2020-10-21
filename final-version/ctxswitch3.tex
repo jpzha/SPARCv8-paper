@@ -363,33 +363,33 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
             {\lab{\textit{se}}}
             {\code_{\texttt{switch}}
             [\lab{\textit{se}}]}
-            \tag{g-wfse}
+            % \tag{g-wfse}
             \label{ctxswitch-wfse} \\
         & \wfcblk{\relspecpre_{\textit{rs}} \ \lgvl_2}
             {\relspecpost_{\textit{rs}} \ \lgvl_2}
             {\lab{\textit{rs}}}
             {\code_{\texttt{switch}}
             [\lab{\textit{rs}}]}
-            \tag{g-wfrs}
+            % \tag{g-wfrs}
             \label{ctxswitch-wfrs} \\
         & \wfcblk{\relspecpre_{\textit{rr}} \ \lgvl_3}
             {\relspecpost_{\textit{rr}}\ \lgvl_3}
             {\lab{\textit{rr}}}
             {\code_{\texttt{switch}}
             [\lab{\textit{rr}}]}
-            \tag{g-wfrr}
+            % \tag{g-wfrr}
             \label{ctxswitch-wfrr} \\
         & \wfcblk{\relspecpre_{\textit{su}} \ \lgvl_4}
             {\relspecpost_{\textit{su}} \ \lgvl_4}
             {\lab{\textit{su}}}
             {\code_{\texttt{switch}}[\lab{\textit{su}}]}
-            \tag{g-wfsu}
+            % \tag{g-wfsu}
             \label{ctxswitch-wfsu} \\
         & \wfcblk{\relspecpre_{\textit{sn}} \ \lgvl_5}
             {\relspecpost_{\textit{sn}} \ \lgvl_5}
             {\lab{\textit{sn}}}
             {\code_{\texttt{switch}}[\lab{\textit{sn}}]}
-            \tag{g-wfsn}
+            % \tag{g-wfsn}
             \label{ctxswitch-wfsn}
     \end{align}
 
@@ -403,7 +403,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     The correctness proof from
     (\ref{ctxswitch-wfse}) to (\ref{ctxswitch-wfsn})
     can be done by applying the inference rules for
-    code block shown in
+    code blocks shown in
     \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}.
     We can choose any place to apply
     \myrule{ABSCSQ} rule to execute primitive $\primsw$.
@@ -478,7 +478,7 @@ by applying the inference rules in our new logic is
 no different from the previous proof work.
 The additional proof efforts include:
 (1) proving that the specification of context
-switch routine is well-defined (presented in
+switch routine is well-defined (shown in
 Lemma~\ref{lemma:ctxswitch-wdspec});
 (2) applying \myrule{ABSCSQ} rule to execute
 the $\primsw$ primitive and proving that the state
