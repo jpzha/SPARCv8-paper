@@ -1,9 +1,13 @@
 \section{Refinement Verification of SPARCv8}
 \label{sec:refine-verification-sparc}
 
-In this section, we present our \textit{relational}
+In this section, we present our relational
 program logic for refinement verification of
-SPARCv8 code. %, which is the expansion of our conference paper.
+SPARCv8 code\footnote{We give more details about the 
+language definition and the soundness proof
+in the Coq implementation or technical report, 
+which is available at \url{https://github.com/jpzha/VeriSparc}.}. 
+%, which is the expansion of our conference paper.
 As an extension of our conference paper,
 it consists of the following work.
 %In order to support such expansion, we do the following:
@@ -21,7 +25,7 @@ it consists of the following work.
     \item We define the correctness of the abstract
         assembly primitives in
         \Subsec{\ref{subsec:correctness-primitive}},
-        which is formulated as \textit{contextual refinement}
+        which is formulated as ``contextual refinement"
         between the implementations and their
         corresponding abstract assembly primitives;
     \item We present a new program logic to do
@@ -65,9 +69,9 @@ it consists of the following work.
 The Pseudo-SPARCv8 language contains two parts:
 the SPARCv8 code as client
 and the set of abstract assembly primitives.
-Here, we require that the execution of the client SPARCv8 code
-preserves a restriction between register
-window and stack in memory, shown
+Here, the execution of the client SPARCv8 code
+are required to preserve a restriction between register
+windows and stack in memory, shown
 in 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)
 (\regcwp{} points to the current window and \regwim{} marks
@@ -78,14 +82,14 @@ of adjacent windows are omitted in the figure).
     \vspace*{-0.5em}
     \figurecaption{Abstraction of context management. 
     (a) Reigster windows and stack in memory. 
-    (b) High-level frame list}
+    (b) High-level frame list.}
     \label{fig:Abstraction of Register Windows and Memory}
     \vspace{-0.5em}
 \end{center}
-During the execution of SPARCv8 program,
+During the execution of the SPARCv8 program,
 part of previous procedures' contexts
 (in \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a))
-are saved in register window, the others
+are saved in register windows, the others
 (the dark gray part in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a))
 are stored in stack in memory,
@@ -95,25 +99,25 @@ because the number of windows is limited.
 The restriction is that the stack pointer
 (\spreg{}) of each procedure,
 including the current and previous ones,
-whose context is saved in register
-window currently, should point to the top of its stack frame
+whose context is saved in the register
+windows currently, should point to the top of its stack frame
 (shown as the thick arrow in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)),
-so that the contexts
+so the contexts
 in these windows can be stored correctly
 in memory when needed. For instance,
 the context switch routine will check
 whether the previous window is valid
 (in clockwise direction),
-and use $\crestore{}$ instruction to set it as the
+and use the $\crestore{}$ instruction to set it as the
 current one and save its contents into stack
 (in memory) until the previous one
 (filled with east north lines
 in \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)) is invalid.
 We require that the execution of the client code
 preserves such restriction. Otherwise, some SPARCv8
-functions like context switch routine, whose
-executions will store the contexts saved in
+functions, \eg{} context switch routine, whose
+execution stores the contexts saved in
 register windows into stack in memory, cannot be
 verified if it is unclear where to save the
 contents of some windows.
@@ -162,7 +166,7 @@ client code execution preserve such restriction.
     and doesn't modify the value of any register
     in the previous window restored.
     The original \csave{} and \crestore{} instructions
-    have no semantics in high-level client code.
+    have no semantics in the high-level client code.
 
     \item
     % The special registers can't be modified arbitrarily.
@@ -182,9 +186,9 @@ client code execution preserve such restriction.
     to mark another window invalid, as shown in
     \Fig{\ref{fig:problem of modifying wim arbitrary}},
     and call context switch routine to
-    save the contents of previous windows into memory
+    save contents of the previous windows into memory
     until the invalid one at this moment,
-    a problem will arise since we don't know
+    a problem will arise since we do not know
     where to save the contents of window marked
     invalid originally
     (filled with dots
@@ -194,8 +198,7 @@ client code execution preserve such restriction.
     to modify special registers and give \textit{no}
     semantics to instruction \cwr{} in high-level
     client code. Modifying them is hidden in the
-    implementations of the abstract assembly primitives
-    in low-level.
+    implementations of abstract assembly primitives in low level.
     And the delay buffer can be omitted in high-level
     program state.
     % omit them
@@ -207,29 +210,28 @@ client code execution preserve such restriction.
     % client code.
     \item
     As shown in \Fig{\ref{fig:Abstraction of Register Windows and Memory}},
-    we find that we can abstract the register window
-    and memory in stack storing contexts
+    we find that we can abstract the register windows
+    and the stack in memory storing contexts
     into a list (shown in 
-    \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (b) and defined as
-    HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}).
+    \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (b)).
     After this abstraction, we do not need to care about
-    whether the contexts are saved in register windows or
-    memory, and do not need to describe the contents of windows unused
+    whether contexts are saved in register windows or
+    memory, and do not need to describe the contents of the windows unused
     (the windows in white color in
     \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a),
     but excluding the current one pointed by \regcwp{})
-    in the Pseudo-SPARCv8 level.
-    The \regcwp{} register is no longer needed in the 
-    Pseudo-SPARCv8 program since the register windows
+    in the Pseudo-SPARCv8.
+    The \regcwp{} register is no longer needed in 
+    Pseudo-SPARCv8 since the register windows
     are abstracted away.
-    The low-level program in our work does not use this
+    The low-level program in our work does not use such
     abstraction, since the low-level program
     should be realistically modelled,
     and the implementations of some primitives
     need to know the existance of register windows,
     \eg{} the context switch routine
-    needs to save the contents
-    of the register window into stack (in memory).
+    that saves the contents
+    of register windows into stack (in memory).
 \end{itemize}
 
 \begin{figure*}[!t]
@@ -581,7 +583,9 @@ and program counters $\pc$ and $\npc$. The high-level
 register state $\hRstate$ consists of
 the high-level register file (\TYPE{HRegFile}) $\hRfile$,
 % the block of the current stack frame $\block$,
-and the high-level frame list (\TYPE{HFrmList}) $\hWstk$.
+and the high-level frame list (\TYPE{HFrmList}) $\hWstk$, 
+which is the abstraction of the register windows and the memory 
+storing contexts in low level.
 $\hrn$ is the high-level register names (\TYPE{HRegName}), 
 where the $\regcwp$ register is omitted as introduced before and
 we also omit special registers for simplicity,
@@ -595,8 +599,8 @@ $(\fm_1, \fm_2)$, which is used to save
 % the block id $\block$ of the stack frame and
 the contexts (\localRN{} and \inRN{} registers)
 $\fm_1$ and $\fm_2$ of previous procedures.
-After introducing the state of high-level program,
-we define the primitive $\primsw$ as
+% After introducing the state of high-level program,
+Then, we define the $\primsw$ primitive as
 an instantiation of $\hprim$ below:
 \[
     \small\!\!
@@ -856,10 +860,10 @@ in low- and high-level programs.
 % can be found in Appendix \ref{sec:more-staterel}.
 
 The correctness of abstract assembly primitives
-is defined in terms of {\it contextual refinement}.
+is defined in terms of contextual refinement.
 We give its formal definition in
 \Def{\ref{def:prim-correctness}}.
-And we use the {\it event trace refinement}
+And we use the ``event trace refinement"
 proposed by \etal{Liang} \cite{liang14lics}.
 
 \begin{definition}[Primitive Correctness]
@@ -867,14 +871,14 @@ proposed by \etal{Liang} \cite{liang14lics}.
     {\em $\asmimp \ctxrefine \hprimset$} iff  \\
     for any {\em $\code$}, {\em $\state$}, {\em $\hpstate$}, 
     {\em $\pc$} and {\em $\npc$}, if
-    {\em $\stateRel{\state}{\hpstate}$}, and {\em $\progsafe(\HProg)$},
+    {\em $\stateRel{\state}{\hpstate}$} and {\em $\progsafe(\HProg)$},
     then {\em $\prog \refine \HProg$} holds.
     (where {\em $\prog = (\code \uplus \asmimp, \state, \pc, \npc)$}, \,
         {\em $\HProg = ((\code, \hprimset), \hpstate)$}, and
         {\em $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$}).
 \end{definition}
 
-We use a code heap $\asmimp$
+We use the code heap $\asmimp$
 % , which is a code heap,
 to represent the implementations
  and $\hprimset$ to represent the set of corresponding
@@ -887,7 +891,7 @@ state $\state$, high-level program state $\hpstate$, program counters
 $\pc$ and $\npc$, if the low- and high-level program states satisfy the
 state relation $\stateRel{\state}{\hpstate}$ and the high-level program
 will never get stuck (shown as $\progsafe(\HProg)$),
-then there is an {\it event trace refinement}~\cite{liang14lics},
+then there is an event trace refinement~\cite{liang14lics},
 which means that $\prog$ produces no more observable behaviors
 than $\HProg$ and is denoted as $\prog \refine \HProg$,
 between low- and high-level programs. $\progsafe(\HProg)$
@@ -909,7 +913,7 @@ the high-level code is a pair of $\code$ and $\hprimset$,
 and the low-level code is just the union of
 $\code$ and $\asmimp$, shown as
 $(\code\uplus\asmimp)$, because both of
-$\code$ and $\asmimp$ are \sparc{} code heap:
+$\code$ and $\asmimp$ are \sparc{} code heaps:
 \[
     \small
     \code \uplus \asmimp \,\define\,
@@ -2215,45 +2219,55 @@ command $\primcom$, which means that
 $\primcom$ can execute 
 zero (if $\primcom = \primdone$)
 or one step (if $\primcom = \hprim(\args{\val})$) 
-from the current state, presented as 
+from the current state, shown as 
 $\exists \, \hpstate'. \,
     \primMultiTrans{(\primcom, \hpstate)}
                     {*}{(\primdone, \hpstate')}$. 
-We use $\primMultiTrans{}{*}{}$ to denote
-zero or one step.
+% We use $\primMultiTrans{}{*}{}$ to denote
+% zero or one step.
 % and the safe execution of the primitive command
 % ($\primMultiTrans{}{*}{}$ denotes zero or one step).
 Including the safe execution of
-the primitive command is essential, 
-because we can get some knowledge of high-level program
+$\primcom$ is essential, 
+since we can get some knowledge of the high-level program
 state from the safe execution of the
 primitive command $\primcom$.
 For example, if $\INV{(\primsw(\nil), \nil)}$
 holds, we know that the location $\TaskNew$
 must save a pointer pointing to a ready thread
-in the thread pool from the safe execution of the primitive $\primsw$.
+in the thread pool, otherwise the $\primsw$ primitive cannot execute.
+% from the safe execution of the primitive $\primsw$.
 % and we
 % can write them in the precondition of the specification
 % of the context switch routine.
 % Otherwise,
 % the execution of primtive $\primsw$ will not be safe.
-Then we in turn know that the memory location $\TaskNew$
-in low-level state also saves the same pointer
-from the state relation
-between low- and high-level programs.
+% We in turn know that the memory location $\TaskNew$
+% in low-level state also saves the same pointer
+% from the state relation
+% between low- and high-level programs.
 \[
     \small
     \begin{array}{l}
         \INV{(\primsw(\nil), \nil)}
-        \implies
+        \implies \\
+        \qquad
         \exists \, \thrdid, \hthrdlocalst. \,
-        (\astRdyCont{\thrdid}{\hthrdlocalst}) \sepstar \\
-        \qquad\quad
+        (\astRdyCont{\thrdid}{\hthrdlocalst}) \sepstar
         (\hmsto{\TaskNew}{(\thrdid, 0)})
-        \sepstar
-        (\msto{\TaskNew}{(\thrdid, 0)})
         \sepstar \atrue
     \end{array}
+    % \begin{array}{l}
+    %     \INV{(\primsw(\nil), \nil)}
+    %     \implies
+    %     \exists \, \thrdid, \hthrdlocalst. \,
+    %     (\astRdyCont{\thrdid}{\hthrdlocalst}) \sepstar \\
+    %     \qquad\quad
+    %     (\hmsto{\TaskNew}{(\thrdid, 0)})
+    %     \sepstar
+    %     (\msto{\TaskNew}{(\thrdid, 0)})
+    %     \sepstar \atrue
+    % \end{array}
 \]
 % {\small
 % \[
@@ -2266,11 +2280,14 @@ between low- and high-level programs.
 %     \sepstar \atrue
 % \]
 % }
-We introduce the frame $\relastP_r$ for local reasoning.
-It should be stable under the execution
-of the abstract assembly primitive
-(shown as $\Sta(\hprim(\args{\val}), \relastP_r)$
-defined below).
+We introduce the frame $\relastP_r$ for local reasoning. 
+And we use $\Sta(\hprim(\args{\val}), \relastP_r)$, whose 
+definition is omitted here, to say that $\relastP_r$ is 
+still holds after the execution of $\hprim(\args{\val})$.
+% It should be stable under the execution
+% of the abstract assembly primitive
+% (shown as $\Sta(\hprim(\args{\val}), \relastP_r)$
+% defined below).
 \[
     \small
     \begin{array}{l}
@@ -2303,7 +2320,7 @@ and $\astQ$ holds if $\asmimp[\pc]$ ends with the return
 instruction $\retl{}$, and for each step of the low-level
 execution, the high-level program will execute zero or
 one step.
-It is formally defined in Def.~\ref{def:siminsseq}.
+It is formally defined in \Def{\ref{def:siminsseq}}.
 Here we use ``$\notCare \longmapsto^{n} \notCare$'' to
 represent $n$-step execution.
 The $\word$ in simulation records the number of tokens.

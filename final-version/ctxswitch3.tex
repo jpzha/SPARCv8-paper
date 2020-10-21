@@ -189,9 +189,9 @@ below:
     \end{array}
 \end{align}
 
-The set of abstract assembly primitive $\hprimset$
+The set of abstract assembly primitives $\hprimset$
 contains only one abstract assembly primitive $\primsw$.
-And the code heap specification $\Cspec{}$
+The code heap specification $\Cspec{}$
 contains the specifications of each code block.
 We use
 $(\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}})$,
@@ -202,7 +202,7 @@ to represent the specifications of
 \regsave{}, \regrestore{},
 \SaveUsedWin{} and \SwitchNewTask{} respectively.
 Since the post-condition in our logic specifies the
-state when the \textit{current function returns},
+state when the current function returns,
 the specification of \SwitchEntry{} is $(\Apre, \Apost)$.
 % We use
 % $(\relspecpre_{\textit{rs}}, \relspecpost_{\textit{rs}})$,
@@ -336,7 +336,7 @@ code heap storing the code of context switch routine,
 which includes the code blocks \SwitchEntry{},
 \regsave{}, \regrestore{},
 \SaveUsedWin{} and \SwitchNewTask{}. We prove that
-the $\code_{\texttt{switch}}$ is well-defined in
+$\code_{\texttt{switch}}$ is well-defined in
 Lemma~\ref{lemma:ctxswitch-wfcdhp}.
 
 \begin{lemma}
@@ -345,17 +345,18 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$
 \end{lemma}
 \begin{proof}
-    The code heap specification $\Cspec{}$ have been
-    defined in (\ref{ctxswitch-Cspec}). We unfold
+    % The code heap specification $\Cspec{}$ have been
+    % defined in (\ref{ctxswitch-Cspec}). 
+    We unfold
     $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$
     according to its definition
     (in \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}).
     And we need to prove that for any $\lgvl_1$,
     $\lgvl_2$, $\lgvl_3$,
     $\lgvl_4$ and $\lgvl_5$, the following hold
-    (we use $\lab{\textit{se}}$, $\lab{\textit{rs}}$,
+    ($\lab{\textit{se}}$, $\lab{\textit{rs}}$,
     $\lab{\textit{rr}}$, $\lab{\textit{su}}$ and
-    $\lab{\textit{sn}}$ to represent the starting labels of
+    $\lab{\textit{sn}}$ represent the starting labels of
     \SwitchEntry{}, \regsave{}, \regrestore{},
     \SaveUsedWin{} and \SwitchNewTask{} below):
     \begin{align}
@@ -406,7 +407,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     code blocks shown in
     \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}.
     We can choose any place to apply
-    \myrule{ABSCSQ} rule to execute primitive $\primsw$.
+    \myrule{ABSCSQ} rule to execute $\primsw$.
     Here, we apply \myrule{ABSCSQ} rule
     in verifying the code block
     \SwitchNewTask{} (\ref{ctxswitch-wfsn}),
@@ -415,9 +416,10 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     In \Fig{\ref{fig:refinement reasoning}}, we use the
     solid circle to represent the point applying \myrule{ABSCSQ} rule,
     and after the execution of $\primsw$, the
-    state relation between low- and high-level can
-    be reestablished and we use solid line to represent
-    that such relation holds in \Fig{\ref{fig:refinement reasoning}}.
+    state relation, defined in \Subsec{\ref{subsec:correctness-primitive}} 
+    and represented as the solid lines in \Fig{\ref{fig:refinement reasoning}},
+    between low and high level can
+    be reestablished.
     % and prove that the state
     % relation between low- and high-level programs
     % can be reestablished in verifying

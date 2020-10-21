@@ -337,7 +337,7 @@ state satisfies the precondition, is insufficient.
 \etal{Xu}~\cite{Xu16cav} proposed a program logic for
 verifying the correctness of OS kernel implemented in
 C language with inline assembly,
-but they used {\em abstract assembly primitives} to
+but they used ``abstract assembly primitives" to
 substitute the inline assembly in their verification work.
 As a supplement to their work, we extend our
 program logic so that it can ensure the
@@ -441,7 +441,7 @@ $\semantics{\notCare}^{\textsf{C}}$),
 is implemented as C language
 with a set of abstract assembly primitive $\AbsPrimC$.
 The compiler (\textit{Comp}) translates the
-C program $\Clang$ to \sparc{} code $\code$.
+C program $\Clang$ to the \sparc{} code $\code$.
 As {\color{blue} (S1)} shows,
 we assume the compilation ensures the
 refinement between $\Clang[\AbsPrimC]$ and
@@ -452,7 +452,7 @@ Here, $\hprimset$ represents the set of
 abstract assembly primitives in the middle layer.
 We use distinguished notations to represent
 the set of abstract assembly primitives in source
-and intermediate level, because they execute on
+and intermediate level, since they execute on
 different program states and have different semantics.
 The Pseudo-SPARCv8 language $\code[\hprimset]$,
 which uses \sparc{} as client code and is able to

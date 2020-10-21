@@ -1,4 +1,4 @@
-\section{The \sparc{} Assembly Language}
+\section{\sparc{} Assembly Language}
 \label{sec:modeling}
 \begin{figure*}[!t]
 	\centering
@@ -98,12 +98,12 @@ in CompCert to define the memory in our work.
 % so that each procedure can have a block of its own
 % stack frame.
 The memory address $\loc$ is defined as a pair of
-its block id and the offset. Block identifiers 
+its block id and the offset. Block ids
 (\TYPE{Block}) are integers
 in mathemantics presented as $\Ztype$, 
 and offsets (\TYPE{Word})
 are 32-bit integers (called ``words").
-So, the value (\TYPE{Val}) here 
+The value (\TYPE{Val})
 is either a word $\word$ or address $\loc$.
 The whole program configuration (\TYPE{Prog})
 $\prog$ consists of the code heap (\TYPE{CodeHeap})
@@ -124,15 +124,16 @@ which is either an operand expression or a
 sum of the values of register $\reg{}$ and an operation
 expression, are auxiliary definitions used as parameters of commands.
 Commands (\TYPE{Comm}) in \sparc{} can be classified into two categories:
-(1) simple instruction (\TYPE{SimpIns})
-$\simplins{}$, which does sequential
+(1) simple instructions (\TYPE{SimpIns})
+$\simplins{}$, which do sequential
 operation, \eg{} arithmetic operation ``\cadd{}",
 or memory operations
 ``\ld{}" (load) and ``\st{}" (store), or register window
 operations ``\csave{}" and ``\crestore{}", or special
 register operations ``\rd{}" (read) and ``\cwr{}" (write), 
 or ``\nop{}", whose execution changes no program state
-(except assigning \npc{} to \pc{} and (\npc{}+4) to \npc{});
+% (except assigning \npc{} to \pc{} and (\npc{}+4) to \npc{});
+(the program counters \pc{} and \npc{});
 (2) control-transfer instructions,
 \eg{} \call{} and \retl{} for
 function call and return, or \jmp{} and \be{} for
@@ -148,9 +149,9 @@ As defined in Fig.~\ref{fig:Register File and Frame List},
 $\RFile$ is a partial mapping
 from register names (\TYPE{RegName}) to values.
 Registers include the general registers $\regr$,
-the processor state register (\TYPE{PsrReg}) $\psr$
+the processor state registers (\TYPE{PsrReg}) $\psr$
 and the special registers (\TYPE{SpeReg}) $\sr$.
-The processor state register $\psr$ contains
+$\psr$ contains
 the integer condition code fields $\regn$,
 $\regz$, $\regv$ and $\regc$,
 which can be modified by the arithmetic and logical instructions
@@ -284,8 +285,8 @@ a stack pop.
 The $\regwim$ register is used as a bit vector to record the
 end of the stack. Each bit in $\regwim$ corresponds to a
 register window. The bit corresponding to the last available
-window is set to 1, which means {\em invalid}. All other bits
-are 0 ({\em i.e. valid}).
+window is set to 1, which means ``invalid". All other bits
+are 0 (i.e., ``valid").
 %Given a window pointer $\cwp$ in $\regcwp$,
 When executing $\csave$ (and $\crestore$), we need to ensure
 the next window is valid, in order to avoid the overflow
@@ -307,7 +308,7 @@ corresponding to all the
 register windows except the \outRN{}, \localRN{} and \inRN{}
 registers in the current window. Then $\csave$ saves the
 \localRN{} and \inRN{} registers onto the head of $\Wstack$
-and loads the two groups of registers at the {\em tail} of $\Wstack$
+and loads the two groups of registers at the ``tail" of $\Wstack$
 to the \localRN{} and \outRN{} registers (and the original
 \outRN{} registers become the \inRN{} group). The $\crestore$
 instruction does the inverse. The operations are defined formally

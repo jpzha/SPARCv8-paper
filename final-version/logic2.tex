@@ -1077,13 +1077,13 @@ contains the correct return address,
 we know $\RAreg$ contains the correct value
 before $\retl$.
 
-The \myrule{BE} rule checks the {\em current} value of register $\regz$
+The \myrule{BE} rule checks the ``current" value of the $\regz$ register
 and decides whether the branch will be taken
-after executing the following instruction $\simplins{}$. If the
-value of $\regz$ is not zero,
-the branch is taken and this rule does the same
+after executing the following instruction $\simplins{}$. 
+If $\regz$ is not zero,
+the branch is taken and it does the same
 things as the \myrule{JMP} rule; otherwise,
-the branch is {\em not} taken and the remaining instruction
+the branch is not taken and the remaining instruction
 sequence $\cblk$ should be well-formed.
 
 %We present the \callrule{} rule and \retlrule{} rule
