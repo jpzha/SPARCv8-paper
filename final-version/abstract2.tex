@@ -2,12 +2,13 @@ Inline assembly code is common in system software to interact with
 the underlying hardware platforms. Safety and correctness of the
 assembly code is crucial to guarantee the safety of the whole
 system. In this paper, we propose a practical Hoare-style program
-logic for verifying SPARC assembly code. The logic supports
-modular reasoning about the main features of SPARCv8 ISA, including
+logic for verifying SPARC (Scalable Processor ARChitecture) assembly code. The logic supports
+modular reasoning about the main features of 
+SPARCv8 ISA (instruction set architecture), including
 delayed control transfers, delayed writes to special registers,
 and register windows. 
 It also supports relational reasoning for refinement 
-verification and we have applied it to verify that 
+verification. And we have applied it to verify that 
 there is a contextual refinement 
 between a context switch routine in \sparc{} and 
 $\primsw{}$ primitive. The program logic and its soundness proof 

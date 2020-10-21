@@ -5,30 +5,30 @@ In this section, we present our \textit{relational}
 program logic for refinement verification of
 SPARCv8 code. %, which is the expansion of our conference paper.
 As an extension of our conference paper,
-it consists of the following work:
+it consists of the following work.
 %In order to support such expansion, we do the following:
 \begin{itemize}
     \item We define a new Pseudo-\sparc{} language
         as the high-level
         specification language in
-        \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}};
+        \Subsec{\ref{subsec:High-level Pseudo-SPARCv8 Language}};
     \item We make some modifications to the \sparc{}
-        language defined in \Sec{\ref{sec:modeling}} and
+        language defined in \Subsec{\ref{sec:modeling}} and
         let it act as the low-level language in our refinement
         verification. We present our low-level \sparc{}
         language and the modifications in
-        \Sec{\ref{subsec:low-level SPARCv8 Program}};
+        \Subsec{\ref{subsec:low-level SPARCv8 Program}};
     \item We define the correctness of the abstract
         assembly primitives in
-        \Sec{\ref{subsec:correctness-primitive}},
+        \Subsec{\ref{subsec:correctness-primitive}},
         which is formulated as \textit{contextual refinement}
         between the implementations and their
         corresponding abstract assembly primitives;
     \item We present a new program logic to do
         refinement verification in
-        \Sec{\ref{subsec:rellogic}};
+        \Subsec{\ref{subsec:rellogic}};
     \item We show that our new program logic is
-        sound in \Sec{\ref{subsec:semantics and soundness}}.
+        sound in \Subsec{\ref{subsec:semantics and soundness}}.
         The semantics of judgements,
         different from the previous work
         in our conference paper which only ensures the
@@ -68,8 +68,8 @@ and the set of abstract assembly primitives.
 Here, we require that the execution of client SPARCv8 code
 preserves a restriction between register
 window and stack in memory, shown
-on the left side of
-\Fig{\ref{fig:Abstraction of Register Windows and Memory}}
+in 
+\Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)
 (\regcwp{} points to the current window and \regwim{} marks
 the invalid window, the details of overlapping
 of adjacent windows are omitted in the figure).
@@ -82,11 +82,10 @@ of adjacent windows are omitted in the figure).
 \end{center}
 During the execution of SPARCv8 program,
 part of previous procedures' contexts
-(the light gray part in the left side of
-\Fig{\ref{fig:Abstraction of Register Windows and Memory}})
+(in \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a))
 are saved in register window, the others
-(the dark gray part in the left side of
-\Fig{\ref{fig:Abstraction of Register Windows and Memory}})
+(the dark gray part in
+\Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a))
 are stored in stack in memory,
 % (shown as the red arrow in
 % \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
@@ -97,20 +96,19 @@ including the current and previous ones,
 whose context is saved in register
 window currently, should point to the top of its stack frame
 (shown as the thick arrow in
-\Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
+\Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)),
 so that the contexts
 in these windows can be stored correctly
 in memory when needed. For instance,
 the context switch routine will check
 whether the previous window is valid
-(in clockwise direction in
-\Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
+(in clockwise direction),
 and use $\crestore{}$ instruction to set it as the
 current one and save its contents into stack
 (in memory) until the previous one
 (filled with east north lines
-in \Fig{\ref{fig:Abstraction of Register Windows and Memory}}) is invalid.
-We require that the execution of client code
+in \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)) is invalid.
+We require that the execution of the client code
 preserves such restriction. Otherwise, some SPARCv8
 functions like context switch routine, whose
 executions will store the contexts saved in
@@ -133,8 +131,8 @@ contents of some windows.
 % routine can't be proved if we are unclear where
 % to save the contents of some windows.
 We do the following when defining
-Pseudo-SPARCv8 program to make the execution
-of client code preserve such restriction:
+Pseudo-SPARCv8 program to make the 
+client code execution preserve such restriction.
 
 \begin{itemize}
     \item
@@ -142,7 +140,7 @@ of client code preserve such restriction:
     the stack pointer (\spreg{}) always
     points to the top of its stack frame, we require that
     each instruction, like \cadd{} and \ld{}, whose
-    execution doesn't operate register window,
+    execution does not operate register window,
     is prohibited to update the value of \spreg{};
     and as for the \csave{} and \crestore{},
     % whose executions
@@ -162,7 +160,7 @@ of client code preserve such restriction:
     and doesn't modify the value of any register
     in the previous window restored.
     The original \csave{} and \crestore{} instructions
-    have \textit{no} semantics in high-level client code.
+    have no semantics in high-level client code.
 
     \item
     % The special registers can't be modified arbitrarily.
@@ -178,7 +176,7 @@ of client code preserve such restriction:
         \label{fig:problem of modifying wim arbitrary}
     \end{center}
     If we change its value shown in
-    \Fig{\ref{fig:Abstraction of Register Windows and Memory}}
+    \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)
     to mark another window invalid, as shown in
     \Fig{\ref{fig:problem of modifying wim arbitrary}},
     and call context switch routine to
@@ -209,24 +207,25 @@ of client code preserve such restriction:
     As shown in \Fig{\ref{fig:Abstraction of Register Windows and Memory}},
     we find that we can abstract the register window
     and memory in stack storing contexts
-    into a list (defined as
+    into a list (shown in 
+    \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (b) and defined as
     HFrmList formally in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}).
-    After this abstraction, we don't need to care about
+    After this abstraction, we do not need to care about
     whether the contexts are saved in register windows or
-    memory, and don't need to describe the contents of windows unused
+    memory, and do not need to describe the contents of windows unused
     (the windows in white color in
-    \Fig{\ref{fig:Abstraction of Register Windows and Memory}},
+    \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a),
     but excluding the current one pointed by \regcwp{})
     in the Pseudo-SPARCv8 level.
-    The \regcwp{} register is no longer needed in
+    The \regcwp{} register is no longer needed in the 
     Pseudo-SPARCv8 program since the register windows
     are abstracted away.
-    The low-level program in our work doesn't use this
-    abstraction, because the low-level program
+    The low-level program in our work does not use this
+    abstraction, since the low-level program
     should be realistically modelled,
     and the implementations of some primitives
     need to know the existance of register windows,
-    for instance, the context switch routine
+    \eg{} the context switch routine
     needs to save the contents
     of the register window into stack (in memory).
 \end{itemize}
@@ -660,7 +659,7 @@ The $\primsw{}$ primitive takes no arguments
 of the current thread according to the value
 in the location $\TaskNew$. We use parameters $\hpstate$
 and $\hpstate'$ to represent the machine states before
-and after execution of $\primsw{}$ respectively.
+and after the execution of $\primsw{}$ respectively.
 
 \paragraph{\textbf{Operational Semantics in High-level.}}
 The operational semantics for high-level Pseudo-SPARCv8 program
@@ -688,7 +687,7 @@ from high-level state, and its definition is omitted here).
 %\subseteq \dom(\code)$).
 
 The thread local step is defined in
-\Fig{\ref{fig:selected-opsem-high-level-prog}} (b)
+\Fig{\ref{fig:selected-opsem-high-level-prog}} (b).
 Here, the step for simple instruction $\simplins{}$ is
 represented as ``$\hexeci{\simplins{}}{\notCare}{\notCare}$".
 We show the state transition relation for pseudo instructions
@@ -699,11 +698,11 @@ $(\hRfile, \hWstk)$, the execution of
 $\Psave \ \word$ will save the \localRN{} and \inRN{} registers
 % and the block id  $\block_0$ of the current stack frame
 into high-level frame list $\hWstk$. It also allocates
-a new block $\block$ of size 64 byte to $\word$ byte
+a new block $\block$ of size 64-byte to $\word$ byte
 as a new stack frame in memory
 (represented as $\malloc(\Mem, \block, 64, \word) = \Mem'$).
 % The size of the block $\block$ is from 64 byte to $\word$ byte.
-The reason why it starts from 64 byte is that the 0 to 64 bytes
+The reason why it starts from 64-byte is that the 0 to 64 bytes
 (16 words) in a stack frame are usually reserved to save
 the context in window (\localRN{} and \inRN{} registers)
 by convention \cite{sparc},
@@ -750,7 +749,7 @@ as the following form:
 \]
 The low-level \sparc{} program is slightly different
 from the \sparc{} program defined in
-\Sec{\ref{sec:modeling}}:
+\Sec{\ref{sec:modeling}}.
 \begin{enumerate}
     \item The low-level \sparc{} program uses the
         instructions defined in
@@ -823,16 +822,17 @@ We define this relation below
     }
 \]
 The low-level memory $\Mem$ is split into four parts:
-$\Mem_c$ used to save the context of the current thread $\thrdid$;
+$\Mem_c$ used saving the context of the current thread $\thrdid$;
 $\Mem_T$ saving the contexts of the ready threads,
 except the current thread $\tid$; a singleton memory
-cell located $\TaskCur$ saving the current thread id; and shared
-memory $\Mem'$ that is same as the high-level memory.
-The delayed buffer $\DBuf$ is $\nil$, because client
+cell located $\TaskCur$ saving the current thread id; 
+and the shared memory $\Mem'$ 
+that is the same as the high-level memory.
+The delayed buffer $\DBuf$ is $\nil$, since the client
 is not permitted to modify any special register
-through the $\cwr{}$ instructions. The memory $\Mem_T$ used to
-save the contexts of the ready threads is {\it abstracted} as a thread pool
-in high-level program. Their relation is represented as
+through the $\cwr{}$ instructions. $\Mem_T$ 
+is {\it abstracted} as a thread pool
+in the high-level program. Their relation is represented as
 ``$\rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}$".
 We use ``$\curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}$"
 to represent the state relation of the current thread
@@ -1430,7 +1430,7 @@ state $\state$.
 % adds some new ones to describe the high-level state.
 We define $\hregsto{\hrn}{\val}$ and $\hmsto{\loc}{\val}$
 to describe the state of
-register file and memory in high-level.
+register file and memory in the high level.
 The assertion $\empAst$
 says that the high-level memory and thread pool are
 both empty, and the low-level state satisfies $\aemp$
@@ -2195,7 +2195,7 @@ Such invariant is defined as \INV{} formally below:
 The invariant consists of the state relation between low- and
 high-level program states,
 shown as $\stateRel{\state}{\hpstate}$, 
-{\color{blue} and the safe execution of the primitive 
+and the safe execution of the primitive 
 command $\primcom$, which means that 
 $\primcom$ can execute 
 zero (if $\primcom = \primdone$)
@@ -2205,7 +2205,7 @@ $\exists \, \hpstate'. \,
     \primMultiTrans{(\primcom, \hpstate)}
                     {*}{(\primdone, \hpstate')}$. 
 We use $\primMultiTrans{}{*}{}$ to denote
-zero or one step.}
+zero or one step.
 % and the safe execution of the primitive command
 % ($\primMultiTrans{}{*}{}$ denotes zero or one step).
 Including the safe execution of

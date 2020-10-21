@@ -83,32 +83,61 @@ program logic for assembly code.
 We use a simple example
 in Fig.~\ref{fig:An Example for SPARC Code}
 to show these three features.
-\sparc{} has 32 general registers, which are split into four
-logic groups
-as \textsf{global} ($\reg{0} \sim \reg{7}$),
-\outRN{} ($\reg{8} \sim \reg{15}$),
-\localRN{} ($\reg{16} \sim \reg{23}$) and
-\inRN{} ($\reg{24} \sim \reg{31}$) registers.
-Correspondingly, we give aliases ``$\greg{0} \sim \greg{7}$'',
-``$\oreg{0} \sim \oreg{7}$'', ``$\lreg{0} \sim \lreg{7}$''
-and ``$\ireg{0} \sim \ireg{7}$'' for these groups
-respectively.
 \vspace*{-1em}
 \begin{center}
+    % \subfigure[]
+    % {
+    %     \begin{minipage}[b]{0.45\textwidth}
+    %         \[
+    %             \begin{array}{ll}
+    %                 \multicolumn{2}{l}
+    %                 {\texttt{CALLER}:} \\[1ex]
+    %                 \quad & \vdots \\
+    %                 \text{1} \ \ & \mov \quad 1, \; \oreg{0} \\
+    %                 \text{2} & \call \quad \text{ChangeY} \\
+    %                 \text{3} &
+    %                     \csave \quad \spreg, \; -64, \; \spreg \\
+    %                 \text{4} &
+    %                     \mov \quad \oreg{0}, \; \lreg{0} \\
+    %                 \quad & \vdots
+    %             \end{array}
+    %         \]
+    %     \end{minipage}
+    % }
+    % \subfigure[]
+    % {
+    %     \begin{minipage}[b]{0.45\textwidth}
+    %         \[
+    %             \begin{array}{ll}
+    %                 \multicolumn{2}{l}
+    %                 {\texttt{ChangeY}:} \\[1ex]
+    %                 \text{5} \ \ &
+    %                 \rd \quad \regY, \; \lreg{0} \\
+    %                 \text{6} &
+    %                     \cwr \quad \ireg{0}, \; 0, \; \regY \\
+    %                 \text{7} & \nop \\
+    %                 \text{8} & \nop \\
+    %                 \text{9} & \nop \\
+    %                 \text{10} & \ret \\
+    %                 \text{11} &
+    %                 \crestore \quad \lreg{0}, 0, \oreg{0}
+    %             \end{array}
+    %         \]
+    %     \end{minipage}
+    % }
     $
         \begin{array}{ll}
             \texttt{CALLER}: &
-            \quad\hspace*{2.5ex} \texttt{ChangeY} : \\[1ex]
+            \texttt{ChangeY} : \\[1ex]
             \begin{array}{ll}
-                \quad & \dots \\
+                \quad & \vdots \\
                 \text{1} \ \ & \mov \quad 1, \; \oreg{0} \\
                 \text{2} & \call \quad \text{ChangeY} \\
                 \text{3} &
                     \csave \quad \spreg, \; -64, \; \spreg \\
                 \text{4} &
                     \mov \quad \oreg{0}, \; \lreg{0} \\
-                \quad & \dots \\
-                \quad
+                \quad & \vdots 
             \end{array} & \
             \begin{array}{ll}
                 \text{5} \ \ &
@@ -121,14 +150,27 @@ respectively.
                 \text{10} & \ret \\
                 \text{11} &
                     \crestore \quad \lreg{0}, 0, \oreg{0}
-            \end{array}
+            \end{array} \\ \\[-9pt]
+            \qquad\quad \text{(a)} & 
+            \qquad\quad \text{(b)}
         \end{array}
     $
     \figurecaption{An Example for SPARC Code}
     \label{fig:An Example for SPARC Code}
 \end{center}
 
-\texttt{CALLER} in Fig.~\ref{fig:An Example for SPARC Code}
+\sparc{} has 32 general registers, which are split into four
+logic groups
+as \textsf{global} ($\reg{0} \sim \reg{7}$),
+\outRN{} ($\reg{8} \sim \reg{15}$),
+\localRN{} ($\reg{16} \sim \reg{23}$) and
+\inRN{} ($\reg{24} \sim \reg{31}$) registers.
+Correspondingly, we give aliases ``$\greg{0} \sim \greg{7}$'',
+``$\oreg{0} \sim \oreg{7}$'', ``$\lreg{0} \sim \lreg{7}$''
+and ``$\ireg{0} \sim \ireg{7}$'' for these groups
+respectively.
+
+\texttt{CALLER} in Fig.~\ref{fig:An Example for SPARC Code} (a)
 calls \texttt{ChangeY},
 which updates the {\em special register} \texttt{Y}
 and returns its original value.
@@ -169,10 +211,11 @@ and returns its original value.
 % 	\vspace{-0.5em}
 % \end{figure*}
 
-\texttt{ChangeY} requires an input parameter
+\texttt{ChangeY} in \Fig{\ref{fig:An Example for SPARC Code}} (b)
+requires an input parameter
 as the new value for the special register {\tt Y}.
 \texttt{CALLER} calls \texttt{ChangeY} at line 2,
-and \pc{} and \npc{} point to line 2 and 3 respectively at this
+and \pc{} and \npc{} point to lines 2 and 3 respectively at this
 moment.
 The call instruction changes the value of \pc{} to \npc{}
 and lets \npc{} point to the entry of
@@ -290,10 +333,10 @@ Just having a traditional Hoare-style
 program logic for SPARCv8, which can only make sure
 the safe execution of SPARCv8 program if the initial
 state satisfies the precondition, is insufficient.
-\etal{Xu}~\cite{Xu16cav} propose a program logic for
+\etal{Xu}~\cite{Xu16cav} proposed a program logic for
 verifying the correctness of OS kernel implemented in
 C language with inline assembly,
-but they use {\em abstract assembly primitives} to
+but they used {\em abstract assembly primitives} to
 substitute the inline assembly in their verification work.
 As a supplement to their work, we extend our
 program logic so that it can ensure the
@@ -337,8 +380,8 @@ semantics of C-assembly interaction.
             \semantics{\Clang[\AbsPrimC]}^{\textsf{C}}
             \\
             \\[-5pt]
-            \
-            {\color{blue} \textcircled{1}} \ \
+            \!\!
+            {\color{blue} (\text{S1})} \ \
             \rotatebox[origin=c]{90}{$\refine$} \ \
             \Longleftarrow \ \
             \boxed{C = \textit{Comp}(\Clang)}
@@ -347,8 +390,8 @@ semantics of C-assembly interaction.
             \semantics{\code[\hprimset]}^{\textsf{P-SPARCv8}}
             \\
             \\[-5pt]
-            \
-            {\color{blue} \textcircled{2}} \ \
+            \!\!
+            {\color{blue} (\text{S2})} \ \
             \rotatebox[origin=c]{90}{$\refine$} \ \
             \Longleftarrow \ \
             \boxed{\vdash\asmimp:\hprimset}
@@ -366,7 +409,7 @@ assembly code with respect to the abstract assembly primitives,
 we want to avoid the C-assembly interaction (and leave it as
 future work). We decompose the OS verification tasks into
 two steps, as shown in \Fig{\ref{fig:idea to establish contextual refinement}},
-and focus on step {\color{blue} \textcircled{2}} only in this paper.
+and focus on {\color{blue} (S2)} only in this paper.
 % some constraints in interaction semantics and
 % features of SPARCv8 make it difficult to use
 % interaction semantics in our work.
@@ -398,13 +441,13 @@ is implemented as C language
 with a set of abstract assembly primitive $\AbsPrimC$.
 The compiler (\textit{Comp}) translates the
 C program $\Clang$ to \sparc{} code $\code$.
-As {\color{blue} \textcircled{1}} shows,
+As {\color{blue} (S1)} shows,
 we assume the compilation ensures the
 refinement between $\Clang[\AbsPrimC]$ and
 $\code[\hprimset]$ that
 executes under Pseudo-SPARCv8 semantics shown as
 $\semantics{\notCare}^{\textsf{P-SPARCv8}}$.
-Here, the $\hprimset$ represents the set of
+Here, $\hprimset$ represents the set of
 abstract assembly primitives in the middle layer.
 We use distinguished notations to represent
 the set of abstract assembly primitives in source
@@ -412,9 +455,8 @@ and intermediate level, because they execute on
 different program states and have different semantics.
 The Pseudo-SPARCv8 language $\code[\hprimset]$,
 which uses \sparc{} as client code and is able to
-call abstract assembly primitives in $\hprimset$,
-will be defined in the following sections.
-In step {\color{blue} \textcircled{2}},
+call abstract assembly primitives in $\hprimset$.
+In {\color{blue} (S2)},
 we verify using our refinement logic that
 the whole \sparc{} program
 $\code[\asmimp]$ executing under the realistically
@@ -427,8 +469,8 @@ $\semantics{\code[\asmimp]}^{\textsf{SPARCv8}}
 \refine
 \semantics{\Clang[\AbsPrimC]}^{\textsf{C}}$.
 In this work, we focus on
-step {\color{blue} \textcircled{2}}, and
-leave step {\color{blue} \textcircled{1}}
+{\color{blue} (S2)}, and
+leave {\color{blue} (S1)}
 as future work.
 
 % Then, considering some works, \eg{\cite{Xu16cav, Feng08pldi}},
@@ -462,7 +504,7 @@ as future work.
 % \]
 
 Our work is based on earlier work on assembly code
-verification but makes the following contributions:
+verification but makes the following contributions.
 % \footnote{We list six contributions here. The
 % first four contributions have already presented
 % in the preliminary version~\cite{zha18aplas}
@@ -606,16 +648,16 @@ This paper extends the conference paper in
 APLAS 2018~\cite{zha18aplas}.
 The program logic there can only verify the partial
 correctness of \sparc{} code and we make the following
-expansions:
+expansions.
 \begin{itemize}
     \item We propose a new program logic to do
         relational reasoning for refinement verification
-        (\Sec{\ref{subsec:rellogic}} for details).
+        (\Subsec{\ref{subsec:rellogic}} for details).
     \item In order to support refinement verification,
         this paper presents a new Pseudo-SPARCv8 language
         as the high-level
         specification language
-        (\Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}
+        (\Subsec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}
         for details).
     \item We also use the new logic to verify the implementation
         of a context switch routine, by showing that
@@ -628,10 +670,11 @@ In the remainder of the paper,
 %we first introduce the background of our work
 %and give an overview of our approach.
 we present the program model
-and operational semantics of \sparc{} in Sec.~\ref{sec:modeling}.
+and operational semantics of \sparc{} in 
+\Sec{\ref{sec:modeling}}.
 For clear presentation, we use a
 simplified version of our program logic that
-doesn't support refinement verification to
+does not support refinement verification to
 demonstrate how our logic supports the three main
 features of \sparc{} in \Sec{\ref{sec:logic}},
 which is the main point
@@ -643,7 +686,7 @@ the relational program logic for refinement reasoning
 % our logic supports refinement verification
 in \Sec{\ref{sec:refine-verification-sparc}}.
 We show the verification of a context switch routine
-in \sparc{} in Sec.~\ref{sec:ctxswitch}.
+in \sparc{} in \Sec{\ref{sec:ctxswitch}}.
 % the main body of the context switch routine
 % in Sec.~\ref{sec:ctxswitch}.
 % The extended program logic to
@@ -653,7 +696,9 @@ in \sparc{} in Sec.~\ref{sec:ctxswitch}.
 % \Sec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 % >>>>>>> New
 Finally, we discuss more on
-related work and conclude in Sec. \ref{sec:conclusion}.
+related work in \Sec{\ref{sec:related work}}
+and conclude in 
+\Sec{\ref{sec:conclusion}}.
 %Sec.~\ref{sec:ctxswitch} gives an actual application of our logic
 %to verify a realistic context switch module in an embedded OS kernel.
 %Finally, we discuss more related work

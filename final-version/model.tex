@@ -4,7 +4,7 @@
 	\centering
 	\small
 	\[
-		\begin{array}{rcclcrccl}
+		\begin{array}{lcclclccl}
 			\TYPE{(Word)} & \word, \lab{} & \in &
 			\multicolumn{6}{l}
 			{
@@ -88,7 +88,7 @@
 We introduce the key \sparc{} instructions, the model of machine
 states, and the operational semantics in this section.
 
-\subsection{Language syntax and states}
+\subsection{Language Syntax and States}
 \label{subsec:syntax}
 
 The machine model and syntax of \sparc{} assembly language
@@ -98,12 +98,11 @@ in CompCert to define the memory in our work.
 % so that each procedure can have a block of its own
 % stack frame.
 The memory address $\loc$ is defined as a pair of
-its block id and the offset. 
-The type of block (\TYPE{Block}) is the integer
+its block id and the offset. Block identifiers 
+(\TYPE{Block}) are integers
 in mathemantics presented as $\Ztype$, 
-and the type of offset (\TYPE{Word})
-is a 32-bit integer, which we called {\it words} 
-in our work.
+and offsets (\TYPE{Word})
+are 32-bit integers (called ``words").
 So, the value (\TYPE{Val}) here 
 is either a word $\word$ or address $\loc$.
 The whole program configuration (\TYPE{Prog})
@@ -114,7 +113,7 @@ and the program counters $\pc$ and $\npc$.
 %code heap, machine state, pc and npc.
 The code heap $\code$ is a partial function
 from labels $\lab{}$ to commands $c$.
-Labels are also 32-bit integers (called {\em words}),
+Labels are also 32-bit integers (called ``words"),
 which can be viewed as addresses or locations
 where the commands are saved in the code heap.
 The operand expression (\TYPE{OpExp})
@@ -132,9 +131,8 @@ or memory operations
 ``\ld{}" (load) and ``\st{}" (store), or register window
 operations ``\csave{}" and ``\crestore{}", or special
 register operations ``\rd{}" (read) and ``\cwr{}" (write), 
-{\color{blue}
 or ``\nop{}", whose execution changes no program state
-(except assigning \npc{} to \pc{} and (\npc{}+4) to \npc{})};
+(except assigning \npc{} to \pc{} and (\npc{}+4) to \npc{});
 (2) control-transfer instructions,
 \eg{} \call{} and \retl{} for
 function call and return, or \jmp{} and \be{} for
@@ -164,7 +162,7 @@ $\DBuf$ below.
 \begin{figure*}[!t]
 	\small
 	\[
-		\begin{array}{rcclcrccl}
+		\begin{array}{lcclclccl}
 			\TYPE{(RegFile)} & \RFile & \in & 
 			\TYPE{RegName} \rightharpoonup \TYPE{Val}
          & \quad \ \ &
@@ -239,7 +237,7 @@ as \globalRN{} ($\reg{0} \sim \reg{7}$),
 \outRN{} ($\reg{8} \sim \reg{15}$), \localRN ($\reg{16} \sim \reg{23}$)
 and \inRN{} ($\reg{24} \sim \reg{31}$) registers.
 The latter three groups (\outRN{}, \localRN{} and \inRN{})
-form the current {\em register window}.
+form the current register window.
 
 At the entry and exit of functions and traps, one may need to
 save and restore some of the general registers as execution
@@ -253,7 +251,7 @@ The $\regcwp$ register (part of $\psr$) records the id number
 of the current window ($\regcwp=0$ in this example).
 \begin{figure*}[!t]
 	\centering
-	\includegraphics[width=8.7cm]{window}
+	\includegraphics[width=9cm]{window}
 	% \includegraphics[width=58ex]{window}
 	\caption{Register Windows (figure taken from \cite{sparc})}
 	\label{fig:RegisterWindows}
@@ -261,20 +259,20 @@ of the current window ($\regcwp=0$ in this example).
 
 The \inRN{} and \outRN{} registers of each window are shared
 with its adjacent windows for parameter passing.
-For example, the \inRN{} registers of the $\text{w}_0$
-is the \outRN{} registers of the $\text{w}_1$,
-and the \outRN{} registers of the $\text{w}_0$
-is the \inRN{} registers of the $\text{w}_7$.
+For example, the \inRN{} registers of $\text{w}_0$
+are the \outRN{} registers of $\text{w}_1$,
+and the \outRN{} registers of $\text{w}_0$
+are the \inRN{} registers of $\text{w}_7$.
 This explains
 why we need only $2\times N$ groups of registers for
-$N$ windows, while each window consisting of
+$N$ windows, while each window consists of
 three groups (\outRN{}, \localRN{} and \inRN{}).
 
 To save the context, the $\csave$ instruction
 rotates the window by decrementing the $\regcwp$ pointer
 (modulo $N$).
 So $\text{w}_7$ becomes the current window. The \outRN{}
-registers of $\text{w}_0$ becomes
+registers of $\text{w}_0$ become
 the \inRN{} registers of $\text{w}_7$.
 The \inRN{} and \localRN{} registers of $\text{w}_0$
 become inaccessible.
@@ -309,9 +307,9 @@ corresponding to all the
 register windows except the \outRN{}, \localRN{} and \inRN{}
 registers in the current window. Then $\csave$ saves the
 \localRN{} and \inRN{} registers onto the head of $\Wstack$
-and loads the two groups of register at the {\em tail} of $\Wstack$
+and loads the two groups of registers at the {\em tail} of $\Wstack$
 to the \localRN{} and \outRN{} registers (and the original
-\outRN{} registers becomes the \inRN{} group). The $\crestore$
+\outRN{} registers become the \inRN{} group). The $\crestore$
 instruction does the inverse. The operations are defined formally
 in Fig.~\ref{fig:save and restore}.
 Here, we use `` $\stCons$ " for
@@ -326,11 +324,11 @@ for appending an element at the tail of a list.
       \qquad
      \inRN \ \define \  [\reg{24}, \dots, \reg{31}]
      \\
-     \\[-9pt]
+     \\[-5pt]
      \RFile([\reg{i}, \dots, \reg{i+k}]) \ \define\
      [\RFile(\reg{i}), \dots, \RFile(\reg{i+k})]
      \\
-     \\[-9pt]
+     \\[-5pt]
      %
      \Rupd{\reg{i}, \dots, \reg{i+7}}{\fm} \ \define \
 			R\{ \reg{i} \rightsquigarrow \val_0 \}
@@ -350,7 +348,7 @@ for appending an element at the tail of a list.
 			\\
              & & \ \ \ \mbox{where $\bitAND$ is the bitwise AND operation.}
             \\
-            \\[-9pt]
+            \\[-5pt]
 		    \precwp(\cwp) & \define & (\cwp + N - 1) \modOP N
             %\\
 		    %\\[-8pt]
@@ -365,7 +363,7 @@ for appending an element at the tail of a list.
             \left\{
             \begin{array}{ll}
                 (\RFile', \Wstack')
-                & \quad \textit{if }
+                & \quad \text{if }
                              \cwp' = \precwp(\RFile(\regcwp)),
                              \winvalid(\cwp', \RFile), \\
                 & \quad \ \ \
@@ -381,7 +379,7 @@ for appending an element at the tail of a list.
                             \RFile' = \fsubst{\RFile''}\regcwp{\cwp'},
                  \\
                  %
-                \perp &\quad \textit{if }
+                \perp &\quad \text{if }
                                   \lnot\winvalid(\precwp(R(\regcwp)), \RFile)
             \end{array}
             \right. \\
@@ -392,7 +390,7 @@ for appending an element at the tail of a list.
             \left\{
             \begin{array}{ll}
                 (\RFile', \Wstack')
-                & \quad \textit{if }
+                & \quad \text{if }
                              \cwp' = \postcwp(\RFile(\regcwp)),
                              \winvalid(\cwp', \RFile), \\
                 & \quad \ \ \
@@ -409,7 +407,7 @@ for appending an element at the tail of a list.
                             \RFile' = \fsubst{\RFile''}\regcwp{\cwp'},
                  \\
                  %
-                \perp &\quad \textit{if }
+                \perp &\quad \text{if }
                                   \lnot\winvalid(\postcwp(R(\regcwp)), \RFile)
             \end{array}
             \right.
@@ -487,7 +485,7 @@ from $\lab{}$ in $\code$ below.
 			
 			\\[-8pt]
 			
-			\undef & \quad \ \ \text{otherwise}
+			\perp & \quad \ \ \text{otherwise}
 		\end{array}
 	\right.
 \]
@@ -519,9 +517,9 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 			}
 			{
 				\begin{array}{l}
-					\Dstep{(R, D)}{(R', D')} \\
-					\cttrans{((M, (R', F), D'), \pc, \npc)}
-						{((M', (R'', F'), D''), \pc', \npc')}
+					\Dstep{(\RFile, \DBuf)}{(\RFile', \DBuf')} \\
+					\cttrans{((\Mem, (\RFile', \Wstack), \DBuf'), \pc, \npc)}
+						{((\Mem', (\RFile'', \Wstack'), \DBuf''), \pc', \npc')}
 				\end{array}
 			}
 		\]
@@ -537,23 +535,24 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
         \[
             \infer
             {
-                \cttrans{((M, (R, F), D), \pc, \npc)}
-                    {((M', (R', F'), D'), \npc, \npc+4)}
+                \cttrans{((\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+                    {((\Mem', (\RFile', \Wstack'), \DBuf'), \npc, \npc+4)}
             }
             {
                 \code(\pc) = \simplins \quad \quad
-                    \swtrans{(M, (R, F), D)}{\; \; \simplins \; \;}{(M', (R', F'), D')}
+					\swtrans{(\Mem, (\RFile, \Wstack), \DBuf)}{\; \; \simplins \; \;}
+						{(\Mem', (\RFile', \Wstack'), \DBuf')}
             }
         \]
 
 		\[
 			\infer
 			{
-				\cttrans{((M, (R, F), D), \pc, \npc)}
-					{((M, (R, F), D), \npc, \lab{})}
+				\cttrans{((\Mem, (\RFile, \Wstack), \DBuf), \pc, \npc)}
+					{((\Mem, (\RFile, \Wstack), \DBuf), \npc, \lab{})}
 			}
 			{
-				C(\pc) = \jmp \; \aexp \quad \; \;
+				\code(\pc) = \jmp \; \aexp \quad \; \;
 				\eval{\aexp} = \lab{}
 			}
 		\]
@@ -635,10 +634,10 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 					}
 					{
 						\begin{array}{l}
-							R(\reg{s}) = \word_1 \quad \; \;
+							\RFile(\reg{s}) = \word_1 \quad \; \;
 							{\llbracket \oexp \rrbracket}_R = \word_2 \quad \; \;
-							w = \word_1 \!\xorOP\! \word_2 \\
-							\sr \in \text{dom}(R) \quad \; \; D' = \textbf{set\_delay}(\sr, w, D)
+							\word = \word_1 \!\xorOP\! \word_2 \\
+							\sr \in \text{dom}(\RFile) \quad \; \; \DBuf' = \setdelay(\sr, w, D)
 						\end{array}
 					}
 				\]
@@ -693,11 +692,11 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
 				\[
 					\infer
 					{
-						\itrans{(M, R)}{\rd \; \sr \; \reg{d}}
-							{(M, R\{ \reg{d} \rightsquigarrow \word \})}
+						\itrans{(\Mem, \RFile)}{\rd \; \sr \; \reg{d}}
+							{(\Mem, \RFile\{ \reg{d} \rightsquigarrow \word \})}
 					}
 					{
-						R(\sr) = \word \quad \ \ \reg{d} \in \dom(R)
+						\RFile(\sr) = \word \quad \ \ \reg{d} \in \dom(\RFile)
 					}
 				\]
 			\end{minipage}
@@ -797,7 +796,7 @@ in Fig.~\ref{Selected Operational Semantics} (a).
 Before the execution of the instruction pointed by
 $\pc$, the delayed writes
 in $\DBuf$ with $0$ delay cycles are executed first.
-The execution of the delayed writes are defined in the
+The execution of the delayed writes is defined in the
 form of $\Dstep{(\RFile, \DBuf)}{(\RFile', \DBuf')}$ below:
 
 {\small
@@ -807,7 +806,8 @@ $$
 \infer
 {\Dstep{(\RFile, \nil)}{(\RFile,\nil)}}
 {}
-\quad \ \
+\\
+\\
 %
 % \qquad\qquad
 %
@@ -852,7 +852,7 @@ Here the disjoint union $\RFile_1 \uplus \RFile_2$ represents the union of
 $\RFile_1$ and $\RFile_2$ if they have disjoint domains, and undefined
 otherwise. This lemma is important to give sound semantics
 to delay buffer related assertions, as discussed in
-Sec.~\ref{sec:logic}.
+\Sec{\ref{sec:logic}}.
 
 %Although this would never happen
 %at runtime, this feature is useful for giving sound semantics
@@ -908,7 +908,8 @@ and the steps
 for other simple instructions
 ($\itrans{\notCare}{\ \notCare\ }{\notCare}$). The
 corresponding step transition relations are defined inductively
-in Fig.~\ref{Selected Operational Semantics} (b), (c) and (d)
+in \Fig{\ref{Selected Operational Semantics}}
+(b) - \ref{Selected Operational Semantics} (d)
 respectively.
 
 Note that, after the control-transfer instructions, $\pc$ is set
@@ -920,7 +921,7 @@ return address (which is the address for the second instruction
 following the $\call$).
 The conditional branch $\be{} \ \lab{}$ jumps to $\lab{}$ 
 (after one-cycle delay) if 
-the value in the register $\regz$ is {\em not} 0.
+the value in the register $\regz$ is not 0.
 %justifies whether
 %the branch is taken according to the value of $\regz$.}
 Evaluation of
@@ -931,7 +932,7 @@ expressions $\aexp$ and $\oexp$ are defined
 in Fig.~\ref{Selected Operational Semantics} (e).
 Here, we define the sum of two values $\val_1$
 and $\val_2$ below. The result of $\val_1\!+\!\val_2$
-is legal, if both of the $\val_1$ and $\val_2$
+is legal, if both of $\val_1$ and $\val_2$
 are words (Int32), or $\val_1$ is an address and
 $\val_2$ is an offset. The offset is a word,
 which acts as an immediate value in the

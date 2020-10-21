@@ -11,9 +11,9 @@ we use a simplified version of our program logic
 that doesn't support refinement verification to
 present how our logic handles the
 features of \sparc{}. 
-{\color{blue} The relational program logic for  
+The relational program logic for  
 refinement reasoning will be introduced in  
-\Sec{\ref{sec:refine-verification-sparc}}}.
+\Sec{\ref{sec:refine-verification-sparc}}.
 
 % In this section,
 % we introduce the assertion language
@@ -206,7 +206,7 @@ refinement reasoning will be introduced in
                          \DBuf = (\tick, \sr', \word) \dbCons \DBuf' \\
 				
 				\\[-8pt]
-				\textbf{True} & \quad \cif \; \DBuf = \nil
+				\text{True} & \quad \cif \; \DBuf = \nil
 			\end{array}
 			\right.
             \\
@@ -284,7 +284,7 @@ with value $\val$ stored in the address $l$.
 $\regst{\regN}{\val}$ says that
 $\regN$ is the only register in the register file
 and it contains the value $\val$. Also
-$\regN$ is {\em not} in the delay buffer.
+$\regN$ is not in the delay buffer.
 Separating conjunction $\astP \sepstar \astQ$ has the
 standard semantics as in separation logic \cite{separationlogic}.
 %there is only one cell in register file
@@ -324,10 +324,12 @@ By the semantics we have
 ($\astP\Rightarrow\astQ$ means for any $\state$, if 
 $\asrtmodel{\state}{\astP}$ holds, then $\asrtmodel{\state}{\astQ}$ holds)
 $$
-\regst{\sr}{\word} \,\Rightarrow\, \dlyregst{\tick}{\sr}{\word}
-\qquad
-\dlyregst{\tick}{\sr}{\word} \,\Rightarrow\,
-\dlyregst{\tick\!+\!k}{\sr}{\word}
+\begin{array}{l}
+	\regst{\sr}{\word} \,\Rightarrow\, \dlyregst{\tick}{\sr}{\word}
+	\\ \\[-8pt]
+	\dlyregst{\tick}{\sr}{\word} \,\Rightarrow\,
+	\dlyregst{\tick\!+\!k}{\sr}{\word}
+\end{array}
 $$
 
 The assertion $\nxtAst\astP$ allows us to reduce the uncertainty
@@ -336,11 +338,13 @@ It specifies states reachable after executing
 one step of delayed writes from those states satisfying $\astP$.
 Therefore we know:
 $$
-\nxtAst{(\dlyregst{0}{\sr}{\word})} \,\Rightarrow\,
-\regst{\sr}{\word}
-\quad \
-\nxtAst{(\dlyregst{\tick\!+\!1}{\sr}{\word})} \,\Rightarrow\,
-\dlyregst{\tick}{\sr}{\word}
+\begin{array}{l}
+	\nxtAst{(\dlyregst{0}{\sr}{\word})} \,\Rightarrow\,
+	\regst{\sr}{\word} 
+	\\ \\[-8pt]
+	\nxtAst{(\dlyregst{\tick\!+\!1}{\sr}{\word})} \,\Rightarrow\,
+	\dlyregst{\tick}{\sr}{\word}
+\end{array}
 $$
 Also it is easy to see that if $\astP$ syntactically
 does not contain sub-terms in the form of $\dlyregst{\tick}{\sr}{\word}$,
@@ -377,13 +381,13 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 		{\nxtAst{(\astP)}\sepstar\nxtAst{(\astQ)}}$. 
 	From the semantics of assertions, 
-	we get there exists $\RFile'$ and $\DBuf'$, such that:
+	we get there exist $\RFile'$ and $\DBuf'$, such that:
 	\begin{align}
 		& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \label{a:dstep1} \\
 		& \asrtmodel{(\Mem, (\RFile', \Wstack), \DBuf')}
 			{\astP\sepstar\astQ} \label{a:asthold}
 	\end{align}
-	From (\ref{a:asthold}), there exists 
+	From (\ref{a:asthold}), there exist 
 	$\Mem_1$, $\Mem_2$, $\RFile_1'$ and $\RFile_2'$ such that:
 	\begin{align}
 		& \Mem = \Mem_1\uplus\Mem_2 
@@ -397,7 +401,7 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	\end{align}
 	By applying Lemma~\ref{lemma:RFileSplitExDelay}
 	on (\ref{a:dstep1}) and (\ref{a:regsplit}), we get 
-	that there exists $\RFile_1$ and $\RFile_1$, 
+	that there exist $\RFile_1$ and $\RFile_1$, 
 	where $\RFile = \RFile_1\uplus\RFile_2$, such that
 	\begin{align}
 		& \Dstep{(\RFile_1', \DBuf')}{(\RFile_1, \DBuf)}
@@ -409,9 +413,9 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	we get $\asrtmodel{(\Mem_1, (\RFile_1, \Wstack), \DBuf)}{\nxtAst{\astP}}$; 
 	and from (\ref{a:qholds}) and (\ref{a:dstep-split2}), 
 	we get $\asrtmodel{(\Mem_2, (\RFile_2, \Wstack), \DBuf)}{\nxtAst{\astQ}}$.
-	Thus, we prove that 
+	Thus, we know
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
-		{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$ holds.
+		{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$.
 
 	``$\Leftarrow$": if 
 	$\asrtmodel{(\Mem,(\RFile,\Wstack),\DBuf)}{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$,
@@ -444,10 +448,9 @@ Lemma~\ref{lemma:dly-sep-split} below.
 		\Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)}
 		\label{a:dstep2}	
 	\end{equation}
-	By (\ref{a:phold1}), (\ref{a:qhold2}) and 
-	(\ref{a:dstep2}), we prove that 
+	From (\ref{a:phold1}) - (\ref{a:dstep2}), we get 
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
-	{\nxtAst{(\astP\sepstar\astQ)}}$ holds.
+	{\nxtAst{(\astP\sepstar\astQ)}}$.
 \end{proof}
 }
 
@@ -507,7 +510,7 @@ of memory.
 %\indent
 %We define a set of inference rules
 %so that we can check \sparc{} code mechanized.
-The code specification $\theta$ and code heap specification $\Psi$
+The code specification $\theta$ and the code heap specification $\Psi$
 are defined below:
 \[
 	\small
@@ -547,7 +550,7 @@ Although we assign a specification $\theta$ to each basic block,
 the post-condition does not specify the states reached at the end
 of the block. Instead, it specifies the condition
 that needs to be specified in the future when the
-{\em current function} returns. This follows the idea
+``current function" returns. This follows the idea
 developed in SCAP~\cite{Feng06pldi}, but we use the
 standard unary state assertion instead of the binary
 state assertions used in SCAP, so that existing
@@ -660,10 +663,10 @@ return code pointer whose type is word.
 	\subfigure
 	{
 		\begin{minipage}{1\linewidth}
-			$\boxed{\vdash \code : \Psi}$ \quad \quad
-			\textbf{(Well-Formed Code Heap)}
+			$\boxed{\vdash \code : \Psi}$ \quad \ \
+			\text{(Well-Formed Code Heap)}
 			\[
-				\infer[\tinybftext{(CDHP)}]
+				\infer[(\RULE{CDHP})]
 				{
 					%\Psi \vdash \code : \Psi'
 					\vdash \code : \Psi
@@ -680,11 +683,11 @@ return code pointer whose type is word.
 	\subfigure
 	{
 		\begin{minipage}{1\linewidth}
-			$\boxed{\wfcblk{\astP}{\astQ}{\lab{}}{\cblk}}$ \quad \quad
-			\textbf{(Well-Formed Instruction Sequences)}
+			$\boxed{\wfcblk{\astP}{\astQ}{\lab{}}{\cblk}}$ \quad \ \ 
+			\text{(Well-Formed Instruction Sequences)}
 %
 			\[
-				\infer[\tinybftext{(SEQ)}]
+				\infer[(\RULE{SEQ})]
 				{
 					\wfcblk{\astP}{\astQ}{\lab{}}{\simplins; \, \cblk}
 				}
@@ -698,7 +701,7 @@ return code pointer whose type is word.
 %
 %
             \[
-                \infer[\tinybftext{(JMP)}]
+                \infer[(\RULE{JMP})]
                 {
                     \wfcblk{\astP}{\astQ}{\lab{}}{\jmp \; \aexp; \, \simplins}
                 }
@@ -708,11 +711,6 @@ return code pointer whose type is word.
                           \,\Rightarrow\, (\aexpeq{\aexp}{\lab{}'}) \quad
                         \lab{}' \in \dom(\Psi) \quad \Psi(\lab{}') = (\specpre, \specpost) \\
                         \wfins{\nxtAst{\nxtAst{\astP}}}{\simplins}{\astP'} \quad
-%                        \exists \lgvl. \;
-%                        (\astP' \,\Rightarrow\,
-%                        \specpre \; \lgvl)
-%                        \, \land \,
-%                        (\specpost \; \lgvl \,\Rightarrow\, \astQ)
                         \exists \lgvl,\pr. \;
                         (\astP' \,\Rightarrow\,
                         \specpre \; \lgvl * \pr)
@@ -723,7 +721,7 @@ return code pointer whose type is word.
             \]
 %
 			\[
-				\infer[\tinybftext{(CALL)}]
+				\infer[(\RULE{CALL})]
 				{
 					\wfcblk{\astP}{\astQ}{\lab{}}{\call \; \lab{}'; \, \simplins; \, \cblk}
 				}
@@ -748,7 +746,7 @@ return code pointer whose type is word.
 %
 %
 			\[
-				\infer[\tinybftext{(RETL)}]
+				\infer[(\RULE{RETL})]
 				{
 					\wfcblk{\astP}{\astQ}{\lab{}}{\retl; \, \simplins}
 				}
@@ -763,7 +761,7 @@ return code pointer whose type is word.
 			\]
 
 			\[
-				\infer[\tinybftext{(BE)}]
+				\infer[(\RULE{BE})]
 				{
 					\wfcblk{\astP}{\astQ}{\lab{}}
 						{\be \, \lab{}'; \simplins{}; \cblk}
@@ -786,165 +784,14 @@ return code pointer whose type is word.
 					\end{array}
 				}
 			\]
-%			\[
-%				\infer[\tinybftext{(RETL)}]
-%				{
-%					\wfcblk{\astP}{\astQ}{\lab{}}{\retl; \, \simplins}
-%				}
-%				{
-%					\wfins{\nxtAst{\nxtAst{\astP}}}{\simplins}{\astP'}
-%					\quad \; \;
-%					\astP' \Rightarrow \astQ \quad \; \;
-%                    \RAsta{\nxtAst{\nxtAst{\astP}}}{\astP'}
-%				}
-%			\]
-%
-%
-%
-%<<<<<<< .mine
-%			\[
-%				\infer[\tinybftext{(BE)}]
-%				{
-%					\wfcblk{\astP}{\astQ}{\lab{}}
-%					{\be \; \lab{}'; \, \simplins; \, \cblk}
-%				}
-%				{
-%					\begin{array}{l}
-%						\lab{}' \in \dom(\Psi) \quad
-%						\Psi (\lab{}') = (\specpre, \specpost) \quad
-%						\wfcblk
-%						{\asrttm{(p \, \wedge \, \regz = 0)}}{\astQ}
-%						{\lab{}+4}{\simplins; \, \cblk} \\
-%						\wfins{\asrttm{\asrttm{(\astP \wedge \regz \neq 0)}}}
-%						{\simplins}{\astP'} \quad
-%						\exists \; \lgvl. \;
-%						\supimpl{\astP'}{\astQ}{\specpre \; \lgvl * \pr}{\specpost \; \lgvl * \pr}
-%					\end{array}
-%				}
-%			\]
-%%
-%%
-%%
-%            \[
-%                \infer[\tinybftext{(J)}]
-%                {
-%                    \wfcblk{\astP}{\astQ}{\lab{}}{\jmp \; \aexp; \, \simplins}
-%                }
-%                {
-%                    \begin{array}{l}
-%                        \nxtAst{\astP} \Rightarrow \aexpeq{\aexp}{\lab{}'} \quad
-%                        \lab{}' \in \dom(\Psi) \quad \Psi(\lab{}') = (\specpre, \specpost) \\
-%                        \wfins{\nxtAst{\nxtAst{\astP}}}{\simplins}{\astP'} \quad
-%                        \exists \lgvl. \; (\astP' \Rightarrow \specpre \; \lgvl * \pr) \,
-%                        \land \, (\specpost \; \lgvl * \pr \Rightarrow \astQ)
-%                    \end{array}
-%                }
-%            \]
-%			\vspace{0.01em}
-%			\centering
-%			\[
-%				\infer[\tinybftext{(FRAME)}]
-%				{
-%					\wfcblk{\astP * \pr}{\astQ * \pr}{\lab{}}{\cblk}
-%				}
-%				{
-%					\wfcblk{\astP}{\astQ}{\lab{}}{\cblk}
-%				}
-%			\]
-%||||||| .r65
-%			\[
-%				\infer[\tinybftext{(BE)}]
-%				{
-%					\wfcblk{\astP}{\astQ}{\lab{}}
-%					{\be \; \lab{}'; \, \simplins; \, \cblk}
-%				}
-%				{
-%					\begin{array}{l}
-%						\lab{}' \in \dom(\Psi) \quad
-%						\Psi (\lab{}') = (\specpre, \specpost) \quad
-%						\wfcblk
-%						{\asrttm{(p \, \wedge \, \regz = 0)}}{\astQ}
-%						{\lab{}+4}{\simplins; \, \cblk} \\
-%						\wfins{\asrttm{\asrttm{(\astP \wedge \regz \neq 0)}}}
-%						{\simplins}{\astP'} \quad
-%						\exists \; \lgvl. \;
-%						\supimpl{\astP'}{\astQ}{\specpre \; \lgvl * \pr}{\specpost \; \lgvl * \pr}
-%					\end{array}
-%				}
-%			\]
-%%
-%%
-%%
-%            \[
-%                \infer[\tinybftext{(J)}]
-%                {
-%                    \wfcblk{\astP}{\astQ}{\lab{}}{\jmp \; \aexp; \, \simplins}
-%                }
-%                {
-%                    \begin{array}{l}
-%                        \nxtAst{\astP} \Rightarrow \aexpeq{\aexp}{\lab{}'} \quad
-%                        \lab{}' \in \dom(\Psi) \quad \Psi(\lab{}') = (\specpre, \specpost) \\
-%                        \wfins{\nxtAst{\nxtAst{\astP}}}{\simplins}{\astP'} \quad
-%                        \exists \lgvl. \; \astP' \Rightarrow \specpre \; \lgvl * \pr \,
-%                        \land \, \specpost \; \lgvl * \pr \Rightarrow \astQ
-%                    \end{array}
-%                }
-%            \]
-%			\vspace{0.01em}
-%			\centering
-%			\[
-%				\infer[\tinybftext{(FRAME)}]
-%				{
-%					\wfcblk{\astP * \pr}{\astQ * \pr}{\lab{}}{\cblk}
-%				}
-%				{
-%					\wfcblk{\astP}{\astQ}{\lab{}}{\cblk}
-%				}
-%			\]
-%=======
-%			\[
-%				\infer[\tinybftext{(BE)}]
-%				{
-%					\wfcblk{\astP}{\astQ}{\lab{}}
-%					{\be \; \lab{}'; \, \simplins; \, \cblk}
-%				}
-%				{
-%					\begin{array}{l}
-%						\lab{}' \in \dom(\Psi) \quad
-%						\Psi (\lab{}') = (\specpre, \specpost) \quad
-%						\wfcblk
-%						{\asrttm{(p \, \wedge \, \regz = 0)}}{\astQ}
-%						{\lab{}+4}{\simplins; \, \cblk} \\
-%						\wfins{\asrttm{\asrttm{(\astP \wedge \regz \neq 0)}}}
-%						{\simplins}{\astP'} \quad
-%						\exists \; \lgvl. \;
-%						\supimpl{\astP'}{\astQ}{\specpre \; \lgvl * \pr}{\specpost \; \lgvl * \pr}
-%					\end{array}
-%				}
-%			\]
-%%
-%%
-%%
-%			\vspace{0.01em}
-%			\centering
-%			\[
-%				\infer[\tinybftext{(FRAME)}]
-%				{
-%					\wfcblk{\astP * \pr}{\astQ * \pr}{\lab{}}{\cblk}
-%				}
-%				{
-%					\wfcblk{\astP}{\astQ}{\lab{}}{\cblk}
-%				}
-%			\]
-%>>>>>>> .r66
 		\end{minipage}
 	}
 	
 	\subfigure
 	{
 		\begin{minipage}{1\linewidth}
-			$\boxed{\wfins{p}{\simplins}{q}}$ \quad \quad
-			\textbf{(Well-Formed Instructions)}
+			$\boxed{\wfins{p}{\simplins}{q}}$ \quad \ \
+			\text{(Well-Formed Instructions)}
 			
 %			\hspace{-0.8cm}
 %			\begin{minipage}{0.53\linewidth}
@@ -975,7 +822,7 @@ return code pointer whose type is word.
 %				\]
 %			\end{minipage}
 			\[
-				\infer[\tinybftext{(WR)}]
+				\infer[(\RULE{WR})]
 				{
 					\wfins{\regst{\sr}{\notCare} * p}{\cwr \; \reg{s} \; \oexp \; \sr}
 					{(\dlyregst{3}{\sr}{(\word_1 \xorOP \word_2)} ) * p}
@@ -985,7 +832,7 @@ return code pointer whose type is word.
 				}
 			\]
             \[
-                \infer[\tinybftext{(RD)}]
+                \infer[(\RULE{RD})]
                 {
                     \wfins{\regst{\sr}{\word} * \regst{\reg{d}}{\notCare}}{\rd \; \sr \; \reg{d}}
                     {\regst{\sr}{\word} * \regst{\reg{d}}{\word}}
@@ -996,7 +843,7 @@ return code pointer whose type is word.
 %
 %
 			\[\begin{array}{l}
-				\infer[\tinybftext{(SAVE)}]
+				\infer[(\RULE{SAVE})]
 				{
 					\wfins{(\regst{\regwim}{\word}) * p}
 					{\csave \; \reg{s} \; \oexp \; \reg{d}}
@@ -1041,13 +888,13 @@ return code pointer whose type is word.
 %
 %
 			\[
-				\infer[\tinybftext{(RESTORE)}]
+				\infer[(\RULE{RESTORE})]
 				{
-					\wfins{(\regst{\regwim}{\word}) * p}
+					\wfins{(\regst{\regwim}{\word}) \sepstar \astP}
 					{\crestore \; \reg{s} \; \oexp \; \reg{d}}
-					{(\regst{\regwim}{\word}) *
+					{(\regst{\regwim}{\word}) \sepstar
                     %    (\regst{\reg{d}}{\val_1 \!+\! \val_2}) * p_2}
-					(\regst{\reg{d}}{\val}) * p_2}
+					(\regst{\reg{d}}{\val}) \sepstar \astP_2}
 				}
 				{
 					\begin{array}{c}
@@ -1096,7 +943,7 @@ in code heap, and well-formed instruction in the form of
 ($\wfins{\astP}{\simplins{}}{\astQ}$) to verify the
 single simple instruction $\simplins{}$.
 
-The top rule \cdhp{} verifies the code
+The top rule \RULE{CDHP} verifies the code
 heap $\code$. It requires that every basic block
 specified in $\Cspec$ can be verified with
 respect to the specification, with any
@@ -1111,7 +958,7 @@ pre- and post-conditions.
 %can be verified by well-formed sequence.
 
 %The well-formed instruction sequence is designed for code block checking.
-The \textbf{SEQ} rule is applied
+The \RULE{SEQ} rule is applied
 when meeting an instruction sequence
 starting with a simple instruction $\simplins$.
 The instruction $\simplins$ is verified by the
@@ -1178,8 +1025,8 @@ the remaining part of the instruction sequence.
 
 \paragraph{\textbf{Delayed control transfers.}}
 We distinguish the \jmp{} and \call{} instructions ---
-The former makes an {\em intra-function} control transfer, while the
-latter makes function calls.
+The former makes an {\em intra-function} control transfer, 
+while the latter makes function calls.
 %Therefore, the target instruction sequence of \jmp{}
 %is in the same function as the \jmp{} instruction itself.
 The \myrule{JMP} rule requires that the target
@@ -1318,7 +1165,7 @@ The bottom layer of our logic is for well-formed instructions.
 The \myrule{WR} rule requires the ownership
 of the target
 register $\sr$ in the precondition ($\regst\sr\notCare$).
-Also it implies there is no delayed writes to $\sr$
+Also it implies there is no delayed write to $\sr$
 in the delay buffer (see the semantics defined in
 Fig.~\ref{fig:Semantics of Assertions}).
 At the end of the delayed write, we use

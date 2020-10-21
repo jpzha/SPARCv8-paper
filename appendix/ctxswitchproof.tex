@@ -1382,3 +1382,100 @@ code blocks in $\code_{\texttt{switch}}$.
     \caption{Code for saving and restoring \localRN{} and \inRN{} registers}
     \label{fig:code for saving and restoring local and in}
 \end{figure*}
+
+% \newpage
+% \begin{figure}[!h]
+%     \small
+%     \centering
+%     \[ 
+%         \begin{array}{lll}
+%             \multicolumn{3}{l}
+%                 {
+%                     \quad \texttt{SwitchEntry}:
+%                     % \quad \lab{\texttt{switch}}: 
+%                 } \\
+%             \\[-9pt]
+%             \quad \quad \ \  
+%             & 
+%             \multicolumn{2}{l}
+%             {
+%                 % /* \text{codes save the \inRN{} and \localRN{}
+%                 % registers of current window into stack frame} */
+%                 \dots
+%             } \\
+%             % \llnum 
+%             % & \nop{} \\
+%             \quad 
+%             & \sett & \TaskCur, \lreg{1} \\
+%             \quad 
+%             & \ld & [\lreg{1}], \lreg{1} \\
+%             % \llnum 
+%             % & \cadd{} & \lreg{1}, \texttt{CONTEXT}\_\texttt{OFFSET}, \lreg{1} \\
+%             \quad
+%             & \call{} & \texttt{reg}\_\texttt{save} \\
+%             \quad
+%             & \nop{} \\
+%             \quad
+%             &
+%             \multicolumn{2}{l}
+%             {
+%                 \dots
+%             }
+%             % \quad
+%             % & \mov{} & \regcwp, \greg{4} \\
+%             % \quad
+%             % & \rd{} & \regwim, \greg{7} \\
+%             % \quad
+%             % & \sett & 1, \greg{6} \\
+%             % \quad & \sll & \greg{6}, \greg{4}, \greg{4} \\
+%             % \\[-5pt]
+%             % \multicolumn{3}{l}
+%             %     {
+%             %         \quad \texttt{Save}\_\texttt{Usedwindow}: 
+%             %     } \\
+%             % \quad & \sll & \greg{4}, 1, \greg{5} \\
+%             % \quad & \srl & \greg{5}, (\OSWINDOWs - 1), \greg{4} \\
+%             % \quad & \cor{} & \greg{4}, \greg{5}, \greg{4} \\
+%             % \llnum & \andcc{} & \greg{4}, \greg{7}, \greg{0} \\
+%             % \llnum & \bne & \texttt{Switch}\_\texttt{NewContext} \\
+%             % \llnum & \nop{} \\
+%             % \llnum & \crestore{} & \greg{0}, \greg{0}, \greg{0} \\
+%             % \\[-9pt]
+%             % \llnum & 
+%             % \multicolumn{2}{l}
+%             % {
+%             %     /* \text{codes save the \inRN{} and \localRN{}
+%             %     registers of current window into stack frame} */
+%             % } \\
+%             % \\[-9pt]
+%             % % \call{} & \texttt{window}\_\texttt{save} \\
+%             % \llnum & \nop{} \\
+%             % \llnum & \jmp{} & \texttt{Save}\_\texttt{Usedwindow} \\
+%             % \llnum & \nop{} \\
+%             % \\[-5pt]
+%             % \multicolumn{3}{l}
+%             %     {
+%             %         \quad \texttt{Switch}\_\texttt{NewContext}: 
+%             %     } \\
+%             % \llnum & \sett & \TaskCur, \lreg{0} \\
+%             % \llnum & \sett & \TaskNew, \lreg{1} \\
+%             % \llnum & \ld & [\lreg{1}], \lreg{1} \\
+%             % \llnum & \st{} & \lreg{1}, [\lreg{0}] \\
+%             % % \llnum & \cadd{} & \oreg{1}, \texttt{CONTEXT}\_\texttt{OFFSET}, \lreg{1} \\
+%             % \llnum & \call{} & \texttt{reg}\_\texttt{restore} \\
+%             % \llnum & \nop{} \\
+%             % % \llnum & \call{} & \texttt{window}\_\texttt{restore} \\
+%             % \\[-9pt]
+%             % \llnum & 
+%             % \multicolumn{2}{l}
+%             % {
+%             %     /* \text{codes restore the \inRN{} and \localRN{}
+%             %     registers of current window from stack frame} */
+%             % } \\
+%             % \\[-9pt]
+%             % \llnum & \nop{} \\
+%             % \llnum & \retl{} \\
+%             % \llnum & \nop{}
+%         \end{array}
+%     \]
+% \end{figure}
