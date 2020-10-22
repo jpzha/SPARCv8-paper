@@ -146,7 +146,7 @@ client code execution preserve such restriction.
     the stack pointer (\spreg{}) always
     points to the top of its stack frame, we require that
     each instruction, \eg{} \cadd{} and \ld{}, whose
-    execution does not operate register window,
+    execution does not operate register windows,
     is prohibited to modify \spreg{}. 
     % update the value of \spreg{};
     As for the \csave{} and \crestore{},
@@ -154,17 +154,17 @@ client code execution preserve such restriction.
     % will rotate register window,
     we restrict them
     to be used in specific forms.
-    We introduce ``$\Psave \ \word$" as a macro of
+    We define ``$\Psave \ \word$" as a macro of
     ``$\csave{} \ \spreg, -\word, \spreg$", whose execution
     generates a new \spreg{} pointing to the stack frame
     size $w$ allocated newly for the next window.
-    We also introduce ``$\Prestore$"
+    We also define ``$\Prestore$"
     as a macro of ``$\crestore{} \ \greg{0}, \greg{0}, \greg{0}$"
     \footnote{In SPARCv8, $\greg{0}$ is always 0,
     and usually used as a parameter when instructions do not
     require a specific parameter.},
     whose execution just restores the previous window
-    and doesn't modify the value of any register
+    and does not modify the value of any register
     in the previous window.
     The original \csave{} and \crestore{} instructions
     have no semantics in the high-level client code.
@@ -232,7 +232,7 @@ client code execution preserve such restriction.
     need to know the existance of register windows,
     \eg{} the context switch routine
     that saves the contents
-    of register windows into stack (in memory).
+    of register windows into stacks (in memory).
 \end{itemize}
 
 \begin{figure*}[!t]
@@ -355,7 +355,7 @@ client code execution preserve such restriction.
 
 We define the syntax of the high-level Pseudo-SPARCv8 language
 in \Fig{\ref{fig:syntax-of-concur-pseudo-sparc}}.
-The code (\TYPE{HCode}) $\HMd$ has two parts:
+The code (\TYPE{HCode}) $\HMd$ includes
 the code heap $\code$
 and the set of abstract primitives (\TYPE{PrimSet}) $\hprimset$,
 which is a partial mapping from labels to
@@ -376,8 +376,8 @@ to another.
 % we add three pseudo instructions.
 We add three pseudo instructions in simple instruction (\TYPE{SimpIns}).
 The $\Psave \ \word$
-and $\Prestore$ restrict the instruction \csave{}
-and \crestore{} to be used in the specific form as
+and $\Prestore$ restrict the \csave{} and \crestore{} 
+instructions to be used in the specific form as
 mentioned before.
 We also introduce $\cprint \ \reg{}$,
 whose execution outputs the value $\val$ in
@@ -392,14 +392,15 @@ $\outEvt{\val}$, or a $\callEvt{\lab{}, \args{\val}}$ meaning to
 call a primitive labelled $\lab{}$ with arguments $\args{\val}$.
 
 The machine states \TYPE{(HState)}
-of the high-level Pseudo-SPARCv8 program
-are defined in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}.
-The high-level program $\HProg$ is a pair of high-level code
-$\HMd$ and high-level state $\hpstate$. High-level
-state is a tuple including: 
-a thread pool (\TYPE{ThrdPool}) $\thrdpool$,
+of Pseudo-SPARCv8 are defined 
+in \Fig{\ref{fig:machine-state-concur-pseudo-sparc}}.
+The high-level program $\HProg$ (\TYPE{HProg}) 
+is a pair of the high-level code
+$\HMd$ and the high-level state $\hpstate$. 
+The high-level state $\hpstate$ is a tuple including: 
+the thread pool (\TYPE{ThrdPool}) $\thrdpool$,
 % the identifier of the current thread $\thrdid$,
-current thread id (\TYPE{Tid}) $\thrdid$, 
+the current thread id (\TYPE{Tid}) $\thrdid$, 
 the thread local state (\TYPE{ThrdLcSt}) $\hthrdlocalst$ 
 of the current thread, and the memory (\TYPE{Mem}) $\Mem$.
 
