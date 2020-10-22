@@ -8,7 +8,7 @@
 % how our logic handles the features of \sparc{}.
 In this section,
 we use a simplified version of our program logic
-that doesn't support refinement verification to
+that does not support refinement verification to
 present how our logic handles the
 features of \sparc{}. 
 The relational program logic for  
@@ -27,7 +27,7 @@ refinement reasoning will be introduced in
 \begin{center}
 	$
 		\begin{array}{rrcl}
-			\textit{(Asrt)} & \astP, \astQ & \define &
+			\text{(Asrt)} & \astP, \astQ & \define &
 			\aemp \sepline
 			\msto{l}{\val} \sepline
 			\regst{\regN}{\val} \sepline
@@ -272,7 +272,7 @@ refinement reasoning will be introduced in
 
 %\indent
 We define the syntax of assertions 
-(\textit{Asrt}) in Fig.~\ref{fig:Syntax of Assertions},
+(\text{Asrt}) in Fig.~\ref{fig:Syntax of Assertions},
 and their semantics in Fig.~\ref{fig:Semantics of Assertions}.
 We extend separation logic assertions with specifications of
 delay buffers and register windows. Registers are like
@@ -1047,7 +1047,7 @@ the remaining part of the instruction sequence.
 
 \paragraph{\textbf{Delayed control transfers.}}
 We distinguish the \jmp{} and \call{} instructions ---
-The former makes an {\em intra-function} control transfer, 
+The former makes an ``intra-function" control transfer, 
 while the latter makes function calls.
 %Therefore, the target instruction sequence of \jmp{}
 %is in the same function as the \jmp{} instruction itself.
@@ -1101,7 +1101,7 @@ contains the correct return address,
 we know $\RAreg$ contains the correct value
 before $\retl$.
 
-The \myrule{BE} rule checks the ``current" value of the $\regz$ register
+The \myrule{BE} rule checks the ``current" value of the register $\regz$
 and decides whether the branch will be taken
 after executing the following instruction $\simplins{}$. 
 If $\regz$ is not zero,

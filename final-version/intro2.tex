@@ -308,8 +308,8 @@ These features make the semantics of the \sparc{} code
 context-dependent. For instance, a read of a special register
 (\eg{} the register {\tt Y} in the above example) needs to
 make sure there are enough instructions executed since the
-most recent {\em delayed} write. As another example,
-the instruction following the \call{} can be any
+most recent ``delayed write". As another example,
+the instruction following the \call{} instruction can be any
 instruction in general, but it is not supposed to
 update the register $\RAreg$, which contains the return
 address saved by the \call{} instruction.
@@ -351,7 +351,7 @@ the set of abstract assembly
 primitives and the implementations of
 abstract assembly primitives respectively.
 It means $\asmimp$ refines $\AbsPrimC$ under
-\textit{any context} $\Clang$.
+``any context" $\Clang$.
 \begin{equation}
     \forall \, \Clang. \,
     \Clang[\asmimp] \refine \Clang[\AbsPrimC]
@@ -381,7 +381,7 @@ semantics of C-assembly interaction.
             \semantics{\Clang[\AbsPrimC]}^{\textsf{C}}
             \\
             \\[-5pt]
-            \!\!
+            \!\!\!\!
             {\color{blue} (\text{S1})} \ \
             \rotatebox[origin=c]{90}{$\refine$} \ \
             \Longleftarrow \ \
@@ -391,7 +391,7 @@ semantics of C-assembly interaction.
             \semantics{\code[\hprimset]}^{\textsf{P-SPARCv8}}
             \\
             \\[-5pt]
-            \!\!
+            \!\!\!\!
             {\color{blue} (\text{S2})} \ \
             \rotatebox[origin=c]{90}{$\refine$} \ \
             \Longleftarrow \ \
@@ -439,7 +439,7 @@ $\Clang[\AbsPrimC]$, which executes
 under the C language semantics (shown as
 $\semantics{\notCare}^{\textsf{C}}$),
 is implemented as C language
-with a set of abstract assembly primitive $\AbsPrimC$.
+with a set of abstract assembly primitives $\AbsPrimC$.
 The compiler (\textit{Comp}) translates the
 C program $\Clang$ to the \sparc{} code $\code$.
 As {\color{blue} (S1)} shows,

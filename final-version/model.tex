@@ -106,25 +106,25 @@ are 32-bit integers (called ``words").
 The value (\TYPE{Val})
 is either a word $\word$ or address $\loc$.
 The whole program configuration (\TYPE{Prog})
-$\prog$ consists of the code heap (\TYPE{CodeHeap})
+$\prog$ includes the code heap (\TYPE{CodeHeap})
 $\code$, the machine state (\TYPE{State}) $\state$, 
 and the program counters $\pc$ and $\npc$.
 %\sparc{} program can be viewed as a composition of
 %code heap, machine state, pc and npc.
 The code heap $\code$ is a partial function
 from labels $\lab{}$ to commands $c$.
-Labels are also 32-bit integers (called ``words"),
-which can be viewed as addresses or locations
+Labels are also 32-bit integers,
+which can be viewed as locations
 where the commands are saved in the code heap.
 The operand expression (\TYPE{OpExp})
 $\oexp$, which is either a general
 register $\reg{}$ or a word $\word$,
-and address expression (\TYPE{AddrExp}) $\aexp$,
+and the address expression (\TYPE{AddrExp}) $\aexp$,
 which is either an operand expression or a
 sum of the values of register $\reg{}$ and an operation
 expression, are auxiliary definitions used as parameters of commands.
-Commands (\TYPE{Comm}) in \sparc{} can be classified into two categories:
-(1) simple instructions (\TYPE{SimpIns})
+Commands (\TYPE{Comm}) in \sparc{} are classified into two categories:
+(1) the simple instructions (\TYPE{SimpIns})
 $\simplins{}$, which do sequential
 operation, \eg{} arithmetic operation ``\cadd{}",
 or memory operations
@@ -134,7 +134,7 @@ register operations ``\rd{}" (read) and ``\cwr{}" (write),
 or ``\nop{}", whose execution changes no program state
 % (except assigning \npc{} to \pc{} and (\npc{}+4) to \npc{});
 (the program counters \pc{} and \npc{});
-(2) control-transfer instructions,
+(2) the control-transfer instructions,
 \eg{} \call{} and \retl{} for
 function call and return, or \jmp{} and \be{} for
 unconditional and conditional branch.
@@ -489,7 +489,7 @@ from $\lab{}$ in $\code$ below.
 			
 			\\[-8pt]
 			
-			\perp & \quad \ \ \text{otherwise}
+			\undef & \quad \ \ \text{otherwise}
 		\end{array}
 	\right.
 \]
@@ -758,7 +758,7 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
                             w &\quad \cif \ \oexp = \word, \\
                             & \quad \quad -4096 \leq \word \leq 4095 \\
                             \\[-8pt]
-                            \perp &\quad \otherwise
+                            \undef &\quad \otherwise
                         \end{array}
                     \right.
                 \end{array} & \quad
@@ -775,7 +775,7 @@ We show the selected rules in Fig.~\ref{Selected Operational Semantics}.
                             & \quad \quad \tand \ \evalR{\oexp}{R} = \val_2 \\
 
                             \\[-8pt]
-                            \perp &\quad \otherwise
+                            \undef &\quad \otherwise
                         \end{array}
                     \right.
                 \end{array}
@@ -961,7 +961,7 @@ calculation of address.
 				\text{ and }
 				\val_2 = \word_2 \\
 			\\[-8pt]
-			\perp & \quad \otherwise
+			\undef & \quad \otherwise
 		\end{array}
 	\right.
 \]

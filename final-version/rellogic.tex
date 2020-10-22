@@ -5,7 +5,7 @@ In this section, we present our relational
 program logic for refinement verification of
 SPARCv8 code\footnote{We give more details about the 
 language definition and the soundness proof
-in the Coq implementation or technical report, 
+in the Coq implementation and the technical report, 
 which is available at \url{https://github.com/jpzha/VeriSparc}.}. 
 %, which is the expansion of our conference paper.
 As an extension of our conference paper,
@@ -22,7 +22,7 @@ it consists of the following work.
         verification. We present our low-level \sparc{}
         language and the modifications in
         \Subsec{\ref{subsec:low-level SPARCv8 Program}};
-    \item We define the correctness of the abstract
+    \item We define the correctness of abstract
         assembly primitives in
         \Subsec{\ref{subsec:correctness-primitive}},
         which is formulated as ``contextual refinement"
@@ -71,7 +71,7 @@ the SPARCv8 code as client
 and the set of abstract assembly primitives.
 Here, the execution of the client SPARCv8 code
 are required to preserve a restriction between register
-windows and stack in memory, shown
+windows and stacks in memory, shown
 in 
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)
 (\regcwp{} points to the current window and \regwim{} marks
@@ -87,20 +87,20 @@ of adjacent windows are omitted in the figure).
     \vspace{-0.5em}
 \end{center}
 During the execution of the SPARCv8 program,
-part of previous procedures' contexts
+parts of previous procedures' contexts
 (in \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a))
 are saved in register windows, the others
 (the dark gray part in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a))
-are stored in stack in memory,
+are stored in the stack in memory,
 % (shown as the red arrow in
 % \Fig{\ref{fig:Abstraction of Register Windows and Memory}}),
-because the number of windows is limited.
+since the number of windows is limited.
 The restriction is that the stack pointer
 (\spreg{}) of each procedure,
 including the current and previous ones,
-whose context is saved in the register
-windows currently, should point to the top of its stack frame
+whose context is saved in register windows currently, 
+should point to the top of its stack frame
 (shown as the thick arrow in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)),
 so the contexts
@@ -110,15 +110,15 @@ the context switch routine will check
 whether the previous window is valid
 (in clockwise direction),
 and use the $\crestore{}$ instruction to set it as the
-current one and save its contents into stack
+current one and save its contents into the stack
 (in memory) until the previous one
 (filled with east north lines
 in \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)) is invalid.
-We require that the execution of the client code
-preserves such restriction. Otherwise, some SPARCv8
+The executions of client code are require to
+preserve such restriction. Otherwise, some SPARCv8
 functions, \eg{} context switch routine, whose
 execution stores the contexts saved in
-register windows into stack in memory, cannot be
+register windows into stacks in memory, cannot be
 verified if it is unclear where to save the
 contents of some windows.
 % We require the execution of client code
@@ -145,13 +145,14 @@ client code execution preserve such restriction.
     In order to ensure that
     the stack pointer (\spreg{}) always
     points to the top of its stack frame, we require that
-    each instruction, like \cadd{} and \ld{}, whose
+    each instruction, \eg{} \cadd{} and \ld{}, whose
     execution does not operate register window,
-    is prohibited to update the value of \spreg{};
-    and as for the \csave{} and \crestore{},
+    is prohibited to modify \spreg{}. 
+    % update the value of \spreg{};
+    As for the \csave{} and \crestore{},
     % whose executions
     % will rotate register window,
-    we require them
+    we restrict them
     to be used in specific forms.
     We introduce ``$\Psave \ \word$" as a macro of
     ``$\csave{} \ \spreg, -\word, \spreg$", whose execution
@@ -164,7 +165,7 @@ client code execution preserve such restriction.
     require a specific parameter.},
     whose execution just restores the previous window
     and doesn't modify the value of any register
-    in the previous window restored.
+    in the previous window.
     The original \csave{} and \crestore{} instructions
     have no semantics in the high-level client code.
 
