@@ -1931,7 +1931,7 @@ separation conjunction $\sepstar$.
 The \myrule{ABSCSQ} rule allows us to execute the high-level
 primitive command specified in precondition.
 The implication $\absExec{\relastP}{\relastP'}$
-is defined below formally:
+is defined below formally.
 \[
     \small
     \begin{array}{l}
@@ -2093,9 +2093,10 @@ the program counters should equal
 $\lab{}\!+\!8$ and $\lab{}\!+\!12$ respectively, where $\lab{}$
 is contained in the $\reg{15}$ register after the execution
 of the abstract assembly primitive $\hprim$.
-It ensures that the low-level implementation
-and the high-level abstract assembly primitive 
-will return to the same code pointers.
+It ensures that low-level implementations
+and corresponding
+high-level abstract assembly primitives 
+return to the same code pointers.
 % because
 % the \textbf{RETL} rule also restricts
 % that the low-level program will return to
@@ -2108,9 +2109,8 @@ We also require that
 if an abstract assembly primitive
 can execute safely on a part of program state,
 it can also execute safely on the whole program state,
-and the additional program state remains unchanged.
-$\hpstate\perp\hpstate_r$ is defined formally
-below:
+and keeps the additional program state unchanged.
+$\hpstate\perp\hpstate_r$ is defined formally below.
 \[
     \small
     \begin{array}{l}
@@ -2157,7 +2157,7 @@ can be reestablished at the exit of function.
 % (\Fig{\ref{fig:Logic Ensures State Relation Reestablished}} gives a
 % more straightforward way to understand this restriction, and
 % we use the purple dashed line to represent this invariant).
-Such invariant is defined as \INV{} formally below: 
+Such invariant is defined as \INV{} formally below. 
 % We define \INV{} to represent such invariant below formally:
 % our logic needs to make sure that
 % the state relation defined in
