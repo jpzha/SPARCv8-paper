@@ -318,7 +318,7 @@ client code execution preserve such restriction.
             \\
             \\[-8pt]
             \TYPE{(Tid)} & \thrdid & \in & \Ztype &
-            \ \
+            \qquad
             \TYPE{(ThrdLcSt)} & \ \hthrdlocalst \ & \define &
             (\hRstate, \pc, \npc) &
             \qquad
@@ -1429,21 +1429,21 @@ $\code$ and $\asmimp$ are \sparc{} code heaps:
 
 \paragraph{Relational Assertion}
 \Fig{\ref{fig:Syntax of Relational Assertion}} gives
-the {\it relational} assertion language, and its semantics
+the relational assertion language, and its semantics
 is given in \Fig{\ref{fig:Semantics of Relation Assertion}}.
-The relational assertions are interpreted over relational
+The relational assertions are interpreted over the relational
 state $(\state, \hpstate, \primcom, \word)$, which
 contains the low-level state $\state$,
 the high-level state $\hpstate$,
 the abstract assembly primitive command $\primcom$
 defined in \Fig{\ref{fig:Semantics of Relation Assertion}},
-and a word $\word$ recording the number of the tokens.
+and the word $\word$ recording the number of the tokens.
 The high-level primitive command $\primcom$ is
 either an abstract assembly primitive $\hprim$
 parameterized over arguments $\args{\val}$, or a
 $\primdone$ meaning the primitive has already been
 executed. The relational assertion $\relastP$ reserves
-original assertion $\astP$ describing the low-level
+the original assertion $\astP$ describing the low-level
 state $\state$.
 
 % Compared with the assertion defined before in
@@ -1453,9 +1453,9 @@ state $\state$.
 % adds some new ones to describe the high-level state.
 We define $\hregsto{\hrn}{\val}$ and $\hmsto{\loc}{\val}$
 to describe the state of
-register file and memory in the high level.
+register files and memory in the high level.
 The assertion $\empAst$
-says that the high-level memory and thread pool are
+says that the high-level memory and the thread pool are
 both empty, and the low-level state satisfies $\aemp$
 defined in \Fig{\ref{fig:Semantics of Assertions}}.
 % $\hregsto{\hrn}{\val}$ says that value in register
@@ -1469,7 +1469,8 @@ defined in \Fig{\ref{fig:Semantics of Assertions}}.
 The assertion $\astCurCont{\thrdid}{\hthrdlocalst}$
 and $\astRdyCont{\thrdid}{\hthrdlocalst}$ represent
 the thread local state of the current and ready
-thread respectively. Note that the threads in thread pool
+thread respectively. Note that the threads 
+in the thread pool
 are viewed as resources and can be separated by
 separation conjunction.
 
@@ -1508,16 +1509,18 @@ current high-level primitive command is $\primcom$.
 And the assertion $\metricAst{\word}$ takes a word $\word$,
 which can also be separated by separation conjunction ($\sepstar$),
 to state that the number of tokens in current state is
-\textit{no less} than $\word$. In the
-introduction of the inference rules following, we use tokens
-to avoid infinite loops and recursive function calls to make sure
-the termination preserving refinement.
+``no less" than $\word$. 
+% In the
+% introduction of the inference rules following, we use tokens
+Tokens are used 
+to avoid infinite loops and recursive function calls 
+to make sure the termination preserving refinement.
 % The idea is taken from RGSim-T \cite{liang14lics}.
 
 The assertion $\nxtAst{\relastP}$, which is similar with 
 $\nxtAst{\astP}$ defined in \Fig{\ref{fig:Semantics of Assertions}}, 
 describes the
-state after executing one step of the delayed writes.
+state after executing one step of delayed writes.
 % Suppose a relational state
 % $(\state', \hpstate, \primcom, \word)$ satisfies the
 % assertion $\relastP$, where $\state' = (\mem, (\RFile', \Wstack), \DBuf')$,
@@ -1528,8 +1531,9 @@ state after executing one step of the delayed writes.
 % \subsection{Inference Rules for Refinement Verification}
 % \label{subsec:logic-rule-refinemet}
 \paragraph{Inference Rules in Relational Program Logic}
-The code specification $\RelBspec$ and code heap specification
-$\Cspec$ in relational program logic are defined below :
+The code specification $\RelBspec$ and 
+the code heap specification $\Cspec$ 
+in relational program logic are defined below :
 \[
     \small
     \!\!\!\!
@@ -1896,15 +1900,19 @@ which we will discuss in more details following.
 % and we will discuss it in more details following.
 The inference rules for \jmp{} and \call{} in
 relational program logic will consume a token,
-shown as $\metricAst{1}$, in order to avoid
-infinite loops and recursive function calls,
-because our refinement relation is
+shown as $\metricAst{1}$, 
+in order to avoid infinite loops and 
+recursive function calls and ensure 
 termination-preserving.
+% in order to avoid
+% infinite loops and recursive function calls,
+% because our refinement relation is
+% termination-preserving.
 $\wfFrm(\relastP_r)$, whose definition is omitted here,
 means there is no sub-term in
 form of $(\astCurCont{\thrdid}{\hthrdlocalst})$,
 $(\hregsto{\hrn}{\val})$ and $\safePrimAst{\primcom}$
-in frame $\relastP_r$,
+in the frame $\relastP_r$,
 because the state they described is not separated by
 separation conjunction $\sepstar$.
 % There is an omitted side condition in presentation that:
@@ -2083,11 +2091,11 @@ First,
 % for the execution of abstract assembly primitive.
 the program counters should equal
 $\lab{}\!+\!8$ and $\lab{}\!+\!12$ respectively, where $\lab{}$
-is contained in $\reg{15}$ register after the execution
+is contained in the $\reg{15}$ register after the execution
 of the abstract assembly primitive $\hprim$.
 It ensures that the low-level implementation
-and high-level abstract assembly primitive will return to
-the same code pointers.
+and the high-level abstract assembly primitive 
+will return to the same code pointers.
 % because
 % the \textbf{RETL} rule also restricts
 % that the low-level program will return to
@@ -2101,7 +2109,7 @@ if an abstract assembly primitive
 can execute safely on a part of program state,
 it can also execute safely on the whole program state,
 and the additional program state remains unchanged.
-Here, $\hpstate\perp\hpstate_r$ is defined formally
+$\hpstate\perp\hpstate_r$ is defined formally
 below:
 \[
     \small
@@ -2141,7 +2149,7 @@ below:
 Second, the abstract assembly primitive should be
 specified in the precondition, and its execution
 should be done in the final state.
-Third, there is an {\it invariant}
+Third, there is an ``invariant"
 between low- and high-level programs, holding at the entry of
 the function. Our logic needs to ensure that such invariant
 can be reestablished at the exit of function.
@@ -2287,7 +2295,7 @@ in the thread pool, otherwise the $\primsw$ primitive cannot execute.
 %     \sepstar \atrue
 % \]
 % }
-We introduce the frame $\relastP_r$ for local reasoning. 
+We use the frame $\relastP_r$ for local reasoning. 
 And we use $\Sta(\hprim(\args{\val}), \relastP_r)$, whose 
 definition is omitted here, to say that $\relastP_r$
 still holds after the execution of $\hprim(\args{\val})$.
