@@ -238,18 +238,18 @@ client code execution preserve such restriction.
     \centering
     \small
     \[
-        \begin{array}{rcclcrccl}
-            \TYPE{(HCode)} & \ \HMd \ & \define & (\code, \hprimset) & &
-            \qquad\,
+        \begin{array}{llllcllll}
+            \TYPE{(HCode)} & \HMd & \define & (\code, \hprimset) & &
+            \qquad\qquad \
             \TYPE{(CodeHeap)} & \ \code \ & \in & \TYPE{Word} \rightharpoonup \TYPE{Comm}
             \\
             \\[-8pt]
-            \TYPE{(PrimSet)} & \hprimset & \define &
+            \TYPE{(PrimSet)} \  & \hprimset & \define &
             \multicolumn{6}{l}
                 {
                     \{ \lab{1} \rightsquigarrow \hprim_1, \dots, \lab{n} \rightsquigarrow \hprim_n \}
                     \qquad\quad
-                    \TYPE{(Prim)} \ \ \hprim \ \in \
+                    \TYPE{(Prim)} \qquad\quad \hprim \ \ \in \
                     \TYPE{List} \ \TYPE{Val} \rightarrow \TYPE{HState} \rightarrow
                     \TYPE{HState} \rightarrow \TYPE{Prop}
                 }  \\
@@ -305,25 +305,27 @@ client code execution preserve such restriction.
     \small
     \vspace{-1em}
     \[
-        \begin{array}{rcclrcclrccl}
-            \TYPE{(HProg)} & \ \HProg \ & \define &
+        \begin{array}{llllllllllll}
+            \TYPE{(HProg)} & \HProg \ & \define &
             (\HMd, \hpstate) &
             \qquad
             \TYPE{(HState)} & \ \hpstate \ & \define &
             (\thrdpool, \thrdid, \hthrdlocalst, \Mem) &
             \qquad
-            \TYPE{(ThrdPool)} & \thrdpool & \define &
+            \TYPE{(ThrdPool)} \ & \thrdpool & \define &
             \{ \thrdid \rightsquigarrow \hthrdlocalst \}^{*}
             \\
             \\[-8pt]
             \TYPE{(Tid)} & \thrdid & \in & \Ztype &
+            \ \
             \TYPE{(ThrdLcSt)} & \ \hthrdlocalst \ & \define &
             (\hRstate, \pc, \npc) &
+            \qquad
             \TYPE{(HRstate)} & \hRstate & \define &
             (\hRfile, \hWstk) \\
             \\
 
-            \TYPE{(HRegFile)} & \hRfile & \in &
+            \TYPE{(HRegFile)} \ & \hRfile & \in &
             \multicolumn{9}{l}
             {
                 \TYPE{HRegName} \rightarrow \TYPE{Val}
@@ -338,8 +340,8 @@ client code execution preserve such restriction.
             \multicolumn{9}{l}
             {
                 \nil \sepline (\fm_1, \fm_2) \stCons \hWstk
-                \qquad\qquad \ \
-                \TYPE{(HFrame)} \ \ \fm \ \ \define \ \
+                \qquad\quad \,
+                \TYPE{(HFrame)} \qquad \fm \ \ \define \ \
                 [\val_0, \dots, \val_7]
             }
         \end{array}

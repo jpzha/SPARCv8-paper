@@ -4,7 +4,7 @@
 	\centering
 	\small
 	\[
-		\begin{array}{lcclclccl}
+		\begin{array}{llllcllll}
 			\TYPE{(Word)} & \word, \lab{} & \in &
 			\multicolumn{6}{l}
 			{
@@ -21,7 +21,7 @@
 			\\
 			\TYPE{(Prog)} & \prog & \define &
 				(\code, \state, \pc, \npc) & \qquad &
-			\TYPE{(CodeHeap)} & \ \code \ & \in &
+			\TYPE{(CodeHeap)} \ \ & \code \ & \in &
 				\TYPE{Word} \rightharpoonup \TYPE{Comm}
 			\\
 			\\[-9pt]
@@ -50,7 +50,7 @@
 				\be \ \lab{}
 			} \\
 			\\[-9pt]
-			\TYPE{(SimpIns)} & \simplins{} & \define &
+			\TYPE{(SimpIns)} \ & \simplins{} & \define &
 			\multicolumn{6}{l}
 			{
 				\ld{} \ \aexp \ \reg{d} \sepline
@@ -163,7 +163,7 @@ $\DBuf$ below.
 \begin{figure*}[!t]
 	\small
 	\[
-		\begin{array}{lcclclccl}
+		\begin{array}{llllcllll}
 			\TYPE{(RegFile)} & \RFile & \in & 
 			\TYPE{RegName} \rightharpoonup \TYPE{Val}
          & \quad \ \ &
@@ -182,7 +182,7 @@ $\DBuf$ below.
 			\regY \sepline
 \asr_0 \sepline \dots \sepline \asr_{31} \\ \\[-9pt]
 		
-		\TYPE{(FrameList)} & \Wstack & \define &
+		\TYPE{(FrameList)} \  & \Wstack & \define &
             \nil \sepline \fm \stCons \Wstack & \quad &
 		\TYPE{(Frame)} & \fm & \define & [\val_0, \dots, \val_7] 
 		\\ \\[-9pt]
@@ -191,7 +191,7 @@ $\DBuf$ below.
                                   (\tick, \sr, \word) \dbCons \DBuf
                                   & \quad
                                   %& & & & \\		
-		& \TYPE{(DelayCycle)} & \tick & \in & \{ 0, 1, \dots, X \}
+		& \TYPE{(DelayCycle)} \ & \tick & \in & \{ 0, 1, \dots, X \}
 		\end{array}
 	\]
 % 	\small
