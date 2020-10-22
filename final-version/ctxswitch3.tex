@@ -130,7 +130,7 @@ in both low- and high-level memory.
 The precondition takes ten tokens ($\metricAst{10}$).
 As we have explained, verifying \call{}
 and \jmp{} instructions will consume a token.
-So, verifying calling function
+So, verifying calling functions
 \regsave{} and \regrestore{} will
 both consume a token. And \SaveUsedWin{},
 which saves the context of each previous window
@@ -409,17 +409,17 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     The correctness proof from
     (\ref{ctxswitch-wfse}) to (\ref{ctxswitch-wfsn})
     can be done by applying the inference rules for
-    code blocks shown in
+    instruction sequences shown in
     \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}.
-    We can choose any place to apply
+    We can choose any place to apply the 
     \myrule{ABSCSQ} rule to execute $\primsw$.
-    Here, we apply \myrule{ABSCSQ} rule
-    in verifying the code block
+    Here, we apply the \myrule{ABSCSQ} rule
+    in verifying
     \SwitchNewTask{} (\ref{ctxswitch-wfsn}),
     when the context switch routine returns,
     as shown in \Fig{\ref{fig:refinement reasoning}}.
     In \Fig{\ref{fig:refinement reasoning}}, we use the
-    solid circle to represent the point applying \myrule{ABSCSQ} rule,
+    solid circle to represent the point applying the \myrule{ABSCSQ} rule,
     and after the execution of $\primsw$, the
     state relation, defined in \Subsec{\ref{subsec:correctness-primitive}} 
     and represented as the solid lines in \Fig{\ref{fig:refinement reasoning}},
