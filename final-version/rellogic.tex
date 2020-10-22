@@ -2149,15 +2149,16 @@ $\hpstate\perp\hpstate_r$ is defined formally below.
 Second, the abstract assembly primitive should be
 specified in the precondition, and its execution
 should be done in the final state.
-Third, there is an ``invariant"
-between low- and high-level programs, holding at the entry of
+Third, an ``invariant" holds
+between low- and high-level programs at the entry of
 the function. Our logic needs to ensure that such invariant
-can be reestablished at the exit of function.
+can be reestablished when the function returns.
 % \input{picture/Sim}
 % (\Fig{\ref{fig:Logic Ensures State Relation Reestablished}} gives a
 % more straightforward way to understand this restriction, and
 % we use the purple dashed line to represent this invariant).
-Such invariant is defined as \INV{} formally below. 
+We define such invariant as \INV{} formally below.
+% Such invariant is defined as \INV{} formally below. 
 % We define \INV{} to represent such invariant below formally:
 % our logic needs to make sure that
 % the state relation defined in
@@ -2227,7 +2228,8 @@ Such invariant is defined as \INV{} formally below.
 \]
 The invariant consists of the state relation between low- and
 high-level program states,
-shown as $\stateRel{\state}{\hpstate}$, 
+shown as $\stateRel{\state}{\hpstate}$
+and defined in \Subsec{\ref{subsec:correctness-primitive}}, 
 and the safe execution of the primitive 
 command $\primcom$, which means that 
 $\primcom$ can execute 
@@ -2242,7 +2244,7 @@ $\exists \, \hpstate'. \,
 % and the safe execution of the primitive command
 % ($\primMultiTrans{}{*}{}$ denotes zero or one step).
 Including the safe execution of
-$\primcom$ is essential, 
+$\primcom$ in the invariant is essential, 
 since we can get some knowledge of the high-level program
 state from it.
 % the safe execution of the
@@ -2296,8 +2298,8 @@ in the thread pool, otherwise the $\primsw$ primitive cannot execute.
 % \]
 % }
 We use the frame $\relastP_r$ for local reasoning. 
-And we use $\Sta(\hprim(\args{\val}), \relastP_r)$, whose 
-definition is omitted here, to say that $\relastP_r$
+$\Sta(\hprim(\args{\val}), \relastP_r)$, whose 
+definition is omitted here, says that $\relastP_r$
 still holds after the execution of $\hprim(\args{\val})$.
 % It should be stable under the execution
 % of the abstract assembly primitive
@@ -2327,7 +2329,7 @@ still holds after the execution of $\hprim(\args{\val})$.
 \label{subsec:semantics and soundness}
 
 We first define the simulation relation for
-instruction sequence.
+instruction sequences.
 It says $\asmimp$ can execute safely
 from $\state$, $\pc$ and $\npc$ until reaching
 the end of the current instruction sequence ($\asmimp[\pc]$),
