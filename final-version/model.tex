@@ -245,7 +245,10 @@ save and restore some of the general registers as execution
 contexts. Instead of saving them into stacks in memory,
 \sparc{} uses multiple register windows to form a circular
 stack, and does window rotation for efficient context save and restore.
-As shown in Fig.~\ref{fig:RegisterWindows}, there are $N$
+As shown in Fig.~\ref{fig:RegisterWindows}
+(the figure taken from ``The SPARC Architecture Manual Version 8".\footnote{The \sparc{} Architecture Manual Version 8. 
+\url{https://gaisler.com/doc/sparcv8.pdf}.}), 
+there are $N$
 register windows ($N=8$ here) consisting of $2\times N$
 groups of registers (each group containing 8 registers).
 The $\regcwp$ register (part of $\psr$) records the id number
@@ -254,7 +257,7 @@ of the current window ($\regcwp=0$ in this example).
 	\centering
 	\includegraphics[width=8.7cm]{window}
 	% \includegraphics[width=58ex]{window}
-	\caption{Register Windows (figure taken from \cite{sparc})}
+	\caption{Register Windows}
 	\label{fig:RegisterWindows}
 \end{figure*}
 

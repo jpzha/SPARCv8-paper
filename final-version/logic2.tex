@@ -383,7 +383,10 @@ Lemma~\ref{lemma:dly-sep-split} below.
 		{\nxtAst{(\astP)}\sepstar\nxtAst{(\astQ)}}$. 
 	% From the semantics of assertions, 
 	We first get there exist $\RFile'$, $\DBuf'$, 
-	$\mem_1$, $\mem_2$, $\RFile_1'$ and $\RFile_2'$ such that:
+	$\mem_1$, $\mem_2$, $\RFile_1'$ and $\RFile_2'$ such that 
+	($\RFile_1 \uplus \RFile_2$ represents the union of
+	$\RFile_1$ and $\RFile_2$ if they have disjoint domains, and 
+	$\Mem_1 \uplus \Mem_2$ has the same meaning):
 	\begin{align}
 		& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \label{a:dstep1} \\
 		& \RFile' = \RFile_1'\uplus\RFile_2'
@@ -423,6 +426,12 @@ Lemma~\ref{lemma:dly-sep-split} below.
 		& \Dstep{(\RFile_2', \DBuf')}{(\RFile_2, \DBuf)}
 		\label{a:dstep-split2}
 	\end{align}
+	% We prove that
+	% $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
+	% 	 {(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$ holds 
+	% by (\ref{a:regsplit}) (\ref{a:memsplit}) (\ref{a:pholds})
+	% (\ref{a:qholds}) (\ref{a:dstep1}) (\ref{a:dstep2}).
+	
 	From (\ref{a:pholds}) and (\ref{a:dstep-split1}), 
 	we get $\asrtmodel{(\Mem_1, (\RFile_1, \Wstack), \DBuf)}{\nxtAst{\astP}}$; 
 	and from (\ref{a:qholds}) and (\ref{a:dstep-split2}), 

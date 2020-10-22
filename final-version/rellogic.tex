@@ -872,10 +872,10 @@ proposed by \etal{Liang} \cite{liang14lics}.
     for any {\em $\code$}, {\em $\state$}, {\em $\hpstate$}, 
     {\em $\pc$} and {\em $\npc$}, if
     {\em $\stateRel{\state}{\hpstate}$} and {\em $\progsafe(\HProg)$},
-    then {\em $\prog \refine \HProg$} holds.
-    (where {\em $\prog = (\code \uplus \asmimp, \state, \pc, \npc)$}, \,
-        {\em $\HProg = ((\code, \hprimset), \hpstate)$}, and
-        {\em $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$}).
+    then {\em $\prog \refine \HProg$}, 
+    where {\em $\prog = (\code \uplus \asmimp, \state, \pc, \npc)$}, \,
+        {\em $\HProg = ((\code, \hprimset), \hpstate)$} and
+        {\em $\hpstate.\hthrdlocalst = (\notCare, \pc, \npc)$}.
 \end{definition}
 
 We use the code heap $\asmimp$

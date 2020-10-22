@@ -8,7 +8,7 @@ in assembly, such as the context switch code or the code that
 manages interrupts.
 In addition, there is also code written directly in assembly
 to achieve high performance (\eg{} \textsf{memcpy} in linux
-v2.6.17.10\footnote{Linux v2.6.17.10. \url{https://elixir.bootlin.com/linux/v2.6.17.10/source/arch}}.
+v2.6.17.10\footnote{Linux v2.6.17.10. \url{https://elixir.bootlin.com/linux/v2.6.17.10/source/arch}.}.
 Correctness of such assembly code is crucial to ensure
 the safety and security of the whole system.
 However, assembly code verification remains a challenging
@@ -19,7 +19,7 @@ operational semantics without a general program logic.
 
 SPARC (Scalable Processor ARChitecture)
 is a CPU instruction set architecture (ISA) with high-performance
-and great flexibility\footnote{\label{fn:SPARC} SPARC. \url{https://gaisler.com/doc/sparcv8.pdf}}.
+and great flexibility\footnote{The \sparc{} Architecture Manual Version 8. \url{https://gaisler.com/doc/sparcv8.pdf}.}.
 It has been widely used in various processors
 for workstations and embedded systems. %, and space mission.
 The \sparc{} ISA has some interesting features, which
@@ -173,7 +173,7 @@ respectively.
 
 \texttt{CALLER} in Fig.~\ref{fig:An Example for SPARC Code} (a)
 calls \texttt{ChangeY},
-which updates the {\em special register} \texttt{Y}
+which updates the ``special register" \texttt{Y}
 and returns its original value.
 
 % \begin{figure*}[!t]
@@ -236,7 +236,7 @@ to save the current context
 and $\crestore$ instruction (at line 10) to restore it.
 As explained above, among the 32 general registers,
 the \outRN{}, \localRN{} and \inRN{} registers form the
-{\em current register window}.
+``current" register window.
 The \localRN{} registers are for private use in the current context.
 The \inRN{} and \outRN{} registers are shared with adjacent register windows
 for parameters passing.
