@@ -20,7 +20,7 @@ shows the structure of the context switch routine that we proved.
 \begin{itemize}
     \item \texttt{SwitchEntry}
     is the entry of the context switch routine.
-    It saves the \localRN{} and \inRN{} registers of current
+    It saves the \localRN{} and \inRN{} registers of the current
     window into the current task's stack in memory, and calls
     \texttt{reg\_save} to save the other registers into 
     the current task's TCB.
@@ -94,14 +94,13 @@ Each of them takes 6 arguments,
 the id of the current task $\ctid$, the id of the new
 task $\ntid$, the values $\env$ of general registers and
 other register windows saving contexts,
-the new task's context $\nst$ to be restored,
-and the thread local state $\hthrdlocalst_c$
-of current task and $\hthrdlocalst_n$ of the new task.
+the new task's context $\nst$ to be restored, 
+the current task's thread local state $\hthrdlocalst_c$ 
+and the new task's thread local state $\hthrdlocalst_n$.
 In the specification,
 we use $\Env{\env}$ to specify the values of
 general registers and the register windows.
-We describe the state
-of the current task
+We describe the state of the current task
 % (its TCB and stack in memory)
 using $\RelCurT{\ctid}{\notCare}{\env}{\hthrdlocalst_c}$.
 It descirbes the states of the current task $\ctid$ 
@@ -112,12 +111,12 @@ in low and high level, and their state relation.
 % and the state relation between the current thread $\ctid$
 % in low- and high-level.
 Similarly, $\RelRdyT{\ntid}{\nst}{\hthrdlocalst_n}$
-describes states of new task $\ntid$ in low and high level,
+describes the states of the new task $\ntid$ in low and high level,
 and their state relation.
 % Here, we use $\nst$ to represent the saved context
 % of task $\ntid$.
 The memory location
-$\TaskNew$ records the identifier of the new task $\ntid$.
+$\TaskNew$ records the identifier of the new task.
 $\relmsto{\TaskNew}{(\ntid, 0)}$, where $\relmsto{\loc}{\val}$ 
 is defined as $(\msto{\loc}{\val}) \sepstar (\hmsto{\loc}{\val})$, 
 denotes that
@@ -131,7 +130,7 @@ in both low- and high-level memory.
 The precondition takes ten tokens ($\metricAst{10}$).
 As we have explained, verifying \call{}
 and \jmp{} instructions will consume a token.
-So, verifying the function calls
+So, verifying calling function
 \regsave{} and \regrestore{} will
 both consume a token. And \SaveUsedWin{},
 which saves the context of each previous window
@@ -218,7 +217,7 @@ the specification of \SwitchEntry{} is $(\Apre, \Apost)$.
 % \SaveUsedWin{} and \SwitchNewTask{} respectively.
 
 First, we prove that the specification of
-context switch routine is well-defined in
+the context switch routine is well-defined in
 Lemma~\ref{lemma:ctxswitch-wdspec}.
 \begin{lemma}
     \em
