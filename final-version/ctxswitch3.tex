@@ -130,7 +130,7 @@ in both low- and high-level memory.
 The precondition takes ten tokens ($\metricAst{10}$).
 As we have explained, verifying \call{}
 and \jmp{} instructions will consume a token.
-So, verifying calling functions
+Therefore, verifying calling functions
 \regsave{} and \regrestore{} will
 both consume a token. And \SaveUsedWin{},
 which saves the context of each previous window
@@ -140,7 +140,7 @@ into memory repetitively until the invalid one,
 will execute at most eight times,
 because the upper bound of
 the number of windows is eight.
-So, ten tokens is sufficient (two for \regsave{} and
+Therefore, ten tokens is sufficient (two for \regsave{} and
 \regrestore{}, and eight for \SaveUsedWin{}).
 
 If we compare $\Apre$ and $\Apost$, we can see that

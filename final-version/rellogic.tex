@@ -103,7 +103,7 @@ whose context is saved in register windows currently,
 should point to the top of its stack frame
 (shown as the thick arrow in
 \Fig{\ref{fig:Abstraction of Register Windows and Memory}} (a)),
-so the contexts
+so that the contexts
 in these windows can be stored correctly
 in memory when needed. For instance,
 the context switch routine will check
@@ -195,7 +195,7 @@ client code execution preserve such restriction.
     (filled with dots
     in \Fig{\ref{fig:problem of modifying wim arbitrary}}).
     % Supposing the register window and
-    So, we forbid the client
+    Therefore, we forbid the client
     to modify special registers and give \textit{no}
     semantics to instruction \cwr{} in high-level
     client code. Modifying them is hidden in the
@@ -809,8 +809,12 @@ from the \sparc{} program defined in
 % $\cprint$ and acts as an observable behavior.
 Note that the client
 code and the implementations of primitives
-in low-level are both \sparc{} code heap. So, we do not need
-to define their linking in semantics.
+in low-level are both \sparc{} code heap. 
+There is no need to define their linking 
+in semantics.
+
+% So, we do not need
+% to define their linking in semantics.
 % More details of the low-level program can be found in
 % our Coq code and TR~\cite{coqimp}.
 % \ref{sec:more-llang}.
@@ -910,7 +914,8 @@ is defined formally below:
     (\exists \, \HProg''. \,
         \HGlobTrans{\HProg'}{}{\HProg''}).
 \]
-The client code $\code$ is \sparc{} code, so
+The client code $\code$ is \sparc{} code. 
+Therefore,
 the high-level code is a pair of $\code$ and $\hprimset$,
 % And their linking is defined in
 % \Fig{\ref{fig:selected-opsem-high-level-prog}}.

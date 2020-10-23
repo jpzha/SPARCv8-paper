@@ -246,12 +246,12 @@ registers in the original window are no longer accessible,
 and the original \outRN{} registers become the \inRN{} registers
 in the current window.
 In \Fig{\ref{fig:An Example for SPARC Code}},
-the \texttt{CALLER} uses the \csave{} instruction 
+\texttt{CALLER} uses the \csave{} instruction 
 (at line 3) to save its context
 (\localRN{} and \inRN{} registers) and rotate the
 register window (so that the 
 \outRN{} registers become the \inRN{} registers).
-So, the $\ireg{0}$ register
+Thus, the $\ireg{0}$ register
 assessed in \texttt{ChangeY} at line 6 is
 the same register as the $\oreg{0}$ modified in
 \texttt{CALLER} at line 1.
@@ -589,7 +589,7 @@ verification but makes the following contributions.
     % and makes the program state
     % simpler than physical \sparc{} program
     % (defined in \Sec{\ref{sec:modeling}}).
-    So, it can provide some convenience
+    Therefore, it can provide some convenience
     to write the abstract assembly primitive
     and reason in Pseudo-SPARCv8 level.
 
