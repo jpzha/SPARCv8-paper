@@ -908,7 +908,7 @@ is defined formally below:
     (\HGlobMultiTrans{\HProg}{}{*}{\HProg'})
     \Longrightarrow
     (\exists \, \HProg''. \,
-        \HGlobTrans{\HProg'}{}{\HProg''})
+        \HGlobTrans{\HProg'}{}{\HProg''}).
 \]
 The client code $\code$ is \sparc{} code, so
 the high-level code is a pair of $\code$ and $\hprimset$,
@@ -917,7 +917,7 @@ the high-level code is a pair of $\code$ and $\hprimset$,
 and the low-level code is just the union of
 $\code$ and $\asmimp$, shown as
 $(\code\uplus\asmimp)$, because both of
-$\code$ and $\asmimp$ are \sparc{} code heaps:
+$\code$ and $\asmimp$ are \sparc{} code heaps.
 \[
     \small
     \code \uplus \asmimp \,\define\,
@@ -1931,7 +1931,7 @@ separation conjunction $\sepstar$.
 The \myrule{ABSCSQ} rule allows us to execute the high-level
 primitive command specified in precondition.
 The implication $\absExec{\relastP}{\relastP'}$
-is defined below formally.
+is defined below formally: 
 \[
     \small
     \begin{array}{l}
@@ -1946,7 +1946,7 @@ is defined below formally.
             (\primTrans{(\primcom, \hpstate)}
         	{(\primcom', \hpstate')})
             \, \land \,
-            (\asrtmodel{(\state, \hpstate', \primcom', \word')}{\relastP'}))
+            (\asrtmodel{(\state, \hpstate', \primcom', \word')}{\relastP'})).
         % \forall \, \state, \hpstate, \primcom, \word. \,
         % (\asrtmodel{(\state, \hpstate, \primcom, \word)}{\relastP})
         % \imp \\ \\[-9.5pt]
@@ -2110,7 +2110,7 @@ if an abstract assembly primitive
 can execute safely on a part of program state,
 it can also execute safely on the whole program state,
 and keeps the additional program state unchanged.
-$\hpstate\perp\hpstate_r$ is defined formally below.
+$\hpstate\perp\hpstate_r$ is defined formally below: 
 \[
     \small
     \begin{array}{l}
@@ -2121,7 +2121,7 @@ $\hpstate\perp\hpstate_r$ is defined formally below.
         \qquad \ \
         \text{where} \ \
         \hpstate = (\thrdpool, \tid, \hthrdlocalst, \Mem), \,
-        \hpstate_r = (\thrdpool', \tid', \hthrdlocalst', \Mem')
+        \hpstate_r = (\thrdpool', \tid', \hthrdlocalst', \Mem').
     \end{array}
 \]
 % We require that the program counters
@@ -2157,7 +2157,7 @@ can be reestablished when the function returns.
 % (\Fig{\ref{fig:Logic Ensures State Relation Reestablished}} gives a
 % more straightforward way to understand this restriction, and
 % we use the purple dashed line to represent this invariant).
-We define such invariant as \INV{} formally below.
+We define such invariant as \INV{} formally below: 
 % Such invariant is defined as \INV{} formally below. 
 % We define \INV{} to represent such invariant below formally:
 % our logic needs to make sure that
@@ -2223,7 +2223,7 @@ We define such invariant as \INV{} formally below.
             \land \
             \arguments(\hpstate.\hthrdlocalst.\hRstate, \,
             \hpstate.\Mem, \args{\val})
-        \}
+        \}.
     \end{array}
 \]
 The invariant consists of the state relation between low- and

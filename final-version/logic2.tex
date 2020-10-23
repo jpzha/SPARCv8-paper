@@ -507,19 +507,16 @@ The assertions $\aexpeq{\aexp}{\val}$ and $\oexpeq{\oexp}{\val}$
 describe the value of $\aexp$ and $\oexp$ respectively. They are
 intuitionistic assertions. Since $\aexp$ is used as an address,
 we also require it to be properly aligned on a 4-byte boundary.
-We define $\wordaligned{}$ to represent this restriction below.
-The result of the address expression $\aexp$ may be a word, if
-it is a pointer in code heap, or a memory address, if it is a location
-of memory.
+We define $\wordaligned{}$ to represent this restriction below:
 \[
 	\wordaligned{(\val)} \define
 	\exists \, \word. \,
 	(\val = \word \, \lor \, \val = (\notCare, \word))
-	\, \land \, \word\modOP{4} = 0
-	% \exists \, \word. \,
-	% (\val = \word \, \lor \, (\exists \, \block. \, \val = (\block, \word)))
-	% \, \land \, \word\modOP{4} = 0
+	\, \land \, \word\modOP{4} = 0.
 \]
+The result of the address expression $\aexp$ may be a word, if
+it is a pointer in code heap, or a memory address, if it is a location
+of memory.
 
 \subsection{Inference Rules}
 \label{subsec:inference rules}
