@@ -854,7 +854,7 @@ that is the same as the high-level memory.
 The delayed buffer $\DBuf$ is $\nil$, since the client
 is not permitted to modify any special register
 through the $\cwr{}$ instructions. $\Mem_T$ 
-is {\it abstracted} as a thread pool
+is ``abstracted" as a thread pool
 in the high-level program. Their relation is represented as
 ``$\rdyStRel{\Mem_T}{\thrdpool \backslash \{ \thrdid \}}$".
 We use ``$\curStRel{(\Mem_c, \Rstate)}{(\thrdid, \hthrdlocalst)}$"
@@ -1203,7 +1203,7 @@ $\code$ and $\asmimp$ are \sparc{} code heaps.
 \begin{center}
     \[
         \begin{array}{rcl}
-            \textit{(RelAsrt)} \quad \relastP, \relastQ & \ \define \ &
+            \text{(RelAsrt)} \quad \relastP, \relastQ & \ \define \ &
             \astP \sepline
             \hregsto{\hrn}{\val} \sepline
             \hmsto{\loc}{\val} \sepline
@@ -1543,7 +1543,7 @@ in relational program logic are defined below :
         \ \ \
         \TYPE{(pAsrt)} \ \
         \relspecpre, \relspecpost \in
-        \TYPE{valList} \rightarrow \textit{RelAsrt} \\
+        \TYPE{valList} \rightarrow \TYPE{RelAsrt} \\
         \TYPE{(CdSpec)} & \RelBspec & \define &
         (\relspecpre, \relspecpost) \quad \ \
         \TYPE{(CdHpSpec)} \ \Cspec \ \define \
