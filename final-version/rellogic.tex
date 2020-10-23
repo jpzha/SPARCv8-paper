@@ -2009,7 +2009,7 @@ the specification needs to satisfy.
             \begin{itemize}
                 \item {\em $\hpstate'.\hthrdlocalst.\pc = \lab{}\!+\!8$},
                     {\em $\hpstate'.\hthrdlocalst.\npc = \lab{}\!+\!12$};
-                \item there exists $\hpstate''$, $\hpstate_r'$,
+                \item there exist $\hpstate''$, $\hpstate_r'$, such that
                     $\hprim(\args{\val})(\hpstate \uplus \hpstate_r)
                         (\hpstate'')$, $\hpstate'' = \hpstate' \uplus \hpstate_r'$,
                     and $\hpstate_r.\thrdpool = \hpstate_r'.\thrdpool$,
@@ -2024,7 +2024,7 @@ the specification needs to satisfy.
             for any $\args{\val}, \state, \hpstate$,
             if {\em $(\state, \hpstate, \notCare, \notCare) \in
             \INV{(\hprim(\args{\val}), \args{\val})}$},
-            there exists $\lgvl, \relastP_r$ and $\word$,
+            there exist $\lgvl, \relastP_r$ and $\word$,
             such that \\
             {\em $
                 \asrtmodel{(\state, \hpstate, \hprim(\args{\val}), \word)}
@@ -2394,7 +2394,7 @@ when the high-level abstract assembly primitive executes.
 
                 \item for any $\state'$, {\em $\pc'$}, {\em $\npc'$}, \\ if
                 {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
-                then there exists 
+                then there exist
                 $\relspecpre$, $\relspecpost$, $\lgvl$,
                 $\primcom'$, $\hpstate'$, $\word'$,
                 $\word'' < \word'$ and {\em $\relastP_r$}
@@ -2479,7 +2479,7 @@ when the high-level abstract assembly primitive executes.
                 and {\em $\npc'$}, \\
                 if
                 {\em $\multilptrans{\asmimp}{2}{(\state, \pc, \npc)}{(\state', \pc', \npc')}$},
-                then there exists {\em $\primcom'$}, {\em $\hpstate'$}, and {\em $\word'$},
+                then there exist {\em $\primcom'$}, {\em $\hpstate'$}, and {\em $\word'$},
                 such that:
                 \begin{enumerate}[(1)]
                     \item either $\primcom' = \primcom$,
@@ -2577,7 +2577,7 @@ and decreases by \retl{} (unless $k=0$).
     \begin{enumerate}[1.]
         \item if {\em $\asmimp(\pc) \in \{ \simplins, \jmp{} \ \aexp, \be \ \lab{} \}$}, then:
             \begin{itemize}
-                \item there exists {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$},
+                \item there exist {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$},
                     such that \\
                     {\em $\LGlobTrans{(\asmimp, \state, \pc, \npc)}{\empmsg\,}
                             {(\asmimp, \state', \pc', \npc')}$};
@@ -2602,7 +2602,7 @@ and decreases by \retl{} (unless $k=0$).
 
         \item if {\em $\asmimp(\pc) = \call \ \lab{}$}, then:
             \begin{itemize}
-                \item there exists {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$},
+                \item there exist {\em $\state'$}, {\em $\pc'$}, {\em $\npc'$},
                  such that \\
                     {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
                             {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$};
@@ -2614,7 +2614,7 @@ and decreases by \retl{} (unless $k=0$).
                     \item {\em $\exists \, j < i. \
                         \simFunctionSt{\relastQ}{(\asmimp, \state', \pc', \npc')}
                             {j}{k+1}{(\primcom, \hpstate)}$};
-                    \item there exists $\hpstate', \, j \in \Index$,
+                    \item there exist $\hpstate', \, j \in \Index$,
                         such that \\
                         $\primTrans{(\primcom, \hpstate)}{(\primdone, \hpstate')}$
                         and \\
@@ -2626,14 +2626,14 @@ and decreases by \retl{} (unless $k=0$).
 
         \item if {\em $\asmimp(\pc) = \retl{}$}, then:
             \begin{itemize}
-                \item there exists $\state'$, {\em $\pc'$}, {\em $\npc'$},
+                \item there exist $\state'$, {\em $\pc'$}, {\em $\npc'$},
                 such that \\
                    {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
                             {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$};
                 \item for any $\state'$, {\em $\pc'$}, {\em $\npc'$}, \\
                     if {\em $\LGlobMultiTrans{(\asmimp, \state, \pc, \npc)}
                             {\empmsg\,}{2}{(\asmimp, \state', \pc', \npc')}$}, \\
-                    then there exists $j \in \Index$, $\hpstate'$ and
+                    then there exist $j \in \Index$, $\hpstate'$ and
                     $\primcom'$, such that the following holds:
                     \begin{enumerate}
                         \item either $j < i$, $\hpstate' = \hpstate$
