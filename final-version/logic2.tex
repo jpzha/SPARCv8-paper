@@ -325,10 +325,10 @@ By the semantics we have
 $\asrtmodel{\state}{\astP}$ holds, then $\asrtmodel{\state}{\astQ}$ holds)
 $$
 \begin{array}{l}
-	\regst{\sr}{\word} \,\Rightarrow\, \dlyregst{\tick}{\sr}{\word}
+	\regst{\sr}{\word} \,\Rightarrow\, \dlyregst{\tick}{\sr}{\word}, 
 	\\ \\[-8pt]
 	\dlyregst{\tick}{\sr}{\word} \,\Rightarrow\,
-	\dlyregst{\tick\!+\!k}{\sr}{\word}
+	\dlyregst{\tick\!+\!k}{\sr}{\word}.
 \end{array}
 $$
 
@@ -340,10 +340,10 @@ Therefore we know:
 $$
 \begin{array}{l}
 	\nxtAst{(\dlyregst{0}{\sr}{\word})} \,\Rightarrow\,
-	\regst{\sr}{\word} 
+	\regst{\sr}{\word}, 
 	\\ \\[-8pt]
 	\nxtAst{(\dlyregst{\tick\!+\!1}{\sr}{\word})} \,\Rightarrow\,
-	\dlyregst{\tick}{\sr}{\word}
+	\dlyregst{\tick}{\sr}{\word}.
 \end{array}
 $$
 Also it is easy to see that if $\astP$ syntactically
