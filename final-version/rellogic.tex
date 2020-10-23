@@ -178,7 +178,7 @@ client code execution preserve such restriction.
         \vspace*{-0.5em}
         \input{picture/ProblemModwim.tex}
         \figurecaption{Problem of modifying
-        \regwim{} arbitrary}
+        \regwim{} arbitrary.}
         \vspace*{-0.5em}
         \label{fig:problem of modifying wim arbitrary}
     \end{center}
@@ -298,7 +298,7 @@ client code execution preserve such restriction.
         \end{array}
     \]
     \vspace{-1em}
-    \caption{Syntax of Pseudo-SPARCv8 Code}
+    \caption{Syntax of Pseudo-SPARCv8 Code.}
     \label{fig:syntax-of-concur-pseudo-sparc}
 \end{figure*}
 \begin{figure*}[!t]
@@ -348,7 +348,7 @@ client code execution preserve such restriction.
         \end{array}
     \]
     % \vspace{-0.5em}
-    \caption{Machine States for Pseudo-SPARCv8 Code}
+    \caption{Machine States for Pseudo-SPARCv8 Code.}
     \label{fig:machine-state-concur-pseudo-sparc}
     % \vspace{-0.5em}
 \end{figure*}
@@ -1221,7 +1221,7 @@ $\code$ and $\asmimp$ are \sparc{} code heaps:
         \end{array}
     \]
     \vspace*{-1em}
-    \figurecaption{Syntax of Relational Assertion}
+    \figurecaption{Syntax of Relational Assertion.}
     \label{fig:Syntax of Relational Assertion}
 \end{center}
 
@@ -1423,7 +1423,7 @@ $\code$ and $\asmimp$ are \sparc{} code heaps:
         \end{array}
     \]
     \vspace{-0.8em}
-    \caption{Semantics of Relation Assertion}
+    \caption{Semantics of Relation Assertion.}
     \label{fig:Semantics of Relation Assertion}
 \end{figure*}
 
@@ -1873,7 +1873,7 @@ $\lgvl$.
     %         \]
     %     \end{minipage}
     % }
-    \caption{Selected Inference Rules for Refinement Verification}
+    \caption{Selected Inference Rules for Refinement Verification.}
     \label{fig:Selected Inference Rules for Refinement Verification}
 \end{figure*}
 \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}
@@ -2796,11 +2796,11 @@ we show that our logic ensures the simulations.
     \begin{itemize}
         \item $\wdcblk{\Cspec}{\relastP}{\relastQ}{\lab{}}{\cblk}
             \implies
-            \semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$
+            \semwfseqrel{\Cspec}{\relastP}{\relastQ}{\cblk}$;
         \item $\wfcdhp{\asmimp}{\Cspec} \imp
-            \models\asmimp:\Cspec$
+            \models\asmimp:\Cspec$; 
         \item $\wfprim{\Cspec}{\asmimp}{\hprimset} \imp
-            \semWdPrim{\Cspec}{\asmimp}{\hprimset}$
+            \semWdPrim{\Cspec}{\asmimp}{\hprimset}$.
     \end{itemize}
 \end{lemma}
 % \begin{proof}
@@ -3026,7 +3026,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
 \begin{lemma}
     \label{lemma:wpsim-implies-refinement}
     \em
-    $\prog \wpsim^{i} \HProg \implies \prog \refine \HProg$
+    $\prog \wpsim^{i} \HProg \implies \prog \refine \HProg$.
 \end{lemma}
 
 \begin{lemma}[Simulation Implies Primitive Correctness]
@@ -3035,7 +3035,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \[
         \semWdPrim{\Cspec}{\asmimp}{\hprimset}
         \Longrightarrow
-        \asmimp \ctxrefine \hprimset
+        \asmimp \ctxrefine \hprimset.
     \]
 \end{lemma}
 \begin{proof}
@@ -3097,7 +3097,7 @@ Lemma~\ref{lemma:wpsim-implies-refinement}.
     \label{thm:logic soundness}
     \[
         \wfprim{\Cspec}{\asmimp}{\hprimset} \Longrightarrow
-        \asmimp \ctxrefine \hprimset
+        \asmimp \ctxrefine \hprimset.
     \]
 \end{theorem}
 \begin{proof}

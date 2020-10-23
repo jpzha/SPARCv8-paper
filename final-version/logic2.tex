@@ -265,7 +265,7 @@ refinement reasoning will be introduced in
 %            \end{array}
 		\end{array}
 	$
-	\caption{Semantics of Assertions}
+	\caption{Semantics of Assertions.}
 	\label{fig:Semantics of Assertions}
 	\vspace{-0.5em}
 \end{figure*}
@@ -386,18 +386,24 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	$\mem_1$, $\mem_2$, $\RFile_1'$ and $\RFile_2'$ such that 
 	($\RFile_1 \uplus \RFile_2$ represents the union of
 	$\RFile_1$ and $\RFile_2$ if they have disjoint domains, and 
-	$\Mem_1 \uplus \Mem_2$ has the same meaning):
-	\begin{align}
-		& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \label{a:dstep1} \\
-		& \RFile' = \RFile_1'\uplus\RFile_2'
-		\label{a:regsplit} \\
-		& \Mem = \Mem_1\uplus\Mem_2 
-		\label{a:memsplit} \\
-		& \asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf')}{\astP} 
-		\label{a:pholds} \\
-		& \asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf')}{\astQ}
-		\label{a:qholds} 
-	\end{align}
+	$\Mem_1 \uplus \Mem_2$ has the same meaning): 
+	(A1) $\Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)}$; 
+	(A2) $\RFile' = \RFile_1'\uplus\RFile_2'$; 
+	(A3) $\Mem = \Mem_1\uplus\Mem_2$;
+	(A4) $\asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf')}{\astP}$; 
+	(A5) $\asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf')}{\astQ}$. 
+	% \begin{align}
+	% 	& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \\
+	% 	& \RFile' = \RFile_1'\uplus\RFile_2'. 
+	% 		\label{a:dstep1-regsplit} \\
+	% 	\label{a:regsplit} \\
+	% 	& \Mem = \Mem_1\uplus\Mem_2. 
+	% 	\label{a:memsplit} \\
+	% 	& \asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf')}{\astP}. 
+	% 	\label{a:pholds} \\
+	% 	& \asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf')}{\astQ}.
+	% 	\label{a:qholds} 
+	% \end{align}
 	% such that:
 	% \begin{align}
 	% 	& \Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)} \label{a:dstep1} \\
@@ -417,28 +423,29 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	% 	\label{a:qholds} 
 	% \end{align}
 	By applying Lemma~\ref{lemma:RFileSplitExDelay}
-	on (\ref{a:dstep1}) and (\ref{a:regsplit}), we get 
+	on (A.1), we get 
 	that there exist $\RFile_1$ and $\RFile_1$, 
-	where $\RFile = \RFile_1\uplus\RFile_2$, such that
-	\begin{align}
-		& \Dstep{(\RFile_1', \DBuf')}{(\RFile_1, \DBuf)}
-		\label{a:dstep-split1} \\
-		& \Dstep{(\RFile_2', \DBuf')}{(\RFile_2, \DBuf)}
-		\label{a:dstep-split2}
-	\end{align}
+	where $\RFile = \RFile_1\uplus\RFile_2$, such that: 
+	$\Dstep{(\RFile_1', \DBuf')}{(\RFile_1, \DBuf)}$,
+	$\Dstep{(\RFile_2', \DBuf')}{(\RFile_2, \DBuf)}$.
+	% \begin{align}
+	% 	& \Dstep{(\RFile_1', \DBuf')}{(\RFile_1, \DBuf)}, 
+	% 	\Dstep{(\RFile_2', \DBuf')}{(\RFile_2, \DBuf)}.
+	% 	\label{a:dstep-split1}
+	% \end{align}
 	% We prove that
 	% $\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
 	% 	 {(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$ holds 
 	% by (\ref{a:regsplit}) (\ref{a:memsplit}) (\ref{a:pholds})
 	% (\ref{a:qholds}) (\ref{a:dstep1}) (\ref{a:dstep2}).
 	
-	From (\ref{a:pholds}) and (\ref{a:dstep-split1}), 
+	Thus, 
 	we get $\asrtmodel{(\Mem_1, (\RFile_1, \Wstack), \DBuf)}{\nxtAst{\astP}}$; 
-	and from (\ref{a:qholds}) and (\ref{a:dstep-split2}), 
-	we get $\asrtmodel{(\Mem_2, (\RFile_2, \Wstack), \DBuf)}{\nxtAst{\astQ}}$.
-	Thus, we know
+	and $\asrtmodel{(\Mem_2, (\RFile_2, \Wstack), \DBuf)}{\nxtAst{\astQ}}$.
+	Finally, we prove that
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
-		{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$.
+		{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$
+	holds.
 
 	``$\Leftarrow$": if 
 	$\asrtmodel{(\Mem,(\RFile,\Wstack),\DBuf)}{(\nxtAst{\astP})\sepstar(\nxtAst{\astQ})}$,
@@ -448,32 +455,38 @@ Lemma~\ref{lemma:dly-sep-split} below.
 	We first get there exist $\Mem_1$, $\Mem_2$, $\RFile_1'$, 
 	$\RFile_2'$, $\RFile_1$, $\RFile_2$, $\DBuf_1'$ and $\DBuf_2'$, 
 	where $\RFile = \RFile_1\uplus\RFile_2$, such that:
-	\begin{align}
-		& \Dstep{(\RFile_1', \DBuf_1')}{(\RFile_1, \DBuf)}, \, 
-		\Dstep{(\RFile_2', \DBuf_2')}{(\RFile_2, \DBuf)}
-		\label{a:dstep-split} \\
-		& \asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf_1')}
-			{\astP}
-		\label{a:phold1} \\
-		& \asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf_2')}
-			{\astQ}
-		\label{a:qhold2}
-	\end{align}
+	(B1) $\Dstep{(\RFile_1', \DBuf_1')}{(\RFile_1, \DBuf)}$, 
+			$\Dstep{(\RFile_2', \DBuf_2')}{(\RFile_2, \DBuf)}$;
+	(B2) $\asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf_1')}{\astP}$; 
+	(B3) $\asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf_2')}{\astQ}$. 
+	% \begin{align}
+	% 	& \Dstep{(\RFile_1', \DBuf_1')}{(\RFile_1, \DBuf)}, \, 
+	% 	\Dstep{(\RFile_2', \DBuf_2')}{(\RFile_2, \DBuf)}
+	% 	\label{a:dstep-split} \\
+	% 	& \asrtmodel{(\Mem_1, (\RFile_1', \Wstack), \DBuf_1')}
+	% 		{\astP}
+	% 	\label{a:phold1} \\
+	% 	& \asrtmodel{(\Mem_2, (\RFile_2', \Wstack), \DBuf_2')}
+	% 		{\astQ}
+	% 	\label{a:qhold2}
+	% \end{align}
+
 	By the definition of the step of the 
 	delayed writes, we can prove that 
 	$\DBuf_1' = \DBuf_2'$. Let 
 	$\DBuf' = \DBuf_1' = \DBuf_2'$. 
 	By applying Lemma~\ref{lemma:RFileSplitExDelay} 
-	on (\ref{a:dstep-split}), we get there exists 
-	$\RFile'$, such that $\RFile' = \RFile_1'\uplus\RFile_2'$ 
-	and the following holds:
-	\begin{equation}
-		\Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)}
-		\label{a:dstep2}	
-	\end{equation}
-	From (\ref{a:phold1}) - (\ref{a:dstep2}), we get 
+	on (B1), we get there exists 
+	$\RFile'$, where $\RFile' = \RFile_1'\uplus\RFile_2'$,  
+	such that $\Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)}$. 
+	% \begin{equation}
+	% 	\Dstep{(\RFile', \DBuf')}{(\RFile, \DBuf)}
+	% 	\label{a:dstep2}	
+	% \end{equation}
+	Thus, we prove that  
 	$\asrtmodel{(\Mem, (\RFile, \Wstack), \DBuf)}
-	{\nxtAst{(\astP\sepstar\astQ)}}$.
+	{\nxtAst{(\astP\sepstar\astQ)}}$
+	holds.
 \end{proof}
 
 We use $\frmst{\cwp}{\Wstack}$ to describe the pointer
@@ -621,7 +634,7 @@ process.
 	\end{array}
 	$$
 	\vspace*{-0.5em}
-	\figurecaption{Example for Function Specification}
+	\figurecaption{Example for Function Specification.}
 	\label{fig:functionSpec}
 \end{center}
 
@@ -948,7 +961,7 @@ return code pointer whose type is word.
 		\end{minipage}
 	}
 	
-	\caption{Seleted Inference Rules}
+	\caption{Seleted Inference Rules.}
 	\label{fig:Seleted Inference rules}
 	\vspace{-0.2em}
 \end{figure*}

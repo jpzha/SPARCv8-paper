@@ -14,7 +14,7 @@ defined in \Subsec{\ref{subsec:High-level Pseudo-SPARCv8 Language}}.
 shows the structure of the context switch routine that we proved.
 \begin{center}
     \input{picture/CodeStructure2}
-    \figurecaption{The Structure of Context Switch Routine}
+    \figurecaption{The Structure of Context Switch Routine.}
 	\label{fig:The Structure of Context Switch Routine}
 \end{center}
 \begin{itemize}
@@ -172,7 +172,7 @@ and the code heap specification (\ref{ctxswitch-Cspec})
 below:
 \begin{align}
     & \hprimset \ \define \ \{ \SwitchEntry \leadsto
-        \primsw \}
+        \primsw \}.
         \label{ctxswitch-hprimset} \\
     & \!\begin{array}{lcl}
         \Cspec & \define &
@@ -187,7 +187,7 @@ below:
         \SaveUsedWin{} \leadsto (\relspecpre_{\textit{su}}, \relspecpost_{\textit{su}}), \\
         & & \quad
         \SwitchNewTask{} \leadsto (\relspecpre_{\textit{sn}}, \relspecpost_{\textit{sn}})
-        \}
+        \}.
         \label{ctxswitch-Cspec}
     \end{array}
 \end{align}
@@ -222,7 +222,7 @@ Lemma~\ref{lemma:ctxswitch-wdspec}.
 \begin{lemma}
     \em
     \label{lemma:ctxswitch-wdspec}
-    $\wdSpec{\Apre}{\Apost}{\primsw}$
+    $\wdSpec{\Apre}{\Apost}{\primsw}$.
 \end{lemma}
 \begin{proof}
     Prove by the definition of $\textsf{wdSpec}$ 
@@ -345,7 +345,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
 \begin{lemma}
     \em
     \label{lemma:ctxswitch-wfcdhp}
-    $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$
+    $\wfcdhp{\code_{\texttt{switch}}}{\Cspec{}}$.
 \end{lemma}
 \begin{proof}
     % The code heap specification $\Cspec{}$ have been
@@ -363,41 +363,65 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     $\lab{\textit{rr}}$, $\lab{\textit{su}}$ and
     $\lab{\textit{sn}}$ represent the starting labels of
     \SwitchEntry{}, \regsave{}, \regrestore{},
-    \SaveUsedWin{} and \SwitchNewTask{} below):
-    \begin{align}
-        & \wfcblk{\Apre \ \lgvl_1}{\Apost \ \lgvl_1}
-            {\lab{\textit{se}}}
-            {\code_{\texttt{switch}}
-            [\lab{\textit{se}}]}
-            % \tag{g-wfse}
-            \label{ctxswitch-wfse} \\
-        & \wfcblk{\relspecpre_{\textit{rs}} \ \lgvl_2}
-            {\relspecpost_{\textit{rs}} \ \lgvl_2}
-            {\lab{\textit{rs}}}
-            {\code_{\texttt{switch}}
-            [\lab{\textit{rs}}]}
-            % \tag{g-wfrs}
-            \label{ctxswitch-wfrs} \\
-        & \wfcblk{\relspecpre_{\textit{rr}} \ \lgvl_3}
-            {\relspecpost_{\textit{rr}}\ \lgvl_3}
-            {\lab{\textit{rr}}}
-            {\code_{\texttt{switch}}
-            [\lab{\textit{rr}}]}
-            % \tag{g-wfrr}
-            \label{ctxswitch-wfrr} \\
-        & \wfcblk{\relspecpre_{\textit{su}} \ \lgvl_4}
-            {\relspecpost_{\textit{su}} \ \lgvl_4}
-            {\lab{\textit{su}}}
-            {\code_{\texttt{switch}}[\lab{\textit{su}}]}
-            % \tag{g-wfsu}
-            \label{ctxswitch-wfsu} \\
-        & \wfcblk{\relspecpre_{\textit{sn}} \ \lgvl_5}
-            {\relspecpost_{\textit{sn}} \ \lgvl_5}
-            {\lab{\textit{sn}}}
-            {\code_{\texttt{switch}}[\lab{\textit{sn}}]}
-            % \tag{g-wfsn}
-            \label{ctxswitch-wfsn}
-    \end{align}
+    \SaveUsedWin{} and \SwitchNewTask{}):
+    \begin{itemize}
+        \item $\wfcblk{\Apre \ \lgvl_1}{\Apost \ \lgvl_1}
+                {\lab{\textit{se}}}
+                {\code_{\texttt{switch}}
+                [\lab{\textit{se}}]}$; 
+        \item $\wfcblk{\relspecpre_{\textit{rs}} \ \lgvl_2}
+                {\relspecpost_{\textit{rs}} \ \lgvl_2}
+                {\lab{\textit{rs}}}
+                {\code_{\texttt{switch}}
+                [\lab{\textit{rs}}]}$;
+        \item $\wfcblk{\relspecpre_{\textit{rr}} \ \lgvl_3}
+                {\relspecpost_{\textit{rr}}\ \lgvl_3}
+                {\lab{\textit{rr}}}
+                {\code_{\texttt{switch}}
+                [\lab{\textit{rr}}]}$;
+        \item $\wfcblk{\relspecpre_{\textit{su}} \ \lgvl_4}
+                {\relspecpost_{\textit{su}} \ \lgvl_4}
+                {\lab{\textit{su}}}
+                {\code_{\texttt{switch}}[\lab{\textit{su}}]}$;
+        \item $\wfcblk{\relspecpre_{\textit{sn}} \ \lgvl_5}
+                {\relspecpost_{\textit{sn}} \ \lgvl_5}
+                {\lab{\textit{sn}}}
+                {\code_{\texttt{switch}}[\lab{\textit{sn}}]}$.
+    \end{itemize}
+    % \begin{align}
+    %     & \wfcblk{\Apre \ \lgvl_1}{\Apost \ \lgvl_1}
+    %         {\lab{\textit{se}}}
+    %         {\code_{\texttt{switch}}
+    %         [\lab{\textit{se}}]}
+    %         % \tag{g-wfse}
+    %         \label{ctxswitch-wfse} \\
+    %     & \wfcblk{\relspecpre_{\textit{rs}} \ \lgvl_2}
+    %         {\relspecpost_{\textit{rs}} \ \lgvl_2}
+    %         {\lab{\textit{rs}}}
+    %         {\code_{\texttt{switch}}
+    %         [\lab{\textit{rs}}]}
+    %         % \tag{g-wfrs}
+    %         \label{ctxswitch-wfrs} \\
+    %     & \wfcblk{\relspecpre_{\textit{rr}} \ \lgvl_3}
+    %         {\relspecpost_{\textit{rr}}\ \lgvl_3}
+    %         {\lab{\textit{rr}}}
+    %         {\code_{\texttt{switch}}
+    %         [\lab{\textit{rr}}]}
+    %         % \tag{g-wfrr}
+    %         \label{ctxswitch-wfrr} \\
+    %     & \wfcblk{\relspecpre_{\textit{su}} \ \lgvl_4}
+    %         {\relspecpost_{\textit{su}} \ \lgvl_4}
+    %         {\lab{\textit{su}}}
+    %         {\code_{\texttt{switch}}[\lab{\textit{su}}]}
+    %         % \tag{g-wfsu}
+    %         \label{ctxswitch-wfsu} \\
+    %     & \wfcblk{\relspecpre_{\textit{sn}} \ \lgvl_5}
+    %         {\relspecpost_{\textit{sn}} \ \lgvl_5}
+    %         {\lab{\textit{sn}}}
+    %         {\code_{\texttt{switch}}[\lab{\textit{sn}}]}
+    %         % \tag{g-wfsn}
+    %         \label{ctxswitch-wfsn}
+    % \end{align}
 
     \begin{center}
         \input{picture/point-refine-ctxswitch}
@@ -406,8 +430,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
         \label{fig:refinement reasoning}
     \end{center}
 
-    The correctness proof of
-    (\ref{ctxswitch-wfse}) - (\ref{ctxswitch-wfsn})
+    The correctness proof of each code blocks
     can be done by applying the inference rules for
     instruction sequences shown in
     \Fig{\ref{fig:Selected Inference Rules for Refinement Verification}}.
@@ -415,7 +438,7 @@ Lemma~\ref{lemma:ctxswitch-wfcdhp}.
     \myrule{ABSCSQ} rule to execute $\primsw$.
     Here, we apply the \myrule{ABSCSQ} rule
     in verifying
-    \SwitchNewTask{} (\ref{ctxswitch-wfsn}),
+    \SwitchNewTask{},
     when the context switch routine returns,
     as shown in \Fig{\ref{fig:refinement reasoning}}.
     In \Fig{\ref{fig:refinement reasoning}}, we use the
